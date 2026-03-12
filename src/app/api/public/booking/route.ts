@@ -1,6 +1,8 @@
+// PATH: src/app/api/public/booking/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
+import { rateLimit } from '@/lib/rateLimit'
 
 // GET — veřejné služby, staff a working hours pro booking
 export async function GET(request: NextRequest) {
@@ -82,6 +84,13 @@ export async function GET(request: NextRequest) {
 // POST — vytvořit novou veřejnou rezervaci + odeslat emaily
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting — max 5 rezervací za minutu z jedné IP
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const { allowed } = rateLimit(ip, 5)
+    if (!allowed) {
+      return NextResponse.json({ error: 'Příliš mnoho požadavků. Zkuste to za minutu.' }, { status: 429 })
+    }
+
     const body = await request.json()
     const { slug, service_id, staff_id, start_at, end_at, customer_name, customer_phone, customer_email, note, price } = body
 
