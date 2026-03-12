@@ -1,7 +1,9 @@
+// PATH: src/app/(dashboard)/dashboard/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLang } from '../layout'
 import {
   Calendar, TrendingUp, TrendingDown, Users, DollarSign,
   Clock, AlertTriangle, Star, ArrowRight, Zap,
@@ -37,6 +39,10 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const { t, lang } = useLang()
+
+  const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
+  const currency = t('currency')
 
   useEffect(() => {
     fetch('/api/dashboard')
@@ -45,19 +51,19 @@ export default function DashboardPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="text-center py-12 text-gray-400">Nacitam dashboard...</div>
-  if (!data) return <div className="text-center py-12 text-red-400">Chyba pri nacitani</div>
+  if (loading) return <div className="text-center py-12 text-gray-400">{t('dash_loading')}</div>
+  if (!data) return <div className="text-center py-12 text-red-400">{t('dash_error')}</div>
 
-  const formatPrice = (n: number) => n.toLocaleString('cs-CZ') + ' Kč'
+  const formatPrice = (n: number) => n.toLocaleString(locale) + ' ' + currency
   const maxDaily = Math.max(...data.week.daily.map(d => d.count), 1)
 
   return (
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('dash_title')}</h1>
         <p className="mt-1 text-gray-500">
-          Prehled vaseho podnikani — {new Date().toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          {t('dash_subtitle')} — {new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
         </p>
       </div>
 
@@ -65,29 +71,29 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">Dnes rezervaci</span>
+            <span className="text-sm font-medium text-gray-500">{t('dash_today_bookings')}</span>
             <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
               <Calendar className="w-5 h-5 text-blue-600" />
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{data.today.bookings}</p>
-          <p className="text-xs text-gray-400 mt-1">Tento tyden: {data.week.bookings}</p>
+          <p className="text-xs text-gray-400 mt-1">{t('dash_this_week')}: {data.week.bookings}</p>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">Dnes trzby</span>
+            <span className="text-sm font-medium text-gray-500">{t('dash_today_revenue')}</span>
             <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-green-600" />
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatPrice(data.today.revenue)}</p>
-          <p className="text-xs text-gray-400 mt-1">Tento tyden: {formatPrice(data.week.revenue)}</p>
+          <p className="text-xs text-gray-400 mt-1">{t('dash_this_week')}: {formatPrice(data.week.revenue)}</p>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">Mesicni trzby</span>
+            <span className="text-sm font-medium text-gray-500">{t('dash_month_revenue')}</span>
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${data.month.revenueChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
               {data.month.revenueChange >= 0
                 ? <TrendingUp className="w-5 h-5 text-green-600" />
@@ -97,19 +103,19 @@ export default function DashboardPage() {
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatPrice(data.month.revenue)}</p>
           <p className={`text-xs mt-1 font-medium ${data.month.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {data.month.revenueChange >= 0 ? '↑' : '↓'} {Math.abs(data.month.revenueChange)}% oproti minulemu mesici
+            {data.month.revenueChange >= 0 ? '↑' : '↓'} {Math.abs(data.month.revenueChange)}% {t('dash_vs_last_month')}
           </p>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">Klienti</span>
+            <span className="text-sm font-medium text-gray-500">{t('dash_clients')}</span>
             <div className="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center">
               <Users className="w-5 h-5 text-purple-600" />
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{data.totals.clients}</p>
-          <p className="text-xs text-green-600 mt-1 font-medium">+{data.month.newClients} novych tento mesic</p>
+          <p className="text-xs text-green-600 mt-1 font-medium">+{data.month.newClients} {t('dash_new_this_month')}</p>
         </div>
       </div>
 
@@ -119,7 +125,7 @@ export default function DashboardPage() {
 
           {/* Týdenní graf */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Tento tyden</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dash_this_week')}</h2>
             <div className="flex items-end gap-3 h-40">
               {data.week.daily.map((d, i) => {
                 const height = maxDaily > 0 ? (d.count / maxDaily) * 100 : 0
@@ -137,11 +143,11 @@ export default function DashboardPage() {
             </div>
             <div className="flex justify-between mt-4 pt-4 border-t border-gray-100">
               <div>
-                <p className="text-sm text-gray-500">Celkem rezervaci</p>
+                <p className="text-sm text-gray-500">{t('dash_total_bookings')}</p>
                 <p className="text-lg font-bold text-gray-900">{data.week.bookings}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-500">Celkem trzby</p>
+                <p className="text-sm text-gray-500">{t('dash_total_revenue')}</p>
                 <p className="text-lg font-bold text-gray-900">{formatPrice(data.week.revenue)}</p>
               </div>
             </div>
@@ -150,22 +156,22 @@ export default function DashboardPage() {
           {/* Dnešní rezervace */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Dnesni rezervace</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('dash_today_reservations')}</h2>
               <button onClick={() => router.push('/calendar')}
                 className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
-                Kalendar <ArrowRight className="w-4 h-4" />
+                {t('dash_calendar')} <ArrowRight className="w-4 h-4" />
               </button>
             </div>
             {data.today.upcoming.length === 0 ? (
               <div className="text-center py-8">
                 <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                <p className="text-gray-400">Zadne rezervace na dnes</p>
+                <p className="text-gray-400">{t('dash_no_bookings_today')}</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {data.today.upcoming.map((b: any) => {
-                  const time = new Date(b.start_at).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
-                  const endTime = new Date(b.end_at).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
+                  const time = new Date(b.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+                  const endTime = new Date(b.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
                   const isPast = new Date(b.end_at) < new Date()
                   const isNow = new Date(b.start_at) <= new Date() && new Date(b.end_at) >= new Date()
                   return (
@@ -176,16 +182,16 @@ export default function DashboardPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-gray-900 text-sm truncate">
-                            {b.customer_name || b.clients?.full_name || 'Neznamy'}
+                            {b.customer_name || b.clients?.full_name || '—'}
                           </span>
-                          {isNow && <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">Nyni</span>}
+                          {isNow && <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">{t('dash_now')}</span>}
                           {b.status === 'no_show' && <span className="px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-xs font-medium">No-show</span>}
                         </div>
                         <p className="text-xs text-gray-500">{b.services?.name || '-'} • {b.staff?.full_name || '-'}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">{time} — {endTime}</p>
-                        {b.price && <p className="text-xs text-gray-500">{b.price} Kč</p>}
+                        <p className="text-sm font-medium text-gray-900">{time} – {endTime}</p>
+                        {b.price && <p className="text-xs text-gray-500">{b.price} {currency}</p>}
                       </div>
                     </div>
                   )
@@ -200,26 +206,26 @@ export default function DashboardPage() {
 
           {/* Měsíční statistiky */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Tento mesic</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dash_this_month')}</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Rezervaci</span>
+                  <span className="text-sm text-gray-600">{t('dash_reservations')}</span>
                 </div>
                 <span className="font-bold text-gray-900">{data.month.bookings}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <DollarSign className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Trzby</span>
+                  <span className="text-sm text-gray-600">{t('dash_revenue')}</span>
                 </div>
                 <span className="font-bold text-gray-900">{formatPrice(data.month.revenue)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">No-show</span>
+                  <span className="text-sm text-gray-600">{t('dash_noshow')}</span>
                 </div>
                 <span className={`font-bold ${data.month.noShow > 0 ? 'text-red-600' : 'text-green-600'}`}>
                   {data.month.noShow}
@@ -228,14 +234,14 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Novych klientu</span>
+                  <span className="text-sm text-gray-600">{t('dash_new_clients')}</span>
                 </div>
                 <span className="font-bold text-green-600">+{data.month.newClients}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Clenu tymu</span>
+                  <span className="text-sm text-gray-600">{t('dash_team_members')}</span>
                 </div>
                 <span className="font-bold text-gray-900">{data.totals.staff}</span>
               </div>
@@ -244,9 +250,9 @@ export default function DashboardPage() {
 
           {/* Top služby */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Top sluzby</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dash_top_services')}</h2>
             {data.topServices.length === 0 ? (
-              <p className="text-sm text-gray-400">Zadna data</p>
+              <p className="text-sm text-gray-400">{t('dash_no_data')}</p>
             ) : (
               <div className="space-y-3">
                 {data.topServices.map((svc, i) => (
@@ -273,19 +279,19 @@ export default function DashboardPage() {
 
           {/* Quick actions */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Rychle akce</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dash_quick_actions')}</h2>
             <div className="space-y-2">
               <button onClick={() => router.push('/calendar')}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-sm font-medium">
-                <Calendar className="w-4 h-4" /> Nova rezervace
+                <Calendar className="w-4 h-4" /> {t('dash_new_booking')}
               </button>
               <button onClick={() => router.push('/clients')}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 text-sm font-medium">
-                <Users className="w-4 h-4" /> Pridat klienta
+                <Users className="w-4 h-4" /> {t('dash_add_client')}
               </button>
               <button onClick={() => router.push('/services')}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-green-50 text-green-700 hover:bg-green-100 text-sm font-medium">
-                <Zap className="w-4 h-4" /> Pridat sluzbu
+                <Zap className="w-4 h-4" /> {t('dash_add_service')}
               </button>
             </div>
           </div>
