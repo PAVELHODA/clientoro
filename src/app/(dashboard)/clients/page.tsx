@@ -1,7 +1,9 @@
-﻿'use client'
+﻿// PATH: src/app/(dashboard)/clients/page.tsx
+'use client'
 
 import { useEffect, useState } from 'react'
-import { Users, Search, Plus, Phone, Mail, Tag, Calendar, DollarSign, Edit2, Trash2, X, ChevronRight } from 'lucide-react'
+import { useLang } from '../layout'
+import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight } from 'lucide-react'
 
 interface Client {
   id: string
@@ -21,19 +23,7 @@ interface FormData {
   full_name: string; phone: string; email: string; note: string; source: string; tags: string
 }
 
-const EMPTY_FORM: FormData = {
-  full_name: '', phone: '', email: '', note: '', source: 'manual', tags: '',
-}
-
-const SOURCES = [
-  { value: 'manual', label: 'Ručně přidaný', icon: '✏️' },
-  { value: 'booking_page', label: 'Booking stránka', icon: '🌐' },
-  { value: 'qr', label: 'QR kód', icon: '📱' },
-  { value: 'directory', label: 'Katalog', icon: '📋' },
-  { value: 'referral', label: 'Doporučení', icon: '👫' },
-  { value: 'import', label: 'Import', icon: '📥' },
-  { value: 'other', label: 'Jiný', icon: '📌' },
-]
+const EMPTY_FORM: FormData = { full_name: '', phone: '', email: '', note: '', source: 'manual', tags: '' }
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([])
@@ -44,6 +34,59 @@ export default function ClientsPage() {
   const [saving, setSaving] = useState(false)
   const [search, setSearch] = useState('')
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
+  const { t, lang } = useLang()
+
+  const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
+  const currency = t('currency')
+
+  const SOURCES = [
+    { value: 'manual', label: lang === 'en' ? 'Manual' : lang === 'sk' ? 'Ručne pridaný' : 'Ručně přidaný', icon: '✏️' },
+    { value: 'booking_page', label: lang === 'en' ? 'Booking page' : 'Booking stránka', icon: '🌐' },
+    { value: 'qr', label: lang === 'en' ? 'QR code' : 'QR kód', icon: '📱' },
+    { value: 'directory', label: lang === 'en' ? 'Directory' : lang === 'sk' ? 'Katalóg' : 'Katalog', icon: '📋' },
+    { value: 'referral', label: lang === 'en' ? 'Referral' : lang === 'sk' ? 'Odporúčanie' : 'Doporučení', icon: '👫' },
+    { value: 'import', label: 'Import', icon: '📥' },
+    { value: 'other', label: lang === 'en' ? 'Other' : lang === 'sk' ? 'Iný' : 'Jiný', icon: '📌' },
+  ]
+
+  const l = {
+    title: t('cli_title'),
+    subtitle: lang === 'en' ? `Client management (${clients.length} clients)` : lang === 'sk' ? `Správa klientov (${clients.length} klientov)` : `Správa klientů (${clients.length} klientů)`,
+    newClient: t('cli_new'),
+    search: t('cli_search'),
+    noClients: t('cli_no_clients'),
+    addFirst: t('cli_add_first'),
+    noResults: lang === 'en' ? 'No clients found' : lang === 'sk' ? 'Žiadni klienti nenájdení' : 'Žádní klienti nenalezeni',
+    tryOther: lang === 'en' ? 'Try different search' : lang === 'sk' ? 'Skúste iný výraz' : 'Zkuste jiný výraz',
+    visits: t('cli_visits'),
+    spent: t('cli_spent'),
+    lastVisit: t('cli_last_visit'),
+    source: t('cli_source'),
+    edit: t('cli_edit'),
+    delete: t('cli_delete'),
+    name: t('cli_name'),
+    phone: t('cli_phone'),
+    email: t('cli_email'),
+    note: t('cli_note'),
+    save: t('cli_save'),
+    cancel: t('cli_cancel'),
+    saving: lang === 'en' ? 'Saving...' : lang === 'sk' ? 'Ukladám...' : 'Ukládám...',
+    editClient: lang === 'en' ? '✏️ Edit client' : lang === 'sk' ? '✏️ Upraviť klienta' : '✏️ Upravit klienta',
+    newClientForm: lang === 'en' ? '➕ New client' : lang === 'sk' ? '➕ Nový klient' : '➕ Nový klient',
+    saveChanges: lang === 'en' ? 'Save changes' : lang === 'sk' ? 'Uložiť zmeny' : 'Uložit změny',
+    createClient: lang === 'en' ? 'Create client' : lang === 'sk' ? 'Vytvoriť klienta' : 'Vytvořit klienta',
+    fullName: lang === 'en' ? 'Full name' : lang === 'sk' ? 'Celé meno' : 'Celé jméno',
+    tags: lang === 'en' ? 'Tags (comma separated)' : lang === 'sk' ? 'Štítky (oddelené čiarkou)' : 'Štítky (oddělené čárkou)',
+    internalNote: lang === 'en' ? 'Internal note' : lang === 'sk' ? 'Interná poznámka' : 'Interní poznámka',
+    clientSince: lang === 'en' ? 'Client since' : lang === 'sk' ? 'Klient od' : 'Klient od',
+    noName: lang === 'en' ? 'No name' : lang === 'sk' ? 'Bez mena' : 'Bez jména',
+    last: lang === 'en' ? 'last' : lang === 'sk' ? 'posledná' : 'poslední',
+    loading: lang === 'en' ? 'Loading clients...' : lang === 'sk' ? 'Načítavam klientov...' : 'Načítám klienty...',
+    confirmDelete: (name: string) => lang === 'en' ? `Delete client "${name}"?` : lang === 'sk' ? `Zmazať klienta "${name}"?` : `Smazat klienta "${name}"?`,
+    fillRequired: lang === 'en' ? 'Fill in name or phone' : lang === 'sk' ? 'Vyplňte meno alebo telefón' : 'Vyplňte jméno nebo telefon',
+    errorSaving: lang === 'en' ? 'Error saving' : lang === 'sk' ? 'Chyba pri ukladaní' : 'Chyba při ukládání',
+    namePlaceholder: lang === 'en' ? 'e.g. Jane Smith' : lang === 'sk' ? 'Napr. Jana Nováková' : 'Např. Jana Nováková',
+  }
 
   const fetchClients = async () => {
     try {
@@ -68,7 +111,7 @@ export default function ClientsPage() {
   }
 
   const handleSave = async () => {
-    if (!form.full_name.trim() && !form.phone.trim()) { alert('Vyplňte jméno nebo telefon'); return }
+    if (!form.full_name.trim() && !form.phone.trim()) { alert(l.fillRequired); return }
     setSaving(true)
     const payload = {
       full_name: form.full_name.trim() || null, phone: form.phone.trim() || null,
@@ -79,16 +122,15 @@ export default function ClientsPage() {
       if (editingId) {
         await fetch(`/api/clients/${editingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       } else {
-        await fetch('/api/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload) })
+        await fetch('/api/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       }
       setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchClients()
-    } catch (err) { console.error(err); alert('Chyba při ukládání') }
+    } catch (err) { console.error(err); alert(l.errorSaving) }
     finally { setSaving(false) }
   }
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Opravdu smazat klienta "${name || 'Bez jména'}"?`)) return
+    if (!confirm(l.confirmDelete(name || l.noName))) return
     try { await fetch(`/api/clients/${id}`, { method: 'DELETE' }); setSelectedClient(null); fetchClients() }
     catch (err) { console.error(err) }
   }
@@ -100,7 +142,7 @@ export default function ClientsPage() {
 
   const formatDate = (d: string | null) => {
     if (!d) return '-'
-    return new Date(d).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'short' })
+    return new Date(d).toLocaleDateString(locale, { day: 'numeric', month: 'short' })
   }
 
   return (
@@ -109,13 +151,13 @@ export default function ClientsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Users className="w-7 h-7 text-blue-600" /> Klienti
+            <Users className="w-7 h-7 text-blue-600" /> {l.title}
           </h1>
-          <p className="mt-1 text-gray-500">Správa klientů ({clients.length} klientů)</p>
+          <p className="mt-1 text-gray-500">{l.subtitle}</p>
         </div>
         <button onClick={handleNew}
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm transition-colors">
-          <Plus className="w-4 h-4" /> Nový klient
+          <Plus className="w-4 h-4" /> {l.newClient}
         </button>
       </div>
 
@@ -124,16 +166,14 @@ export default function ClientsPage() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <input type="text" value={search} onChange={e => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white"
-          placeholder="Hledat klienta (jméno, telefon, email)..." />
+          placeholder={l.search} />
       </div>
 
       {/* Formulář */}
       {showForm && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 shadow-sm">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-semibold text-gray-900">
-              {editingId ? '✏️ Upravit klienta' : '➕ Nový klient'}
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">{editingId ? l.editClient : l.newClientForm}</h2>
             <button onClick={() => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM) }}
               className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200">
               <X className="w-4 h-4 text-gray-500" />
@@ -141,46 +181,46 @@ export default function ClientsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Celé jméno</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.fullName}</label>
               <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Např. Jana Nováková" />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.namePlaceholder} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.phone}</label>
               <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="+420 777 123 456" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.email}</label>
               <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="jana@email.cz" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Zdroj</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.source}</label>
               <select value={form.source} onChange={e => setForm({ ...form, source: e.target.value })}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500">
                 {SOURCES.map(s => <option key={s.value} value={s.value}>{s.icon} {s.label}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Štítky (oddělené čárkou)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.tags}</label>
               <input type="text" value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="VIP, stálý klient" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Poznámka</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.note}</label>
               <input type="text" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Interní poznámka..." />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.internalNote} />
             </div>
           </div>
           <div className="flex gap-3 mt-5 pt-4 border-t border-gray-100">
             <button onClick={handleSave} disabled={saving}
               className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm disabled:opacity-50 shadow-sm">
-              {saving ? 'Ukládám...' : editingId ? 'Uložit změny' : 'Vytvořit klienta'}
+              {saving ? l.saving : editingId ? l.saveChanges : l.createClient}
             </button>
             <button onClick={() => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM) }}
               className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 font-medium text-sm">
-              Zrušit
+              {l.cancel}
             </button>
           </div>
         </div>
@@ -195,8 +235,8 @@ export default function ClientsPage() {
                 {getInitials(selectedClient.full_name)}
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900">{selectedClient.full_name || 'Bez jména'}</h2>
-                <p className="text-sm text-gray-500">Klient od {new Date(selectedClient.created_at).toLocaleDateString('cs-CZ')}</p>
+                <h2 className="text-lg font-bold text-gray-900">{selectedClient.full_name || l.noName}</h2>
+                <p className="text-sm text-gray-500">{l.clientSince} {new Date(selectedClient.created_at).toLocaleDateString(locale)}</p>
               </div>
             </div>
             <button onClick={() => setSelectedClient(null)}
@@ -206,19 +246,19 @@ export default function ClientsPage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div className="bg-gray-50 rounded-xl p-3">
-              <p className="text-xs text-gray-500 mb-1">Návštěvy</p>
+              <p className="text-xs text-gray-500 mb-1">{l.visits}</p>
               <p className="text-lg font-bold text-gray-900">{selectedClient.total_visits}</p>
             </div>
             <div className="bg-gray-50 rounded-xl p-3">
-              <p className="text-xs text-gray-500 mb-1">Utraceno</p>
-              <p className="text-lg font-bold text-gray-900">{selectedClient.total_spent > 0 ? `${selectedClient.total_spent} Kč` : '-'}</p>
+              <p className="text-xs text-gray-500 mb-1">{l.spent}</p>
+              <p className="text-lg font-bold text-gray-900">{selectedClient.total_spent > 0 ? `${selectedClient.total_spent} ${currency}` : '-'}</p>
             </div>
             <div className="bg-gray-50 rounded-xl p-3">
-              <p className="text-xs text-gray-500 mb-1">Poslední návštěva</p>
+              <p className="text-xs text-gray-500 mb-1">{l.lastVisit}</p>
               <p className="text-lg font-bold text-gray-900">{formatDate(selectedClient.last_visit_at)}</p>
             </div>
             <div className="bg-gray-50 rounded-xl p-3">
-              <p className="text-xs text-gray-500 mb-1">Zdroj</p>
+              <p className="text-xs text-gray-500 mb-1">{l.source}</p>
               <p className="text-lg font-bold text-gray-900">{SOURCES.find(s => s.value === selectedClient.source)?.icon || '📌'} {SOURCES.find(s => s.value === selectedClient.source)?.label || selectedClient.source}</p>
             </div>
           </div>
@@ -237,11 +277,11 @@ export default function ClientsPage() {
           <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
             <button onClick={() => handleEdit(selectedClient)}
               className="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-sm font-medium hover:bg-blue-100">
-              <Edit2 className="w-3.5 h-3.5 inline mr-1" /> Upravit
+              <Edit2 className="w-3.5 h-3.5 inline mr-1" /> {l.edit}
             </button>
             <button onClick={() => handleDelete(selectedClient.id, selectedClient.full_name || '')}
               className="px-4 py-2 bg-red-50 text-red-600 rounded-xl text-sm font-medium hover:bg-red-100">
-              <Trash2 className="w-3.5 h-3.5 inline mr-1" /> Smazat
+              <Trash2 className="w-3.5 h-3.5 inline mr-1" /> {l.delete}
             </button>
           </div>
         </div>
@@ -249,35 +289,32 @@ export default function ClientsPage() {
 
       {/* Seznam klientů */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400">Načítám klienty...</div>
+        <div className="text-center py-12 text-gray-400">{l.loading}</div>
       ) : clients.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Users className="w-8 h-8 text-blue-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">
-            {search ? 'Žádní klienti nenalezeni' : 'Žádní klienti'}
-          </h3>
-          <p className="mt-1 text-gray-500">{search ? 'Zkuste jiný výraz' : 'Přidejte svého prvního klienta'}</p>
+          <h3 className="text-lg font-semibold text-gray-900">{search ? l.noResults : l.noClients}</h3>
+          <p className="mt-1 text-gray-500">{search ? l.tryOther : l.addFirst}</p>
           {!search && (
             <button onClick={handleNew}
               className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm">
-              <Plus className="w-4 h-4" /> Nový klient
+              <Plus className="w-4 h-4" /> {l.newClient}
             </button>
           )}
         </div>
       ) : (
         <div className="space-y-2">
           {clients.map(client => (
-            <div key={client.id}
-              onClick={() => setSelectedClient(client)}
+            <div key={client.id} onClick={() => setSelectedClient(client)}
               className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 hover:shadow-sm cursor-pointer transition-all flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0 shadow-sm">
                 {getInitials(client.full_name)}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-900 truncate">{client.full_name || 'Bez jména'}</span>
+                  <span className="font-semibold text-gray-900 truncate">{client.full_name || l.noName}</span>
                   {client.tags?.slice(0, 2).map((tag, i) => (
                     <span key={i} className="hidden sm:inline px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs font-medium">{tag}</span>
                   ))}
@@ -291,15 +328,15 @@ export default function ClientsPage() {
               <div className="hidden md:flex items-center gap-6 text-sm">
                 <div className="text-center">
                   <p className="font-bold text-gray-900">{client.total_visits}</p>
-                  <p className="text-xs text-gray-400">návštěv</p>
+                  <p className="text-xs text-gray-400">{l.visits}</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-bold text-gray-900">{client.total_spent > 0 ? `${client.total_spent} Kč` : '-'}</p>
-                  <p className="text-xs text-gray-400">utraceno</p>
+                  <p className="font-bold text-gray-900">{client.total_spent > 0 ? `${client.total_spent} ${currency}` : '-'}</p>
+                  <p className="text-xs text-gray-400">{l.spent}</p>
                 </div>
                 <div className="text-center">
                   <p className="font-bold text-gray-900">{formatDate(client.last_visit_at)}</p>
-                  <p className="text-xs text-gray-400">poslední</p>
+                  <p className="text-xs text-gray-400">{l.last}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
