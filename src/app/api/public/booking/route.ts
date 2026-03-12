@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     let clientId = null
     const { data: existingClient } = await supabaseAdmin
       .from('clients')
-      .select('id')
+      .select('id, total_visits')
       .eq('organization_id', org.id)
       .eq('phone', customer_phone)
       .single()
