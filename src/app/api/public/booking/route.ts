@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
+import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
 
 // GET — veřejné služby, staff a working hours pro booking
 export async function GET(request: NextRequest) {
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
       .eq('active', true)
 
     // Working hours pro všechny staff
-    const staffIds = (staff || []).map(s => s.id)
+    const staffIds = (staff || []).map((s: any) => s.id)
     let workingHours: any[] = []
     if (staffIds.length > 0) {
       const { data: wh } = await supabaseAdmin
@@ -78,7 +79,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST — vytvořit novou veřejnou rezervaci
+// POST — vytvořit novou veřejnou rezervaci + odeslat emaily
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -88,9 +89,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Vyplňte všechna povinná pole' }, { status: 400 })
     }
 
+    // Najdi organizaci + email majitele
     const { data: org } = await supabaseAdmin
       .from('organizations')
-      .select('id')
+      .select('id, name, email')
       .eq('slug', slug)
       .single()
 
@@ -123,9 +125,8 @@ export async function POST(request: NextRequest) {
 
     if (existingClient) {
       clientId = existingClient.id
-      // Update last visit
       await supabaseAdmin.from('clients').update({
-        total_visits: existingClient.total_visits + 1 || 1,
+        total_visits: (existingClient.total_visits || 0) + 1,
         last_visit_at: start_at,
       }).eq('id', clientId)
     } else {
@@ -143,6 +144,23 @@ export async function POST(request: NextRequest) {
         .select('id')
         .single()
       clientId = newClient?.id || null
+    }
+
+    // Najdi název služby a staff
+    const { data: service } = await supabaseAdmin
+      .from('services')
+      .select('name')
+      .eq('id', service_id)
+      .single()
+
+    let staffName = ''
+    if (staff_id) {
+      const { data: staffData } = await supabaseAdmin
+        .from('staff')
+        .select('full_name')
+        .eq('id', staff_id)
+        .single()
+      staffName = staffData?.full_name || ''
     }
 
     // Vytvoř rezervaci
@@ -167,6 +185,44 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    // 📧 ODESLAT EMAILY (na pozadí — nečekáme na výsledek)
+    const startDate = new Date(start_at)
+    const dateStr = startDate.toLocaleDateString('cs-CZ', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    })
+    const timeStr = startDate.toLocaleTimeString('cs-CZ', {
+      hour: '2-digit', minute: '2-digit'
+    })
+
+    // Email klientovi
+    if (customer_email) {
+      sendBookingConfirmation({
+        to: customer_email,
+        customerName: customer_name,
+        serviceName: service?.name || 'Služba',
+        staffName: staffName || undefined,
+        date: dateStr,
+        time: timeStr,
+        price: price || undefined,
+        orgName: org.name,
+      }).catch(err => console.error('Email to client failed:', err))
+    }
+
+    // Email majiteli
+    if (org.email) {
+      sendOwnerNotification({
+        to: org.email,
+        customerName: customer_name,
+        customerPhone: customer_phone,
+        serviceName: service?.name || 'Služba',
+        staffName: staffName || undefined,
+        date: dateStr,
+        time: timeStr,
+        orgName: org.name,
+      }).catch(err => console.error('Email to owner failed:', err))
+    }
+
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
