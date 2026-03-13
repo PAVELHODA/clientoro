@@ -52,7 +52,24 @@ export default function CalendarPage() {
 
   const workStart = organization?.work_start || 8
   const workEnd = organization?.work_end || 17
-
+  
+  // Handle booking status change
+  const handleStatusChange = async (bookingId: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      if (!res.ok) throw new Error('Failed to update status')
+      
+      // Update local state
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
+      setShowDetail(prev => prev ? { ...prev, status: newStatus } : null)
+    } catch (e) {
+      alert(lang === 'en' ? 'Error updating status' : 'Chyba při aktualizaci stavu')
+    }
+  }
   const dayNames = lang === 'en'
     ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     : lang === 'sk'
@@ -497,7 +514,7 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* Booking detail modal */}
+            {/* Booking detail modal */}
       {showDetail && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
@@ -520,7 +537,52 @@ export default function CalendarPage() {
                 <div className="flex justify-between"><span className="text-gray-500">{l.time}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} — {new Date(showDetail.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span></div>
                 {showDetail.staff && <div className="flex justify-between"><span className="text-gray-500">{l.specialist}</span><span className="font-medium">{showDetail.staff.full_name}</span></div>}
                 {showDetail.price && <div className="flex justify-between"><span className="text-gray-500">{l.price}</span><span className="font-medium">{showDetail.price} {currency}</span></div>}
-                <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium ${showDetail.status === 'confirmed' ? 'text-blue-600' : showDetail.status === 'completed' ? 'text-green-600' : 'text-gray-600'}`}>{showDetail.status === 'confirmed' ? l.confirmed : showDetail.status === 'completed' ? l.completed : showDetail.status}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium ${
+                  showDetail.status === 'confirmed' ? 'text-blue-600' :
+                  showDetail.status === 'completed' ? 'text-green-600' :
+                  showDetail.status === 'cancelled' ? 'text-red-600' :
+                  showDetail.status === 'no_show' ? 'text-purple-600' :
+                  showDetail.status === 'rescheduled' ? 'text-yellow-600' :
+                  'text-gray-600'
+                }`}>{
+                  showDetail.status === 'confirmed' ? (lang === 'en' ? 'Confirmed' : 'Potvrzeno') :
+                  showDetail.status === 'completed' ? (lang === 'en' ? 'Completed' : 'Dokončeno') :
+                  showDetail.status === 'cancelled' ? (lang === 'en' ? 'Cancelled' : 'Zrušeno') :
+                  showDetail.status === 'no_show' ? (lang === 'en' ? 'No-show' : 'Nedostavil/a se') :
+                  showDetail.status === 'rescheduled' ? (lang === 'en' ? 'Rescheduled' : 'Přeobjednáno') :
+                  showDetail.status
+                }</span></div>
+              </div>
+
+              {/* Status change buttons */}
+              <div className="pt-2">
+                <p className="text-xs text-gray-400 mb-2">{lang === 'en' ? 'Change status:' : 'Změnit stav:'}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {showDetail.status !== 'completed' && (
+                    <button onClick={() => handleStatusChange(showDetail.id, 'completed')}
+                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-green-50 text-green-700 rounded-xl text-sm font-medium hover:bg-green-100 border border-green-200 transition-all">
+                      ✅ {lang === 'en' ? 'Completed' : 'Dokončeno'}
+                    </button>
+                  )}
+                  {showDetail.status !== 'cancelled' && (
+                    <button onClick={() => handleStatusChange(showDetail.id, 'cancelled')}
+                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-red-50 text-red-700 rounded-xl text-sm font-medium hover:bg-red-100 border border-red-200 transition-all">
+                      ❌ {lang === 'en' ? 'Cancelled' : 'Zrušeno'}
+                    </button>
+                  )}
+                  {showDetail.status !== 'no_show' && (
+                    <button onClick={() => handleStatusChange(showDetail.id, 'no_show')}
+                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-purple-50 text-purple-700 rounded-xl text-sm font-medium hover:bg-purple-100 border border-purple-200 transition-all">
+                      ⏳ {lang === 'en' ? 'No-show' : 'Nedostavil/a se'}
+                    </button>
+                  )}
+                  {showDetail.status !== 'confirmed' && (
+                    <button onClick={() => handleStatusChange(showDetail.id, 'confirmed')}
+                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium hover:bg-blue-100 border border-blue-200 transition-all">
+                      📋 {lang === 'en' ? 'Confirmed' : 'Potvrzeno'}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
             <button onClick={() => setShowDetail(null)} className="w-full mt-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200">{l.close}</button>
@@ -530,3 +592,4 @@ export default function CalendarPage() {
     </div>
   )
 }
+
