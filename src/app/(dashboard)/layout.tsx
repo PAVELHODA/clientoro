@@ -26,121 +26,58 @@ const LangContext = createContext<{
 export const useLang = () => useContext(LangContext)
 
 // ============================================
-// 🎨 MODE THEMES — 4 plynulé přechody
+// 🎨 MODE THEMES
 // ============================================
 const MODE_THEMES: Record<string, {
-  label: string
-  gradient: string
-  sunGlow: string
-  text: string
-  textMuted: string
-  textHover: string
-  accent: string
-  activeBg: string
-  activeBorder: string
-  activeText: string
-  activeIcon: string
-  hoverBg: string
-  borderColor: string
-  logoBg: string
-  logoBorder: string
-  dotColor: string
-  sunIcon: string
+  label: string; gradient: string; sunGlow: string; text: string; textMuted: string;
+  textHover: string; accent: string; activeBg: string; activeBorder: string;
+  activeText: string; activeIcon: string; hoverBg: string; borderColor: string;
+  logoBg: string; logoBorder: string; dotColor: string; sunIcon: string;
 }> = {
   solo: {
-    label: 'solo',
-    gradient: 'linear-gradient(180deg, #052e16 0%, #065f46 35%, #059669 70%, #34d399 100%)',
-    sunGlow: 'rgba(253, 230, 138, 0.18)',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.90)',
-    textHover: '#ffffff',
-    accent: '#fde68a',
-    activeBg: 'rgba(255,255,255,0.25)',
-    activeBorder: 'rgba(255,255,255,0.22)',
-    activeText: '#ffffff',
-    activeIcon: '#fde68a',
-    hoverBg: 'rgba(255,255,255,0.12)',
-    borderColor: 'rgba(255,255,255,0.18)',
-    logoBg: 'rgba(255,255,255,0.20)',
-    logoBorder: 'rgba(255,255,255,0.30)',
-    dotColor: '#fde68a',
-    sunIcon: '#fde68a',
+    label: 'solo', gradient: 'linear-gradient(180deg, #052e16 0%, #065f46 35%, #059669 70%, #34d399 100%)',
+    sunGlow: 'rgba(253, 230, 138, 0.18)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
+    textHover: '#ffffff', accent: '#fde68a', activeBg: 'rgba(255,255,255,0.25)',
+    activeBorder: 'rgba(255,255,255,0.22)', activeText: '#ffffff', activeIcon: '#fde68a',
+    hoverBg: 'rgba(255,255,255,0.12)', borderColor: 'rgba(255,255,255,0.18)',
+    logoBg: 'rgba(255,255,255,0.20)', logoBorder: 'rgba(255,255,255,0.30)',
+    dotColor: '#fde68a', sunIcon: '#fde68a',
   },
   team: {
-    label: 'team',
-    gradient: 'linear-gradient(180deg, #0c1445 0%, #1e3a8a 35%, #2563eb 70%, #60a5fa 100%)',
-    sunGlow: 'rgba(253, 230, 138, 0.15)',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.90)',
-    textHover: '#ffffff',
-    accent: '#fde68a',
-    activeBg: 'rgba(255,255,255,0.25)',
-    activeBorder: 'rgba(255,255,255,0.22)',
-    activeText: '#ffffff',
-    activeIcon: '#fde68a',
-    hoverBg: 'rgba(255,255,255,0.12)',
-    borderColor: 'rgba(255,255,255,0.18)',
-    logoBg: 'rgba(255,255,255,0.20)',
-    logoBorder: 'rgba(255,255,255,0.30)',
-    dotColor: '#fde68a',
-    sunIcon: '#fde68a',
+    label: 'team', gradient: 'linear-gradient(180deg, #0c1445 0%, #1e3a8a 35%, #2563eb 70%, #60a5fa 100%)',
+    sunGlow: 'rgba(253, 230, 138, 0.15)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
+    textHover: '#ffffff', accent: '#fde68a', activeBg: 'rgba(255,255,255,0.25)',
+    activeBorder: 'rgba(255,255,255,0.22)', activeText: '#ffffff', activeIcon: '#fde68a',
+    hoverBg: 'rgba(255,255,255,0.12)', borderColor: 'rgba(255,255,255,0.18)',
+    logoBg: 'rgba(255,255,255,0.20)', logoBorder: 'rgba(255,255,255,0.30)',
+    dotColor: '#fde68a', sunIcon: '#fde68a',
   },
   solo_inspire: {
-    label: 'solo_inspire',
-    gradient: 'linear-gradient(180deg, #450a0a 0%, #7c2d12 35%, #c2410c 70%, #f59e0b 100%)',
-    sunGlow: 'rgba(251, 191, 36, 0.20)',
-    text: '#fef3c7',
-    textMuted: 'rgba(254,243,199,0.92)',
-    textHover: '#ffffff',
-    accent: '#fef3c7',
-    activeBg: 'rgba(255,255,255,0.22)',
-    activeBorder: 'rgba(255,255,255,0.18)',
-    activeText: '#ffffff',
-    activeIcon: '#fef3c7',
-    hoverBg: 'rgba(255,255,255,0.10)',
-    borderColor: 'rgba(255,255,255,0.16)',
-    logoBg: 'rgba(255,255,255,0.18)',
-    logoBorder: 'rgba(255,255,255,0.28)',
-    dotColor: '#fef3c7',
-    sunIcon: '#fbbf24',
+    label: 'solo_inspire', gradient: 'linear-gradient(180deg, #450a0a 0%, #7c2d12 35%, #c2410c 70%, #f59e0b 100%)',
+    sunGlow: 'rgba(251, 191, 36, 0.20)', text: '#fef3c7', textMuted: 'rgba(254,243,199,0.92)',
+    textHover: '#ffffff', accent: '#fef3c7', activeBg: 'rgba(255,255,255,0.22)',
+    activeBorder: 'rgba(255,255,255,0.18)', activeText: '#ffffff', activeIcon: '#fef3c7',
+    hoverBg: 'rgba(255,255,255,0.10)', borderColor: 'rgba(255,255,255,0.16)',
+    logoBg: 'rgba(255,255,255,0.18)', logoBorder: 'rgba(255,255,255,0.28)',
+    dotColor: '#fef3c7', sunIcon: '#fbbf24',
   },
   pro_inspire: {
-    label: 'pro_inspire',
-    gradient: 'linear-gradient(180deg, #1a0005 0%, #4a0011 35%, #7f1d1d 70%, #b45454 100%)',
-    sunGlow: 'rgba(212, 160, 160, 0.12)',
-    text: '#fef2f2',
-    textMuted: 'rgba(254,242,242,0.92)',
-    textHover: '#ffffff',
-    accent: '#fecaca',
-    activeBg: 'rgba(255,255,255,0.22)',
-    activeBorder: 'rgba(255,255,255,0.18)',
-    activeText: '#ffffff',
-    activeIcon: '#fecaca',
-    hoverBg: 'rgba(255,255,255,0.10)',
-    borderColor: 'rgba(255,255,255,0.16)',
-    logoBg: 'rgba(255,255,255,0.18)',
-    logoBorder: 'rgba(255,255,255,0.28)',
-    dotColor: '#fecaca',
-    sunIcon: '#b45454',
+    label: 'pro_inspire', gradient: 'linear-gradient(180deg, #1a0005 0%, #4a0011 35%, #7f1d1d 70%, #b45454 100%)',
+    sunGlow: 'rgba(212, 160, 160, 0.12)', text: '#fef2f2', textMuted: 'rgba(254,242,242,0.92)',
+    textHover: '#ffffff', accent: '#fecaca', activeBg: 'rgba(255,255,255,0.22)',
+    activeBorder: 'rgba(255,255,255,0.18)', activeText: '#ffffff', activeIcon: '#fecaca',
+    hoverBg: 'rgba(255,255,255,0.10)', borderColor: 'rgba(255,255,255,0.16)',
+    logoBg: 'rgba(255,255,255,0.18)', logoBorder: 'rgba(255,255,255,0.28)',
+    dotColor: '#fecaca', sunIcon: '#b45454',
   },
   creator: {
-    label: 'creator',
-    gradient: 'linear-gradient(180deg, #0c1222 0%, #1e293b 35%, #334155 70%, #475569 100%)',
-    sunGlow: 'rgba(34, 211, 238, 0.08)',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.90)',
-    textHover: '#ffffff',
-    accent: '#67e8f9',
-    activeBg: 'rgba(255,255,255,0.25)',
-    activeBorder: 'rgba(255,255,255,0.20)',
-    activeText: '#ffffff',
-    activeIcon: '#67e8f9',
-    hoverBg: 'rgba(255,255,255,0.12)',
-    borderColor: 'rgba(255,255,255,0.18)',
-    logoBg: 'rgba(255,255,255,0.20)',
-    logoBorder: 'rgba(255,255,255,0.30)',
-    dotColor: '#67e8f9',
-    sunIcon: '#67e8f9',
+    label: 'creator', gradient: 'linear-gradient(180deg, #0c1222 0%, #1e293b 35%, #334155 70%, #475569 100%)',
+    sunGlow: 'rgba(34, 211, 238, 0.08)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
+    textHover: '#ffffff', accent: '#67e8f9', activeBg: 'rgba(255,255,255,0.25)',
+    activeBorder: 'rgba(255,255,255,0.20)', activeText: '#ffffff', activeIcon: '#67e8f9',
+    hoverBg: 'rgba(255,255,255,0.12)', borderColor: 'rgba(255,255,255,0.18)',
+    logoBg: 'rgba(255,255,255,0.20)', logoBorder: 'rgba(255,255,255,0.30)',
+    dotColor: '#67e8f9', sunIcon: '#67e8f9',
   },
 }
 
@@ -215,6 +152,102 @@ const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any
 }
 
 // ============================================
+// 💡 Motivational Tips — ON/OFF toggle
+// ============================================
+const TIPS: Record<string, string[]> = {
+  '/dashboard': [
+    'Malé kroky, velké výsledky. Dnes je dobrý den pro růst.',
+    'Každý den je šance udělat krok pro nového klienta.',
+    'Dnes je perfektní den udělat něco, za co vám klienti poděkují.',
+  ],
+  '/calendar': [
+    'Každý volný slot je příležitost, ne problém.',
+    'Za každým termínem v kalendáři je člověk, který vám důvěřuje.',
+    'Klient, který se cítí výjimečně, se vždy vrátí.',
+  ],
+  '/bookings': [
+    'Každá rezervace je důvěra klienta ve vaši práci.',
+    'Potvrzená rezervace = jistý příjem. Tak jednoduché to je.',
+    'Méně no-show, více tržeb. Připomínky dělají zázraky.',
+  ],
+  '/clients': [
+    'Spokojený klient řekne třem kamarádům. Nespokojený deseti.',
+    'Osobní přístup je vaše největší konkurenční výhoda.',
+    'Nejlepší marketing? Klient, který o vás mluví u kafe s kamarádkou.',
+  ],
+  '/services': [
+    'Jasná nabídka = méně otázek, více rezervací.',
+    'Combo balíčky zvyšují průměrnou útratu o 20-30%.',
+    'Správná cena není nejnižší. Je to ta, za kterou stojí vaše práce.',
+  ],
+  '/staff': [
+    'Spokojený zaměstnanec = spokojený klient.',
+    'Každý člen týmu je ambasadorem vaší značky.',
+    'Vaši lidé jsou vaše superschopnost. Pečujte o ně.',
+  ],
+  '/reports': [
+    'Co měříte, to řídíte. Data nelžou.',
+    'Čísla nevyprávějí příběh o penězích. Vyprávějí příběh o lidech, kterým jste pomohli, a o důvěře, kterou jste si zasloužili.',
+    'Nejlepší rozhodnutí se dělají na základě dat, ne odhadů.',
+  ],
+  '/settings': [
+    'Dobře nastavený systém šetří hodiny práce týdně.',
+    'Váš systém, vaše pravidla. Nastavte si ho přesně podle sebe.',
+    'Nejlepší systém je ten, o kterém nepřemýšlíte. Nastavte ho a věnujte se klientům.',
+    '5 minut teď = hodiny ušetřeného času každý týden.',
+  ],
+}
+
+function MotivationalTip() {
+  const pathname = usePathname()
+  const [tip, setTip] = useState('')
+  const [enabled, setEnabled] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('clientoro_tips') === 'on'
+    }
+    return false
+  })
+
+  const toggleTips = () => {
+    const next = !enabled
+    setEnabled(next)
+    localStorage.setItem('clientoro_tips', next ? 'on' : 'off')
+  }
+
+  useEffect(() => {
+    const page = Object.keys(TIPS).find(key => pathname === key || pathname?.startsWith(key + '/'))
+    const tips = page ? TIPS[page] : TIPS['/dashboard']
+    if (tips) {
+      setTip(tips[Math.floor(Math.random() * tips.length)])
+    }
+  }, [pathname])
+
+  if (!tip) return null
+
+  if (!enabled) {
+    return (
+      <div className="mb-4 flex justify-center">
+        <button onClick={toggleTips}
+          className="px-4 py-1.5 text-xs text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-full border border-gray-200 hover:border-amber-200 transition-all">
+          💡 Zapnout motivační tipy
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mb-4 p-4 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border border-amber-200 rounded-xl flex items-center justify-between gap-3">
+      <p className="text-sm text-amber-900 font-bold text-center flex-1">
+        💡 {tip}
+      </p>
+      <button onClick={toggleTips} className="text-amber-400 hover:text-amber-600 flex-shrink-0" title="Vypnout tipy">
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  )
+}
+
+// ============================================
 // 🏗️ DASHBOARD LAYOUT
 // ============================================
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -225,16 +258,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [mobileOpen, setMobileOpen] = useState(false)
   const [lang, setLangState] = useState('cs')
 
-  useEffect(() => { setMobileOpen(false) }, [pathname])
-  useEffect(() => {
-    const saved = localStorage.getItem('clientoro-lang')
-    if (saved && ['cs', 'sk', 'en'].includes(saved)) setLangState(saved)
-  }, [])
-
   const setLang = (l: string) => {
     setLangState(l)
-    localStorage.setItem('clientoro-lang', l)
+    if (typeof window !== 'undefined') localStorage.setItem('clientoro_lang', l)
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('clientoro_lang')
+      if (saved) setLangState(saved)
+    }
+  }, [])
 
   const t = (key: string) =>
     translations[lang as Lang]?.[key] || translations.cs[key] || key
@@ -400,7 +434,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </header>
 
           <main className="flex-1 overflow-auto">
-            <div className="p-4 md:p-8 max-w-7xl">{children}</div>
+            <div className="p-4 md:p-8 max-w-7xl">
+              <MotivationalTip />
+              {children}
+            </div>
           </main>
         </div>
       </div>
