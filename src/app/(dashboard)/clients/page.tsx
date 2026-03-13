@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLang } from '../layout'
-import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight } from 'lucide-react'
+import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight, ArrowUpDown } from 'lucide-react'
 
 interface Client {
   id: string
@@ -34,6 +34,8 @@ export default function ClientsPage() {
   const [saving, setSaving] = useState(false)
   const [search, setSearch] = useState('')
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
+  const [sortBy, setSortBy] = useState<string>('name_asc')
+  const [filterSource, setFilterSource] = useState<string>('all')
   const { t, lang } = useLang()
 
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
@@ -51,7 +53,7 @@ export default function ClientsPage() {
 
   const l = {
     title: t('cli_title'),
-    subtitle: lang === 'en' ? `Client management (${clients.length} clients)` : lang === 'sk' ? `Správa klientov (${clients.length} klientov)` : `Správa klientů (${clients.length} klientů)`,
+    subtitle: lang === 'en' ? 'Client management' : lang === 'sk' ? 'Správa klientov' : 'Správa klientů',
     newClient: t('cli_new'),
     search: t('cli_search'),
     noClients: t('cli_no_clients'),
@@ -86,6 +88,7 @@ export default function ClientsPage() {
     fillRequired: lang === 'en' ? 'Fill in name or phone' : lang === 'sk' ? 'Vyplňte meno alebo telefón' : 'Vyplňte jméno nebo telefon',
     errorSaving: lang === 'en' ? 'Error saving' : lang === 'sk' ? 'Chyba pri ukladaní' : 'Chyba při ukládání',
     namePlaceholder: lang === 'en' ? 'e.g. Jane Smith' : lang === 'sk' ? 'Napr. Jana Nováková' : 'Např. Jana Nováková',
+    close: lang === 'en' ? 'Close' : lang === 'sk' ? 'Zavrieť' : 'Zavřít',
   }
 
   const fetchClients = async () => {
@@ -145,6 +148,37 @@ export default function ClientsPage() {
     return new Date(d).toLocaleDateString(locale, { day: 'numeric', month: 'short' })
   }
 
+  const getSortedClients = () => {
+    let filtered = [...clients]
+    if (filterSource !== 'all') {
+      filtered = filtered.filter(c => c.source === filterSource)
+    }
+    switch (sortBy) {
+      case 'name_asc':
+        return filtered.sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', locale))
+      case 'name_desc':
+        return filtered.sort((a, b) => (b.full_name || '').localeCompare(a.full_name || '', locale))
+      case 'visits_desc':
+        return filtered.sort((a, b) => b.total_visits - a.total_visits)
+      case 'visits_asc':
+        return filtered.sort((a, b) => a.total_visits - b.total_visits)
+      case 'spent_desc':
+        return filtered.sort((a, b) => b.total_spent - a.total_spent)
+      case 'spent_asc':
+        return filtered.sort((a, b) => a.total_spent - b.total_spent)
+      case 'recent':
+        return filtered.sort((a, b) => new Date(b.last_visit_at || 0).getTime() - new Date(a.last_visit_at || 0).getTime())
+      case 'newest':
+        return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      case 'oldest':
+        return filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      default:
+        return filtered
+    }
+  }
+
+  const sortedClients = getSortedClients()
+
   return (
     <div>
       {/* Header */}
@@ -153,7 +187,7 @@ export default function ClientsPage() {
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Users className="w-7 h-7 text-blue-600" /> {l.title}
           </h1>
-          <p className="mt-1 text-gray-500">{l.subtitle}</p>
+          <p className="mt-1 text-gray-500">{l.subtitle} ({sortedClients.length}/{clients.length})</p>
         </div>
         <button onClick={handleNew}
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm transition-colors">
@@ -161,12 +195,31 @@ export default function ClientsPage() {
         </button>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-        <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white"
-          placeholder={l.search} />
+      {/* Search + Sort + Filter */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white"
+            placeholder={l.search} />
+        </div>
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+          className="px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500">
+          <option value="name_asc">{lang === 'en' ? '↑ Name A-Z' : '↑ Jméno A-Z'}</option>
+          <option value="name_desc">{lang === 'en' ? '↓ Name Z-A' : '↓ Jméno Z-A'}</option>
+          <option value="visits_desc">{lang === 'en' ? '↓ Most visits' : '↓ Nejvíce návštěv'}</option>
+          <option value="visits_asc">{lang === 'en' ? '↑ Least visits' : '↑ Nejméně návštěv'}</option>
+          <option value="spent_desc">{lang === 'en' ? '↓ Most spent' : '↓ Nejvíce utraceno'}</option>
+          <option value="spent_asc">{lang === 'en' ? '↑ Least spent' : '↑ Nejméně utraceno'}</option>
+          <option value="recent">{lang === 'en' ? '↓ Last visit' : '↓ Poslední návštěva'}</option>
+          <option value="newest">{lang === 'en' ? '↓ Newest' : '↓ Nejnovější'}</option>
+          <option value="oldest">{lang === 'en' ? '↑ Oldest' : '↑ Nejstarší'}</option>
+        </select>
+        <select value={filterSource} onChange={e => setFilterSource(e.target.value)}
+          className="px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500">
+          <option value="all">{lang === 'en' ? 'All sources' : 'Všechny zdroje'}</option>
+          {SOURCES.map(s => <option key={s.value} value={s.value}>{s.icon} {s.label}</option>)}
+        </select>
       </div>
 
       {/* Formulář */}
@@ -208,14 +261,14 @@ export default function ClientsPage() {
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="VIP, stálý klient" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.note}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.internalNote}</label>
               <input type="text" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.internalNote} />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={lang === 'en' ? 'Internal note...' : 'Interní poznámka...'} />
             </div>
           </div>
-          <div className="flex gap-3 mt-5 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 mt-5">
             <button onClick={handleSave} disabled={saving}
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm disabled:opacity-50 shadow-sm">
+              className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm disabled:opacity-50">
               {saving ? l.saving : editingId ? l.saveChanges : l.createClient}
             </button>
             <button onClick={() => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM) }}
@@ -290,14 +343,14 @@ export default function ClientsPage() {
       {/* Seznam klientů */}
       {loading ? (
         <div className="text-center py-12 text-gray-400">{l.loading}</div>
-      ) : clients.length === 0 ? (
+      ) : sortedClients.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Users className="w-8 h-8 text-blue-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">{search ? l.noResults : l.noClients}</h3>
-          <p className="mt-1 text-gray-500">{search ? l.tryOther : l.addFirst}</p>
-          {!search && (
+          <h3 className="text-lg font-semibold text-gray-900">{search || filterSource !== 'all' ? l.noResults : l.noClients}</h3>
+          <p className="mt-1 text-gray-500">{search || filterSource !== 'all' ? l.tryOther : l.addFirst}</p>
+          {!search && filterSource === 'all' && (
             <button onClick={handleNew}
               className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm">
               <Plus className="w-4 h-4" /> {l.newClient}
@@ -306,7 +359,7 @@ export default function ClientsPage() {
         </div>
       ) : (
         <div className="space-y-2">
-          {clients.map(client => (
+          {sortedClients.map(client => (
             <div key={client.id} onClick={() => setSelectedClient(client)}
               className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 hover:shadow-sm cursor-pointer transition-all flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0 shadow-sm">
