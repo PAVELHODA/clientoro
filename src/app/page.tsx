@@ -2,72 +2,72 @@
 'use client'
 
 import { useState } from 'react'
-import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, ChevronRight, Shield, Zap, Heart, Star, Check, ArrowRight, CreditCard, Banknote, Gift, Phone, Mail } from 'lucide-react'
+import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote } from 'lucide-react'
 
 const SEGMENTS = [
-  { icon: '💇', title: 'Beauty & hair', desc: 'Hair salons, barbers, nail studios, makeup artists' },
-  { icon: '🧖', title: 'Wellness & massage', desc: 'Massage therapists, lymphatic drainage, spa, sauna' },
-  { icon: '💉', title: 'Aesthetics & cosmetics', desc: 'Cosmeticians, permanent makeup, tattoo, piercing' },
-  { icon: '🏥', title: 'Health & physiotherapy', desc: 'Physiotherapists, chiropractors, osteopaths, speech therapists' },
-  { icon: '🏋️', title: 'Fitness & sport', desc: 'Personal trainers, yoga instructors, ZTV instructors, nutrition coaches' },
-  { icon: '🧠', title: 'Counseling & therapy', desc: 'Psychologists, coaches, therapists, mentors' },
+  { icon: '💇', title: 'Krása & vlasy', desc: 'Kadeřnictví, barber, nehtová studia, vizážistky' },
+  { icon: '🧖', title: 'Wellness & masáže', desc: 'Masérky, lymfodrenáž, spa, sauny' },
+  { icon: '💉', title: 'Estetika & kosmetika', desc: 'Kosmetičky, permanentní make-up, tattoo, piercing' },
+  { icon: '🏥', title: 'Zdraví & fyzioterapie', desc: 'Fyzioterapeuti, chiropraktici, osteopati, logopedi' },
+  { icon: '🏋️', title: 'Fitness & sport', desc: 'Osobní trenéři, instruktoři jógy, ZTV instruktoři, výživoví poradci' },
+  { icon: '🧠', title: 'Poradenství & terapie', desc: 'Psychologové, koučové, terapeuti, mentoři' },
 ]
 
 const FEATURES = [
   {
-    icon: Calendar, color: 'from-blue-500 to-cyan-400', title: 'Smart Booking',
-    items: ['Online booking 24/7', 'Calendar with day/week/month view', 'Deposits & prepayments', 'Automatic reminders', 'No-show tracking'],
+    icon: Calendar, color: 'from-blue-500 to-cyan-400', title: 'Chytrý booking',
+    items: ['Online rezervace 24/7', 'Kalendář s denním/týdenním/měsíčním zobrazením', 'Zálohy a předplatby (volitelné)', 'Automatické připomínky (volitelné)', 'Sledování no-show'],
   },
   {
-    icon: Users, color: 'from-emerald-500 to-teal-400', title: 'Client CRM',
-    items: ['Client cards with full history', 'Sorting & filtering (A-Z, spend, visits)', 'Tags & segments', 'Export CSV / JSON / PDF', 'Birthday greetings & offers'],
+    icon: Users, color: 'from-emerald-500 to-teal-400', title: 'CRM klientů',
+    items: ['Karty klientů s kompletní historií', 'Řazení a filtry (A-Z, útrata, návštěvy)', 'Štítky a segmenty', 'Export CSV / JSON / PDF', 'Narozeninové přání a nabídky (volitelné)'],
   },
   {
-    icon: Brain, color: 'from-amber-500 to-yellow-400', title: 'AI Assistant',
-    items: ['AI Business Coach with real tips', 'Smart Slot Filler (optional)', 'Client reactivation suggestions', 'Revenue insights', 'All AI features ON/OFF — you decide'],
+    icon: Brain, color: 'from-amber-500 to-yellow-400', title: 'AI asistent',
+    items: ['AI Business Coach s reálnými tipy', 'Smart Slot Filler (volitelný)', 'Návrhy na reaktivaci klientů', 'Přehledy tržeb', 'Všechny AI funkce ZAP/VYP — rozhodujete vy'],
   },
   {
-    icon: TrendingUp, color: 'from-rose-500 to-pink-400', title: 'Growth Tools',
-    items: ['Referral program — bring a friend', 'Loyalty points & rewards', 'Discount codes & vouchers', 'QR codes with tracking', 'Gift certificates'],
+    icon: TrendingUp, color: 'from-rose-500 to-pink-400', title: 'Nástroje pro růst',
+    items: ['Referral program — přiveďte kamaráda', 'Věrnostní body a odměny', 'Slevové kódy a vouchery', 'QR kódy s trackingem', 'Dárkové poukazy'],
   },
 ]
 
 const PRICING = [
   {
-    name: 'Solo Start', icon: '🟢', color: 'border-teal-300 bg-teal-50',
-    price: '49', priceAi: '99', desc: 'For solo entrepreneurs',
-    features: ['Calendar + booking link', 'Up to 50 bookings/mo', 'Client CRM (up to 100)', 'Basic reports', 'Birthday SMS'],
+    name: 'OSVČ', icon: '🟢', color: 'border-teal-300 bg-teal-50',
+    price: '49', priceAi: '99', desc: 'Pro podnikatele, kteří pracují sami',
+    features: ['Kalendář + booking link', 'Až 50 rezervací/měsíc', 'CRM klientů (až 100)', 'Základní reporty', 'Narozeninové SMS (volitelné)', 'Platba jen hotově — bez brány ✅'],
     trial: true,
   },
   {
-    name: 'Team Start', icon: '🔵', color: 'border-blue-300 bg-blue-50',
-    price: '299', priceAi: '499', desc: 'For businesses with a team',
-    features: ['Everything from Solo (unlimited)', 'Team management', 'Staff calendar & shifts', 'Per-staff reports', 'Online payments & deposits', 'Up to 3 locations'],
+    name: 'FIRMA', icon: '🔵', color: 'border-blue-300 bg-blue-50',
+    price: '299', priceAi: '499', desc: 'Pro firmy s týmem',
+    features: ['Vše z OSVČ (neomezeně)', 'Správa týmu', 'Kalendář zaměstnanců a směny', 'Reporty per zaměstnanec', 'Online platby a zálohy (volitelné)', 'Až 3 pobočky'],
     trial: false, popular: true,
   },
   {
-    name: 'Solo Inspire', icon: '🏖️', color: 'border-amber-300 bg-amber-50',
-    price: '499', priceAi: '799', desc: 'Solo + AI & growth tools',
-    features: ['Everything from Solo (unlimited)', 'AI Business Coach', 'Campaigns (5/mo)', 'Referral program', 'Loyalty program', 'Smart rebooking', 'Gift vouchers'],
+    name: 'SOLO INSPIRE', icon: '🏖️', color: 'border-amber-300 bg-amber-50',
+    price: '499', priceAi: '799', desc: 'OSVČ + AI a nástroje pro růst',
+    features: ['Vše z OSVČ (neomezeně)', 'AI Business Coach', 'Kampaně (5/měsíc)', 'Referral program', 'Věrnostní program', 'Smart rebooking', 'Dárkové poukazy'],
     trial: false,
   },
   {
-    name: 'Pro Inspire', icon: '🏖️✨', color: 'border-yellow-400 bg-yellow-50',
-    price: '1 299', priceAi: '1 999', desc: 'Team + AI & growth — maximum',
-    features: ['Everything from Team + Solo Inspire', 'AI Copilot (advanced)', 'AI Smart Slot Filler', 'Unlimited campaigns', 'Staff leaderboard', 'Unlimited locations'],
+    name: 'PRO INSPIRE', icon: '🏖️✨', color: 'border-yellow-400 bg-yellow-50',
+    price: '1 299', priceAi: '1 999', desc: 'Firma + AI a nástroje pro růst — maximum',
+    features: ['Vše z FIRMA + SOLO INSPIRE', 'AI Copilot (pokročilý)', 'AI Smart Slot Filler', 'Neomezené kampaně', 'Neomezené pobočky'],
     trial: false,
   },
 ]
 
 const FAQ = [
-  { q: 'Is Clientoro really free to try?', a: 'Yes! 14 days full access, no credit card required. After the trial, you can continue with a free plan (20 bookings/month) or choose a paid plan.' },
-  { q: 'What makes Clientoro different from Reservio or Reenio?', a: 'Clientoro is not just a booking system. It includes AI assistant, growth tools, referral programs, and revenue intelligence. We help you GET more clients, not just manage existing ones.' },
-  { q: 'Can I export data for my accountant?', a: 'Yes! Export clients, bookings, and revenue in CSV, JSON, or PDF format. Compatible with any accounting system.' },
-  { q: 'How do deposits work?', a: 'You choose which services require a deposit, set the percentage, and optionally exempt VIP clients. Deposits dramatically reduce last-minute cancellations.' },
-  { q: 'What is the cash payment bonus?', a: 'You can offer clients a small bonus (discount or loyalty points) for paying in cash. This saves you payment gateway fees and supports the local economy.' },
-  { q: 'Can I turn off AI features?', a: 'Absolutely! Every AI feature has an ON/OFF switch. Nothing happens without your consent. No spam, no unwanted messages to your clients.' },
-  { q: 'Is my data safe?', a: 'Yes. We use Supabase (PostgreSQL) with row-level security, encrypted connections, and GDPR-compliant data handling. You can export or delete your data anytime.' },
-  { q: 'Do I need technical skills?', a: 'Not at all. Our step-by-step guide will have you up and running in 5 minutes. And our support team is always here to help.' },
+  { q: 'Je Clientoro opravdu zdarma k vyzkoušení?', a: 'Ano! 14 dní plný přístup, bez kreditní karty. Po trialu můžete pokračovat s free plánem (20 rezervací/měsíc) nebo si vybrat placený plán.' },
+  { q: 'Čím se Clientoro liší od Reservia nebo Reenia?', a: 'Clientoro není jen rezervační systém. Obsahuje AI asistenta, nástroje pro růst, referral programy a přehledy tržeb. Pomáháme vám ZÍSKÁVAT nové klienty, ne jen spravovat stávající.' },
+  { q: 'Mohu exportovat data pro účetní?', a: 'Ano! Export klientů, rezervací a tržeb v CSV, JSON nebo PDF formátu. Kompatibilní s jakýmkoliv účetním systémem.' },
+  { q: 'Musím mít platební bránu?', a: 'Ne! Můžete fungovat čistě na hotovosti. Online platby přes Stripe Connect jsou volitelné — zapnete jen pokud chcete.' },
+  { q: 'Co je hotovostní bonus?', a: 'Můžete nabídnout klientům malý bonus (slevu nebo věrnostní body) za platbu hotově. Ušetříte na poplatcích za platební bránu a podpoříte českou korunu.' },
+  { q: 'Mohu vypnout AI funkce?', a: 'Rozhodně! Každá AI funkce má přepínač ZAP/VYP. Nic se neděje bez vašeho souhlasu. Žádný spam, žádné nechtěné zprávy vašim klientům.' },
+  { q: 'Jsou moje data v bezpečí?', a: 'Ano. Používáme Supabase (PostgreSQL) s row-level security, šifrovaným připojením a GDPR-kompatibilním zpracováním dat. Data si můžete kdykoliv stáhnout nebo smazat.' },
+  { q: 'Potřebuji technické znalosti?', a: 'Vůbec ne. Náš průvodce krok za krokem vás provede nastavením za 5 minut. A náš tým podpory je tu vždy pro vás.' },
 ]
 
 export default function LandingPage() {
@@ -91,16 +91,16 @@ export default function LandingPage() {
             <span className="text-xl font-bold text-gray-900">Clientoro</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-            <a href="#features" className="hover:text-gray-900">Features</a>
+            <a href="#features" className="hover:text-gray-900">Funkce</a>
             <a href="#ai" className="hover:text-gray-900">AI</a>
-            <a href="#pricing" className="hover:text-gray-900">Pricing</a>
+            <a href="#pricing" className="hover:text-gray-900">Ceník</a>
             <a href="#faq" className="hover:text-gray-900">FAQ</a>
           </div>
           <div className="flex items-center gap-3">
-            <a href="/login" className="text-sm text-gray-600 hover:text-gray-900 font-medium">Sign in</a>
+            <a href="/login" className="text-sm text-gray-600 hover:text-gray-900 font-medium">Přihlásit se</a>
             <a href="/register" className="px-4 py-2 text-sm text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
-              Start free
+              Začít zdarma
             </a>
           </div>
         </div>
@@ -116,26 +116,26 @@ export default function LandingPage() {
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}>
-            <Zap className="w-4 h-4" /> More than a booking system
+            <Zap className="w-4 h-4" /> Více než rezervační systém
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
-            Get more clients.<br />Increase revenue.<br />
-            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>With AI by your side.</span>
+            Získejte více klientů.<br />Zvyšte tržby.<br />
+            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>S AI po vašem boku.</span>
           </h1>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            Booking, CRM & growth platform for service professionals. Honest pricing, no hidden fees, no false promises.
+            Booking, CRM a růstová platforma pro poskytovatele služeb. Férový ceník, žádné skryté poplatky, žádné falešné sliby.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <a href="/register" className="px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
-              Try 14 days free <ArrowRight className="w-5 h-5" />
+              Vyzkoušet 14 dní zdarma <ArrowRight className="w-5 h-5" />
             </a>
             <a href="#calculator" className="px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all"
               style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              How much are you losing? ↓
+              Kolik ztrácíte? ↓
             </a>
           </div>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>No credit card · Cancel anytime · Your data, your control</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>Bez kreditní karty · Zrušení kdykoliv · Vaše data, vaše kontrola</p>
         </div>
       </section>
 
@@ -143,32 +143,32 @@ export default function LandingPage() {
       <section id="calculator" className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">How much are empty slots costing you?</h2>
-            <p className="text-gray-500">Adjust the sliders to see your potential monthly loss</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Kolik vás stojí prázdné sloty?</h2>
+            <p className="text-gray-500">Posuňte posuvníky a uvidíte svou potenciální měsíční ztrátu</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
             <div className="space-y-6">
               <div>
-                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Slots per day</span><span className="font-bold text-gray-900">{calcSlots}</span></div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Slotů za den</span><span className="font-bold text-gray-900">{calcSlots}</span></div>
                 <input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
               <div>
-                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Average service price (CZK)</span><span className="font-bold text-gray-900">{calcPrice} CZK</span></div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Průměrná cena služby</span><span className="font-bold text-gray-900">{calcPrice} Kč</span></div>
                 <input type="range" min={200} max={5000} step={100} value={calcPrice} onChange={e => setCalcPrice(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
               <div>
-                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">No-show / cancellation rate</span><span className="font-bold text-gray-900">{calcNoshow}%</span></div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">No-show / storno rate</span><span className="font-bold text-gray-900">{calcNoshow}%</span></div>
                 <input type="range" min={0} max={40} value={calcNoshow} onChange={e => setCalcNoshow(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
             </div>
             <div className="mt-8 p-6 rounded-xl text-center" style={{ background: 'linear-gradient(135deg, #fef2f2, #fff7ed)' }}>
-              <p className="text-sm text-gray-500 mb-1">You are potentially losing</p>
-              <p className="text-4xl font-bold text-red-600 mb-1">{lostRevenue.toLocaleString('cs-CZ')} CZK / month</p>
-              <p className="text-sm text-gray-400">That is {(lostRevenue * 12).toLocaleString('cs-CZ')} CZK per year</p>
+              <p className="text-sm text-gray-500 mb-1">Potenciálně ztrácíte</p>
+              <p className="text-4xl font-bold text-red-600 mb-1">{lostRevenue.toLocaleString('cs-CZ')} Kč / měsíc</p>
+              <p className="text-sm text-gray-400">To je {(lostRevenue * 12).toLocaleString('cs-CZ')} Kč za rok</p>
             </div>
             <div className="mt-4 p-4 bg-emerald-50 rounded-xl text-center border border-emerald-200">
               <p className="text-sm text-emerald-700">
-                <strong>Deposits + reminders + smart rebooking</strong> help reduce cancellations. Clientoro gives you the tools — results depend on your business.
+                <strong>Zálohy + připomínky + smart rebooking</strong> pomáhají snížit storna. Clientoro vám dá nástroje — výsledky závisí na vašem podnikání.
               </p>
             </div>
           </div>
@@ -179,8 +179,8 @@ export default function LandingPage() {
       <section id="features" className="py-20">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Everything you need to run & grow</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">Four integrated pillars. One platform. No switching between tools.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Vše co potřebujete pro provoz i růst</h2>
+            <p className="text-gray-500 max-w-xl mx-auto">Čtyři propojené pilíře. Jedna platforma. Žádné přepínání mezi nástroji.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {FEATURES.map(f => (
@@ -209,20 +209,20 @@ export default function LandingPage() {
       <section id="ai" className="py-20" style={{ background: 'linear-gradient(180deg, #0a1628, #0c2d48, #0a1e30)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}>
-            <Brain className="w-4 h-4" /> What competitors don't have
+            <Brain className="w-4 h-4" /> Co konkurence nemá
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">AI that actually works for you</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">AI, které opravdu pracuje za vás</h2>
           <p className="text-lg mb-12" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Not a gimmick. Real tools that save time and help grow your business. Every feature has an ON/OFF switch — you are always in control.
+            Žádný gimmick. Reálné nástroje, které šetří čas a pomáhají růst. Každá funkce má přepínač ZAP/VYP — vždy máte kontrolu.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { icon: '🧠', title: 'AI Business Coach', desc: 'Practical tips based on YOUR data. Not generic advice.' },
-              { icon: '📅', title: 'Smart Slot Filler', desc: 'Cancelled booking? Optionally notify interested clients. (You decide!)' },
-              { icon: '🔄', title: 'Client Reactivation', desc: 'Suggests reaching out to clients who haven\'t visited in a while.' },
-              { icon: '📊', title: 'Revenue Insights', desc: 'Understand your best days, services, and team members.' },
-              { icon: '⭐', title: 'Review Booster', desc: 'Optionally ask happy clients for a Google review.' },
-              { icon: '🔮', title: 'Smart Rebooking', desc: '"Book your next visit?" — right after the appointment.' },
+              { icon: '🧠', title: 'AI Business Coach', desc: 'Praktické tipy na základě VAŠICH dat. Ne obecné rady.' },
+              { icon: '📅', title: 'Smart Slot Filler', desc: 'Zrušená rezervace? Volitelně upozorní zájemce. (Rozhodujete vy!)' },
+              { icon: '🔄', title: 'Reaktivace klientů', desc: 'Navrhne oslovit klienty, kteří dlouho nebyli.' },
+              { icon: '📊', title: 'Přehledy tržeb', desc: 'Pochopte své nejlepší dny, služby a členy týmu.' },
+              { icon: '⭐', title: 'Review Booster', desc: 'Volitelně požádá spokojené klienty o Google recenzi.' },
+              { icon: '🔮', title: 'Smart Rebooking', desc: '"Zarezervovat příští návštěvu?" — hned po schůzce.' },
             ].map(ai => (
               <div key={ai.title} className="rounded-xl p-5 text-left" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <span className="text-2xl">{ai.icon}</span>
@@ -234,7 +234,7 @@ export default function LandingPage() {
           <div className="mt-8 p-4 rounded-xl" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.15)' }}>
             <p className="text-sm" style={{ color: '#f59e0b' }}>
               <Shield className="w-4 h-4 inline mr-1" />
-              <strong>Your control, always.</strong> Every AI feature can be turned ON or OFF. Nothing happens without your consent. No spam. No unwanted messages.
+              <strong>Vaše kontrola, vždy.</strong> Každou AI funkci můžete zapnout nebo vypnout. Nic se neděje bez vašeho souhlasu. Žádný spam. Žádné nechtěné zprávy.
             </p>
           </div>
         </div>
@@ -244,18 +244,18 @@ export default function LandingPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Deposits & Cash Bonus</h2>
-            <p className="text-gray-500">Two smart tools that work together. Reduce no-shows AND save on fees.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Zálohy a hotovostní bonus</h2>
+            <p className="text-gray-500">Dva chytré nástroje, které spolupracují. Snižte storna A ušetřete na poplatcích.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white rounded-2xl border border-gray-200 p-6">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-md mb-4">
                 <CreditCard className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Deposits</h3>
-              <p className="text-gray-500 text-sm mb-4">Client pays a small deposit online. Shows up. You keep your revenue.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Zálohy (volitelné)</h3>
+              <p className="text-gray-500 text-sm mb-4">Klient zaplatí malou zálohu online. Dorazí. Vy si udržíte tržby.</p>
               <div className="space-y-2 text-sm">
-                {['Choose which services require deposit', 'Set your own percentage', 'Exempt VIP / loyal clients', 'Refund policy — you decide', 'New clients only option'].map(f => (
+                {['Vyberte u kterých služeb chcete zálohu', 'Nastavte vlastní procento', 'Výjimka pro VIP / stálé klienty', 'Storno podmínky — rozhodujete vy', 'Možnost jen pro nové klienty'].map(f => (
                   <div key={f} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /><span className="text-gray-600">{f}</span></div>
                 ))}
               </div>
@@ -264,10 +264,10 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-md mb-4">
                 <Banknote className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Cash Bonus 🇨🇿</h3>
-              <p className="text-gray-500 text-sm mb-4">Reward clients who pay in cash. Save on gateway fees. Support the local economy.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Hotovostní bonus 🇨🇿</h3>
+              <p className="text-gray-500 text-sm mb-4">Odměňte klienty, kteří platí hotově. Ušetřete na poplatcích. Podpořte českou korunu.</p>
               <div className="space-y-2 text-sm">
-                {['Bonus discount or loyalty points for cash', 'You save 2-3% gateway fees', 'Client feels rewarded', 'Supports Czech koruna in circulation', 'Fully optional — you decide'].map(f => (
+                {['Bonusová sleva nebo věrnostní body za hotovost', 'Ušetříte 2-3% poplatků za bránu', 'Klient se cítí odměněný', 'Podpora české koruny v oběhu', 'Plně volitelné — rozhodujete vy'].map(f => (
                   <div key={f} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /><span className="text-gray-600">{f}</span></div>
                 ))}
               </div>
@@ -280,8 +280,8 @@ export default function LandingPage() {
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Built for service professionals</h2>
-            <p className="text-gray-500">People who work with people. That's who we serve.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Vytvořeno pro poskytovatele služeb</h2>
+            <p className="text-gray-500">Lidé, kteří pracují s lidmi. To je náš svět.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {SEGMENTS.map(s => (
@@ -299,15 +299,15 @@ export default function LandingPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Up and running in 5 minutes</h2>
-            <p className="text-gray-500">Step-by-step guide built into the app. No tech skills needed.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Připraveni za 5 minut</h2>
+            <p className="text-gray-500">Průvodce krok za krokem přímo v aplikaci. Žádné technické znalosti.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { step: '1', title: 'Create account', desc: '30 seconds, no card' },
-              { step: '2', title: 'Add services', desc: 'Name, price, duration' },
-              { step: '3', title: 'Share booking link', desc: 'Clients book online' },
-              { step: '4', title: 'Watch it grow', desc: 'AI helps you improve' },
+              { step: '1', title: 'Vytvořte účet', desc: '30 sekund, bez karty' },
+              { step: '2', title: 'Přidejte služby', desc: 'Název, cena, délka' },
+              { step: '3', title: 'Sdílejte booking link', desc: 'Klienti rezervují online' },
+              { step: '4', title: 'Sledujte růst', desc: 'AI vám pomůže zlepšovat' },
             ].map(s => (
               <div key={s.step} className="bg-white rounded-xl border border-gray-200 p-5 text-center">
                 <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold"
@@ -324,21 +324,21 @@ export default function LandingPage() {
       <section id="pricing" className="py-20">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Honest pricing. No hidden fees.</h2>
-            <p className="text-gray-500">No percentage of your revenue. No surprise charges. What you see is what you pay.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Férový ceník. Žádné skryté poplatky.</h2>
+            <p className="text-gray-500">Žádné procento z vašich tržeb. Žádná překvapení. Co vidíte, to platíte.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {PRICING.map(p => (
               <div key={p.name} className={`rounded-2xl border-2 p-5 relative ${p.color} ${p.popular ? 'ring-2 ring-blue-500' : ''}`}>
-                {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">Most popular</div>}
+                {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">Nejoblíbenější</div>}
                 <div className="text-2xl mb-1">{p.icon}</div>
                 <h3 className="text-lg font-bold text-gray-900">{p.name}</h3>
                 <p className="text-xs text-gray-500 mb-3">{p.desc}</p>
                 <div className="space-y-1 mb-4">
-                  <div className="text-sm"><span className="text-gray-500">Without AI:</span> <strong>{p.price} CZK/mo</strong></div>
-                  <div className="text-sm"><span className="text-gray-500">With AI:</span> <strong>{p.priceAi} CZK/mo</strong></div>
+                  <div className="text-sm"><span className="text-gray-500">Bez AI:</span> <strong>{p.price} Kč/měs</strong></div>
+                  <div className="text-sm"><span className="text-gray-500">S AI:</span> <strong>{p.priceAi} Kč/měs</strong></div>
                 </div>
-                {p.trial && <div className="bg-green-50 rounded-lg px-2 py-1 mb-3 border border-green-200"><p className="text-xs text-green-700 font-medium">🎁 14 days free — full access</p></div>}
+                {p.trial && <div className="bg-green-50 rounded-lg px-2 py-1 mb-3 border border-green-200"><p className="text-xs text-green-700 font-medium">🎁 14 dní zdarma — plný přístup</p></div>}
                 <div className="space-y-1.5">
                   {p.features.map(f => (
                     <div key={f} className="flex items-start gap-1.5 text-xs"><Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" /><span className="text-gray-600">{f}</span></div>
@@ -346,13 +346,13 @@ export default function LandingPage() {
                 </div>
                 <a href="/register" className="block mt-4 py-2.5 text-center rounded-xl font-semibold text-sm transition-all"
                   style={p.popular ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: 'white' } : { background: '#f3f4f6', color: '#374151' }}>
-                  Start free
+                  Začít zdarma
                 </a>
               </div>
             ))}
           </div>
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-400">💡 Use your own OpenAI API key with Inspire plans and save up to 700 CZK/month</p>
+            <p className="text-sm text-gray-400">💡 Použijte vlastní OpenAI API klíč u Inspire plánů a ušetřete až 700 Kč/měsíc</p>
           </div>
         </div>
       </section>
@@ -361,7 +361,7 @@ export default function LandingPage() {
       <section id="faq" className="py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Frequently asked questions</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Často kladené otázky</h2>
           </div>
           <div className="space-y-3">
             {FAQ.map((f, i) => (
@@ -381,14 +381,14 @@ export default function LandingPage() {
       <section className="py-20" style={{ background: 'linear-gradient(180deg, #0a1628, #0c2d48, #0a1e30)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Your clients are <span style={{ color: '#f59e0b' }}>gold</span>.<br />Start treating them that way.
+            Vaši klienti jsou <span style={{ color: '#f59e0b' }}>zlato</span>.<br />Začněte s nimi tak i zacházet.
           </h2>
           <p className="text-lg mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            14 days free. No credit card. No hidden fees. Just honest tools that help you grow.
+            14 dní zdarma. Bez kreditní karty. Žádné skryté poplatky. Jen férové nástroje, které vám pomáhají růst.
           </p>
           <a href="/register" className="inline-flex items-center gap-2 px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
             style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
-            Create free account <ArrowRight className="w-5 h-5" />
+            Vytvořit účet zdarma <ArrowRight className="w-5 h-5" />
           </a>
         </div>
       </section>
@@ -402,29 +402,29 @@ export default function LandingPage() {
                 <Waves className="w-5 h-5" style={{ color: '#f59e0b' }} />
                 <span className="text-white font-bold">Clientoro</span>
               </div>
-              <p className="text-sm max-w-xs">AI-powered Booking & Growth OS for service professionals. Built with honesty and care.</p>
+              <p className="text-sm max-w-xs">AI-powered Booking & Growth OS pro poskytovatele služeb. Postaveno s poctivostí a péčí.</p>
             </div>
             <div className="grid grid-cols-2 gap-8 text-sm">
               <div>
-                <h4 className="text-white font-semibold mb-3">Product</h4>
+                <h4 className="text-white font-semibold mb-3">Produkt</h4>
                 <div className="space-y-2">
-                  <a href="#features" className="block hover:text-white">Features</a>
-                  <a href="#pricing" className="block hover:text-white">Pricing</a>
+                  <a href="#features" className="block hover:text-white">Funkce</a>
+                  <a href="#pricing" className="block hover:text-white">Ceník</a>
                   <a href="#faq" className="block hover:text-white">FAQ</a>
                 </div>
               </div>
               <div>
-                <h4 className="text-white font-semibold mb-3">Company</h4>
+                <h4 className="text-white font-semibold mb-3">Společnost</h4>
                 <div className="space-y-2">
-                  <a href="#" className="block hover:text-white">About</a>
-                  <a href="#" className="block hover:text-white">Contact</a>
-                  <a href="#" className="block hover:text-white">Privacy</a>
+                  <a href="#" className="block hover:text-white">O nás</a>
+                  <a href="#" className="block hover:text-white">Kontakt</a>
+                  <a href="#" className="block hover:text-white">Ochrana soukromí</a>
                 </div>
               </div>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-xs text-gray-500">
-            © 2026 Clientoro. All rights reserved. 🏆 Your clients are gold.
+            © 2026 Clientoro. Všechna práva vyhrazena. 🏆 Vaši klienti jsou zlato.
           </div>
         </div>
       </footer>
