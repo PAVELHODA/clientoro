@@ -1,14 +1,10 @@
+// PATH: src/lib/api/getOrgId.ts
 import { NextRequest } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 /**
  * Získá organization_id z requestu.
- * Pořadí: header X-Org-Id → query param org_id → fallback z DB
+ * Pořadí: header X-Org-Id → query param org_id
+ * BEZ fallbacku — pokud chybí, vrátí null (bezpečné)
  */
 export async function getOrgId(request?: NextRequest): Promise<string | null> {
   // 1. Z headeru
@@ -24,12 +20,8 @@ export async function getOrgId(request?: NextRequest): Promise<string | null> {
     if (queryOrgId) return queryOrgId
   }
 
-  // 3. Fallback — první organizace v DB (pro development)
-  const { data } = await supabase
-    .from('organizations')
-    .select('id')
-    .limit(1)
-    .single()
-
-  return data?.id || null
+  // 3. ŽÁDNÝ FALLBACK — bezpečné
+  // V produkci musí být org_id vždy explicitně předán
+  console.warn('[getOrgId] No org_id found in request — returning null')
+  return null
 }
