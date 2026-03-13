@@ -52,47 +52,68 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex">
+      {/* Left — Deep Ocean + Gold */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
-        style={{ background: 'linear-gradient(180deg, #052e16 0%, #065f46 20%, #059669 40%, #0369a1 65%, #0c4a6e 85%, #1e3a5f 100%)' }}>
-        <div className="absolute top-20 right-20 w-64 h-64 bg-amber-300/20 rounded-full blur-3xl" />
-        <div className="absolute top-32 right-32 w-32 h-32 bg-amber-200/30 rounded-full blur-2xl" />
-        <div className="absolute bottom-0 left-0 right-0 h-32 opacity-10">
+        style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0c2d48 20%, #0e4d64 40%, #0f6b7a 55%, #0e5460 70%, #0c3a50 85%, #0a1e30 100%)' }}>
+
+        {/* Gold glow */}
+        <div className="absolute top-16 right-16 w-72 h-72 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)' }} />
+        <div className="absolute top-24 right-24 w-40 h-40 rounded-full blur-2xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%)' }} />
+
+        {/* Subtle teal glow */}
+        <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full blur-3xl -translate-y-1/2" style={{ background: 'radial-gradient(circle, rgba(14,77,100,0.3) 0%, transparent 70%)' }} />
+
+        {/* Wave */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 opacity-[0.07]">
           <svg viewBox="0 0 1440 100" className="w-full h-full fill-white">
             <path d="M0 40 Q180 0 360 40 Q540 80 720 40 Q900 0 1080 40 Q1260 80 1440 40 L1440 100 L0 100 Z" />
           </svg>
         </div>
+
         <div className="relative z-10 flex flex-col justify-center px-16">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-              <Waves className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-3 mb-10">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center border" style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.25)' }}>
+              <Waves className="w-6 h-6" style={{ color: '#f59e0b' }} />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">Clientoro</h1>
-              <p className="text-white/60 text-sm">Booking & Growth OS</p>
+              <p className="text-sm" style={{ color: 'rgba(245,158,11,0.5)' }}>Booking & Growth OS</p>
             </div>
           </div>
+
           <h2 className="text-4xl font-bold text-white leading-tight mb-4">
-            Start growing<br /><span className="text-amber-300">today.</span>
+            Start growing<br />
+            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>today.</span>
           </h2>
-          <p className="text-white/70 text-lg mb-8 max-w-md">
+
+          <p className="text-lg mb-10 max-w-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
             Create your account in 30 seconds. No credit card. 14 days full access free.
           </p>
-          <div className="space-y-3">
-            {[['✅', 'Complete booking system'], ['✅', 'Client CRM'], ['✅', 'AI assistant & growth tools'], ['✅', 'Dashboard with KPI & reports']].map(([icon, text]) => (
-              <div key={text} className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center"><span className="text-sm">{icon}</span></div>
-                <span className="text-white/80 text-sm">{text}</span>
+
+          <div className="space-y-4">
+            {[
+              ['✅', 'Complete booking system'],
+              ['✅', 'Client CRM'],
+              ['✅', 'AI assistant & growth tools'],
+              ['✅', 'Dashboard with KPI & reports'],
+            ].map(([icon, text], i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <span className="text-sm">{icon}</span>
+                </div>
+                <span className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>{text}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
+      {/* Right — Form */}
       <div className="flex-1 flex items-center justify-center px-6 bg-gray-50">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3"
-              style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
+              style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Clientoro</h1>
@@ -125,14 +146,16 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-2 gap-2">
                   <button type="button" onClick={() => setMode('solo')}
                     className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                      mode === 'solo' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                    }`}>
+                      mode === 'solo' ? 'text-white shadow-md' : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                    }`}
+                    style={mode === 'solo' ? { background: 'linear-gradient(135deg, #0e4d64, #0f6b7a)', borderColor: '#0f6b7a' } : {}}>
                     <User className="w-4 h-4" /> Solo
                   </button>
                   <button type="button" onClick={() => setMode('team')}
                     className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                      mode === 'team' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                    }`}>
+                      mode === 'team' ? 'text-white shadow-md' : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                    }`}
+                    style={mode === 'team' ? { background: 'linear-gradient(135deg, #0c2d48, #0e4d64)', borderColor: '#0e4d64' } : {}}>
                     <Building2 className="w-4 h-4" /> Team
                   </button>
                 </div>
@@ -160,7 +183,7 @@ export default function RegisterPage() {
 
               <button type="submit" disabled={loading}
                 className="w-full py-3 text-white rounded-xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 transition-all hover:shadow-xl"
-                style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
+                style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
@@ -177,7 +200,7 @@ export default function RegisterPage() {
             <div className="mt-5 text-center">
               <p className="text-sm text-gray-400">
                 Already have an account?{' '}
-                <a href="/login" className="text-sky-600 hover:text-sky-800 font-semibold">Sign in</a>
+                <a href="/login" className="font-semibold" style={{ color: '#0f6b7a' }}>Sign in</a>
               </p>
             </div>
           </div>
