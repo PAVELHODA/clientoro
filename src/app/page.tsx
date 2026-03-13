@@ -73,6 +73,7 @@ const FAQ = [
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [calcSlots, setCalcSlots] = useState(4)
+  const [calcDuration, setCalcDuration] = useState(60)
   const [calcPrice, setCalcPrice] = useState(800)
   const [calcNoshow, setCalcNoshow] = useState(15)
 
@@ -140,6 +141,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════ CALCULATOR ═══════════ */}
+            {/* ═══════════ CALCULATOR ═══════════ */}
       <section id="calculator" className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-8">
@@ -153,6 +155,10 @@ export default function LandingPage() {
                 <input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
               <div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Délka slotu</span><span className="font-bold text-gray-900">{calcDuration} min</span></div>
+                <input type="range" min={15} max={180} step={15} value={calcDuration} onChange={e => setCalcDuration(Number(e.target.value))} className="w-full accent-blue-600" />
+              </div>
+              <div>
                 <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Průměrná cena služby</span><span className="font-bold text-gray-900">{calcPrice} Kč</span></div>
                 <input type="range" min={200} max={5000} step={100} value={calcPrice} onChange={e => setCalcPrice(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
@@ -161,7 +167,15 @@ export default function LandingPage() {
                 <input type="range" min={0} max={40} value={calcNoshow} onChange={e => setCalcNoshow(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
             </div>
-            <div className="mt-8 p-6 rounded-xl text-center" style={{ background: 'linear-gradient(135deg, #fef2f2, #fff7ed)' }}>
+            <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div><span className="text-gray-500">Slotů za den:</span> <strong>{calcSlots}× {calcDuration} min</strong></div>
+                <div><span className="text-gray-500">Pracovní den:</span> <strong>{calcSlots * calcDuration} min ({Math.round(calcSlots * calcDuration / 60 * 10) / 10} hod)</strong></div>
+                <div><span className="text-gray-500">Potenciální denní tržba:</span> <strong>{(calcSlots * calcPrice).toLocaleString('cs-CZ')} Kč</strong></div>
+                <div><span className="text-gray-500">Ztracených slotů/den:</span> <strong className="text-red-600">{Math.round(calcSlots * calcNoshow / 100 * 10) / 10}</strong></div>
+              </div>
+            </div>
+            <div className="mt-6 p-6 rounded-xl text-center" style={{ background: 'linear-gradient(135deg, #fef2f2, #fff7ed)' }}>
               <p className="text-sm text-gray-500 mb-1">Potenciálně ztrácíte</p>
               <p className="text-4xl font-bold text-red-600 mb-1">{lostRevenue.toLocaleString('cs-CZ')} Kč / měsíc</p>
               <p className="text-sm text-gray-400">To je {(lostRevenue * 12).toLocaleString('cs-CZ')} Kč za rok</p>
@@ -174,6 +188,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
 
       {/* ═══════════ FEATURES ═══════════ */}
       <section id="features" className="py-20">
