@@ -1,9 +1,9 @@
-// PATH: src/app/(dashboard)/bookings/page.tsx
+﻿// PATH: src/app/(dashboard)/bookings/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
 import { useLang } from '../layout'
-import { ClipboardList, Search, Calendar, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, X, Trash2, ChevronRight, Phone, Mail } from 'lucide-react'
+import { ClipboardList, Search, Calendar, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, X, Trash2, ChevronRight, Phone, Mail, Plus } from 'lucide-react'
 
 interface Booking {
   id: string
@@ -39,7 +39,7 @@ export default function BookingsPage() {
     { value: 'confirmed', label: t('book_confirmed'), color: 'bg-blue-50 text-blue-700 border-blue-200', dot: 'bg-blue-500', icon: CheckCircle },
     { value: 'completed', label: t('book_completed'), color: 'bg-green-50 text-green-700 border-green-200', dot: 'bg-green-500', icon: CheckCircle },
     { value: 'cancelled', label: t('book_cancelled'), color: 'bg-red-50 text-red-700 border-red-200', dot: 'bg-red-500', icon: XCircle },
-    { value: 'pending', label: t('book_pending') !== 'book_pending' ? t('book_pending') : (lang === 'en' ? 'Pending' : lang === 'sk' ? 'Čakajúce' : 'Čekající'), color: 'bg-amber-50 text-amber-700 border-amber-200', dot: 'bg-amber-500', icon: Clock },
+    { value: 'pending', label: t('book_pending') !== 'book_pending' ? t('book_pending') : (lang === 'en' ? 'Pending' : lang === 'sk' ? 'ÄŚakajĂşce' : 'ÄŚekajĂ­cĂ­'), color: 'bg-amber-50 text-amber-700 border-amber-200', dot: 'bg-amber-500', icon: Clock },
     { value: 'no_show', label: t('book_noshow'), color: 'bg-orange-50 text-orange-700 border-orange-200', dot: 'bg-orange-500', icon: AlertTriangle },
   ]
 
@@ -62,7 +62,7 @@ export default function BookingsPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm(lang === 'en' ? 'Delete booking?' : lang === 'sk' ? 'Zmazať rezerváciu?' : 'Smazat rezervaci?')) return
+    if (!confirm(lang === 'en' ? 'Delete booking?' : lang === 'sk' ? 'ZmazaĹĄ rezervĂˇciu?' : 'Smazat rezervaci?')) return
     try { await fetch('/api/bookings/' + id, { method: 'DELETE' }); setSelectedBooking(null); fetchBookings() }
     catch (err) { console.error(err) }
   }
@@ -70,7 +70,7 @@ export default function BookingsPage() {
   const formatDate = (d: string) => new Date(d).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'numeric', year: 'numeric' })
   const formatTime = (d: string) => new Date(d).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
   const getStatus = (s: string) => STATUS_OPTIONS.find(o => o.value === s) || { label: s, color: 'bg-gray-50 text-gray-700 border-gray-200', dot: 'bg-gray-500' }
-  const getName = (b: Booking) => b.clients?.full_name || b.customer_name || (lang === 'en' ? 'Unknown client' : lang === 'sk' ? 'Neznámy klient' : 'Neznámý klient')
+  const getName = (b: Booking) => b.clients?.full_name || b.customer_name || (lang === 'en' ? 'Unknown client' : lang === 'sk' ? 'NeznĂˇmy klient' : 'NeznĂˇmĂ˝ klient')
   const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
 
   const filtered = bookings.filter(b => {
@@ -91,7 +91,7 @@ export default function BookingsPage() {
   // i18n labels
   const labels = {
     title: t('book_title'),
-    subtitle: lang === 'en' ? `All bookings overview (${total} total)` : lang === 'sk' ? `Prehľad všetkých rezervácií (${total} celkom)` : `Přehled všech rezervací (${total} celkem)`,
+    subtitle: lang === 'en' ? `All bookings overview (${total} total)` : lang === 'sk' ? `PrehÄľad vĹˇetkĂ˝ch rezervĂˇciĂ­ (${total} celkom)` : `PĹ™ehled vĹˇech rezervacĂ­ (${total} celkem)`,
     openCalendar: t('book_open_calendar'),
     total: lang === 'en' ? 'Total' : 'Celkem',
     confirmed: t('book_confirmed'),
@@ -100,20 +100,20 @@ export default function BookingsPage() {
     revenue: t('dash_revenue'),
     search: t('book_search'),
     service: t('cal_service'),
-    dateTime: lang === 'en' ? 'Date & time' : lang === 'sk' ? 'Dátum a čas' : 'Datum a čas',
-    specialist: lang === 'en' ? 'Specialist' : lang === 'sk' ? 'Špecialista' : 'Specialista',
+    dateTime: lang === 'en' ? 'Date & time' : lang === 'sk' ? 'DĂˇtum a ÄŤas' : 'Datum a ÄŤas',
+    specialist: lang === 'en' ? 'Specialist' : lang === 'sk' ? 'Ĺ pecialista' : 'Specialista',
     price: t('cal_price'),
     note: t('cal_note'),
     complete: t('cal_complete'),
-    confirm: lang === 'en' ? 'Confirm' : lang === 'sk' ? 'Potvrdiť' : 'Potvrdit',
-    cancel: lang === 'en' ? 'Cancel' : lang === 'sk' ? 'Zrušiť' : 'Zrušit',
+    confirm: lang === 'en' ? 'Confirm' : lang === 'sk' ? 'PotvrdiĹĄ' : 'Potvrdit',
+    cancel: lang === 'en' ? 'Cancel' : lang === 'sk' ? 'ZruĹˇiĹĄ' : 'ZruĹˇit',
     noShow: t('book_noshow'),
     delete: t('cal_delete'),
     noBookings: t('book_no_bookings'),
-    noResults: lang === 'en' ? 'No bookings found' : lang === 'sk' ? 'Žiadne rezervácie nenájdené' : 'Žádné rezervace nenalezeny',
-    changeFilters: lang === 'en' ? 'Try changing filters' : lang === 'sk' ? 'Skúste zmeniť filtre' : 'Zkuste změnit filtry',
-    createFirst: lang === 'en' ? 'Create your first booking in calendar' : lang === 'sk' ? 'Vytvorte prvú rezerváciu v kalendári' : 'Vytvořte první rezervaci v kalendáři',
-    loading: lang === 'en' ? 'Loading bookings...' : lang === 'sk' ? 'Načítavam rezervácie...' : 'Načítám rezervace...',
+    noResults: lang === 'en' ? 'No bookings found' : lang === 'sk' ? 'Ĺ˝iadne rezervĂˇcie nenĂˇjdenĂ©' : 'Ĺ˝ĂˇdnĂ© rezervace nenalezeny',
+    changeFilters: lang === 'en' ? 'Try changing filters' : lang === 'sk' ? 'SkĂşste zmeniĹĄ filtre' : 'Zkuste zmÄ›nit filtry',
+    createFirst: lang === 'en' ? 'Create your first booking in calendar' : lang === 'sk' ? 'Vytvorte prvĂş rezervĂˇciu v kalendĂˇri' : 'VytvoĹ™te prvnĂ­ rezervaci v kalendĂˇĹ™i',
+    loading: lang === 'en' ? 'Loading bookings...' : lang === 'sk' ? 'NaÄŤĂ­tavam rezervĂˇcie...' : 'NaÄŤĂ­tĂˇm rezervace...',
   }
 
   return (
@@ -126,10 +126,18 @@ export default function BookingsPage() {
           </h1>
           <p className="mt-1 text-gray-500">{labels.subtitle}</p>
         </div>
-        <a href="/calendar"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm transition-colors">
-          <Calendar className="w-4 h-4" /> {labels.openCalendar}
-        </a>
+          <div className="flex gap-2">
+           <a href="/calendar"
+             className="inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl font-medium text-sm shadow-lg transition-all hover:shadow-xl"
+             style={{ background: 'linear-gradient(135deg, #059669, #0369a1)' }}>
+             <Plus className="w-4 h-4" /> {lang === 'en' ? 'New booking' : lang === 'sk' ? 'Nová rezervácia' : 'Nová  rezervace'}
+          </a>
+          <a href="/calendar"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 font-medium text-sm transition-colors">
+            <Calendar className="w-4 h-4" /> {labels.openCalendar}
+          </a>
+        </div>
+
       </div>
 
       {/* KPI karty */}
@@ -226,7 +234,7 @@ export default function BookingsPage() {
             <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
               <p className="text-xs text-amber-600 font-medium">{labels.dateTime}</p>
               <p className="font-semibold text-gray-900 mt-1">{formatDate(selectedBooking.start_at)}</p>
-              <p className="text-sm text-gray-600">{formatTime(selectedBooking.start_at)} – {formatTime(selectedBooking.end_at)}</p>
+              <p className="text-sm text-gray-600">{formatTime(selectedBooking.start_at)} â€“ {formatTime(selectedBooking.end_at)}</p>
             </div>
             <div className="bg-purple-50 rounded-xl p-3 border border-purple-100">
               <p className="text-xs text-purple-600 font-medium">{labels.specialist}</p>
@@ -240,7 +248,7 @@ export default function BookingsPage() {
 
           {selectedBooking.note && (
             <div className="bg-amber-50 rounded-xl p-3 mb-4 border border-amber-100">
-              <p className="text-xs text-amber-600 font-medium mb-1">📝 {labels.note}</p>
+              <p className="text-xs text-amber-600 font-medium mb-1">đź“ť {labels.note}</p>
               <p className="text-sm text-gray-700">{selectedBooking.note}</p>
             </div>
           )}
@@ -323,7 +331,7 @@ export default function BookingsPage() {
                 </div>
                 <div className="hidden md:block text-right">
                   <p className="text-sm font-medium text-gray-900">{formatDate(b.start_at)}</p>
-                  <p className="text-xs text-gray-400">{formatTime(b.start_at)} – {formatTime(b.end_at)}</p>
+                  <p className="text-xs text-gray-400">{formatTime(b.start_at)} â€“ {formatTime(b.end_at)}</p>
                 </div>
                 <div className="hidden md:block text-right min-w-[80px]">
                   <p className="text-sm font-bold text-gray-900">{b.price ? `${b.price} ${currency}` : '-'}</p>
@@ -338,3 +346,4 @@ export default function BookingsPage() {
     </div>
   )
 }
+
