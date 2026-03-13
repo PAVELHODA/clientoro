@@ -52,6 +52,7 @@ export default function PublicBookingPage() {
   const [customerNote, setCustomerNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [gdprConsent, setGdprConsent] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,6 +145,8 @@ export default function PublicBookingPage() {
 
   const handleSubmit = async () => {
     if (!customerName.trim() || !customerPhone.trim()) { setSubmitError('Please fill in name and phone'); return }
+    if (!gdprConsent) { setSubmitError('Please agree to the processing of personal data'); return }
+
     setSubmitting(true); setSubmitError('')
     const startDate = new Date(`${selectedDate}T${selectedTime}:00`)
     const endDate = new Date(startDate.getTime() + (selectedService?.duration || 60) * 60000)
@@ -181,7 +184,7 @@ export default function PublicBookingPage() {
   const resetAll = () => {
     setStep('service'); setSelectedService(null); setSelectedStaff(null); setAnyStaff(false)
     setSelectedDate(''); setSelectedTime(''); setCustomerName(''); setCustomerPhone('')
-    setCustomerEmail(''); setCustomerNote(''); setSubmitError('')
+    setCustomerEmail(''); setCustomerNote(''); setSubmitError(''); setGdprConsent(false)
   }
 
   const availableDates = getAvailableDates()
@@ -238,96 +241,87 @@ export default function PublicBookingPage() {
                 <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
                   className="w-full bg-white rounded-xl border border-gray-200 p-4 text-left hover:border-blue-300 hover:shadow-md transition-all group">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-12 rounded-full flex-shrink-0" style={{ backgroundColor: svc.color }} />
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: svc.color || '#3b82f6' }}>
+                      {svc.name.slice(0, 2).toUpperCase()}
+                    </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600">{svc.name}</h3>
-                      {svc.description && <p className="text-sm text-gray-500 mt-0.5 line-clamp-1">{svc.description}</p>}
-                      <div className="flex items-center gap-3 mt-1.5">
-                        <span className="text-xs text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> {svc.duration} min</span>
-                        {svc.price && <span className="text-sm font-bold text-blue-600">{svc.price} CZK</span>}
+                      <p className="font-semibold text-gray-900">{svc.name}</p>
+                      <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {svc.duration} min</span>
+                        {svc.price && <span className="font-medium text-gray-700">{svc.price} CZK</span>}
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500" />
+                    <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
                   </div>
                 </button>
               ))}
-              {services.length === 0 && <div className="bg-white rounded-xl p-8 text-center"><p className="text-gray-500">No available services</p></div>}
             </div>
           </div>
         )}
 
         {step === 'staff' && (
           <div>
-            <button onClick={() => setStep('service')} className="flex items-center gap-1 text-sm text-blue-600 mb-4 hover:text-blue-700">
-              <ChevronLeft className="w-4 h-4" /> Back
-            </button>
-            <h2 className="text-lg font-bold text-gray-900 mb-1">Choose a specialist</h2>
-            <p className="text-sm text-gray-500 mb-4">For service: <strong>{selectedService?.name}</strong></p>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Choose a specialist</h2>
             <button onClick={() => { setSelectedStaff(null); setAnyStaff(true); setSelectedDate(''); setSelectedTime(''); setStep('datetime') }}
-              className="w-full bg-white rounded-xl border border-gray-200 p-4 text-left hover:border-blue-300 hover:shadow-md transition-all mb-3 group">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center"><User className="w-6 h-6 text-gray-400" /></div>
-                <div className="flex-1"><h3 className="font-semibold text-gray-900 group-hover:text-blue-600">Anyone available</h3><p className="text-sm text-gray-500">We will assign a free specialist</p></div>
-                <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500" />
-              </div>
+              className="w-full bg-white rounded-xl border border-gray-200 p-4 text-left hover:border-blue-300 hover:shadow-md transition-all mb-3">
+              <p className="font-semibold text-gray-900">Anyone available</p>
             </button>
             {availableStaff.map(s => (
               <button key={s.id} onClick={() => { setSelectedStaff(s); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('datetime') }}
-                className="w-full bg-white rounded-xl border border-gray-200 p-4 text-left hover:border-blue-300 hover:shadow-md transition-all mb-3 group">
+                className="w-full bg-white rounded-xl border border-gray-200 p-4 text-left hover:border-blue-300 hover:shadow-md transition-all mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center text-white font-bold shadow-sm">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 text-white flex items-center justify-center font-bold text-sm">
                     {s.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                   </div>
-                  <div className="flex-1"><h3 className="font-semibold text-gray-900 group-hover:text-blue-600">{s.full_name}</h3></div>
-                  <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500" />
+                  <p className="font-semibold text-gray-900">{s.full_name}</p>
+                  <ChevronRight className="w-5 h-5 text-gray-300 ml-auto" />
                 </div>
               </button>
             ))}
+            <button onClick={() => setStep('service')} className="mt-3 text-sm text-gray-500 flex items-center gap-1 hover:text-blue-600">
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
           </div>
         )}
 
         {step === 'datetime' && (
           <div>
-            <button onClick={() => setStep('staff')} className="flex items-center gap-1 text-sm text-blue-600 mb-4 hover:text-blue-700">
-              <ChevronLeft className="w-4 h-4" /> Back
-            </button>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Choose date & time</h2>
-            <div className="mb-5">
-              <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1"><Calendar className="w-4 h-4 text-blue-500" /> Date</h3>
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-4">
+              <p className="text-sm font-medium text-gray-700 mb-2">Date</p>
+              <div className="grid grid-cols-3 gap-2">
                 {availableDates.map(d => (
                   <button key={d} onClick={() => { setSelectedDate(d); setSelectedTime('') }}
-                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${selectedDate === d ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-200 text-gray-700 hover:border-blue-300'}`}>
+                    className={`p-2.5 rounded-xl text-sm font-medium border transition-all ${selectedDate === d ? 'bg-blue-600 text-white border-blue-600' : 'bg-white border-gray-200 text-gray-700 hover:border-blue-300'}`}>
                     {formatDate(d)}
                   </button>
                 ))}
               </div>
-              {availableDates.length === 0 && <p className="text-sm text-gray-400 mt-2">No available dates.</p>}
             </div>
             {selectedDate && (
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1"><Clock className="w-4 h-4 text-blue-500" /> Time</h3>
+                <p className="text-sm font-medium text-gray-700 mb-2">Time</p>
                 <div className="grid grid-cols-4 gap-2">
                   {availableSlots.map(t => (
                     <button key={t} onClick={() => { setSelectedTime(t); setStep('contact') }}
-                      className="py-2.5 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50">
+                      className={`p-2.5 rounded-xl text-sm font-medium border transition-all ${selectedTime === t ? 'bg-blue-600 text-white border-blue-600' : 'bg-white border-gray-200 text-gray-700 hover:border-blue-300'}`}>
                       {t}
                     </button>
                   ))}
                 </div>
-                {availableSlots.length === 0 && <p className="text-sm text-gray-400 mt-2">No available times</p>}
+                {availableSlots.length === 0 && <p className="text-sm text-gray-400 text-center py-4">No available slots for this date</p>}
               </div>
             )}
+            <button onClick={() => setStep('staff')} className="mt-4 text-sm text-gray-500 flex items-center gap-1 hover:text-blue-600">
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
           </div>
         )}
 
         {step === 'contact' && (
           <div>
-            <button onClick={() => setStep('datetime')} className="flex items-center gap-1 text-sm text-blue-600 mb-4 hover:text-blue-700">
-              <ChevronLeft className="w-4 h-4" /> Back
-            </button>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Your details</h2>
-            <div className="bg-blue-50 rounded-xl p-4 mb-5 space-y-1.5">
+            <div className="bg-blue-50 rounded-xl p-3 mb-4 space-y-1">
               <div className="flex justify-between text-sm"><span className="text-blue-600">Service:</span><span className="font-medium text-gray-900">{selectedService?.name}</span></div>
               <div className="flex justify-between text-sm"><span className="text-blue-600">Specialist:</span><span className="font-medium text-gray-900">{selectedStaff?.full_name || 'Anyone available'}</span></div>
               <div className="flex justify-between text-sm"><span className="text-blue-600">Date & time:</span><span className="font-medium text-gray-900">{formatDate(selectedDate)} at {selectedTime}</span></div>
@@ -365,10 +359,24 @@ export default function PublicBookingPage() {
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" rows={2} placeholder="Special requests..." />
               </div>
             </div>
+
+            {/* GDPR Consent */}
+            <div className="mt-4 flex items-start gap-3">
+              <input type="checkbox" id="gdpr" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)}
+                className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" />
+              <label htmlFor="gdpr" className="text-xs text-gray-500 cursor-pointer leading-relaxed">
+                I agree to the processing of my personal data (name, phone, email) for the purpose of booking and communication.
+                Data is processed in accordance with <span className="text-blue-600 underline">GDPR</span> and will not be shared with third parties.
+              </label>
+            </div>
+
             {submitError && <p className="mt-3 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{submitError}</p>}
-            <button onClick={handleSubmit} disabled={submitting}
+            <button onClick={handleSubmit} disabled={submitting || !gdprConsent}
               className="w-full mt-5 py-3.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all disabled:opacity-50">
               {submitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Confirm booking'}
+            </button>
+            <button onClick={() => setStep('datetime')} className="w-full mt-2 text-sm text-gray-500 flex items-center justify-center gap-1 hover:text-blue-600">
+              <ChevronLeft className="w-4 h-4" /> Back
             </button>
           </div>
         )}
@@ -379,26 +387,18 @@ export default function PublicBookingPage() {
               <Check className="w-10 h-10 text-emerald-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking confirmed!</h2>
-            <p className="text-gray-500 mb-5">Everything is set. We look forward to seeing you!</p>
-            <div className="bg-white rounded-xl border border-gray-200 p-5 text-left space-y-3 mb-6 shadow-sm">
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Service</span><span className="text-gray-900">{selectedService?.name}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Date & time</span><span className="font-semibold text-gray-900">{formatDate(selectedDate)} at {selectedTime}</span></div>
-              {selectedStaff && <div className="flex justify-between text-sm"><span className="text-gray-500">Specialist</span><span className="text-gray-900">{selectedStaff.full_name}</span></div>}
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Client</span><span className="font-semibold text-gray-900">{customerName}</span></div>
-              {selectedService?.price && <div className="flex justify-between text-sm border-t border-gray-100 pt-3"><span className="text-gray-500">Price</span><span className="text-gray-900">{selectedService.price} CZK</span></div>}
+            <p className="text-gray-500 mb-6">We look forward to seeing you.</p>
+            <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 text-left space-y-2">
+              <div className="flex justify-between text-sm"><span className="text-gray-500">Service:</span><span className="font-medium">{selectedService?.name}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">Date:</span><span className="font-medium">{formatDate(selectedDate)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">Time:</span><span className="font-medium">{selectedTime}</span></div>
+              {selectedStaff && <div className="flex justify-between text-sm"><span className="text-gray-500">Specialist:</span><span className="font-medium">{selectedStaff.full_name}</span></div>}
             </div>
-            <div className="bg-emerald-50 rounded-xl p-4 text-sm text-emerald-700 mb-6 flex items-center gap-2 justify-center">
-              <Check className="w-4 h-4 flex-shrink-0" /> Confirmation sent to {customerPhone}
-            </div>
-            <button onClick={resetAll} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 font-medium">
+            <button onClick={resetAll} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors">
               Book another appointment
             </button>
           </div>
         )}
-      </div>
-
-      <div className="text-center py-4 text-xs text-gray-400">
-        Powered by <span className="font-medium text-gray-500">Clientoro</span>
       </div>
     </div>
   )
