@@ -10,6 +10,7 @@ const SEGMENTS = [
   { icon: '💉', title: 'Estetika & kosmetika', desc: 'Kosmetičky, permanentní make-up, tattoo, piercing' },
   { icon: '🏥', title: 'Zdraví & fyzioterapie', desc: 'Fyzioterapeuti, chiropraktici, osteopati, logopedi' },
   { icon: '🏋️', title: 'Fitness & sport', desc: 'Osobní trenéři, instruktoři jógy, ZTV instruktoři, výživoví poradci' },
+  { icon: '🏋️', title: 'Arte', desc: 'fotografové' },
   { icon: '🧠', title: 'Poradenství & terapie', desc: 'Psychologové, koučové, terapeuti, mentoři' },
 ]
 
@@ -34,7 +35,7 @@ const FEATURES = [
 
 const PRICING = [
   {
-    name: 'OSVČ', icon: '🟢', color: 'border-teal-300 bg-teal-50',
+    name: 'FREELANCER', icon: '🟢', color: 'border-teal-300 bg-teal-50',
     price: '49', priceAi: '99', desc: 'Pro podnikatele, kteří pracují sami',
     features: ['Kalendář + booking link', 'Až 50 rezervací/měsíc', 'CRM klientů (až 100)', 'Základní reporty', 'Narozeninové SMS (volitelné)', 'Platba jen hotově — bez brány ✅'],
     trial: true,
@@ -42,13 +43,13 @@ const PRICING = [
   {
     name: 'FIRMA', icon: '🔵', color: 'border-blue-300 bg-blue-50',
     price: '299', priceAi: '499', desc: 'Pro firmy s týmem',
-    features: ['Vše z OSVČ (neomezeně)', 'Správa týmu', 'Kalendář zaměstnanců a směny', 'Reporty per zaměstnanec', 'Online platby a zálohy (volitelné)', 'Až 3 pobočky'],
+    features: ['Vše z FREELANCER (neomezeně)', 'Správa týmu', 'Kalendář zaměstnanců a směny', 'Reporty per zaměstnanec', 'Online platby a zálohy (volitelné)', 'Až 3 pobočky'],
     trial: false, popular: true,
   },
   {
     name: 'SOLO INSPIRE', icon: '🏖️', color: 'border-amber-300 bg-amber-50',
     price: '499', priceAi: '799', desc: 'OSVČ + AI a nástroje pro růst',
-    features: ['Vše z OSVČ (neomezeně)', 'AI Business Coach', 'Kampaně (5/měsíc)', 'Referral program', 'Věrnostní program', 'Smart rebooking', 'Dárkové poukazy'],
+    features: ['Vše z FREELANCER (neomezeně)', 'AI Business Coach', 'Kampaně (5/měsíc)', 'Referral program', 'Věrnostní program', 'Smart rebooking', 'Dárkové poukazy'],
     trial: false,
   },
   {
@@ -59,16 +60,7 @@ const PRICING = [
   },
 ]
 
-const FAQ = [
-  { q: 'Je Clientoro opravdu zdarma k vyzkoušení?', a: 'Ano! 14 dní plný přístup, bez kreditní karty. Po trialu můžete pokračovat s free plánem (20 rezervací/měsíc) nebo si vybrat placený plán.' },
-  { q: 'Čím se Clientoro liší od Reservia nebo Reenia?', a: 'Clientoro není jen rezervační systém. Obsahuje AI asistenta, nástroje pro růst, referral programy a přehledy tržeb. Pomáháme vám ZÍSKÁVAT nové klienty, ne jen spravovat stávající.' },
-  { q: 'Mohu exportovat data pro účetní?', a: 'Ano! Export klientů, rezervací a tržeb v CSV, JSON nebo PDF formátu. Kompatibilní s jakýmkoliv účetním systémem.' },
-  { q: 'Musím mít platební bránu?', a: 'Ne! Můžete fungovat čistě na hotovosti. Online platby přes Stripe Connect jsou volitelné — zapnete jen pokud chcete.' },
-  { q: 'Co je hotovostní bonus?', a: 'Můžete nabídnout klientům malý bonus (slevu nebo věrnostní body) za platbu hotově. Ušetříte na poplatcích za platební bránu a podpoříte českou korunu.' },
-  { q: 'Mohu vypnout AI funkce?', a: 'Rozhodně! Každá AI funkce má přepínač ZAP/VYP. Nic se neděje bez vašeho souhlasu. Žádný spam, žádné nechtěné zprávy vašim klientům.' },
-  { q: 'Jsou moje data v bezpečí?', a: 'Ano. Používáme Supabase (PostgreSQL) s row-level security, šifrovaným připojením a GDPR-kompatibilním zpracováním dat. Data si můžete kdykoliv stáhnout nebo smazat.' },
-  { q: 'Potřebuji technické znalosti?', a: 'Vůbec ne. Náš průvodce krok za krokem vás provede nastavením za 5 minut. A náš tým podpory je tu vždy pro vás.' },
-]
+
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -120,8 +112,9 @@ export default function LandingPage() {
             <Zap className="w-4 h-4" /> Více než rezervační systém
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
-            Získejte více klientů.<br />Zvyšte tržby.<br />
-            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>S AI po vašem boku.</span>
+            Získávejte s námi více klientů.<br />Uživatelsky chytrý kalendář
+            .<br />
+            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>AI dokáže zvýšit Váš růst.</span>
           </h1>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>
             Booking, CRM a růstová platforma pro poskytovatele služeb. Férový ceník, žádné skryté poplatky, žádné falešné sliby.
@@ -133,7 +126,7 @@ export default function LandingPage() {
             </a>
             <a href="#calculator" className="px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all"
               style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              Kolik ztrácíte? ↓
+              O kolik přicházíte? ↓
             </a>
           </div>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>Bez kreditní karty · Zrušení kdykoliv · Vaše data, vaše kontrola</p>
@@ -145,17 +138,17 @@ export default function LandingPage() {
       <section id="calculator" className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Kolik vás stojí prázdné sloty?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">O kolik přicházíte kvůli prázdným časovým oknům?</h2>
             <p className="text-gray-500">Posuňte posuvníky a uvidíte svou potenciální měsíční ztrátu</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
             <div className="space-y-6">
               <div>
-                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Slotů za den</span><span className="font-bold text-gray-900">{calcSlots}</span></div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Časových oken za den</span><span className="font-bold text-gray-900">{calcSlots}</span></div>
                 <input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
               <div>
-                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Délka slotu</span><span className="font-bold text-gray-900">{calcDuration} min</span></div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Délka časového okna</span><span className="font-bold text-gray-900">{calcDuration} min</span></div>
                 <input type="range" min={15} max={180} step={15} value={calcDuration} onChange={e => setCalcDuration(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
               <div>
@@ -169,14 +162,14 @@ export default function LandingPage() {
             </div>
             <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-gray-500">Slotů za den:</span> <strong>{calcSlots}× {calcDuration} min</strong></div>
+                <div><span className="text-gray-500">Časových oken za den:</span> <strong>{calcSlots}× {calcDuration} min</strong></div>
                 <div><span className="text-gray-500">Pracovní den:</span> <strong>{calcSlots * calcDuration} min ({Math.round(calcSlots * calcDuration / 60 * 10) / 10} hod)</strong></div>
                 <div><span className="text-gray-500">Potenciální denní tržba:</span> <strong>{(calcSlots * calcPrice).toLocaleString('cs-CZ')} Kč</strong></div>
-                <div><span className="text-gray-500">Ztracených slotů/den:</span> <strong className="text-red-600">{Math.round(calcSlots * calcNoshow / 100 * 10) / 10}</strong></div>
+                <div><span className="text-gray-500">Ztracených oken/den:</span> <strong className="text-red-600">{Math.round(calcSlots * calcNoshow / 100 * 10) / 10}</strong></div>
               </div>
             </div>
             <div className="mt-6 p-6 rounded-xl text-center" style={{ background: 'linear-gradient(135deg, #fef2f2, #fff7ed)' }}>
-              <p className="text-sm text-gray-500 mb-1">Potenciálně ztrácíte</p>
+              <p className="text-sm text-gray-500 mb-1">Potenciálně přicházíte o</p>
               <p className="text-4xl font-bold text-red-600 mb-1">{lostRevenue.toLocaleString('cs-CZ')} Kč / měsíc</p>
               <p className="text-sm text-gray-400">To je {(lostRevenue * 12).toLocaleString('cs-CZ')} Kč za rok</p>
             </div>
@@ -446,3 +439,4 @@ export default function LandingPage() {
     </div>
   )
 }
+
