@@ -152,7 +152,7 @@ const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any
 }
 
 // ============================================
-// 💡 Motivational Tips — ON/OFF toggle
+// 💡 Motivational Tips — Slide system + ON/OFF
 // ============================================
 const TIPS: Record<string, string[]> = {
   '/dashboard': [
@@ -200,7 +200,10 @@ const TIPS: Record<string, string[]> = {
 
 function MotivationalTip() {
   const pathname = usePathname()
-  const [tip, setTip] = useState('')
+  const [tipIndex, setTipIndex] = useState(0)
+  const [tips, setTips] = useState<string[]>([])
+  const [fade, setFade] = useState(true)
+  const [paused, setPaused] = useState(false)
   const [enabled, setEnabled] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('clientoro_tips') === 'on'
@@ -216,13 +219,27 @@ function MotivationalTip() {
 
   useEffect(() => {
     const page = Object.keys(TIPS).find(key => pathname === key || pathname?.startsWith(key + '/'))
-    const tips = page ? TIPS[page] : TIPS['/dashboard']
-    if (tips) {
-      setTip(tips[Math.floor(Math.random() * tips.length)])
+    const pageTips = page ? TIPS[page] : TIPS['/dashboard']
+    if (pageTips) {
+      setTips(pageTips)
+      setTipIndex(Math.floor(Math.random() * pageTips.length))
+      setFade(true)
     }
   }, [pathname])
 
-  if (!tip) return null
+  useEffect(() => {
+    if (!enabled || paused || tips.length <= 1) return
+    const interval = setInterval(() => {
+      setFade(false)
+      setTimeout(() => {
+        setTipIndex(prev => (prev + 1) % tips.length)
+        setFade(true)
+      }, 300)
+    }, 8000)
+    return () => clearInterval(interval)
+  }, [enabled, paused, tips])
+
+  if (tips.length === 0) return null
 
   if (!enabled) {
     return (
@@ -236,13 +253,22 @@ function MotivationalTip() {
   }
 
   return (
-    <div className="mb-4 p-4 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border border-amber-200 rounded-xl flex items-center justify-between gap-3">
-      <p className="text-sm text-amber-900 font-bold text-center flex-1">
-        💡 {tip}
+    <div className="mb-4 p-4 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">
+      <p className={`text-sm text-amber-900 font-bold text-center flex-1 transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}`}>
+        💡 {tips[tipIndex] || ''}
       </p>
-      <button onClick={toggleTips} className="text-amber-400 hover:text-amber-600 flex-shrink-0" title="Vypnout tipy">
-        <X className="w-4 h-4" />
-      </button>
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <button onClick={() => setPaused(!paused)}
+          className="w-7 h-7 rounded-lg flex items-center justify-center text-amber-400 hover:text-amber-600 hover:bg-amber-100 transition-all"
+          title={paused ? 'Pokračovat' : 'Pozastavit'}>
+          <span className="text-xs">{paused ? '▶' : '⏸'}</span>
+        </button>
+        <button onClick={toggleTips}
+          className="w-7 h-7 rounded-lg flex items-center justify-center text-amber-400 hover:text-amber-600 hover:bg-amber-100 transition-all"
+          title="Vypnout tipy">
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
     </div>
   )
 }
@@ -295,9 +321,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     )
   }
 
-  // ============================================
-  // 🎨 SIDEBAR CONTENT
-  // ============================================
   const SidebarContent = () => (
     <>
       <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-3xl pointer-events-none" style={{ background: theme.sunGlow }} />
