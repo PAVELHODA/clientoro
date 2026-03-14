@@ -35,7 +35,7 @@ export default function CalendarPage() {
   const { organization } = useAuth()
   const { t, lang } = useLang()
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
-  const currency = t('currency')
+  const currency = 'Kc'
   const isTeam = organization?.mode === 'team'
 
   // Mode theme colors for buttons
@@ -686,7 +686,7 @@ export default function CalendarPage() {
                   const isWknd = isWeekend(day)
                   const count = getBookingsForDate(ds).length
                   return (
-                    <th key={i} className={`p-2 text-center border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50' : isWknd ? 'bg-sky-50/60' : ''} ${isPast ? 'bg-gray-50' : ''}`}>
+                    <th key={i} className={`p-2 text-center border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50' : ''} ${isWknd ? 'bg-sky-50/60' : ''} ${isPast && !isWknd && !isT ? 'bg-gray-50' : ''}`}>
                       <p className={`text-xs font-medium ${isPast ? 'text-gray-400' : 'text-gray-500'}`}>{dayNames[i]}</p>
                       <p className={`text-lg font-bold ${isT ? 'text-blue-600' : isPast ? 'text-gray-400' : 'text-gray-900'}`}>{day.getDate()}</p>
                       {count > 0 && <span className="inline-block mt-0.5 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">{count}</span>}
@@ -708,7 +708,7 @@ export default function CalendarPage() {
                     const slotBookings = getBookingsForSlot(ds, time)
                     const isPast = ds < todayStr
                     return (
-                      <td key={i} className={`p-0.5 align-top border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50/30' : isWknd ? 'bg-sky-50/40' : ''} ${isPast ? 'bg-gray-50/60' : ''}`} style={{ minHeight: '2rem' }}>
+                      <td key={i} className={`p-0.5 align-top border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50/30' : ''} ${isWknd ? 'bg-sky-50/40' : ''} ${isPast && !isWknd && !isT ? 'bg-gray-50/60' : ''}`} style={{ minHeight: '2rem' }}>
                         {slotBookings.length > 0 ? (
                           <div className="space-y-0.5">
                             {slotBookings.filter(b => isBookingStart(ds, time, b)).map(b => (
@@ -720,12 +720,12 @@ export default function CalendarPage() {
                               </button>
                             ))}
                           </div>
-                        ) : isHour ? (
+                        ) : (
                           <button onClick={() => handleSlotClick(ds, time)}
                             className={`w-full h-full min-h-[2rem] rounded transition-all group flex items-center justify-center ${isPast && !backfillMode ? 'hover:bg-gray-100' : 'hover:bg-emerald-50'}`}>
-                            {!isPast && <Plus className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-100" />}
+                            {!isPast && isHour && <Plus className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-100" />}
                           </button>
-                        ) : <div className="min-h-[1.5rem]" />}
+                        )}
                       </td>
                     )
                   })}
@@ -984,7 +984,7 @@ export default function CalendarPage() {
                   )}
                   {showDetail.status !== 'no_show' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'no_show')}
-                      className="px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-100">No-show</button>
+                      className="px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-100">{lang === 'en' ? 'No-show' : 'Nedostavil/a se'}</button>
                   )}
                   {showDetail.status !== 'confirmed' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'confirmed')}
@@ -1000,3 +1000,4 @@ export default function CalendarPage() {
     </div>
   )
 }
+
