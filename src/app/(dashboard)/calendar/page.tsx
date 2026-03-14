@@ -1,13 +1,13 @@
 ﻿// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '../layout'
 import {
   Calendar, ChevronLeft, ChevronRight, Plus,
   X, Loader2, Filter, Sparkles, AlertTriangle,
-  Users, TrendingUp, Clock, DollarSign,
+  Users, Clock, DollarSign,
 } from 'lucide-react'
 
 interface Booking {
@@ -38,6 +38,15 @@ export default function CalendarPage() {
   const currency = t('currency')
   const isTeam = organization?.mode === 'team'
 
+  // Mode theme colors for buttons
+  const modeColors: Record<string, { gradient: string; text: string }> = {
+    solo: { gradient: 'linear-gradient(135deg, #0f766e, #059669)', text: 'white' },
+    team: { gradient: 'linear-gradient(135deg, #0c4a6e, #0369a1)', text: 'white' },
+    solo_inspire: { gradient: 'linear-gradient(135deg, #92400e, #b45309)', text: 'white' },
+    pro_inspire: { gradient: 'linear-gradient(135deg, #78350f, #a16207)', text: 'white' },
+  }
+  const mc = modeColors[organization?.mode || 'team'] || modeColors.team
+
   const [bookings, setBookings] = useState<Booking[]>([])
   const [services, setServices] = useState<Service[]>([])
   const [staffList, setStaffList] = useState<StaffMember[]>([])
@@ -55,7 +64,7 @@ export default function CalendarPage() {
   const [qbNote, setQbNote] = useState('')
   const [qbSaving, setQbSaving] = useState(false)
 
-  // Zpetny zapis — 6 kliku na nadpis aktivuje mod
+  // Zpetny zapis — 6 kliku na nadpis
   const [backfillMode, setBackfillMode] = useState(false)
   const [backfillCount, setBackfillCount] = useState(0)
   const clickCountRef = useRef(0)
@@ -74,6 +83,21 @@ export default function CalendarPage() {
 
   const workStart = organization?.work_start || 8
   const workEnd = organization?.work_end || 17
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement) return
+      if (e.key === 'ArrowLeft') goPrev()
+      if (e.key === 'ArrowRight') goNext()
+      if (e.key === 't' || e.key === 'T') goToday()
+      if (e.key === 'd' || e.key === 'D') setViewMode('day')
+      if (e.key === 'w' || e.key === 'W') setViewMode('week')
+      if (e.key === 'm' || e.key === 'M') setViewMode('month')
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [currentDate, viewMode])
 
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     try {
@@ -131,7 +155,10 @@ export default function CalendarPage() {
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
     backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dovod zpetneho zapisu *' : 'Duvod zpetneho zapisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych slotov! Ponuknite ich s AI' : 'volnych slotu! Nabidnete je s AI',
-    backfillLabel: lang === 'en' ? 'Backfill' : lang === 'sk' ? 'Zpetny zapis' : 'Zpetny zapis',
+    backfillLabel: lang === 'en' ? 'Backfill' : 'Zpetny zapis',
+    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvu sluzbu pre rezervacie' : 'Pridejte prvni sluzbu pro rezervace',
+    emptyStaff: lang === 'en' ? 'Add team members to see staff columns' : lang === 'sk' ? 'Pridajte clenov timu' : 'Pridejte cleny tymu',
+    conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
 
   const toDateStr = (d: Date) => d.toISOString().split('T')[0]
@@ -223,10 +250,13 @@ export default function CalendarPage() {
     return currentDate.toLocaleDateString(locale, { month: 'long', year: 'numeric' })
   }
 
+  // 15min slots
   const timeSlots: string[] = []
   for (let h = workStart; h < workEnd; h++) {
     timeSlots.push(`${String(h).padStart(2, '0')}:00`)
+    timeSlots.push(`${String(h).padStart(2, '0')}:15`)
     timeSlots.push(`${String(h).padStart(2, '0')}:30`)
+    timeSlots.push(`${String(h).padStart(2, '0')}:45`)
   }
 
   const filteredBookings = bookings.filter(b => {
@@ -235,12 +265,12 @@ export default function CalendarPage() {
     return true
   })
 
-  const getBookingsForDateSlot = (date: string, time: string) => {
+  const getBookingsForSlot = (date: string, time: string, staffId?: string) => {
     const slotStart = new Date(`${date}T${time}:00`)
-    const slotEnd = new Date(slotStart.getTime() + 30 * 60000)
+    const slotEnd = new Date(slotStart.getTime() + 15 * 60000)
     return filteredBookings.filter(b => {
-      const bDate = b.start_at.split('T')[0]
-      if (bDate !== date) return false
+      if (b.start_at.split('T')[0] !== date) return false
+      if (staffId && b.staff_id !== staffId) return false
       const bStart = new Date(b.start_at)
       const bEnd = new Date(b.end_at)
       return bStart < slotEnd && bEnd > slotStart
@@ -249,8 +279,7 @@ export default function CalendarPage() {
 
   const isBookingStart = (date: string, time: string, booking: Booking) => {
     const bStart = new Date(booking.start_at)
-    const bDate = booking.start_at.split('T')[0]
-    if (bDate !== date) return false
+    if (booking.start_at.split('T')[0] !== date) return false
     const bTime = `${String(bStart.getHours()).padStart(2, '0')}:${String(bStart.getMinutes()).padStart(2, '0')}`
     return bTime === time
   }
@@ -258,11 +287,22 @@ export default function CalendarPage() {
   const getBookingSlotCount = (booking: Booking) => {
     const start = new Date(booking.start_at)
     const end = new Date(booking.end_at)
-    return Math.ceil((end.getTime() - start.getTime()) / (30 * 60000))
+    return Math.ceil((end.getTime() - start.getTime()) / (15 * 60000))
   }
 
   const getBookingsForDate = (date: string) =>
     filteredBookings.filter(b => b.start_at.split('T')[0] === date)
+
+  const hasConflict = (booking: Booking) => {
+    if (!booking.staff_id) return false
+    return filteredBookings.some(b =>
+      b.id !== booking.id && b.staff_id === booking.staff_id &&
+      new Date(b.start_at) < new Date(booking.end_at) &&
+      new Date(b.end_at) > new Date(booking.start_at)
+    )
+  }
+
+  const isWeekend = (date: Date) => date.getDay() === 0 || date.getDay() === 6
 
   const handleQuickBook = async () => {
     if (!selectedSlot || !qbService || !qbName || !qbPhone) return
@@ -308,7 +348,8 @@ export default function CalendarPage() {
     const totalBookings = rb.length
     const totalRevenue = rb.reduce((s, b) => s + (b.price || 0), 0)
     const days = Math.max(1, Math.ceil((new Date(end).getTime() - new Date(start).getTime()) / (24 * 60 * 60 * 1000)) + 1)
-    const totalSlots = isTeam ? timeSlots.length * Math.max(staffList.length, 1) * days : timeSlots.length * days
+    const slotsPerDay = isTeam ? timeSlots.length * Math.max(staffList.length, 1) : timeSlots.length
+    const totalSlots = slotsPerDay * days
     const usedSlots = new Set(rb.map(b => `${b.start_at.split('T')[0]}-${new Date(b.start_at).getHours()}:${new Date(b.start_at).getMinutes()}-${b.staff_id || 'solo'}`)).size
     const freeSlots = Math.max(totalSlots - usedSlots, 0)
     const workingStaff = isTeam ? new Set(rb.map(b => b.staff_id).filter(Boolean)).size : 0
@@ -335,7 +376,6 @@ export default function CalendarPage() {
       completed: { cs: 'Dokonceno', sk: 'Dokoncena', en: 'Completed' },
       cancelled: { cs: 'Zruseno', sk: 'Zrusena', en: 'Cancelled' },
       no_show: { cs: 'Nedostavil/a se', sk: 'Nedostavil/a sa', en: 'No-show' },
-      rescheduled: { cs: 'Preobjednano', sk: 'Preobjednana', en: 'Rescheduled' },
     }
     return m[status]?.[lang] || status
   }
@@ -345,7 +385,6 @@ export default function CalendarPage() {
     s === 'completed' ? 'text-green-600 bg-green-50' :
     s === 'cancelled' ? 'text-red-600 bg-red-50' :
     s === 'no_show' ? 'text-purple-600 bg-purple-50' :
-    s === 'rescheduled' ? 'text-yellow-600 bg-yellow-50' :
     'text-gray-600 bg-gray-50'
 
   const handleSlotClick = (date: string, time: string) => {
@@ -353,7 +392,7 @@ export default function CalendarPage() {
     const now = new Date()
     const slotTime = new Date(`${date}T${time}:00`)
     const isPast = (date === todayStr && slotTime < now) || isDayPast
-    const slotBookings = getBookingsForDateSlot(date, time)
+    const slotBookings = getBookingsForSlot(date, time)
 
     if (slotBookings.length > 0) {
       setShowSlotBookings({ date, time, bookings: slotBookings })
@@ -367,9 +406,32 @@ export default function CalendarPage() {
     }
   }
 
+  // Current time position for red line
+  const getCurrentTimePosition = () => {
+    const now = new Date()
+    const hours = now.getHours()
+    const minutes = now.getMinutes()
+    if (hours < workStart || hours >= workEnd) return null
+    const totalMinutes = (hours - workStart) * 60 + minutes
+    const totalWorkMinutes = (workEnd - workStart) * 60
+    return (totalMinutes / totalWorkMinutes) * 100
+  }
+
   if (loading) return (
     <div className="flex items-center justify-center py-20">
       <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+    </div>
+  )
+
+  // Empty state
+  if (services.length === 0) return (
+    <div className="text-center py-20">
+      <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+      <h2 className="text-lg font-bold text-gray-900 mb-2">{l.title}</h2>
+      <p className="text-gray-500 mb-4">{l.emptyServices}</p>
+      <a href="/services" className="inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl font-medium" style={{ background: mc.gradient }}>
+        <Plus className="w-4 h-4" /> {l.service}
+      </a>
     </div>
   )
 
@@ -396,7 +458,8 @@ export default function CalendarPage() {
         </div>
         <div>
           <button onClick={() => setSelectedSlot({ date: dateStr >= todayStr ? dateStr : todayStr, time: `${String(Math.min(Math.max(new Date().getHours(), workStart), workEnd - 1)).padStart(2, '0')}:00` })}
-            className="px-4 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm">
+            className="px-4 py-2.5 text-white rounded-xl font-semibold hover:brightness-110 transition-all flex items-center gap-2 shadow-sm"
+            style={{ background: mc.gradient, color: mc.text }}>
             <Plus className="w-4 h-4" /> {l.newBooking}
           </button>
         </div>
@@ -431,13 +494,14 @@ export default function CalendarPage() {
       {/* Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
-          <button onClick={goPrev} className="w-9 h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-50">
+          <button onClick={goPrev} className="w-9 h-9 bg-white border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <button onClick={goToday} className={`px-3 py-1.5 rounded-lg text-sm font-medium border ${dateStr === todayStr ? 'bg-blue-600 text-white border-blue-600' : 'bg-white border-gray-200 hover:bg-gray-50'}`}>
+          <button onClick={goToday} className="px-3 py-1.5 rounded-lg text-sm font-medium border text-white hover:brightness-110"
+            style={{ background: dateStr === todayStr ? mc.gradient : 'white', color: dateStr === todayStr ? mc.text : '#374151', borderColor: dateStr === todayStr ? 'transparent' : '#d1d5db' }}>
             {l.today}
           </button>
-          <button onClick={goNext} className="w-9 h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-50">
+          <button onClick={goNext} className="w-9 h-9 bg-white border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">
             <ChevronRight className="w-4 h-4" />
           </button>
           <h2 className="text-lg font-semibold text-gray-900 ml-2 capitalize">{formatHeader()}</h2>
@@ -455,7 +519,7 @@ export default function CalendarPage() {
             <div className="flex items-center gap-1">
               <Filter className="w-4 h-4 text-gray-400" />
               <select value={filterStaff} onChange={e => setFilterStaff(e.target.value)}
-                className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-white">
+                className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white">
                 <option value="all">{l.all}</option>
                 {staffList.map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
               </select>
@@ -464,53 +528,147 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* DAY VIEW */}
-      {viewMode === 'day' && (
-        <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm">
+      {/* DAY VIEW — SOLO */}
+      {viewMode === 'day' && !isTeam && (
+        <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm relative">
+          {/* Red current time line */}
+          {dateStr === todayStr && getCurrentTimePosition() !== null && (
+            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}%` }}>
+              <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
+              <div className="flex-1 h-0.5 bg-red-500" />
+            </div>
+          )}
           {timeSlots.map(time => {
-            const slotBookings = getBookingsForDateSlot(dateStr, time)
+            const slotBookings = getBookingsForSlot(dateStr, time)
+            const booking = slotBookings[0]
+            const isStart = booking ? isBookingStart(dateStr, time, booking) : false
+            const slotCount = booking ? getBookingSlotCount(booking) : 0
             const isHour = time.endsWith(':00')
+            const isHalf = time.endsWith(':30')
             const now = new Date()
             const slotTime = new Date(`${dateStr}T${time}:00`)
             const isDayPast = dateStr < todayStr
             const isPast = (dateStr === todayStr && slotTime < now) || isDayPast
-            const isNow = dateStr === todayStr && slotTime <= now && new Date(slotTime.getTime() + 30 * 60000) > now
+            const isNow = dateStr === todayStr && slotTime <= now && new Date(slotTime.getTime() + 15 * 60000) > now
+            if (booking && !isStart) return null
             return (
-              <div key={time} className={`flex ${isHour ? 'border-t-2 border-gray-300' : 'border-t border-gray-200'} ${isPast && slotBookings.length === 0 ? 'bg-gray-100/60' : ''} ${isNow ? 'bg-blue-50/40 border-l-4 border-l-blue-500' : ''}`}>
-                <div className={`w-20 flex-shrink-0 py-3 px-3 text-right border-r-2 border-gray-300 ${isHour ? 'text-sm font-bold text-gray-700' : 'text-xs text-gray-400'} ${isPast ? 'opacity-50' : ''}`}>
-                  {time}
+              <div key={time} className={`flex ${isHour ? 'border-t-2 border-gray-400' : isHalf ? 'border-t border-gray-300' : 'border-t border-gray-200/60'} ${isPast && !booking ? 'bg-gray-100/70' : ''} ${isNow ? 'bg-blue-50/40' : ''}`}>
+                <div className={`w-20 flex-shrink-0 py-2 px-3 text-right border-r-2 border-gray-400 ${isHour ? 'text-sm font-bold text-gray-700' : isHalf ? 'text-xs font-medium text-gray-500' : 'text-[10px] text-gray-300'} ${isPast ? 'opacity-50' : ''}`}>
+                  {(isHour || isHalf) ? time : ''}
                   {isNow && <div className="w-2 h-2 bg-red-500 rounded-full inline-block ml-1 animate-pulse" />}
                 </div>
-                <div className="flex-1 min-h-[3rem]">
-                  {slotBookings.length > 0 ? (
-                    <button onClick={() => handleSlotClick(dateStr, time)} className="w-full text-left p-1.5 hover:brightness-95 transition-all">
-                      <div className="space-y-1">
-                        {slotBookings.filter(b => isBookingStart(dateStr, time, b)).map(booking => (
-                          <div key={booking.id} className={`rounded-lg p-2.5 text-white shadow-sm ${isPast ? 'opacity-75' : ''}`}
-                            style={{ backgroundColor: booking.services?.color || '#3b82f6', minHeight: `${getBookingSlotCount(booking) * 3}rem` }}>
-                            <div className="flex items-center justify-between">
-                              <span className="font-semibold text-sm">{booking.services?.name || l.booking}</span>
-                              <span className="text-xs opacity-80">{booking.services?.duration} min</span>
-                            </div>
-                            <p className="text-sm opacity-90 mt-0.5">{booking.clients?.full_name || booking.customer_name || l.client}</p>
-                            {isTeam && booking.staff && <p className="text-xs opacity-75 mt-0.5">{booking.staff.full_name}</p>}
-                            {booking.is_backfill && <span className="inline-block mt-1 px-1.5 py-0.5 bg-amber-200 text-amber-800 rounded text-[10px] font-bold">&#9201; {l.backfillLabel}</span>}
-                            {isPast && <span className={`inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
-                          </div>
-                        ))}
+                <div className="flex-1 min-h-[2rem]">
+                  {booking && isStart ? (
+                    <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-1.5 hover:brightness-95 transition-all ${isPast ? 'opacity-75' : ''}`}
+                      style={{ minHeight: `${slotCount * 2}rem` }}>
+                      <div className={`rounded-lg p-2 h-full text-white shadow-sm ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
+                        style={{ backgroundColor: booking.services?.color || '#3b82f6' }}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-sm">{booking.services?.name || l.booking}</span>
+                          <span className="text-xs opacity-80">{booking.services?.duration} min</span>
+                        </div>
+                        <p className="text-sm opacity-90 mt-0.5">{booking.clients?.full_name || booking.customer_name || l.client}</p>
+                        {booking.is_backfill && <span className="inline-block mt-1 px-1.5 py-0.5 bg-amber-200 text-amber-800 rounded text-[10px] font-bold">&#9201;</span>}
+                        {hasConflict(booking) && <span className="inline-block mt-1 ml-1 px-1.5 py-0.5 bg-red-200 text-red-800 rounded text-[10px] font-bold">{l.conflict}</span>}
+                        {isPast && <span className={`inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
                       </div>
                     </button>
-                  ) : (
+                  ) : !booking ? (
                     <button onClick={() => handleSlotClick(dateStr, time)}
-                      className={`w-full h-full min-h-[3rem] flex items-center px-3 transition-all ${isPast && !backfillMode ? 'hover:bg-gray-200/50 cursor-pointer opacity-40' : isPast && backfillMode ? 'hover:bg-amber-50 cursor-pointer border-l-2 border-l-amber-300' : 'hover:bg-emerald-50 cursor-pointer group'}`}>
-                      {!isPast && <span className="text-xs text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"><Plus className="w-3 h-3" /> {l.newBooking}</span>}
-                      {isPast && backfillMode && <span className="text-xs text-amber-500 opacity-0 hover:opacity-100 transition-opacity flex items-center gap-1"><Plus className="w-3 h-3" /> {l.backfillLabel}</span>}
+                      className={`w-full h-full min-h-[2rem] flex items-center px-3 transition-all ${isPast && !backfillMode ? 'hover:bg-gray-200/50 cursor-pointer opacity-40' : isPast && backfillMode ? 'hover:bg-amber-50 cursor-pointer' : 'hover:bg-emerald-50 cursor-pointer group'}`}>
+                      {!isPast && isHour && <span className="text-xs text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"><Plus className="w-3 h-3" /> {l.newBooking}</span>}
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </div>
             )
           })}
+        </div>
+      )}
+
+      {/* DAY VIEW — TEAM (staff columns) */}
+      {viewMode === 'day' && isTeam && (
+        <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-x-auto shadow-sm relative">
+          {dateStr === todayStr && getCurrentTimePosition() !== null && (
+            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `calc(3rem + ${getCurrentTimePosition()}% * 0.85)` }}>
+              <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
+              <div className="flex-1 h-0.5 bg-red-500" />
+            </div>
+          )}
+          <table className="w-full min-w-[600px]">
+            <thead>
+              <tr className="border-b-2 border-gray-400">
+                <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-400 bg-gray-50"></th>
+                {staffList.map(staff => {
+                  const staffDayBookings = getBookingsForDate(dateStr).filter(b => b.staff_id === staff.id)
+                  const isFiltered = filterStaff === staff.id
+                  return (
+                    <th key={staff.id} className="p-2 text-center border-r border-gray-300 last:border-r-0 bg-gray-50">
+                      <button onClick={() => setFilterStaff(isFiltered ? 'all' : staff.id)}
+                        className={`text-sm font-bold transition-all ${isFiltered ? 'text-blue-600 underline' : 'text-gray-800 hover:text-blue-600'}`}>
+                        {staff.full_name}
+                      </button>
+                      {staffDayBookings.length > 0 && <span className="inline-block ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">{staffDayBookings.length}</span>}
+                    </th>
+                  )
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {timeSlots.map(time => {
+                const isHour = time.endsWith(':00')
+                const isHalf = time.endsWith(':30')
+                const now = new Date()
+                const slotTime = new Date(`${dateStr}T${time}:00`)
+                const isDayPast = dateStr < todayStr
+                const isPast = (dateStr === todayStr && slotTime < now) || isDayPast
+                return (
+                  <tr key={time} className={`${isHour ? 'border-t-2 border-gray-400' : isHalf ? 'border-t border-gray-300' : 'border-t border-gray-200/60'}`}>
+                    <td className={`w-20 py-1.5 px-2 text-right border-r-2 border-gray-400 bg-gray-50 ${isHour ? 'text-sm font-bold text-gray-700' : isHalf ? 'text-xs font-medium text-gray-500' : 'text-[10px] text-gray-300'} ${isPast ? 'opacity-50' : ''}`}>
+                      {(isHour || isHalf) ? time : ''}
+                    </td>
+                    {staffList.map(staff => {
+                      const slotBookings = getBookingsForSlot(dateStr, time, staff.id)
+                      const booking = slotBookings[0]
+                      const isStart = booking ? isBookingStart(dateStr, time, booking) : false
+                      const slotCount = booking ? getBookingSlotCount(booking) : 0
+                      if (booking && !isStart) return <td key={staff.id} className="border-r border-gray-300 last:border-r-0" />
+                      return (
+                        <td key={staff.id} className={`p-0.5 border-r border-gray-300 last:border-r-0 ${isPast ? 'bg-gray-50/70' : ''}`}>
+                          {booking && isStart ? (
+                            <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-1 hover:brightness-95 transition-all ${isPast ? 'opacity-75' : ''}`}
+                              style={{ minHeight: `${slotCount * 2}rem` }}>
+                              <div className={`rounded-md p-1.5 h-full text-white text-xs shadow-sm ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
+                                style={{ backgroundColor: booking.services?.color || '#3b82f6' }}>
+                                <p className="font-semibold truncate">{booking.services?.name}</p>
+                                <p className="opacity-80 truncate">{booking.clients?.full_name || booking.customer_name}</p>
+                                {booking.is_backfill && <span className="text-[9px] bg-amber-200 text-amber-800 px-1 rounded">&#9201;</span>}
+                                {isPast && <span className={`inline-block mt-0.5 px-1 py-0.5 rounded text-[10px] font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
+                              </div>
+                            </button>
+                          ) : !booking ? (
+                            <button onClick={() => { setQbStaff(staff.id); handleSlotClick(dateStr, time) }}
+                              className={`w-full h-full min-h-[2rem] rounded transition-all group flex items-center justify-center ${isPast && !backfillMode ? 'hover:bg-gray-100' : isPast && backfillMode ? 'hover:bg-amber-50' : 'hover:bg-emerald-50'}`}>
+                              {!isPast && isHour && <Plus className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-100" />}
+                            </button>
+                          ) : null}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+          {staffList.length === 0 && (
+            <div className="text-center py-12">
+              <Users className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 mb-3">{l.emptyStaff}</p>
+              <a href="/staff" className="inline-flex items-center gap-2 px-4 py-2 text-white rounded-lg text-sm font-medium" style={{ background: mc.gradient }}>
+                <Plus className="w-4 h-4" /> {l.specialist}
+              </a>
+            </div>
+          )}
         </div>
       )}
 
@@ -519,15 +677,16 @@ export default function CalendarPage() {
         <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-x-auto shadow-sm">
           <table className="w-full min-w-[700px]">
             <thead>
-              <tr className="border-b-2 border-gray-300">
-                <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-300"></th>
+              <tr className="border-b-2 border-gray-400">
+                <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-400 bg-gray-50"></th>
                 {getWeekDays().map((day, i) => {
                   const ds = toDateStr(day)
                   const isT = ds === todayStr
                   const isPast = ds < todayStr
+                  const isWknd = isWeekend(day)
                   const count = getBookingsForDate(ds).length
                   return (
-                    <th key={i} className={`p-2 text-center border-r border-gray-200 last:border-r-0 ${isT ? 'bg-blue-50' : ''} ${isPast ? 'bg-gray-50' : ''}`}>
+                    <th key={i} className={`p-2 text-center border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50' : isWknd ? 'bg-sky-50/60' : ''} ${isPast ? 'bg-gray-50' : ''}`}>
                       <p className={`text-xs font-medium ${isPast ? 'text-gray-400' : 'text-gray-500'}`}>{dayNames[i]}</p>
                       <p className={`text-lg font-bold ${isT ? 'text-blue-600' : isPast ? 'text-gray-400' : 'text-gray-900'}`}>{day.getDate()}</p>
                       {count > 0 && <span className="inline-block mt-0.5 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">{count}</span>}
@@ -537,44 +696,41 @@ export default function CalendarPage() {
               </tr>
             </thead>
             <tbody>
-              {timeSlots.filter(t => t.endsWith(':00')).map(time => (
-                <tr key={time} className="border-t border-gray-200">
-                  <td className="p-1.5 text-right text-xs font-bold text-gray-600 align-top pt-2 border-r-2 border-gray-300">{time}</td>
+              {timeSlots.filter(t => t.endsWith(':00') || t.endsWith(':30')).map(time => {
+                const isHour = time.endsWith(':00')
+                return (
+                <tr key={time} className={`${isHour ? 'border-t-2 border-gray-300' : 'border-t border-gray-200'}`}>
+                  <td className={`p-1 text-right border-r-2 border-gray-400 bg-gray-50 align-top pt-1.5 ${isHour ? 'text-xs font-bold text-gray-600' : 'text-[10px] text-gray-400'}`}>{isHour ? time : ''}</td>
                   {getWeekDays().map((day, i) => {
                     const ds = toDateStr(day)
                     const isT = ds === todayStr
-                    const bookingsHour = getBookingsForDateSlot(ds, time)
-                    const bookingsHalf = getBookingsForDateSlot(ds, time.replace(':00', ':30'))
-                    const allBookings = [...new Map([...bookingsHour, ...bookingsHalf].map(b => [b.id, b])).values()]
+                    const isWknd = isWeekend(day)
+                    const slotBookings = getBookingsForSlot(ds, time)
                     const isPast = ds < todayStr
                     return (
-                      <td key={i} className={`p-0.5 align-top border-r border-gray-200 last:border-r-0 ${isT ? 'bg-blue-50/30' : ''} ${isPast ? 'bg-gray-50/70' : ''}`} style={{ minHeight: '3.5rem' }}>
-                        {allBookings.length > 0 ? (
+                      <td key={i} className={`p-0.5 align-top border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50/30' : isWknd ? 'bg-sky-50/40' : ''} ${isPast ? 'bg-gray-50/60' : ''}`} style={{ minHeight: '2rem' }}>
+                        {slotBookings.length > 0 ? (
                           <div className="space-y-0.5">
-                            {allBookings.map(b => (
+                            {slotBookings.filter(b => isBookingStart(ds, time, b)).map(b => (
                               <button key={b.id} onClick={() => setShowDetail(b)}
-                                className={`w-full text-left rounded-md p-1.5 text-white text-xs hover:brightness-90 transition-all ${isPast ? 'opacity-70' : ''}`}
+                                className={`w-full text-left rounded-md p-1 text-white text-[11px] hover:brightness-90 transition-all ${isPast ? 'opacity-70' : ''} ${hasConflict(b) ? 'ring-2 ring-red-500' : ''}`}
                                 style={{ backgroundColor: b.services?.color || '#3b82f6' }}>
                                 <p className="font-semibold truncate">{b.services?.name}</p>
                                 <p className="opacity-80 truncate">{b.clients?.full_name || b.customer_name}</p>
-                                {isTeam && b.staff && <p className="opacity-60 truncate text-[10px]">{b.staff.full_name}</p>}
-                                {b.is_backfill && <span className="text-[9px] bg-amber-200 text-amber-800 px-1 rounded">&#9201;</span>}
-                                {isPast && <span className={`inline-block mt-0.5 px-1 py-0.5 rounded text-[10px] font-medium ${statusColor(b.status)}`}>{statusLabel(b.status)}</span>}
                               </button>
                             ))}
                           </div>
-                        ) : (
+                        ) : isHour ? (
                           <button onClick={() => handleSlotClick(ds, time)}
-                            className={`w-full h-full min-h-[3.5rem] rounded-md transition-all group flex items-center justify-center ${isPast && !backfillMode ? 'hover:bg-gray-100' : isPast && backfillMode ? 'hover:bg-amber-50' : 'hover:bg-emerald-50'}`}>
+                            className={`w-full h-full min-h-[2rem] rounded transition-all group flex items-center justify-center ${isPast && !backfillMode ? 'hover:bg-gray-100' : 'hover:bg-emerald-50'}`}>
                             {!isPast && <Plus className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-100" />}
-                            {isPast && backfillMode && <Plus className="w-3 h-3 text-amber-400 opacity-0 group-hover:opacity-100" />}
                           </button>
-                        )}
+                        ) : <div className="min-h-[1.5rem]" />}
                       </td>
                     )
                   })}
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>
@@ -583,9 +739,9 @@ export default function CalendarPage() {
       {/* MONTH VIEW */}
       {viewMode === 'month' && (
         <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm">
-          <div className="grid grid-cols-7 border-b-2 border-gray-300">
-            {dayNames.map(d => (
-              <div key={d} className="p-2 text-center text-xs font-bold text-gray-600 border-r border-gray-200 last:border-r-0">{d}</div>
+          <div className="grid grid-cols-7 border-b-2 border-gray-400">
+            {dayNames.map((d, i) => (
+              <div key={d} className={`p-2 text-center text-xs font-bold text-gray-600 border-r border-gray-300 last:border-r-0 ${i >= 5 ? 'bg-sky-50/60' : ''}`}>{d}</div>
             ))}
           </div>
           <div className="grid grid-cols-7">
@@ -594,11 +750,12 @@ export default function CalendarPage() {
               const isCurrentMonth = day.getMonth() === currentDate.getMonth()
               const isT = ds === todayStr
               const isPast = ds < todayStr
+              const isWknd = isWeekend(day)
               const dayB = getBookingsForDate(ds)
               const revenue = dayB.reduce((s, b) => s + (b.price || 0), 0)
               return (
                 <button key={i} onClick={() => { setCurrentDate(day); setViewMode('day') }}
-                  className={`p-2 min-h-[5rem] border-b border-r border-gray-200 text-left hover:bg-gray-50 transition-all ${!isCurrentMonth ? 'opacity-30' : ''} ${isT ? 'bg-blue-50 border-blue-200' : ''} ${isPast && isCurrentMonth ? 'bg-gray-50/70' : ''}`}>
+                  className={`p-2 min-h-[5rem] border-b border-r border-gray-300 text-left hover:bg-gray-50 transition-all ${!isCurrentMonth ? 'opacity-30' : ''} ${isT ? 'bg-blue-50 border-blue-300' : ''} ${isWknd && isCurrentMonth ? 'bg-sky-50/40' : ''} ${isPast && isCurrentMonth && !isT ? 'bg-gray-50/60' : ''}`}>
                   <p className={`text-sm font-bold ${isT ? 'text-blue-600' : isPast ? 'text-gray-400' : 'text-gray-900'}`}>{day.getDate()}</p>
                   {dayB.length > 0 && (
                     <div className="mt-1">
@@ -642,10 +799,11 @@ export default function CalendarPage() {
             </div>
             <div>
               <p className="text-sm font-semibold text-gray-900">{currentStats.freeSlots} {l.freeSlotsBanner}</p>
-              <p className="text-xs text-gray-500">{lang === 'en' ? 'Upgrade to Inspire plan for AI-powered slot filling' : lang === 'sk' ? 'Prejdite na Inspire plan pre AI zaplnenie slotov' : 'Prejdete na Inspire plan pro AI zaplneni slotu'}</p>
+              <p className="text-xs text-gray-500">{lang === 'en' ? 'Upgrade to Inspire plan for AI-powered slot filling' : 'Prejdete na Inspire plan pro AI zaplneni slotu'}</p>
             </div>
           </div>
-          <button className="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-all flex items-center gap-1.5">
+          <button className="px-4 py-2 text-white rounded-lg text-sm font-medium hover:brightness-110 transition-all flex items-center gap-1.5"
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}>
             <Sparkles className="w-3.5 h-3.5" /> {lang === 'en' ? 'Try AI' : 'Zkusit AI'}
           </button>
         </div>
@@ -659,7 +817,6 @@ export default function CalendarPage() {
               <h3 className="text-lg font-bold text-gray-900">{l.newBooking}</h3>
               <button onClick={() => setSelectedSlot(null)} className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200"><X className="w-4 h-4" /></button>
             </div>
-            {/* Backfill warning */}
             {(() => {
               const isDayPast = selectedSlot.date < todayStr
               const slotTime = new Date(`${selectedSlot.date}T${selectedSlot.time}:00`)
@@ -679,7 +836,7 @@ export default function CalendarPage() {
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.service} *</label>
-                <select value={qbService} onChange={e => setQbService(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm">
+                <select value={qbService} onChange={e => setQbService(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-service" name="qb-service">
                   <option value="">{l.select}</option>
                   {services.map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min - {s.price} {currency})</option>)}
                 </select>
@@ -687,7 +844,7 @@ export default function CalendarPage() {
               {isTeam && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{l.specialist}</label>
-                  <select value={qbStaff} onChange={e => setQbStaff(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm">
+                  <select value={qbStaff} onChange={e => setQbStaff(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-staff" name="qb-staff">
                     <option value="">{l.anyone}</option>
                     {staffList.map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
                   </select>
@@ -695,13 +852,12 @@ export default function CalendarPage() {
               )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.clientName}</label>
-                <input type="text" value={qbName} onChange={e => setQbName(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Jan Novak" />
+                <input type="text" id="qb-name" name="qb-name" value={qbName} onChange={e => setQbName(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Jan Novak" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.phone}</label>
-                <input type="tel" value={qbPhone} onChange={e => setQbPhone(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="+420 777 123 456" />
+                <input type="tel" id="qb-phone" name="qb-phone" value={qbPhone} onChange={e => setQbPhone(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="+420 777 123 456" />
               </div>
-              {/* Backfill note — only when adding to past */}
               {(() => {
                 const isDayPast = selectedSlot.date < todayStr
                 const slotTime = new Date(`${selectedSlot.date}T${selectedSlot.time}:00`)
@@ -709,9 +865,9 @@ export default function CalendarPage() {
                 return isPast && backfillMode ? (
                   <div>
                     <label className="block text-sm font-medium text-amber-700 mb-1">{l.backfillNote}</label>
-                    <input type="text" value={qbNote} onChange={e => setQbNote(e.target.value)}
-                      className="w-full px-3 py-2.5 border-2 border-amber-300 rounded-xl text-sm bg-amber-50 focus:ring-2 focus:ring-amber-400"
-                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month, adding history' : 'napr. Klient nastoupil v pulce mesice, doplnuji historii'} />
+                    <input type="text" id="qb-note" name="qb-note" value={qbNote} onChange={e => setQbNote(e.target.value)}
+                      className="w-full px-3 py-2.5 border-2 border-amber-300 rounded-xl text-sm bg-amber-50"
+                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'napr. Klient nastoupil v pulce mesice'} />
                   </div>
                 ) : null
               })()}
@@ -722,14 +878,15 @@ export default function CalendarPage() {
               const isPast = (selectedSlot.date === todayStr && slotTime < new Date()) || isDayPast
               return isPast && backfillMode && !qbNote
             })())}
-              className="w-full mt-4 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50">
+              className="w-full mt-4 py-3 text-white rounded-xl font-semibold hover:brightness-110 disabled:opacity-50 transition-all"
+              style={{ background: mc.gradient, color: mc.text }}>
               {qbSaving ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : l.createBooking}
             </button>
           </div>
         </div>
       )}
 
-      {/* Slot bookings modal — shows ALL bookings in a slot */}
+      {/* Slot bookings modal */}
       {showSlotBookings && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[80vh] overflow-y-auto">
@@ -755,25 +912,26 @@ export default function CalendarPage() {
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(b.status)}`}>{statusLabel(b.status)}</span>
                     </div>
                     <p className="text-sm text-gray-600">{b.clients?.full_name || b.customer_name || l.unknown}</p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <p className="text-xs text-gray-400">
                         {new Date(b.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} - {new Date(b.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
                         {b.price ? ` | ${b.price} ${currency}` : ''}
                       </p>
                       {isTeam && b.staff && <span className="text-xs text-violet-600 bg-violet-50 px-1.5 py-0.5 rounded">{b.staff.full_name}</span>}
                       {b.is_backfill && <span className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">&#9201; {l.backfillLabel}</span>}
+                      {hasConflict(b) && <span className="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded">{l.conflict}</span>}
                     </div>
                   </button>
                 ))}
               </div>
             )}
-            {/* Add new booking button in slot modal */}
             {(() => {
               const isDayPast = showSlotBookings.date < todayStr
               const canAdd = !isDayPast || backfillMode
               return canAdd ? (
                 <button onClick={() => { const d = showSlotBookings.date; const t = showSlotBookings.time || `${String(workStart).padStart(2, '0')}:00`; setShowSlotBookings(null); setSelectedSlot({ date: d, time: t }) }}
-                  className="w-full mt-3 py-2.5 bg-emerald-50 text-emerald-700 rounded-xl font-medium hover:bg-emerald-100 flex items-center justify-center gap-2 border border-emerald-200">
+                  className="w-full mt-3 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 border-2 hover:brightness-110 transition-all"
+                  style={{ background: mc.gradient, color: mc.text }}>
                   <Plus className="w-4 h-4" /> {l.newBooking}
                 </button>
               ) : null
@@ -807,7 +965,10 @@ export default function CalendarPage() {
                 {showDetail.price && <div className="flex justify-between"><span className="text-gray-500">{l.price}</span><span className="font-medium">{showDetail.price} {currency}</span></div>}
                 <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium px-2 py-0.5 rounded-full text-xs ${statusColor(showDetail.status)}`}>{statusLabel(showDetail.status)}</span></div>
                 {showDetail.is_backfill && (
-                  <div className="flex justify-between"><span className="text-gray-500">{l.backfillLabel}</span><span className="font-medium text-amber-600 px-2 py-0.5 bg-amber-50 rounded-full text-xs">&#9201; {lang === 'en' ? 'Yes' : 'Ano'}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">{l.backfillLabel}</span><span className="font-medium text-amber-600 px-2 py-0.5 bg-amber-50 rounded-full text-xs">&#9201;</span></div>
+                )}
+                {hasConflict(showDetail) && (
+                  <div className="flex justify-between"><span className="text-gray-500">{l.conflict}</span><span className="font-medium text-red-600 px-2 py-0.5 bg-red-50 rounded-full text-xs">{l.conflict}</span></div>
                 )}
               </div>
               <div className="pt-2">
