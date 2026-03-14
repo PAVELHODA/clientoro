@@ -28,13 +28,16 @@ export async function POST(request: NextRequest) {
     const userId = authData.user.id
     const slug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
-    // 2. Vytvor profil
-    await supabaseAdmin.from('profiles').insert({
+    // 2. Vytvor profil (name, NE full_name; BEZ role)
+    const { error: profileError } = await supabaseAdmin.from('profiles').insert({
       auth_user_id: userId,
       email,
-      full_name: businessName,
-      role: 'owner',
+      name: businessName,
     })
+
+    if (profileError) {
+      console.error('Profile insert error:', profileError)
+    }
 
     // 3. Vytvor organizaci
     const { data: orgData, error: orgError } = await supabaseAdmin.from('organizations').insert({
@@ -51,6 +54,7 @@ export async function POST(request: NextRequest) {
     }).select().single()
 
     if (orgError) {
+      console.error('Org insert error:', orgError)
       return NextResponse.json({ error: 'Account created but org failed: ' + orgError.message }, { status: 500 })
     }
 
@@ -63,11 +67,17 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (profileData) {
-        await supabaseAdmin.from('memberships').insert({
+        const { error: memberError } = await supabaseAdmin.from('memberships').insert({
           user_id: profileData.id,
           organization_id: orgData.id,
           role: 'owner',
         })
+
+        if (memberError) {
+          console.error('Membership insert error:', memberError)
+        }
+      } else {
+        console.error('Profile not found for membership creation')
       }
     }
 
