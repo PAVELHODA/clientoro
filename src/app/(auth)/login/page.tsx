@@ -55,21 +55,21 @@ export default function LoginPage() {
           </div>
 
           <h2 className="text-4xl font-bold text-white leading-tight mb-4">
-            Získávejte více klientů.<br />
-            Zvyšujte si tržby.<br />
-            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>S AI po Vašem boku.</span>
+            {"Z\u00edsk\u00e1vejte v\u00edce klient\u016f."}<br />
+            {"Pln\u00fd kalend\u00e1\u0159. Spokojen\u00ed klienti."}<br />
+            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>{"S AI po Va\u0161em boku."}</span>
           </h2>
 
           <p className="text-lg mb-10 max-w-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Rezervační systém s AI, který vám pomůže růst. Žádné ztracené leady, žádná prázdná časová okna.
+            {"Rezerva\u010dn\u00ed syst\u00e9m s AI, kter\u00fd v\u00e1m pom\u016f\u017ee r\u016fst. \u017d\u00e1dn\u00e9 ztracen\u00e9 leady, \u017e\u00e1dn\u00e1 pr\u00e1zdn\u00e1 \u010dasov\u00e1 okna."}
           </p>
 
           <div className="space-y-3">
             {[
-              '📅 Online booking 24/7',
-              '🤖 AI asistent pro růst',
-              '📊 Přehledy tržeb & KPI',
-              '🏆 Vaši klienti jsou zlato',
+              '\ud83d\udcc5 Online booking 24/7',
+              '\ud83e\udd16 AI asistent pro r\u016fst',
+              '\ud83d\udcca P\u0159ehledy tr\u017eeb & KPI',
+              '\ud83c\udfc6 Va\u0161i klienti jsou zlato',
             ].map((text, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -97,12 +97,12 @@ export default function LoginPage() {
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">Přihlášení</h2>
-            <p className="text-sm text-gray-400 mb-6">Vítejte zpět! Přihlaste se do svého účtu.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">{"\u0050\u0159ihl\u00e1\u0161en\u00ed"}</h2>
+            <p className="text-sm text-gray-400 mb-6">{"\u0056\u00edtejte zp\u011bt! P\u0159ihlaste se do sv\u00e9ho \u00fa\u010dtu."}</p>
 
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-center gap-2">
-                ⚠️ {error}
+                {"\u26a0\ufe0f"} {error}
               </div>
             )}
 
@@ -122,7 +122,7 @@ export default function LoginPage() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="password" value={password} onChange={e => setPassword(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
-                    placeholder="Vaše heslo" required />
+                    placeholder={"Va\u0161e heslo"} required />
                 </div>
               </div>
               <button type="submit" disabled={loading}
@@ -131,20 +131,20 @@ export default function LoginPage() {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                    Přihlašuji...
+                    {"\u0050\u0159ihla\u0161uji..."}
                   </span>
-                ) : (<>Přihlásit se <ArrowRight className="w-4 h-4" /></>)}
+                ) : (<>{"\u0050\u0159ihl\u00e1sit se"} <ArrowRight className="w-4 h-4" /></>)}
               </button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-400">
-                Nemáte účet?{' '}
-                <a href="/register" className="font-semibold" style={{ color: '#0f6b7a' }}>Zaregistrujte se</a>
+                {"Nem\u00e1te \u00fa\u010det?"}{' '}
+                <a href="/register" className="font-semibold" style={{ color: '#0f6b7a' }}>{"Zaregistrujte se"}</a>
               </p>
             </div>
           </div>
-          <p className="text-center text-xs text-gray-300 mt-6">🏆 Clientoro — Vaši klienti jsou zlato</p>
+          <p className="text-center text-xs text-gray-300 mt-6">{"\ud83c\udfc6 Clientoro \u2014 Va\u0161i klienti jsou zlato"}</p>
         </div>
       </div>
     </div>

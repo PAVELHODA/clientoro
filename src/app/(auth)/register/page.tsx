@@ -23,7 +23,7 @@ export default function RegisterPage() {
     try {
       const { data: authData, error: authError } = await supabase.auth.signUp({ email, password })
       if (authError) { setError(authError.message); setLoading(false); return }
-      if (!authData.user) { setError('Chyba při vytváření účtu'); setLoading(false); return }
+      if (!authData.user) { setError('Chyba p\u0159i vytv\u00e1\u0159en\u00ed \u00fa\u010dtu'); setLoading(false); return }
 
       const userId = authData.user.id
       const slug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -35,7 +35,7 @@ export default function RegisterPage() {
         work_start: 8, work_end: 17, timezone: 'Europe/Prague', language: 'cs', onboarding_completed: false,
       }).select().single()
 
-      if (orgError) { setError('Účet vytvořen, ale chyba: ' + orgError.message); setLoading(false); return }
+      if (orgError) { setError('\u00da\u010det vytvo\u0159en, ale chyba: ' + orgError.message); setLoading(false); return }
 
       if (orgData) {
         const { data: userData } = await supabase.from('profiles').select('id').eq('auth_user_id', userId).single()
@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
       router.push('/onboarding')
       router.refresh()
-    } catch (err) { setError('Neočekávaná chyba'); console.error(err) }
+    } catch (err) { setError('Neo\u010dek\u00e1van\u00e1 chyba'); console.error(err) }
     finally { setLoading(false) }
   }
 
@@ -78,24 +78,24 @@ export default function RegisterPage() {
           </div>
 
           <h2 className="text-4xl font-bold text-white leading-tight mb-4">
-            Začněte růst<br />
-            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>ještě dnes.</span>
+            {"Za\u010dn\u011bte r\u016fst"}<br />
+            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>{"je\u0161t\u011b dnes."}</span>
           </h2>
 
           <p className="text-lg mb-10 max-w-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Vytvořte si účet za 30 sekund. Žádná kreditní karta. 14 dní plný přístup zdarma.
+            {"Vytvo\u0159te si \u00fa\u010det za 30 sekund. \u017d\u00e1dn\u00e1 kreditn\u00ed karta. 14 dn\u00ed pln\u00fd p\u0159\u00edstup zdarma."}
           </p>
 
           <div className="space-y-3">
             {[
-              '✅ Kompletní booking systém',
-              '✅ CRM klientů',
-              '✅ AI asistent & nástroje pro růst',
-              '✅ Dashboard s KPI & reporty',
+              '\u2705 Kompletn\u00ed booking syst\u00e9m',
+              '\u2705 CRM klient\u016f',
+              '\u2705 AI asistent & n\u00e1stroje pro r\u016fst',
+              '\u2705 Dashboard s KPI & reporty',
             ].map((text, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <span className="text-sm">{text.slice(0, 2)}</span>
+                  <span className="text-sm">{text.slice(0, 1)}</span>
                 </div>
                 <span className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>{text.slice(2)}</span>
               </div>
@@ -118,27 +118,27 @@ export default function RegisterPage() {
 
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">Registrace</h2>
-            <p className="text-sm text-gray-400 mb-6">Vytvořte si účet zdarma za 30 sekund.</p>
+            <p className="text-sm text-gray-400 mb-6">{"Vytvo\u0159te si \u00fa\u010det zdarma za 30 sekund."}</p>
 
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-center gap-2">
-                ⚠️ {error}
+                {"\u26a0\ufe0f"} {error}
               </div>
             )}
 
             <form onSubmit={handleRegister} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Název firmy / salonu *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{"N\u00e1zev firmy / salonu *"}</label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
-                    placeholder="Např. Beauty Salon" required />
+                    placeholder={"Nap\u0159. Beauty Salon"} required />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Typ podnikání</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{"Typ podnik\u00e1n\u00ed"}</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button type="button" onClick={() => setMode('solo')}
                     className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
@@ -173,7 +173,7 @@ export default function RegisterPage() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="password" value={password} onChange={e => setPassword(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
-                    placeholder="Min. 6 znaků" minLength={6} required />
+                    placeholder={"Min. 6 znak\u016f"} minLength={6} required />
                 </div>
               </div>
 
@@ -183,24 +183,24 @@ export default function RegisterPage() {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                    Vytvářím účet...
+                    {"Vytv\u00e1\u0159\u00edm \u00fa\u010det..."}
                   </span>
-                ) : (<>Vytvořit účet zdarma <ArrowRight className="w-4 h-4" /></>)}
+                ) : (<>{"Vytvo\u0159it \u00fa\u010det zdarma"} <ArrowRight className="w-4 h-4" /></>)}
               </button>
             </form>
 
             <div className="mt-3 text-center">
-              <p className="text-xs text-gray-300">14 dní zdarma · Žádná kreditní karta</p>
+              <p className="text-xs text-gray-300">{"14 dn\u00ed zdarma \u00b7 \u017d\u00e1dn\u00e1 kreditn\u00ed karta"}</p>
             </div>
 
             <div className="mt-5 text-center">
               <p className="text-sm text-gray-400">
-                Už máte účet?{' '}
-                <a href="/login" className="font-semibold" style={{ color: '#0f6b7a' }}>Přihlaste se</a>
+                {"U\u017e m\u00e1te \u00fa\u010det?"}{' '}
+                <a href="/login" className="font-semibold" style={{ color: '#0f6b7a' }}>{"P\u0159ihlaste se"}</a>
               </p>
             </div>
           </div>
-          <p className="text-center text-xs text-gray-300 mt-6">🏆 Clientoro — Vaši klienti jsou zlato</p>
+          <p className="text-center text-xs text-gray-300 mt-6">{"\ud83c\udfc6 Clientoro \u2014 Va\u0161i klienti jsou zlato"}</p>
         </div>
       </div>
     </div>
