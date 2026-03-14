@@ -320,6 +320,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
     )
   }
+ 
+  // Pokud uživatel nemá organizaci — přesměruj na onboarding
+  if (!organization) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Waves className="w-8 h-8 text-amber-500" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{"Nastaven\u00ed nen\u00ed kompletn\u00ed"}</h2>
+          <p className="text-gray-500 mb-6">{"V\u00e1\u0161 \u00fa\u010det nem\u00e1 p\u0159i\u0159azenou organizaci. Dokon\u010dete nastaven\u00ed nebo se odhlaste."}</p>
+          <div className="flex gap-3 justify-center">
+            <a href="/onboarding" className="px-6 py-3 text-white rounded-xl font-semibold shadow-lg transition-all hover:shadow-xl" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+              {"Dokon\u010dit nastaven\u00ed"}
+            </a>
+            <button onClick={handleLogout} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
+              {"Odhl\u00e1sit se"}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const SidebarContent = () => (
     <>
