@@ -44,6 +44,7 @@ export default function CalendarPage() {
   const [filterStaff, setFilterStaff] = useState<string>('all')
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; time: string } | null>(null)
   const [showDetail, setShowDetail] = useState<Booking | null>(null)
+  const [showDayBookings, setShowDayBookings] = useState<{ date: string; bookings: Booking[] } | null>(null)
   const [qbService, setQbService] = useState('')
   const [qbStaff, setQbStaff] = useState('')
   const [qbName, setQbName] = useState('')
@@ -52,8 +53,7 @@ export default function CalendarPage() {
 
   const workStart = organization?.work_start || 8
   const workEnd = organization?.work_end || 17
-  
-  // Handle booking status change
+
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     try {
       const res = await fetch(`/api/bookings/${bookingId}`, {
@@ -62,53 +62,51 @@ export default function CalendarPage() {
         body: JSON.stringify({ status: newStatus }),
       })
       if (!res.ok) throw new Error('Failed to update status')
-      
-      // Update local state
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
       setShowDetail(prev => prev ? { ...prev, status: newStatus } : null)
     } catch (e) {
-      alert(lang === 'en' ? 'Error updating status' : 'Chyba při aktualizaci stavu')
+      alert(lang === 'en' ? 'Error updating status' : 'Chyba pri aktualizaci stavu')
     }
   }
+
   const dayNames = lang === 'en'
     ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     : lang === 'sk'
-    ? ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne']
-    : ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne']
+    ? ['Po', 'Ut', 'St', 'St', 'Pi', 'So', 'Ne']
+    : ['Po', 'Ut', 'St', 'Ct', 'Pa', 'So', 'Ne']
 
   const l = {
     title: t('cal_title'),
-    today: lang === 'en' ? 'Today' : lang === 'sk' ? 'Dnes' : 'Dnes',
+    today: lang === 'en' ? 'Today' : 'Dnes',
     day: lang === 'en' ? 'Day' : 'Den',
-    week: lang === 'en' ? 'Week' : lang === 'sk' ? 'Týždeň' : 'Týden',
-    month: lang === 'en' ? 'Month' : lang === 'sk' ? 'Mesiac' : 'Měsíc',
-    all: lang === 'en' ? 'All' : lang === 'sk' ? 'Všetci' : 'Všichni',
-    bookings: lang === 'en' ? 'Bookings' : lang === 'sk' ? 'Rezervácií' : 'Rezervací',
-    revenue: lang === 'en' ? 'Revenue' : lang === 'sk' ? 'Tržby' : 'Tržby',
-    freeSlots: lang === 'en' ? 'Free slots' : lang === 'sk' ? 'Voľných slotov' : 'Volných slotů',
+    week: lang === 'en' ? 'Week' : lang === 'sk' ? 'Tyzden' : 'Tyden',
+    month: lang === 'en' ? 'Month' : lang === 'sk' ? 'Mesiac' : 'Mesic',
+    all: lang === 'en' ? 'All' : lang === 'sk' ? 'Vsetci' : 'Vsichni',
+    bookings: lang === 'en' ? 'Bookings' : lang === 'sk' ? 'Rezervacii' : 'Rezervaci',
+    revenue: lang === 'en' ? 'Revenue' : 'Trzby',
+    freeSlots: lang === 'en' ? 'Free slots' : lang === 'sk' ? 'Volnych slotov' : 'Volnych slotu',
     newBooking: t('cal_new_booking'),
-    booking: lang === 'en' ? 'Booking' : lang === 'sk' ? 'Rezervácia' : 'Rezervace',
+    booking: lang === 'en' ? 'Booking' : lang === 'sk' ? 'Rezervacia' : 'Rezervace',
     client: lang === 'en' ? 'Client' : 'Klient',
     service: t('cal_service'),
-    specialist: lang === 'en' ? 'Specialist' : lang === 'sk' ? 'Špecialista' : 'Specialista',
-    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jméno klienta *',
-    phone: lang === 'en' ? 'Phone *' : lang === 'sk' ? 'Telefón *' : 'Telefon *',
-    anyone: lang === 'en' ? 'Anyone' : lang === 'sk' ? 'Ktokoľvek' : 'Kdokoliv',
-    select: lang === 'en' ? 'Select...' : lang === 'sk' ? 'Vyberte...' : 'Vyberte...',
-    createBooking: lang === 'en' ? '✅ Create booking' : lang === 'sk' ? '✅ Vytvoriť rezerváciu' : '✅ Vytvořit rezervaci',
-    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervácie' : 'Detail rezervace',
-    time: lang === 'en' ? 'Time' : 'Čas',
+    specialist: lang === 'en' ? 'Specialist' : 'Specialista',
+    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jmeno klienta *',
+    phone: lang === 'en' ? 'Phone *' : 'Telefon *',
+    anyone: lang === 'en' ? 'Anyone' : lang === 'sk' ? 'Ktokolvek' : 'Kdokoliv',
+    select: lang === 'en' ? 'Select...' : 'Vyberte...',
+    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvorit rezervaciu' : 'Vytvorit rezervaci',
+    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervacie' : 'Detail rezervace',
+    time: lang === 'en' ? 'Time' : 'Cas',
     price: t('cal_price'),
     status: lang === 'en' ? 'Status' : 'Stav',
-    confirmed: lang === 'en' ? 'Confirmed' : lang === 'sk' ? 'Potvrdená' : 'Potvrzena',
-    completed: lang === 'en' ? 'Completed' : lang === 'sk' ? 'Dokončená' : 'Dokončena',
-    close: lang === 'en' ? 'Close' : lang === 'sk' ? 'Zavrieť' : 'Zavřít',
-    unknown: lang === 'en' ? 'Unknown' : lang === 'sk' ? 'Neznámy' : 'Neznámý',
+    close: lang === 'en' ? 'Close' : 'Zavrit',
+    unknown: lang === 'en' ? 'Unknown' : 'Neznamy',
     rez: lang === 'en' ? 'book.' : 'rez.',
     at: lang === 'en' ? 'at' : 'v',
+    dayBookings: lang === 'en' ? 'Bookings for this day' : lang === 'sk' ? 'Rezervacie na tento den' : 'Rezervace na tento den',
+    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Ziadne rezervacie' : 'Zadne rezervace',
   }
 
-  // Date helpers
   const toDateStr = (d: Date) => d.toISOString().split('T')[0]
   const todayStr = toDateStr(new Date())
   const dateStr = toDateStr(currentDate)
@@ -192,7 +190,7 @@ export default function CalendarPage() {
     if (viewMode === 'day') return currentDate.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
     if (viewMode === 'week') {
       const days = getWeekDays()
-      return `${days[0].toLocaleDateString(locale, { day: 'numeric', month: 'short' })} — ${days[6].toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })}`
+      return `${days[0].toLocaleDateString(locale, { day: 'numeric', month: 'short' })} - ${days[6].toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })}`
     }
     return currentDate.toLocaleDateString(locale, { month: 'long', year: 'numeric' })
   }
@@ -238,6 +236,9 @@ export default function CalendarPage() {
   const getBookingsForDate = (date: string) =>
     filteredBookings.filter(b => b.start_at.split('T')[0] === date)
 
+  const getAllBookingsForDate = (date: string) =>
+    bookings.filter(b => b.start_at.split('T')[0] === date)
+
   const handleQuickBook = async () => {
     if (!selectedSlot || !qbService || !qbName || !qbPhone) return
     setQbSaving(true)
@@ -262,6 +263,26 @@ export default function CalendarPage() {
   const dayBookingsCount = getBookingsForDate(dateStr).length
   const dayRevenue = getBookingsForDate(dateStr).reduce((s, b) => s + (b.price || 0), 0)
 
+  const statusLabel = (status: string) => {
+    const labels: Record<string, Record<string, string>> = {
+      confirmed: { cs: 'Potvrzeno', sk: 'Potvrdena', en: 'Confirmed' },
+      completed: { cs: 'Dokonceno', sk: 'Dokoncena', en: 'Completed' },
+      cancelled: { cs: 'Zruseno', sk: 'Zrusena', en: 'Cancelled' },
+      no_show: { cs: 'Nedostavil/a se', sk: 'Nedostavil/a sa', en: 'No-show' },
+      rescheduled: { cs: 'Preobjednano', sk: 'Preobjednana', en: 'Rescheduled' },
+    }
+    return labels[status]?.[lang] || status
+  }
+
+  const statusColor = (status: string) => {
+    if (status === 'confirmed') return 'text-blue-600 bg-blue-50'
+    if (status === 'completed') return 'text-green-600 bg-green-50'
+    if (status === 'cancelled') return 'text-red-600 bg-red-50'
+    if (status === 'no_show') return 'text-purple-600 bg-purple-50'
+    if (status === 'rescheduled') return 'text-yellow-600 bg-yellow-50'
+    return 'text-gray-600 bg-gray-50'
+  }
+
   if (loading) return (
     <div className="flex items-center justify-center py-20">
       <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
@@ -275,6 +296,12 @@ export default function CalendarPage() {
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Calendar className="w-7 h-7 text-blue-600" /> {l.title}
           </h1>
+        </div>
+        <div>
+          <button onClick={() => setSelectedSlot({ date: dateStr, time: `${String(Math.min(Math.max(new Date().getHours(), workStart), workEnd - 1)).padStart(2, '0')}:00` })}
+            className="px-4 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm">
+            <Plus className="w-4 h-4" /> {l.newBooking}
+          </button>
         </div>
       </div>
 
@@ -341,18 +368,19 @@ export default function CalendarPage() {
               const isHour = time.endsWith(':00')
               const now = new Date()
               const slotTime = new Date(`${dateStr}T${time}:00`)
-              const isPast = dateStr === todayStr && slotTime < now
+              const isDayPast = dateStr < todayStr
+              const isPast = (dateStr === todayStr && slotTime < now) || isDayPast
               const isNow = dateStr === todayStr && slotTime <= now && new Date(slotTime.getTime() + 30 * 60000) > now
               if (booking && !isStart) return null
               return (
-                <div key={time} className={`flex border-b border-gray-100 last:border-b-0 ${isPast && !booking ? 'opacity-40' : ''} ${isNow ? 'bg-blue-50/30' : ''}`}>
-                  <div className={`w-16 flex-shrink-0 py-3 px-2 text-right ${isHour ? 'text-sm font-semibold text-rose-700' : 'text-xs text-rose-500'}`}>
+                <div key={time} className={`flex border-b border-gray-100 last:border-b-0 ${isPast && !booking ? 'bg-gray-50/80' : ''} ${isPast && booking ? 'bg-gray-50/50' : ''} ${isNow ? 'bg-blue-50/30' : ''}`}>
+                  <div className={`w-16 flex-shrink-0 py-3 px-2 text-right ${isHour ? 'text-sm font-semibold text-rose-700' : 'text-xs text-rose-500'} ${isPast ? 'opacity-60' : ''}`}>
                     {time}
                     {isNow && <div className="w-2 h-2 bg-red-500 rounded-full inline-block ml-1" />}
                   </div>
                   <div className="flex-1 border-l border-gray-100 min-h-[3rem]">
                     {booking && isStart ? (
-                      <button onClick={() => setShowDetail(booking)} className="w-full text-left p-2 hover:brightness-95 transition-all" style={{ minHeight: `${slotCount * 3}rem` }}>
+                      <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-2 hover:brightness-95 transition-all ${isPast ? 'opacity-80' : ''}`} style={{ minHeight: `${slotCount * 3}rem` }}>
                         <div className="rounded-lg p-2.5 h-full text-white shadow-sm" style={{ backgroundColor: booking.services?.color || '#3b82f6' }}>
                           <div className="flex items-center justify-between">
                             <span className="font-semibold text-sm">{booking.services?.name || l.booking}</span>
@@ -360,11 +388,12 @@ export default function CalendarPage() {
                           </div>
                           <p className="text-sm opacity-90 mt-0.5">{booking.clients?.full_name || booking.customer_name || l.client}</p>
                           {booking.staff && <p className="text-xs opacity-75 mt-0.5">{booking.staff.full_name}</p>}
+                          {isPast && <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
                         </div>
                       </button>
                     ) : !booking ? (
-                      <button onClick={() => { if (!isPast) setSelectedSlot({ date: dateStr, time }) }} disabled={isPast}
-                        className={`w-full h-full min-h-[3rem] flex items-center px-3 ${isPast ? 'cursor-not-allowed' : 'hover:bg-emerald-50 cursor-pointer group'}`}>
+                      <button onClick={() => isPast ? setShowDayBookings({ date: dateStr, bookings: getAllBookingsForDate(dateStr) }) : setSelectedSlot({ date: dateStr, time })}
+                        className={`w-full h-full min-h-[3rem] flex items-center px-3 ${isPast ? 'hover:bg-gray-100 cursor-pointer opacity-50' : 'hover:bg-emerald-50 cursor-pointer group'}`}>
                         {!isPast && <span className="text-xs text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"><Plus className="w-3 h-3" /> {l.newBooking}</span>}
                       </button>
                     ) : null}
@@ -386,11 +415,12 @@ export default function CalendarPage() {
                 {getWeekDays().map((day, i) => {
                   const ds = toDateStr(day)
                   const isT = ds === todayStr
+                  const isPast = ds < todayStr
                   const count = getBookingsForDate(ds).length
                   return (
-                    <th key={i} className={`p-2 text-center ${isT ? 'bg-blue-50' : ''}`}>
-                      <p className="text-xs text-gray-500">{dayNames[i]}</p>
-                      <p className={`text-lg font-bold ${isT ? 'text-blue-600' : 'text-rose-700'}`}>{day.getDate()}</p>
+                    <th key={i} className={`p-2 text-center ${isT ? 'bg-blue-50' : ''} ${isPast ? 'bg-gray-50/50' : ''}`}>
+                      <p className={`text-xs ${isPast ? 'text-gray-400' : 'text-gray-500'}`}>{dayNames[i]}</p>
+                      <p className={`text-lg font-bold ${isT ? 'text-blue-600' : isPast ? 'text-gray-400' : 'text-rose-700'}`}>{day.getDate()}</p>
                       {count > 0 && <span className="inline-block mt-0.5 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">{count}</span>}
                     </th>
                   )
@@ -409,24 +439,25 @@ export default function CalendarPage() {
                     const allBookings = [...new Map([...bookingsHour, ...bookingsHalf].map(b => [b.id, b])).values()]
                     const isPast = ds < todayStr
                     return (
-                      <td key={i} className={`p-0.5 align-top ${isT ? 'bg-blue-50/30' : ''} ${isPast ? 'opacity-40' : ''}`} style={{ minHeight: '3.5rem' }}>
+                      <td key={i} className={`p-0.5 align-top ${isT ? 'bg-blue-50/30' : ''} ${isPast ? 'bg-gray-50/50' : ''}`} style={{ minHeight: '3.5rem' }}>
                         {allBookings.length > 0 ? (
                           <div className="space-y-0.5">
                             {allBookings.map(b => (
                               <button key={b.id} onClick={() => setShowDetail(b)}
-                                className="w-full text-left rounded-md p-1.5 text-white text-xs hover:brightness-90 transition-all"
+                                className={`w-full text-left rounded-md p-1.5 text-white text-xs hover:brightness-90 transition-all ${isPast ? 'opacity-70' : ''}`}
                                 style={{ backgroundColor: b.services?.color || '#3b82f6' }}>
                                 <p className="font-semibold truncate">{b.services?.name}</p>
                                 <p className="opacity-80 truncate">{b.clients?.full_name || b.customer_name}</p>
+                                {isPast && <span className={`inline-block mt-0.5 px-1 py-0.5 rounded text-[10px] font-medium ${statusColor(b.status)}`}>{statusLabel(b.status)}</span>}
                               </button>
                             ))}
                           </div>
-                        ) : !isPast ? (
-                          <button onClick={() => setSelectedSlot({ date: ds, time })}
-                            className="w-full h-full min-h-[3.5rem] rounded-md hover:bg-emerald-50 transition-all group flex items-center justify-center">
-                            <Plus className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-100" />
+                        ) : (
+                          <button onClick={() => isPast ? setShowDayBookings({ date: ds, bookings: getAllBookingsForDate(ds) }) : setSelectedSlot({ date: ds, time })}
+                            className={`w-full h-full min-h-[3.5rem] rounded-md transition-all group flex items-center justify-center ${isPast ? 'hover:bg-gray-100 cursor-pointer' : 'hover:bg-emerald-50 cursor-pointer'}`}>
+                            {!isPast && <Plus className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-100" />}
                           </button>
-                        ) : <div className="min-h-[3.5rem]" />}
+                        )}
                       </td>
                     )
                   })}
@@ -450,12 +481,13 @@ export default function CalendarPage() {
               const ds = toDateStr(day)
               const isCurrentMonth = day.getMonth() === currentDate.getMonth()
               const isT = ds === todayStr
+              const isPast = ds < todayStr
               const dayB = getBookingsForDate(ds)
               const revenue = dayB.reduce((s, b) => s + (b.price || 0), 0)
               return (
                 <button key={i} onClick={() => { setCurrentDate(day); setViewMode('day') }}
-                  className={`p-2 min-h-[5rem] border-b border-r border-gray-100 text-left hover:bg-gray-50 transition-all ${!isCurrentMonth ? 'opacity-30' : ''} ${isT ? 'bg-blue-50' : ''}`}>
-                  <p className={`text-sm font-bold ${isT ? 'text-blue-600' : 'text-rose-700'}`}>{day.getDate()}</p>
+                  className={`p-2 min-h-[5rem] border-b border-r border-gray-100 text-left hover:bg-gray-50 transition-all ${!isCurrentMonth ? 'opacity-30' : ''} ${isT ? 'bg-blue-50' : ''} ${isPast && isCurrentMonth ? 'bg-gray-50/50' : ''}`}>
+                  <p className={`text-sm font-bold ${isT ? 'text-blue-600' : isPast ? 'text-gray-400' : 'text-rose-700'}`}>{day.getDate()}</p>
                   {dayB.length > 0 && (
                     <div className="mt-1">
                       <span className="inline-block px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">{dayB.length} {l.rez}</span>
@@ -487,7 +519,7 @@ export default function CalendarPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.service} *</label>
                 <select value={qbService} onChange={e => setQbService(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm">
                   <option value="">{l.select}</option>
-                  {services.map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min — {s.price} {currency})</option>)}
+                  {services.map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min - {s.price} {currency})</option>)}
                 </select>
               </div>
               <div>
@@ -499,7 +531,7 @@ export default function CalendarPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.clientName}</label>
-                <input type="text" value={qbName} onChange={e => setQbName(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Jan Novák" />
+                <input type="text" value={qbName} onChange={e => setQbName(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="Jan Novak" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.phone}</label>
@@ -514,7 +546,44 @@ export default function CalendarPage() {
         </div>
       )}
 
-            {/* Booking detail modal */}
+      {/* Day bookings list modal (for past days) */}
+      {showDayBookings && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-gray-900">{l.dayBookings}</h3>
+              <button onClick={() => setShowDayBookings(null)} className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-3 mb-4 text-sm">
+              <span className="text-gray-700 font-medium">
+                {new Date(showDayBookings.date + 'T12:00:00').toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+            </div>
+            {showDayBookings.bookings.length === 0 ? (
+              <p className="text-center text-gray-400 py-8">{l.noBookings}</p>
+            ) : (
+              <div className="space-y-2">
+                {showDayBookings.bookings.map(b => (
+                  <button key={b.id} onClick={() => { setShowDayBookings(null); setShowDetail(b) }}
+                    className="w-full text-left p-3 rounded-xl border border-gray-200 hover:border-gray-300 transition-all">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-semibold text-sm text-gray-900">{b.services?.name || l.booking}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(b.status)}`}>{statusLabel(b.status)}</span>
+                    </div>
+                    <p className="text-sm text-gray-600">{b.clients?.full_name || b.customer_name || l.unknown}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(b.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} - {new Date(b.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
+                      {b.price ? ` | ${b.price} ${currency}` : ''}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Booking detail modal */}
       {showDetail && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
@@ -534,53 +603,29 @@ export default function CalendarPage() {
               </div>
               <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">{l.service}</span><span className="font-medium">{showDetail.services?.name}</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">{l.time}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} — {new Date(showDetail.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">{l.time}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} - {new Date(showDetail.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span></div>
                 {showDetail.staff && <div className="flex justify-between"><span className="text-gray-500">{l.specialist}</span><span className="font-medium">{showDetail.staff.full_name}</span></div>}
                 {showDetail.price && <div className="flex justify-between"><span className="text-gray-500">{l.price}</span><span className="font-medium">{showDetail.price} {currency}</span></div>}
-                <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium ${
-                  showDetail.status === 'confirmed' ? 'text-blue-600' :
-                  showDetail.status === 'completed' ? 'text-green-600' :
-                  showDetail.status === 'cancelled' ? 'text-red-600' :
-                  showDetail.status === 'no_show' ? 'text-purple-600' :
-                  showDetail.status === 'rescheduled' ? 'text-yellow-600' :
-                  'text-gray-600'
-                }`}>{
-                  showDetail.status === 'confirmed' ? (lang === 'en' ? 'Confirmed' : 'Potvrzeno') :
-                  showDetail.status === 'completed' ? (lang === 'en' ? 'Completed' : 'Dokončeno') :
-                  showDetail.status === 'cancelled' ? (lang === 'en' ? 'Cancelled' : 'Zrušeno') :
-                  showDetail.status === 'no_show' ? (lang === 'en' ? 'No-show' : 'Nedostavil/a se') :
-                  showDetail.status === 'rescheduled' ? (lang === 'en' ? 'Rescheduled' : 'Přeobjednáno') :
-                  showDetail.status
-                }</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium px-2 py-0.5 rounded-full text-xs ${statusColor(showDetail.status)}`}>{statusLabel(showDetail.status)}</span></div>
               </div>
-
-              {/* Status change buttons */}
               <div className="pt-2">
-                <p className="text-xs text-gray-400 mb-2">{lang === 'en' ? 'Change status:' : 'Změnit stav:'}</p>
+                <p className="text-xs text-gray-400 mb-2">{lang === 'en' ? 'Change status:' : 'Zmenit stav:'}</p>
                 <div className="grid grid-cols-2 gap-2">
                   {showDetail.status !== 'completed' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'completed')}
-                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-green-50 text-green-700 rounded-xl text-sm font-medium hover:bg-green-100 border border-green-200 transition-all">
-                      ✅ {lang === 'en' ? 'Completed' : 'Dokončeno'}
-                    </button>
+                      className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokonceno'}</button>
                   )}
                   {showDetail.status !== 'cancelled' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'cancelled')}
-                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-red-50 text-red-700 rounded-xl text-sm font-medium hover:bg-red-100 border border-red-200 transition-all">
-                      ❌ {lang === 'en' ? 'Cancelled' : 'Zrušeno'}
-                    </button>
+                      className="px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100">{lang === 'en' ? 'Cancel' : 'Zrusit'}</button>
                   )}
                   {showDetail.status !== 'no_show' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'no_show')}
-                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-purple-50 text-purple-700 rounded-xl text-sm font-medium hover:bg-purple-100 border border-purple-200 transition-all">
-                      ⏳ {lang === 'en' ? 'No-show' : 'Nedostavil/a se'}
-                    </button>
+                      className="px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-100">No-show</button>
                   )}
                   {showDetail.status !== 'confirmed' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'confirmed')}
-                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium hover:bg-blue-100 border border-blue-200 transition-all">
-                      📋 {lang === 'en' ? 'Confirmed' : 'Potvrzeno'}
-                    </button>
+                      className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100">{lang === 'en' ? 'Confirm' : 'Potvrdit'}</button>
                   )}
                 </div>
               </div>
@@ -592,4 +637,3 @@ export default function CalendarPage() {
     </div>
   )
 }
-
