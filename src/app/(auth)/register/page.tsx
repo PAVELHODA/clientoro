@@ -21,38 +21,42 @@ export default function RegisterPage() {
     setError('')
     setLoading(true)
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({ email, password })
-      if (authError) { setError(authError.message); setLoading(false); return }
-      if (!authData.user) { setError('Chyba p\u0159i vytv\u00e1\u0159en\u00ed \u00fa\u010dtu'); setLoading(false); return }
+      // Volej server-side API route (obejde RLS)
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, businessName, mode }),
+      })
 
-      const userId = authData.user.id
-      const slug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      const data = await res.json()
 
-      await supabase.from('profiles').insert({ auth_user_id: userId, email, full_name: businessName, role: 'owner' })
+      if (!res.ok) {
+        setError(data.error || 'Chyba p\u0159i registraci')
+        setLoading(false)
+        return
+      }
 
-      const { data: orgData, error: orgError } = await supabase.from('organizations').insert({
-        name: businessName, slug, owner_user_id: userId, mode, category: 'beauty',
-        work_start: 8, work_end: 17, timezone: 'Europe/Prague', language: 'cs', onboarding_completed: false,
-      }).select().single()
-
-      if (orgError) { setError('\u00da\u010det vytvo\u0159en, ale chyba: ' + orgError.message); setLoading(false); return }
-
-      if (orgData) {
-        const { data: userData } = await supabase.from('profiles').select('id').eq('auth_user_id', userId).single()
-        if (userData) {
-          await supabase.from('memberships').insert({ user_id: userData.id, organization_id: orgData.id, role: 'owner' })
-        }
+      // Prihlasit uzivatele
+      const { error: loginError } = await supabase.auth.signInWithPassword({ email, password })
+      if (loginError) {
+        setError('Registrace \u00fasp\u011b\u0161n\u00e1! P\u0159ihlaste se manu\u00e1ln\u011b.')
+        router.push('/login')
+        return
       }
 
       router.push('/onboarding')
       router.refresh()
-    } catch (err) { setError('Neo\u010dek\u00e1van\u00e1 chyba'); console.error(err) }
-    finally { setLoading(false) }
+    } catch (err) {
+      setError('Neo\u010dek\u00e1van\u00e1 chyba')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <div className="min-h-screen flex">
-      {/* Levá strana — Deep Ocean + Gold */}
+      {/* Lev\u00e1 strana */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
         style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0c2d48 20%, #0e4d64 40%, #0f6b7a 55%, #0e5460 70%, #0c3a50 85%, #0a1e30 100%)' }}>
 
@@ -104,7 +108,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Pravá strana — Formulář */}
+      {/* Prav\u00e1 strana */}
       <div className="flex-1 flex items-center justify-center px-6 bg-gray-50">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
