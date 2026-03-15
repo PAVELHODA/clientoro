@@ -2,26 +2,42 @@
 
 import { useState, useEffect } from 'react'
 import { useLang } from '../layout'
-import { Crown, Users, Calendar, DollarSign, Building2, Eye, Loader2, Shield, Bell, TrendingUp } from 'lucide-react'
+import { Crown, Users, Calendar, Building2, Eye, Loader2, Shield, Bell, Plus, Trash2, ChevronDown, ChevronUp, Layers } from 'lucide-react'
+
+type Tab = 'dashboard' | 'categories' | 'organizations'
 
 export default function AdminPage() {
   const { t, lang, modeGradient } = useLang()
+  const [tab, setTab] = useState<Tab>('dashboard')
   const [orgs, setOrgs] = useState<any[]>([])
   const [stats, setStats] = useState<any>(null)
+  const [categories, setCategories] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [isSuperadmin, setIsSuperadmin] = useState(false)
+  const [expandedCat, setExpandedCat] = useState<string | null>(null)
+  const [newCatName, setNewCatName] = useState('')
+  const [newCatIcon, setNewCatIcon] = useState('💼')
+  const [newTplName, setNewTplName] = useState('')
+  const [newTplPrice, setNewTplPrice] = useState('')
+  const [newTplDuration, setNewTplDuration] = useState('60')
+  const [newTplCatId, setNewTplCatId] = useState('')
 
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const res = await fetch('/api/admin/stats')
-        if (res.ok) {
-          const data = await res.json()
+        const [statsRes, catsRes] = await Promise.all([
+          fetch('/api/admin/stats'),
+          fetch('/api/admin/categories'),
+        ])
+        if (statsRes.ok) {
+          const data = await statsRes.json()
           setOrgs(data.organizations || [])
           setStats(data.stats || {})
           setIsSuperadmin(true)
-        } else {
-          setIsSuperadmin(false)
+        }
+        if (catsRes.ok) {
+          const catsData = await catsRes.json()
+          setCategories(Array.isArray(catsData) ? catsData : [])
         }
       } catch (e) {
         setIsSuperadmin(false)
@@ -32,17 +48,50 @@ export default function AdminPage() {
     fetchAdmin()
   }, [])
 
-  if (loading) return (
-    <div className="flex items-center justify-center py-20">
-      <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-    </div>
-  )
+  const addCategory = async () => {
+    if (!newCatName) return
+    const slug = newCatName.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    const res = await fetch('/api/admin/categories', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'category', name: newCatName, slug, icon: newCatIcon }),
+    })
+    if (res.ok) {
+      const cat = await res.json()
+      setCategories(prev => [...prev, { ...cat, service_templates: [] }])
+      setNewCatName(''); setNewCatIcon('💼')
+    }
+  }
 
+  const addTemplate = async (catId: string) => {
+    if (!newTplName || !newTplPrice) return
+    const res = await fetch('/api/admin/categories', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'template', category_id: catId, name: newTplName, price: parseFloat(newTplPrice), duration: parseInt(newTplDuration), color: '#3b82f6' }),
+    })
+    if (res.ok) {
+      const tpl = await res.json()
+      setCategories(prev => prev.map(c => c.id === catId ? { ...c, service_templates: [...(c.service_templates || []), tpl] } : c))
+      setNewTplName(''); setNewTplPrice(''); setNewTplDuration('60'); setNewTplCatId('')
+    }
+  }
+
+  const deleteCategory = async (id: string) => {
+    if (!confirm('Smazat kategorii a všechny její šablony?')) return
+    await fetch(`/api/admin/categories?id=${id}&type=category`, { method: 'DELETE' })
+    setCategories(prev => prev.filter(c => c.id !== id))
+  }
+
+  const deleteTemplate = async (catId: string, tplId: string) => {
+    await fetch(`/api/admin/categories?id=${tplId}&type=template`, { method: 'DELETE' })
+    setCategories(prev => prev.map(c => c.id === catId ? { ...c, service_templates: c.service_templates.filter((t: any) => t.id !== tplId) } : c))
+  }
+
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>
   if (!isSuperadmin) return (
     <div className="text-center py-20">
       <Shield className="w-12 h-12 text-red-300 mx-auto mb-4" />
-      <h2 className="text-lg font-bold text-gray-900 mb-2">Pristup odepren</h2>
-      <p className="text-gray-500">Tato stranka je pouze pro superadmina.</p>
+      <h2 className="text-lg font-bold text-gray-900 mb-2">Přístup odepřen</h2>
+      <p className="text-gray-500">Tato stránka je pouze pro superadmina.</p>
     </div>
   )
 
@@ -50,78 +99,141 @@ export default function AdminPage() {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <Crown className="w-6 h-6 text-amber-500" />
-        <h1 className="text-2xl font-bold text-gray-900">Superadmin Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Superadmin</h1>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Building2 className="w-4 h-4 text-blue-500" />
-            <span className="text-xs text-gray-500">Organizace</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats?.totalOrgs || 0}</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Users className="w-4 h-4 text-emerald-500" />
-            <span className="text-xs text-gray-500">Uzivatele</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats?.totalUsers || 0}</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Calendar className="w-4 h-4 text-purple-500" />
-            <span className="text-xs text-gray-500">Rezervace celkem</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats?.totalBookings || 0}</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Bell className="w-4 h-4 text-amber-500" />
-            <span className="text-xs text-gray-500">Notifikace</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats?.totalNotifications || 0}</p>
-        </div>
+      <div className="flex gap-2 mb-6">
+        {(['dashboard', 'categories', 'organizations'] as Tab[]).map(t => (
+          <button key={t} onClick={() => setTab(t)}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === t ? 'bg-amber-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            {t === 'dashboard' ? '📊 Dashboard' : t === 'categories' ? '📋 Kategorie' : '🏢 Organizace'}
+          </button>
+        ))}
       </div>
 
-      <h2 className="text-lg font-bold text-gray-900 mb-4">Vsechny organizace</h2>
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="text-left p-3 font-medium text-gray-600">Nazev</th>
-              <th className="text-left p-3 font-medium text-gray-600">Mod</th>
-              <th className="text-left p-3 font-medium text-gray-600">Slug</th>
-              <th className="text-center p-3 font-medium text-gray-600">Rezervace</th>
-              <th className="text-center p-3 font-medium text-gray-600">Klienti</th>
-              <th className="text-center p-3 font-medium text-gray-600">Akce</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orgs.map((org: any) => (
-              <tr key={org.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="p-3 font-medium text-gray-900">{org.name}</td>
-                <td className="p-3">
-                  <span className={'px-2 py-1 rounded-full text-xs font-medium ' +
-                    (org.mode === 'solo' ? 'bg-emerald-100 text-emerald-700' :
-                     org.mode === 'team' ? 'bg-blue-100 text-blue-700' :
-                     'bg-amber-100 text-amber-700')}>
-                    {org.mode}
-                  </span>
-                </td>
-                <td className="p-3 text-gray-500">{org.slug}</td>
-                <td className="p-3 text-center font-medium">{org.bookings_count || 0}</td>
-                <td className="p-3 text-center font-medium">{org.clients_count || 0}</td>
-                <td className="p-3 text-center">
-                  <button className="text-xs text-blue-600 hover:underline flex items-center gap-1 mx-auto">
-                    <Eye className="w-3 h-3" /> Detail
-                  </button>
-                </td>
-              </tr>
+      {tab === 'dashboard' && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-2"><Building2 className="w-4 h-4 text-blue-500" /><span className="text-xs text-gray-500">Organizace</span></div>
+            <p className="text-2xl font-bold text-gray-900">{stats?.totalOrgs || 0}</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-2"><Users className="w-4 h-4 text-emerald-500" /><span className="text-xs text-gray-500">Uživatelé</span></div>
+            <p className="text-2xl font-bold text-gray-900">{stats?.totalUsers || 0}</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-2"><Calendar className="w-4 h-4 text-purple-500" /><span className="text-xs text-gray-500">Rezervace</span></div>
+            <p className="text-2xl font-bold text-gray-900">{stats?.totalBookings || 0}</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-2"><Bell className="w-4 h-4 text-amber-500" /><span className="text-xs text-gray-500">Notifikace</span></div>
+            <p className="text-2xl font-bold text-gray-900">{stats?.totalNotifications || 0}</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-2"><Layers className="w-4 h-4 text-indigo-500" /><span className="text-xs text-gray-500">Kategorie</span></div>
+            <p className="text-2xl font-bold text-gray-900">{categories.length}</p>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-2"><Layers className="w-4 h-4 text-cyan-500" /><span className="text-xs text-gray-500">Šablony služeb</span></div>
+            <p className="text-2xl font-bold text-gray-900">{categories.reduce((sum, c) => sum + (c.service_templates?.length || 0), 0)}</p>
+          </div>
+        </div>
+      )}
+
+      {tab === 'categories' && (
+        <div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4">
+            <p className="text-sm font-medium text-gray-700 mb-3">➕ Nová kategorie</p>
+            <div className="flex gap-2">
+              <input type="text" value={newCatIcon} onChange={e => setNewCatIcon(e.target.value)} className="w-14 px-2 py-2 border border-gray-200 rounded-lg text-center text-lg" placeholder="💼" />
+              <input type="text" value={newCatName} onChange={e => setNewCatName(e.target.value)} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Název kategorie" />
+              <button onClick={addCategory} disabled={!newCatName} className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-amber-600"><Plus className="w-4 h-4" /></button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {categories.map(cat => (
+              <div key={cat.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50" onClick={() => setExpandedCat(expandedCat === cat.id ? null : cat.id)}>
+                  <span className="text-xl">{cat.icon}</span>
+                  <div className="flex-1">
+                    <span className="font-medium text-gray-900">{cat.name}</span>
+                    <span className="text-xs text-gray-400 ml-2">{cat.service_templates?.length || 0} šablon</span>
+                  </div>
+                  <button onClick={e => { e.stopPropagation(); deleteCategory(cat.id) }} className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400"><Trash2 className="w-3.5 h-3.5" /></button>
+                  {expandedCat === cat.id ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                </div>
+
+                {expandedCat === cat.id && (
+                  <div className="border-t border-gray-100 p-4 bg-gray-50/50">
+                    {cat.service_templates?.map((tpl: any) => (
+                      <div key={tpl.id} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-white">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: tpl.color || '#3b82f6' }} />
+                        <span className="flex-1 text-sm text-gray-700">{tpl.name}</span>
+                        <span className="text-xs text-gray-400">{tpl.duration} min</span>
+                        <span className="text-sm font-medium text-gray-900">{tpl.price} Kč</span>
+                        <button onClick={() => deleteTemplate(cat.id, tpl.id)} className="w-6 h-6 rounded flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-300"><Trash2 className="w-3 h-3" /></button>
+                      </div>
+                    ))}
+
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-gray-200">
+                      <input type="text" value={newTplCatId === cat.id ? newTplName : ''} onChange={e => { setNewTplCatId(cat.id); setNewTplName(e.target.value) }}
+                        className="flex-1 px-2 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="Název služby" />
+                      <input type="number" value={newTplCatId === cat.id ? newTplPrice : ''} onChange={e => { setNewTplCatId(cat.id); setNewTplPrice(e.target.value) }}
+                        className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="Cena" />
+                      <select value={newTplCatId === cat.id ? newTplDuration : '60'} onChange={e => { setNewTplCatId(cat.id); setNewTplDuration(e.target.value) }}
+                        className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs">
+                        {[15,30,45,60,75,90,120].map(d => <option key={d} value={d}>{d}m</option>)}
+                      </select>
+                      <button onClick={() => addTemplate(cat.id)} disabled={!newTplName || !newTplPrice || newTplCatId !== cat.id}
+                        className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-xs font-medium disabled:opacity-50"><Plus className="w-3 h-3" /></button>
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </div>
+      )}
+
+      {tab === 'organizations' && (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="text-left p-3 font-medium text-gray-600">Název</th>
+                <th className="text-left p-3 font-medium text-gray-600">Mód</th>
+                <th className="text-left p-3 font-medium text-gray-600">Kategorie</th>
+                <th className="text-center p-3 font-medium text-gray-600">Staff</th>
+                <th className="text-center p-3 font-medium text-gray-600">Služby</th>
+                <th className="text-center p-3 font-medium text-gray-600">Klienti</th>
+                <th className="text-center p-3 font-medium text-gray-600">Rezervace</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orgs.map((org: any) => (
+                <tr key={org.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-3 font-medium text-gray-900">{org.name}</td>
+                  <td className="p-3">
+                    <span className={'px-2 py-1 rounded-full text-xs font-medium ' +
+                      (org.mode === 'solo' ? 'bg-emerald-100 text-emerald-700' :
+                       org.mode === 'team' ? 'bg-blue-100 text-blue-700' :
+                       org.mode === 'solo_inspire' ? 'bg-amber-100 text-amber-700' :
+                       'bg-purple-100 text-purple-700')}>
+                      {org.mode}
+                    </span>
+                  </td>
+                  <td className="p-3 text-gray-500">{org.category || '-'}</td>
+                  <td className="p-3 text-center font-medium">{org.staff_count || 0}</td>
+                  <td className="p-3 text-center font-medium">{org.services_count || 0}</td>
+                  <td className="p-3 text-center font-medium">{org.clients_count || 0}</td>
+                  <td className="p-3 text-center font-medium">{org.bookings_count || 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }
