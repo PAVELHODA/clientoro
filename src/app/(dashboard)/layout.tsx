@@ -21,7 +21,9 @@ const LangContext = createContext<{
   lang: string
   setLang: (l: string) => void
   t: (key: string) => string
-}>({ lang: 'cs', setLang: () => {}, t: (k) => k })
+  modeGradient: string
+  modeText: string
+}>({ lang: 'cs', setLang: () => {}, t: (k) => k, modeGradient: '', modeText: 'white' })
 
 export const useLang = () => useContext(LangContext)
 
@@ -445,7 +447,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   )
 
   return (
-    <LangContext.Provider value={{ lang, setLang, t }}>
+    <LangContext.Provider value={{ lang, setLang, t, modeGradient: theme.gradient, modeText: theme.text }}>
       <div className="flex h-screen bg-gray-50">
         <aside className="hidden md:flex w-64 flex-col relative overflow-hidden flex-shrink-0"
           style={{ background: theme.gradient }}>
