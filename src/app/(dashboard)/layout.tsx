@@ -352,12 +352,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const supabase = createClient()
   const { organization, loading: authLoading } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isSuperadmin, setIsSuperadmin] = useState(false)
   const [lang, setLangState] = useState('cs')
 
   const setLang = (l: string) => {
     setLangState(l)
     if (typeof window !== 'undefined') localStorage.setItem('clientoro_lang', l)
   }
+
+  // Check superadmin
+  useEffect(() => {
+    fetch('/api/admin/stats').then(r => { if (r.ok) setIsSuperadmin(true) }).catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -476,6 +482,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </Link>
           )
         })}
+        {isSuperadmin && (
+          <Link href="/admin"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 mt-2 border-t border-white/10 pt-3"
+            style={pathname === '/admin' ? {
+              background: 'rgba(251,191,36,0.25)',
+              border: '1px solid rgba(251,191,36,0.4)',
+              color: '#fef3c7',
+            } : { color: theme.textMuted }}
+          >
+            <Crown className="w-5 h-5 text-amber-400" />
+            <span className="text-sm font-medium">Superadmin</span>
+          </Link>
+        )}
       </nav>
 
       <div className="absolute bottom-20 left-0 right-0 h-8 opacity-[0.07] pointer-events-none">
@@ -563,6 +582,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </LangContext.Provider>
   )
 }
+
+
+
 
 
 
