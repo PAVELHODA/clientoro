@@ -11,7 +11,7 @@ import {
   Calendar, ClipboardList, Users, Scissors, UserCircle,
   BarChart3, Settings, LogOut, Waves, Sun, Megaphone, Bot,
   TrendingUp, Crown, Wrench, Star, QrCode, LayoutDashboard,
-  Menu, X, Loader2, Globe,
+  Menu, X, Loader2, Globe, Bell,
 } from 'lucide-react'
 
 // ============================================
@@ -278,6 +278,74 @@ function MotivationalTip() {
 // ============================================
 // 🏗️ DASHBOARD LAYOUT
 // ============================================
+
+// 🔔 Notification Bell Component
+function NotificationBell() {
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [showPanel, setShowPanel] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch('/api/notifications')
+        if (res.ok) {
+          const data = await res.json()
+          setNotifications(data || [])
+          setUnreadCount((data || []).filter((n: any) => !n.read).length)
+        }
+      } catch (e) {}
+    }
+    fetchNotifications()
+    const interval = setInterval(fetchNotifications, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const markAllRead = async () => {
+    try {
+      await fetch('/api/notifications', { method: 'PATCH' })
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+      setUnreadCount(0)
+    } catch (e) {}
+  }
+
+  return (
+    <div className="relative">
+      <button onClick={() => { setShowPanel(!showPanel); if (!showPanel && unreadCount > 0) markAllRead() }}
+        className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center relative hover:bg-gray-200 transition-all">
+        <Bell className="w-5 h-5 text-gray-600" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
+      </button>
+      {showPanel && (
+        <div className="absolute right-0 top-11 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
+          <div className="p-3 border-b border-gray-100 flex justify-between items-center">
+            <span className="font-bold text-sm text-gray-900">Oznameni</span>
+            <button onClick={() => setShowPanel(false)} className="text-gray-400 hover:text-gray-600"><X className="w-4 h-4" /></button>
+          </div>
+          {notifications.length === 0 ? (
+            <div className="p-6 text-center text-gray-400 text-sm">Zadna oznameni</div>
+          ) : (
+            notifications.slice(0, 20).map((n: any) => (
+              <div key={n.id} className={'p-3 border-b border-gray-50 ' + (n.read ? 'bg-white' : 'bg-blue-50/50')}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={'w-2 h-2 rounded-full flex-shrink-0 ' + (n.type === 'new_booking' ? 'bg-green-500' : n.type === 'booking_cancelled' ? 'bg-red-500' : 'bg-amber-500')} />
+                  <span className="font-semibold text-xs text-gray-900">{n.title}</span>
+                </div>
+                <p className="text-xs text-gray-500 ml-4">{n.body}</p>
+                <p className="text-[10px] text-gray-300 ml-4 mt-1">{new Date(n.created_at).toLocaleString('cs-CZ')}</p>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
@@ -481,6 +549,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </header>
 
+          <div className="hidden md:flex items-center justify-end gap-3 px-6 py-2 bg-white border-b border-gray-100">
+            <NotificationBell />
+          </div>
           <main className="flex-1 overflow-auto">
             <div className="p-4 md:p-8 max-w-7xl">
               <MotivationalTip />
@@ -492,3 +563,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </LangContext.Provider>
   )
 }
+
+
+
+
