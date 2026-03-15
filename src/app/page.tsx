@@ -111,17 +111,17 @@ export default function LandingPage() {
       <section id="calculator" className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">O kolik přicházíte kvůli prázdným časovým oknům?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">O kolik přicházíte kvůli prázdným slotům?</h2>
             <p className="text-gray-500">Posuňte posuvníky a uvidíte svou potenciální měsíční ztrátu</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
             <div className="space-y-6">
               <div>
-                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Časových oken za den</span><span className="font-bold text-gray-900">{calcSlots}</span></div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Slotů za den</span><span className="font-bold text-gray-900">{calcSlots}</span></div>
                 <input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
               <div>
-                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Délka časového okna</span><span className="font-bold text-gray-900">{calcDuration} min</span></div>
+                <div className="flex justify-between text-sm mb-2"><span className="text-gray-600">Délka slotu</span><span className="font-bold text-gray-900">{calcDuration} min</span></div>
                 <input type="range" min={15} max={180} step={15} value={calcDuration} onChange={e => setCalcDuration(Number(e.target.value))} className="w-full accent-blue-600" />
               </div>
               <div>
@@ -366,3 +366,5 @@ export default function LandingPage() {
     </div>
   )
 }
+
+
