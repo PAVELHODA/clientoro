@@ -396,7 +396,7 @@ export default function CalendarPage() {
 
     if (slotBookings.length > 0) {
       setShowSlotBookings({ date, time, bookings: slotBookings })
-    } else if (!isPast || (backfillMode && date >= maxBackfillDate)) {
+    } else if (!isPast || backfillMode || date === todayStr) {
       setSelectedSlot({ date, time })
     } else if (isPast) {
       const dayBookings = getBookingsForDate(date)
@@ -1000,4 +1000,5 @@ export default function CalendarPage() {
     </div>
   )
 }
+
 
