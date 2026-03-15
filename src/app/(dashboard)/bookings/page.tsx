@@ -29,7 +29,7 @@ export default function BookingsPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
-  const { t, lang } = useLang()
+  const { t, lang, modeGradient } = useLang()
 
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
   const currency = t('currency')
@@ -191,7 +191,7 @@ export default function BookingsPage() {
           {STATUS_OPTIONS.map(o => (
             <button key={o.value} onClick={() => setStatusFilter(o.value)}
               className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                statusFilter === o.value ? 'bg-blue-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                statusFilter === o.value ? 'text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
               }`}>
               {o.label}
             </button>
@@ -299,7 +299,7 @@ export default function BookingsPage() {
           </h3>
           <p className="mt-1 text-gray-500">{search || statusFilter !== 'all' ? labels.changeFilters : labels.createFirst}</p>
           {!search && statusFilter === 'all' && (
-            <a href="/calendar" className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm">
+            <a href="/calendar" style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm">
               <Calendar className="w-4 h-4" /> {labels.openCalendar}
             </a>
           )}
@@ -346,4 +346,5 @@ export default function BookingsPage() {
     </div>
   )
 }
+
 

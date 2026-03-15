@@ -36,7 +36,7 @@ export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
   const [sortBy, setSortBy] = useState<string>('name_asc')
   const [filterSource, setFilterSource] = useState<string>('all')
-  const { t, lang } = useLang()
+  const { t, lang, modeGradient } = useLang()
 
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
   const currency = t('currency')
@@ -190,7 +190,7 @@ export default function ClientsPage() {
           <p className="mt-1 text-gray-500">{l.subtitle} ({sortedClients.length}/{clients.length})</p>
         </div>
         <button onClick={handleNew}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm transition-colors">
+          style={{ background: modeGradient }} className="inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm transition-colors">
           <Plus className="w-4 h-4" /> {l.newClient}
         </button>
       </div>
@@ -268,7 +268,7 @@ export default function ClientsPage() {
           </div>
           <div className="flex gap-3 mt-5">
             <button onClick={handleSave} disabled={saving}
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm disabled:opacity-50">
+              style={{ background: modeGradient }} className="px-5 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm disabled:opacity-50">
               {saving ? l.saving : editingId ? l.saveChanges : l.createClient}
             </button>
             <button onClick={() => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM) }}
@@ -352,7 +352,7 @@ export default function ClientsPage() {
           <p className="mt-1 text-gray-500">{search || filterSource !== 'all' ? l.tryOther : l.addFirst}</p>
           {!search && filterSource === 'all' && (
             <button onClick={handleNew}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm">
+              style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm">
               <Plus className="w-4 h-4" /> {l.newClient}
             </button>
           )}
@@ -410,3 +410,4 @@ export default function ClientsPage() {
     </div>
   )
 }
+

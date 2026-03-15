@@ -21,7 +21,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  const { t, lang } = useLang()
+  const { t, lang, modeGradient } = useLang()
 
   const l = {
     title: t('set_title'),
@@ -161,7 +161,7 @@ export default function SettingsPage() {
         <div className="flex items-center gap-3">
           {saved && <span className="text-sm text-green-600 font-medium">{l.saved}</span>}
           <button onClick={save} disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm disabled:opacity-50">
+            style={{ background: modeGradient }} className="px-4 py-2 text-white rounded-lg hover:brightness-110 font-medium text-sm disabled:opacity-50">
             {saving ? l.saving : l.save}
           </button>
         </div>
@@ -327,3 +327,4 @@ export default function SettingsPage() {
     </div>
   )
 }
+

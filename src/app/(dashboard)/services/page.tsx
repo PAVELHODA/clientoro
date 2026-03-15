@@ -44,7 +44,7 @@ export default function ServicesPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
-  const { t, lang } = useLang()
+  const { t, lang, modeGradient } = useLang()
 
   const currency = t('currency')
 
@@ -159,7 +159,7 @@ export default function ServicesPage() {
           <p className="mt-1 text-gray-500">{l.subtitle}</p>
         </div>
         <button onClick={handleNew}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm transition-colors">
+          style={{ background: modeGradient }} className="inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm transition-colors">
           <Plus className="w-4 h-4" /> {l.newService}
         </button>
       </div>
@@ -244,7 +244,7 @@ export default function ServicesPage() {
           </div>
           <div className="flex gap-3 mt-5 pt-4 border-t border-gray-100">
             <button onClick={handleSave} disabled={saving}
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm disabled:opacity-50 shadow-sm">
+              style={{ background: modeGradient }} className="px-5 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm disabled:opacity-50 shadow-sm">
               {saving ? l.saving : editingId ? l.saveChanges : l.createService}
             </button>
             <button onClick={() => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM) }}
@@ -265,7 +265,7 @@ export default function ServicesPage() {
           <h3 className="text-lg font-semibold text-gray-900">{l.noServices}</h3>
           <p className="mt-1 text-gray-500">{l.addFirst}</p>
           <button onClick={handleNew}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm">
+            style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm">
             <Plus className="w-4 h-4" /> {l.newService}
           </button>
         </div>
@@ -321,3 +321,4 @@ export default function ServicesPage() {
     </div>
   )
 }
+

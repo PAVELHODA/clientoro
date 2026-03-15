@@ -28,7 +28,7 @@ const AVATAR_COLORS = [
 
 export default function StaffPage() {
   const { organization } = useAuth()
-  const { t, lang } = useLang()
+  const { t, lang, modeGradient } = useLang()
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
 
   const WEEKDAYS = lang === 'en'
@@ -249,7 +249,7 @@ export default function StaffPage() {
           <p className="mt-1 text-gray-500">{l.subtitle} ({staff.length} {l.members})</p>
         </div>
         <button onClick={handleNew}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm transition-colors">
+          style={{ background: modeGradient }} className="inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm transition-colors">
           <Plus className="w-4 h-4" /> {l.newMember}
         </button>
       </div>
@@ -298,7 +298,7 @@ export default function StaffPage() {
             </div>
           </div>
           <div className="flex gap-3 mt-5 pt-4 border-t border-gray-100">
-            <button onClick={handleSave} disabled={saving} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm disabled:opacity-50 shadow-sm">
+            <button onClick={handleSave} disabled={saving} style={{ background: modeGradient }} className="px-5 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm disabled:opacity-50 shadow-sm">
               {saving ? l.saving : editingId ? l.saveChanges : l.addToTeam}
             </button>
             <button onClick={() => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM) }} className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 font-medium text-sm">{l.cancel}</button>
@@ -313,7 +313,7 @@ export default function StaffPage() {
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4"><UserCircle className="w-8 h-8 text-blue-400" /></div>
           <h3 className="text-lg font-semibold text-gray-900">{l.noStaff}</h3>
           <p className="mt-1 text-gray-500">{l.addFirst}</p>
-          <button onClick={handleNew} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-sm shadow-sm"><Plus className="w-4 h-4" /> {l.newMember}</button>
+          <button onClick={handleNew} style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm"><Plus style={{ background: modeGradient }} className="w-4 h-4" /> {l.newMember}</button>
         </div>
       ) : (
         <div className="space-y-4">
@@ -405,7 +405,7 @@ export default function StaffPage() {
                             ))}
                           </div>
                           <button onClick={saveWorkingHours} disabled={whSaving}
-                            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 disabled:opacity-50 shadow-sm">
+                            style={{ background: modeGradient }} className="mt-3 px-4 py-2 text-white rounded-xl text-sm font-medium hover:brightness-110 disabled:opacity-50 shadow-sm">
                             {whSaving ? l.saving : l.saveWH}
                           </button>
                         </div>
@@ -491,3 +491,4 @@ export default function StaffPage() {
     </div>
   )
 }
+
