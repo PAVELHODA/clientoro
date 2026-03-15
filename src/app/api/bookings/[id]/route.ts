@@ -1,4 +1,3 @@
-// PATH: src/app/api/bookings/[id]/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { getOrgId } from '@/lib/api/getOrgId'
 import { NextRequest, NextResponse } from 'next/server'
@@ -6,37 +5,42 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    if (!orgId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
     const body = await request.json()
-    const { status } = body
-
-    const validStatuses = ['confirmed', 'completed', 'cancelled', 'no_show', 'rescheduled']
-    if (!validStatuses.includes(status)) {
-      return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
-    }
 
     const { data, error } = await supabaseAdmin
       .from('bookings')
-      .update({ status, updated_at: new Date().toISOString() })
+      .update(body)
       .eq('id', params.id)
       .eq('organization_id', orgId)
-      .select()
+      .select('*, clients(full_name, phone, email), services(name, color, duration, price), staff(full_name)')
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    if (!data) return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+
+    if (body.status === 'cancelled') {
+      try {
+        const baseUrl = request.headers.get('host') || 'localhost:3000'
+        const protocol = baseUrl.includes('localhost') ? 'http' : 'https'
+        await fetch(protocol + '://' + baseUrl + '/api/bookings/webhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'cancelled', booking_id: params.id, organization_id: orgId }),
+        })
+      } catch (e) { console.error('[webhook-trigger]', e) }
+    }
 
     return NextResponse.json(data)
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+  } catch (err) {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    if (!orgId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
     const { error } = await supabaseAdmin
       .from('bookings')
@@ -45,9 +49,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       .eq('organization_id', orgId)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-    return NextResponse.json({ success: true })
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+    return NextResponse.json({ deleted: true })
+  } catch (err) {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

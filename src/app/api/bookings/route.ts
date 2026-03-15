@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { getOrgId } from '@/lib/api/getOrgId'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -53,8 +53,21 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    // Trigger webhook notification
+    try {
+      const baseUrl = request.headers.get('host') || 'localhost:3000'
+      const protocol = baseUrl.includes('localhost') ? 'http' : 'https'
+      await fetch(protocol + '://' + baseUrl + '/api/bookings/webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'created', booking_id: data.id, organization_id: orgId }),
+      })
+    } catch (e) { console.error('[webhook-trigger]', e) }
+
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+
