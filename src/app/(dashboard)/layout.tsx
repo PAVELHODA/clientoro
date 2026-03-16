@@ -163,14 +163,14 @@ const TIPS: Record<string, string[]> = {
     'Dnes je perfektní den udělat něco, za co vám klienti poděkují.',
   ],
   '/calendar': [
-    'Každý volný slot je příležitost, ne problém.',
+    'Každý volný termín je příležitost, ne problém.',
     'Za každým termínem v kalendáři je člověk, který vám důvěřuje.',
     'Klient, který se cítí výjimečně, se vždy vrátí.',
   ],
   '/bookings': [
     'Každá rezervace je důvěra klienta ve vaši práci.',
     'Potvrzená rezervace = jistý příjem. Tak jednoduché to je.',
-    'Méně no-show, více tržeb. Připomínky dělají zázraky.',
+    'Méně nedorazivších (no-show), více tržeb. Připomínky dělají zázraky.',
   ],
   '/clients': [
     'Spokojený klient řekne třem kamarádům. Nespokojený deseti.',
@@ -582,6 +582,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </LangContext.Provider>
   )
 }
+
 
 
 

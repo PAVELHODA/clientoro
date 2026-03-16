@@ -129,7 +129,7 @@ export default function CalendarPage() {
     all: lang === 'en' ? 'All' : lang === 'sk' ? 'Vsetci' : 'Vsichni',
     bookings: lang === 'en' ? 'Bookings' : lang === 'sk' ? 'Rezervacii' : 'Rezervaci',
     revenue: lang === 'en' ? 'Revenue' : 'Trzby',
-    freeSlots: lang === 'en' ? 'Free slots' : lang === 'sk' ? 'Volnych slotov' : 'Volnych slotu',
+    freeSlots: lang === 'en' ? 'Free slots' : lang === 'sk' ? 'Volnych terminov' : 'Volnych terminu',
     newBooking: t('cal_new_booking'),
     booking: lang === 'en' ? 'Booking' : lang === 'sk' ? 'Rezervacia' : 'Rezervace',
     client: lang === 'en' ? 'Client' : 'Klient',
@@ -148,13 +148,13 @@ export default function CalendarPage() {
     unknown: lang === 'en' ? 'Unknown' : 'Neznamy',
     rez: lang === 'en' ? 'book.' : 'rez.',
     at: lang === 'en' ? 'at' : 'v',
-    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervacie v tomto slote' : 'Rezervace v tomto slotu',
+    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervacie v tomto termine' : 'Rezervace v tomto terminu',
     noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Ziadne rezervacie' : 'Zadne rezervace',
     working: lang === 'en' ? 'Working' : lang === 'sk' ? 'Pracuju' : 'Pracuji',
     backfillBanner: lang === 'en' ? 'Backfill mode — you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis — moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis — moznost pridat rezervace do minulosti (max 90 dni)',
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
     backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dovod zpetneho zapisu *' : 'Duvod zpetneho zapisu *',
-    freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych slotov! Ponuknite ich s AI' : 'volnych slotu! Nabidnete je s AI',
+    freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
     backfillLabel: lang === 'en' ? 'Backfill' : 'Zpetny zapis',
     emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvu sluzbu pre rezervacie' : 'Pridejte prvni sluzbu pro rezervace',
     emptyStaff: lang === 'en' ? 'Add team members to see staff columns' : lang === 'sk' ? 'Pridajte clenov timu' : 'Pridejte cleny tymu',
@@ -375,7 +375,7 @@ export default function CalendarPage() {
       confirmed: { cs: 'Potvrzeno', sk: 'Potvrdena', en: 'Confirmed' },
       completed: { cs: 'Dokonceno', sk: 'Dokoncena', en: 'Completed' },
       cancelled: { cs: 'Zruseno', sk: 'Zrusena', en: 'Cancelled' },
-      no_show: { cs: 'Nedostavil/a se', sk: 'Nedostavil/a sa', en: 'No-show' },
+      no_show: { cs: 'Nedorazil/a (no-show)', sk: 'Nedostavil/a sa', en: 'No-show' },
     }
     return m[status]?.[lang] || status
   }
@@ -1000,5 +1000,7 @@ export default function CalendarPage() {
     </div>
   )
 }
+
+
 
 
