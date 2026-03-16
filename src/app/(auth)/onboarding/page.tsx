@@ -1,4 +1,4 @@
-﻿﻿﻿﻿'use client'
+﻿﻿﻿﻿﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -20,6 +20,13 @@ export default function OnboardingPage() {
   const router = useRouter()
 
   const [orgName, setOrgName] = useState('')
+  // Predvyplnit nazev z organizations
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => {
+      if (d?.name) setOrgName(d.name)
+      if (d?.email) setOrgEmail(d.email)
+    }).catch(() => {})
+  }, [])
   const [orgAddress, setOrgAddress] = useState('')
   const [orgPhone, setOrgPhone] = useState('')
   const [orgEmail, setOrgEmail] = useState('')

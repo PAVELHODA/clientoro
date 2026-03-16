@@ -1,4 +1,4 @@
-﻿// PATH: src/app/(dashboard)/settings/page.tsx
+﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -39,7 +39,7 @@ export default function SettingsPage() {
     workingHours: lang === 'en' ? 'Working hours & calendar' : lang === 'sk' ? 'Pracovná doba a kalendár' : 'Pracovní doba a kalendář',
     start: lang === 'en' ? 'Start' : lang === 'sk' ? 'Začiatok' : 'Začátek',
     end: lang === 'en' ? 'End' : 'Konec',
-    slotDuration: lang === 'en' ? 'Slot duration' : lang === 'sk' ? 'Dĺžka slotu' : 'Délka slotu',
+    slotDuration: lang === 'en' ? 'Slot duration' : lang === 'sk' ? 'Dĺžka slotu' : 'Délka termínu',
     minutes: lang === 'en' ? 'minutes' : 'minut',
     bookingPage: lang === 'en' ? 'Booking page' : 'Booking stránka',
     copy: lang === 'en' ? 'Copy' : lang === 'sk' ? 'Kopírovať' : 'Kopírovat',
