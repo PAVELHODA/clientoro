@@ -1,4 +1,4 @@
-﻿'use client'
+﻿﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -303,7 +303,7 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Délka slotu</label>
                   <div className="grid grid-cols-4 gap-2">
-                    {[15, 30, 45, 60].map(d => (
+                    {[15, 30, 45, 60, 90, 120].map(d => (
                       <button key={d} onClick={() => setSlotDuration(d)}
                         className={`py-2 rounded-xl text-sm font-medium transition-all ${
                           slotDuration === d ? 'bg-amber-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
