@@ -1,4 +1,4 @@
-// PATH: src/app/api/register/route.ts
+﻿// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       slug,
       owner_user_id: userId,
       mode: mode || 'solo',
-      category: 'beauty',
+      category: 'other',
       work_start: 8,
       work_end: 17,
       timezone: 'Europe/Prague',
