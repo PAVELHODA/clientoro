@@ -63,8 +63,8 @@ export default function SettingsPage() {
 
   const MODE_CARDS = [
     {
-      mode: 'solo', label: '🟢 OSVČ Start',
-      desc: lang === 'en' ? 'For solo entrepreneurs' : lang === 'sk' ? 'Pre podnikateľov, ktorí pracujú sami' : 'Pro podnikatele, kteří pracují sami',
+      mode: 'solo', label: '🟢 OSVČ',
+      desc: lang === 'en' ? 'For solo entrepreneurs (1 person)' : lang === 'sk' ? 'Pre podnikateľov (1 osoba)' : 'Pro podnikatele (1 osoba)',
       color: 'from-teal-500 to-cyan-400', border: 'border-teal-300', bg: 'bg-teal-50',
       features: lang === 'en'
         ? ['Calendar + booking link', 'Bookings (max 50/mo)', 'Clients CRM (max 100)', 'Services + basic reports', 'Birthday + No-show SMS (30/mo)', 'Passes (max 3 types)', 'Service bundles (max 2)', 'Discounts + Happy Hours (max 1)', 'First visit + birthday discount', 'Online booking discount', '"Verified profile" badge', 'Data export (GDPR)', 'UTM tracking']
@@ -73,13 +73,13 @@ export default function SettingsPage() {
         : ['Kalendář + booking link', 'Rezervace (max 50/měs)', 'Klienti CRM (max 100)', 'Služby + basic reporty', 'Narozeniny + No-show SMS (30/měs)', 'Permanentky (max 3 typy)', 'Balíčky služeb (max 2)', 'Slevy + Happy Hours (max 1)', 'First visit + narozeninová sleva', 'Online booking sleva', 'Odznak "Ověřený profil"', 'Export dat (GDPR)', 'UTM tracking'],
       tiers: [
         { label: lang === 'en' ? 'Without AI' : 'Bez AI', price: '49', year: '39', rec: false },
-        { label: lang === 'en' ? 'With our AI (5 queries/day)' : lang === 'sk' ? 'S naším AI (5 dotazov/deň)' : 'S naším AI (5 dotazů/den)', price: '99', year: '79', rec: true },
+        { label: lang === 'en' ? 'With AI insights' : lang === 'sk' ? 'S AI insighty' : 'S AI insighty', price: '99', year: '79', rec: true },
       ],
       trial: l.trial, free: l.freeAfter, up: 'solo_inspire',
     },
     {
-      mode: 'team', label: '🔵 Firma Start',
-      desc: lang === 'en' ? 'For businesses with employees' : lang === 'sk' ? 'Pre firmy so zamestnancami' : 'Pro firmy se zaměstnanci',
+      mode: 'team', label: '🔵 FIRMA',
+      desc: lang === 'en' ? 'For businesses (owner + up to 4 staff)' : lang === 'sk' ? 'Pre firmy (majiteľ + max 4 zamestnanci)' : 'Pro firmy (majitel + max 4 zaměstnanci)',
       color: 'from-blue-600 to-sky-400', border: 'border-blue-300', bg: 'bg-blue-50',
       features: lang === 'en'
         ? ['Everything from Solo (unlimited)', '+ Team management + staff calendar', '+ Shifts and notifications', '+ Reports per staff', '+ Weekly email report', '+ Client mini-portal', '+ GA4 / Sklik / FB Pixel', '+ Google Calendar sync', '+ Time-based passes', '+ Unlimited passes + bundles', '+ Seasonal + combo discounts', '+ Recurring bookings', '+ Online payments / deposits', '+ Pre-visit forms', '+ Multiple locations (max 3)']
@@ -88,13 +88,13 @@ export default function SettingsPage() {
         : ['Vše z OSVČ (neomezené)', '+ Správa týmu + staff kalendář', '+ Směny a notifikace', '+ Reporty per staff', '+ Týdenní email report', '+ Klientský mini-portál', '+ GA4 / Sklik / FB Pixel', '+ Google Calendar sync', '+ Permanentky na čas', '+ Neomezené permanentky + balíčky', '+ Sezónní + combo slevy', '+ Opakované rezervace', '+ Online platby / depozity', '+ Formuláře před návštěvou', '+ Více poboček (max 3)'],
       tiers: [
         { label: lang === 'en' ? 'Without AI' : 'Bez AI', price: '299', year: '239', rec: false },
-        { label: lang === 'en' ? 'With our AI (10 queries/day)' : lang === 'sk' ? 'S naším AI (10 dotazov/deň)' : 'S naším AI (10 dotazů/den)', price: '499', year: '399', rec: true },
+        { label: lang === 'en' ? 'With AI insights' : lang === 'sk' ? 'S AI insighty' : 'S AI insighty', price: '499', year: '399', rec: true },
       ],
       trial: null, free: null, up: 'pro_inspire',
     },
     {
       mode: 'solo_inspire', label: '🏖️ Solo Inspire',
-      desc: lang === 'en' ? 'Solo with AI & growth tools' : lang === 'sk' ? 'OSVČ s AI a growth nástrojmi' : 'OSVČ s AI a growth nástroji',
+      desc: lang === 'en' ? 'Solo + AI & growth tools (1 person)' : lang === 'sk' ? 'OSVČ + AI a growth nástroje (1 osoba)' : 'OSVČ + AI a growth nástroje (1 osoba)',
       color: 'from-amber-500 to-yellow-400', border: 'border-amber-300', bg: 'bg-amber-50',
       features: lang === 'en'
         ? ['Everything from Solo (unlimited)', '+ Smart AI assistant (unlimited)', '+ AI Business Coach', '+ AI monitors booking trends', '+ AI dead hours detection', '+ AI non-returning clients detection', '+ Campaigns (5/mo)', '+ Google reviews booster', '+ QR codes with tracking', '+ Smart rebooking', '+ Growth reports', '+ Waitlist', '+ Discount codes + loyalty program', '+ Referral program', '+ Rebooking + last minute + review discounts', '+ Subscription / membership', '+ Booking page branding', '+ Gift vouchers']
@@ -109,7 +109,7 @@ export default function SettingsPage() {
     },
     {
       mode: 'pro_inspire', label: '🏖️✨ Pro Inspire',
-      desc: lang === 'en' ? 'Business with AI & growth tools — maximum' : lang === 'sk' ? 'Firma s AI a growth nástrojmi — maximum' : 'Firma s AI a growth nástroji — maximum',
+      desc: lang === 'en' ? 'Business + AI & growth — max (owner + up to 24 staff)' : lang === 'sk' ? 'Firma + AI a growth — maximum (majiteľ + max 24 zamestnancov)' : 'Firma + AI a growth — maximum (majitel + max 24 zaměstnanců)',
       color: 'from-amber-600 to-yellow-300', border: 'border-yellow-400', bg: 'bg-yellow-50',
       features: lang === 'en'
         ? ['Everything from Team + Solo Inspire', '+ AI Copilot (advanced)', '+ AI Smart Slot Filler', '+ AI Revenue insights', '+ AI weekly report with recommendations', '+ AI reactivation campaigns', '+ AI pass + discount recommendations', '+ Churn prevention AI', '+ Staff leaderboard', '+ JSON-LD SEO (free slots on Google)', '+ Missed call capture', '+ Unlimited campaigns', '+ Marketplace / directory', '+ Unlimited locations']
@@ -327,4 +327,5 @@ export default function SettingsPage() {
     </div>
   )
 }
+
 
