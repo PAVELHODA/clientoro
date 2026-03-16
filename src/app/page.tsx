@@ -164,9 +164,9 @@ export default function LandingPage() {
             <p className="text-gray-500">Posuňte posuvníky a uvidíte kolik vás stojí nedorazivší klienti (no-show).</p>
           </div>
           <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6 space-y-5">
-            <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">Klientů denně</span><span className="font-bold">{calcSlots}</span></div><input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} className="w-full accent-amber-500" /></div>
-            <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">Průměrná cena služby</span><span className="font-bold">{calcPrice} Kc</span></div><input type="range" min={200} max={5000} step={100} value={calcPrice} onChange={e => setCalcPrice(Number(e.target.value))} className="w-full accent-amber-500" /></div>
-            <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">Míra nedorazivších (no-show)</span><span className="font-bold">{calcNoshow}%</span></div><input type="range" min={0} max={40} value={calcNoshow} onChange={e => setCalcNoshow(Number(e.target.value))} className="w-full accent-amber-500" /></div>
+            <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">Klientů denně</span><span className="font-bold">{calcSlots}</span></div><input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} aria-label="Klientů denně" className="w-full accent-amber-500" /></div>
+            <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">Průměrná cena služby</span><span className="font-bold">{calcPrice} Kc</span></div><input type="range" min={200} max={5000} step={100} value={calcPrice} onChange={e => setCalcPrice(Number(e.target.value))} aria-label="Průměrná cena služby" className="w-full accent-amber-500" /></div>
+            <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">Míra nedorazivších (no-show)</span><span className="font-bold">{calcNoshow}%</span></div><input type="range" min={0} max={40} value={calcNoshow} onChange={e => setCalcNoshow(Number(e.target.value))} aria-label="Míra nedorazivších" className="w-full accent-amber-500" /></div>
             <div className="bg-red-50 rounded-xl p-4 border border-red-200 text-center">
               <p className="text-sm text-red-600 mb-1">Měsíčně přicházíte o</p>
               <p className="text-3xl font-bold text-red-700">{lostRevenue.toLocaleString('cs-CZ')} Kc</p>
@@ -262,6 +262,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 

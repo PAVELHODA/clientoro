@@ -1,4 +1,4 @@
-﻿// PATH: src/app/(dashboard)/layout.tsx
+﻿﻿// PATH: src/app/(dashboard)/layout.tsx
 'use client'
 
 import Link from 'next/link'
@@ -582,7 +582,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </LangContext.Provider>
   )
 }
-
 
 
 

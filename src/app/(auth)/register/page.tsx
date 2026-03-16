@@ -1,4 +1,4 @@
-// PATH: src/app/(auth)/register/page.tsx
+﻿// PATH: src/app/(auth)/register/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -181,6 +181,14 @@ export default function RegisterPage() {
                 </div>
               </div>
 
+              {/* GDPR */}
+              <div className="flex items-start gap-3">
+                <input type="checkbox" id="gdpr" required className="mt-1 w-4 h-4 rounded border-gray-300 text-sky-600 focus:ring-sky-500" />
+                <label htmlFor="gdpr" className="text-xs text-gray-500 leading-relaxed">
+                  {'Souhlasím se zpracováním osobních údajů a obchodními podmínkami. Data šifrována (AES-256), přenos zabezpečen (TLS 1.2+), přístup chráněn row-level security. GDPR kompatibilní.'}
+                </label>
+              </div>
+
               <button type="submit" disabled={loading}
                 className="w-full py-3 text-white rounded-xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 transition-all hover:shadow-xl"
                 style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
@@ -210,3 +218,4 @@ export default function RegisterPage() {
     </div>
   )
 }
+
