@@ -1,4 +1,4 @@
-﻿﻿﻿'use client'
+﻿﻿﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -347,7 +347,7 @@ export default function OnboardingPage() {
                   <li>🏢 {orgName}</li>
                   {currentCategory && <li>{currentCategory.icon} {currentCategory.name}</li>}
                   <li>📋 {selectedTemplates.size} služeb{customServiceName ? ' + 1 vlastní' : ''}</li>
-                  <li>🕐 {workStart}:00 - {workEnd}:00, sloty po {slotDuration} min</li>
+                  <li>🕐 {workStart}:00 - {workEnd}:00, termíny po {slotDuration} min</li>
                 </ul>
               </div>
 

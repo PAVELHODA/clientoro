@@ -1,4 +1,4 @@
-﻿// PATH: src/app/api/register/route.ts
+﻿﻿// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = authData.user.id
-    const slug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    let slug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    const { data: existingSlug } = await supabaseAdmin.from('organizations').select('id').eq('slug', slug).single()
+    if (existingSlug) { slug = slug + '-' + Math.random().toString(36).substring(2, 6) }
 
     // 2. Vytvor profil (name, NE full_name; BEZ role)
     const { error: profileError } = await supabaseAdmin.from('profiles').insert({

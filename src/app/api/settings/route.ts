@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+﻿﻿﻿﻿﻿﻿﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { getOrgId } from '@/lib/api/getOrgId'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (error) {
+      console.error('[settings PUT] UPDATE ERROR:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
@@ -39,13 +40,14 @@ export async function PUT(request: NextRequest) {
       'website', 'work_start', 'work_end', 'slot_duration',
       'booking_link', 'timezone', 'onboarding_completed',
       'category', 'description', 'city', 'zip', 'logo_url',
-      'language', 'slug',
+      'language',
     ]
 
     const updateData: any = {}
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
-        updateData[field] = body[field]
+        const dbField = field === 'booking_link' ? 'slug' : field
+        updateData[dbField] = body[field]
       }
     }
 
@@ -64,6 +66,7 @@ export async function PUT(request: NextRequest) {
       .single()
 
     if (error) {
+      console.error('[settings PUT] UPDATE ERROR:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
