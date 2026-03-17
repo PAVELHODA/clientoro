@@ -1,4 +1,4 @@
-﻿// PATH: src/app/(dashboard)/dashboard/page.tsx
+﻿﻿﻿// PATH: src/app/(dashboard)/dashboard/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -63,11 +63,11 @@ export default function DashboardPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">{t('dash_title')}</h1>
         <p className="mt-1 text-gray-500">
-          {t('dash_subtitle')} â€” {new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          {t('dash_subtitle')} — {new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
         </p>
       </div>
 
-      {/* KPI karty â€” dnes */}
+      {/* KPI karty — dnes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-3">
@@ -120,10 +120,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* LevĂ˝ sloupec â€” 2/3 */}
+        {/* Levy sloupec — 2/3 */}
         <div className="lg:col-span-2 space-y-6">
 
-          {/* TĂ˝dennĂ­ graf */}
+          {/* Tydenni graf */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dash_this_week')}</h2>
             <div className="flex items-end gap-3 h-40">
@@ -153,7 +153,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* DneĹˇnĂ­ rezervace */}
+          {/* Dnesni rezervace */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">{t('dash_today_reservations')}</h2>
@@ -182,15 +182,15 @@ export default function DashboardPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-gray-900 text-sm truncate">
-                            {b.customer_name || b.clients?.full_name || 'â€”'}
+                            {b.customer_name || b.clients?.full_name || '—'}
                           </span>
                           {isNow && <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">{t('dash_now')}</span>}
                           {b.status === 'no_show' && <span className="px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-xs font-medium">No-show</span>}
                         </div>
-                        <p className="text-xs text-gray-500">{b.services?.name || '-'} â€˘ {b.staff?.full_name || '-'}</p>
+                        <p className="text-xs text-gray-500">{b.services?.name || '-'} • {b.staff?.full_name || '-'}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">{time} â€“ {endTime}</p>
+                        <p className="text-sm font-medium text-gray-900">{time} — {endTime}</p>
                         {b.price && <p className="text-xs text-gray-500">{b.price} {currency}</p>}
                       </div>
                     </div>
@@ -201,10 +201,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* PravĂ˝ sloupec â€” 1/3 */}
+        {/* Pravy sloupec — 1/3 */}
         <div className="space-y-6">
 
-          {/* MÄ›sĂ­ÄŤnĂ­ statistiky */}
+          {/* Mesicni statistiky */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dash_this_month')}</h2>
             <div className="space-y-4">
@@ -248,7 +248,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Top sluĹľby */}
+          {/* Top sluzby */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dash_top_services')}</h2>
             {data.topServices.length === 0 ? (
@@ -268,7 +268,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-sm font-bold text-gray-900">{svc.count}Ă—</p>
+                      <p className="text-sm font-bold text-gray-900">{svc.count}x</p>
                       <p className="text-xs text-gray-400">{formatPrice(svc.revenue)}</p>
                     </div>
                   </div>
