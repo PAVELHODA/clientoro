@@ -1,4 +1,4 @@
-﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
+﻿﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -318,6 +318,28 @@ export default function SettingsPage() {
               )
             })}
           </div>
+
+
+        {/* Nebezpecna zona */}
+        <div className="mt-8 bg-red-50 rounded-xl border border-red-200 p-6">
+          <h3 className="text-lg font-bold text-red-800 mb-2">Nebezpecna zona</h3>
+          <p className="text-sm text-red-600 mb-4">Smazani organizace je nevratne. Vsechna data budou trvale odstranena.</p>
+          <button
+            onClick={async () => {
+              if (!confirm('Opravdu chcete smazat organizaci? Tato akce je NEVRATNA!')) return
+              if (!confirm('Jste si UPLNE jisti? Vsechna data budou trvale smazana!')) return
+              const r = await fetch('/api/settings/delete-org', { method: 'DELETE' })
+              if (r.ok) {
+                alert('Organizace byla smazana.')
+                window.location.href = '/login'
+              } else {
+                alert('Chyba pri mazani organizace.')
+              }
+            }}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">
+            Smazat organizaci
+          </button>
+        </div>
 
           <div className="mt-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
             <p className="text-sm text-blue-800 font-medium">{l.tipText}</p>
