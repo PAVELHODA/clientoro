@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+﻿﻿﻿﻿﻿﻿﻿﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { getOrgId } from '@/lib/api/getOrgId'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -40,7 +40,7 @@ export async function PUT(request: NextRequest) {
       'website', 'work_start', 'work_end', 'slot_duration',
       'booking_link', 'timezone', 'onboarding_completed',
       'category', 'description', 'city', 'zip', 'logo_url',
-      'language',
+      'language', 'ico', 'dic',
     ]
 
     const updateData: any = {}

@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿'use client'
+﻿﻿﻿﻿﻿﻿﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -27,6 +27,10 @@ export default function OnboardingPage() {
       if (d?.email) setOrgEmail(d.email)
     }).catch(() => {})
   }, [])
+  const [orgIco, setOrgIco] = useState('')
+  const [orgDic, setOrgDic] = useState('')
+  const [icoLoading, setIcoLoading] = useState(false)
+  const [icoError, setIcoError] = useState('')
   const [orgAddress, setOrgAddress] = useState('')
   const [orgPhone, setOrgPhone] = useState('')
   const [orgEmail, setOrgEmail] = useState('')
@@ -60,6 +64,26 @@ export default function OnboardingPage() {
     return val
   }
 
+  
+  const lookupIco = async (ico: string) => {
+    setOrgIco(ico)
+    setIcoError('')
+    if (ico.length !== 8 || !/^\d{8}$/.test(ico)) return
+    setIcoLoading(true)
+    try {
+      const r = await fetch('/api/ares?ico=' + ico)
+      if (r.ok) {
+        const d = await r.json()
+        if (d.name && !orgName) setOrgName(d.name)
+        if (d.address && !orgAddress) setOrgAddress(d.address)
+        if (d.dic) setOrgDic(d.dic)
+      } else {
+        setIcoError('ICO nenalezeno v ARES')
+      }
+    } catch { setIcoError('Chyba pri overeni ICO') }
+    setIcoLoading(false)
+  }
+
   const bookingSlug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'muj-salon'
 
   useEffect(() => {
@@ -88,7 +112,7 @@ export default function OnboardingPage() {
     setSaving(true)
     await fetch('/api/settings', {
       method: 'PUT', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: orgName, address: orgAddress, phone: orgPhone, email: orgEmail, booking_link: bookingSlug, category: currentCategory?.slug || 'other' }),
+      body: JSON.stringify({ name: orgName, address: orgAddress, phone: orgPhone, email: orgEmail, ico: orgIco, dic: orgDic, booking_link: bookingSlug, category: currentCategory?.slug || 'other' }),
     })
     setSaving(false); setStep(1)
     if (currentCategory) selectAllTemplates()
@@ -196,6 +220,24 @@ export default function OnboardingPage() {
                   </div>
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">ICO</label>
+                    <div className="relative">
+                      <input type="text" value={orgIco} onChange={e => lookupIco(e.target.value.replace(/\D/g, '').slice(0, 8))}
+                        className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="12345678" maxLength={8} />
+                      {icoLoading && <span className="absolute right-3 top-3 text-xs text-blue-500">Overuji...</span>}
+                    </div>
+                    {icoError && <p className="text-xs text-red-500 mt-1">{icoError}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">DIC</label>
+                    <input type="text" value={orgDic} onChange={e => setOrgDic(e.target.value)}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                      placeholder="CZ12345678" />
+                  </div>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Adresa</label>
                   <input type="text" value={orgAddress} onChange={e => setOrgAddress(e.target.value)}
