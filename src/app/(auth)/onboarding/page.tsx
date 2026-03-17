@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿'use client'
+﻿﻿﻿﻿﻿﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -41,6 +41,24 @@ export default function OnboardingPage() {
   const [workStart, setWorkStart] = useState(8)
   const [workEnd, setWorkEnd] = useState(17)
   const [slotDuration, setSlotDuration] = useState(30)
+
+    const formatPhone = (val: string) => {
+    let digits = val.replace(/[^\d+]/g, '')
+    if (digits.startsWith('00420')) digits = '+420' + digits.slice(5)
+    else if (digits.startsWith('00421')) digits = '+421' + digits.slice(5)
+    else if (digits.startsWith('420') && !digits.startsWith('+')) digits = '+420' + digits.slice(3)
+    else if (digits.startsWith('421') && !digits.startsWith('+')) digits = '+421' + digits.slice(3)
+    else if (/^\d{9}$/.test(digits)) digits = '+420' + digits
+    if (digits.startsWith('+420') && digits.length > 4) {
+      const num = digits.slice(4).replace(/\D/g, '')
+      return '+420 ' + num.replace(/(\d{3})(?=\d)/g, '$1 ').trim()
+    }
+    if (digits.startsWith('+421') && digits.length > 4) {
+      const num = digits.slice(4).replace(/\D/g, '')
+      return '+421 ' + num.replace(/(\d{3})(?=\d)/g, '$1 ').trim()
+    }
+    return val
+  }
 
   const bookingSlug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'muj-salon'
 
@@ -187,7 +205,7 @@ export default function OnboardingPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
-                    <input type="tel" value={orgPhone} onChange={e => setOrgPhone(e.target.value)}
+                    <input type="tel" value={orgPhone} onChange={e => setOrgPhone(formatPhone(e.target.value))}
                       className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="+420 777 123 456" />
                   </div>
