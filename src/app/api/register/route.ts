@@ -1,4 +1,4 @@
-﻿// PATH: src/app/api/register/route.ts
+﻿﻿// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -91,13 +91,17 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      await supabaseAdmin.from('notifications').insert({
-        user_id: null,
-        type: 'new_organization',
-        title: 'Nova organizace: ' + businessName,
-        message: 'Email: ' + email + ', Mod: ' + (mode || 'solo') + ', Slug: ' + slug,
-        read: false,
-      })
+      if (orgData) {
+        await supabaseAdmin.from('notifications').insert({
+          organization_id: orgData.id,
+          type: 'new_organization',
+          channel: 'system',
+          recipient: 'admin@clientoro.pro',
+          subject: 'Nova organizace: ' + businessName,
+          body: 'Email: ' + email + ', Mod: ' + (mode || 'solo') + ', Slug: ' + slug,
+          status: 'pending',
+        })
+      }
     } catch (notifErr) {
       console.error('Notification error:', notifErr)
     }
