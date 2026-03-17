@@ -1,10 +1,10 @@
-﻿﻿// PATH: src/app/(auth)/register/page.tsx
+﻿﻿﻿﻿// PATH: src/app/(auth)/register/page.tsx
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { Waves, Mail, Lock, ArrowRight, Building2, User, Eye, EyeOff } from 'lucide-react'
+import { Waves, Mail, Lock, ArrowRight, Building2, User, Eye, EyeOff, RefreshCw } from 'lucide-react'
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -15,6 +15,16 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
+  const generatePassword = () => {
+    const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+    const special = '!@#$%&*'
+    let pwd = ''
+    for (let i = 0; i < 10; i++) pwd += chars[Math.floor(Math.random() * chars.length)]
+    pwd += special[Math.floor(Math.random() * special.length)]
+    pwd += Math.floor(Math.random() * 10)
+    setPassword(pwd)
+    setShowPassword(true)
+  }
   const supabase = createClient()
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -181,6 +191,9 @@ export default function RegisterPage() {
                     placeholder={"Min. 6 znak\u016f"} minLength={6} required />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                  <button type="button" onClick={generatePassword} className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-600" title="Vygenerovat silne heslo">
+                    <RefreshCw className="w-4 h-4" />
                   </button>
                 </div>
               </div>
