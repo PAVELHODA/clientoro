@@ -1,4 +1,4 @@
-﻿'use client'
+﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useLang } from '../layout'
@@ -208,6 +208,7 @@ export default function AdminPage() {
                 <th className="text-center p-3 font-medium text-gray-600">Služby</th>
                 <th className="text-center p-3 font-medium text-gray-600">Klienti</th>
                 <th className="text-center p-3 font-medium text-gray-600">Rezervace</th>
+                <th className="text-center p-3 font-medium text-gray-600">Akce</th>
               </tr>
             </thead>
             <tbody>
@@ -228,6 +229,17 @@ export default function AdminPage() {
                   <td className="p-3 text-center font-medium">{org.services_count || 0}</td>
                   <td className="p-3 text-center font-medium">{org.clients_count || 0}</td>
                   <td className="p-3 text-center font-medium">{org.bookings_count || 0}</td>
+                  <td className="p-3 text-center">
+                    <button onClick={async () => {
+                      if (!confirm('Opravdu smazat organizaci ' + org.name + '?')) return
+                      if (!confirm('POZOR: Tato akce je NEVRATNA! Vsechna data budou smazana.')) return
+                      const r = await fetch('/api/admin/delete-org', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orgId: org.id }) })
+                      if (r.ok) { alert('Organizace ' + org.name + ' smazana.'); setOrgs(orgs.filter((o: any) => o.id !== org.id)) }
+                      else { const d = await r.json(); alert('Chyba: ' + (d.error || 'Neznama chyba')) }
+                    }} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Smazat organizaci">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
