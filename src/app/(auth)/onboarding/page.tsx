@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿'use client'
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -30,7 +30,9 @@ export default function OnboardingPage() {
   const [orgIco, setOrgIco] = useState('')
   const [orgDic, setOrgDic] = useState('')
   const [icoLoading, setIcoLoading] = useState(false)
+  const [icoValid, setIcoValid] = useState(false)
   const [icoError, setIcoError] = useState('')
+  const [isDphPayer, setIsDphPayer] = useState(false)
   const [orgAddress, setOrgAddress] = useState('')
   const [orgPhone, setOrgPhone] = useState('')
   const [orgEmail, setOrgEmail] = useState('')
@@ -77,10 +79,12 @@ export default function OnboardingPage() {
         if (d.name && !orgName) setOrgName(d.name)
         if (d.address && !orgAddress) setOrgAddress(d.address)
         if (d.dic) setOrgDic(d.dic)
+        setIcoValid(true)
       } else {
         setIcoError('ICO nenalezeno v ARES')
+      setIcoValid(false)
       }
-    } catch { setIcoError('Chyba pri overeni ICO') }
+    } catch { setIcoError('Chyba pri overeni ICO'); setIcoValid(false) }
     setIcoLoading(false)
   }
 
@@ -222,7 +226,7 @@ export default function OnboardingPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">ICO</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">ICO *</label>
                     <div className="relative">
                       <input type="text" value={orgIco} onChange={e => lookupIco(e.target.value.replace(/\D/g, '').slice(0, 8))}
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -232,10 +236,11 @@ export default function OnboardingPage() {
                     {icoError && <p className="text-xs text-red-500 mt-1">{icoError}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">DIC</label>
-                    <input type="text" value={orgDic} onChange={e => setOrgDic(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                      placeholder="CZ12345678" />
+                    <label className="flex items-center gap-2 mt-1">
+                      <input type="checkbox" checked={isDphPayer} onChange={e => { setIsDphPayer(e.target.checked); if (!e.target.checked) setOrgDic('') }} className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
+                      <span className="text-sm font-medium text-gray-700">Jste platce DPH?</span>
+                    </label>
+                    {isDphPayer && <input type="text" value={orgDic} onChange={e => setOrgDic(e.target.value)} className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="CZ12345678" />}
                   </div>
                 </div>
                 <div>
@@ -266,7 +271,7 @@ export default function OnboardingPage() {
                 )}
               </div>
 
-              <button onClick={saveStep1} disabled={!orgName || !selectedCategory || saving}
+              <button onClick={saveStep1} disabled={!orgName || !selectedCategory || !icoValid || saving}
                 className="w-full mt-6 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
                 style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
                 {saving ? 'Ukládám...' : <>Další krok <ArrowRight className="w-4 h-4" /></>}
