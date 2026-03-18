@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿'use client'
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -208,7 +208,7 @@ export default function OnboardingPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Obor podnikání *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Obor podnikani * <span className="text-xs text-gray-400 font-normal">(vyberte jeden ci vice)</span></label>
                   <div className="grid grid-cols-3 gap-2">
                     {categories.map(cat => (
                       <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}

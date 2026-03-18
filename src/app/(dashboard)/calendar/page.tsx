@@ -1,4 +1,4 @@
-﻿// PATH: src/app/(dashboard)/calendar/page.tsx
+﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -81,8 +81,8 @@ export default function CalendarPage() {
     }
   }
 
-  const workStart = organization?.work_start || 8
-  const workEnd = organization?.work_end || 17
+  const workStart = organization?.work_start || 6
+  const workEnd = organization?.work_end || 22
 
   // Keyboard shortcuts
   useEffect(() => {

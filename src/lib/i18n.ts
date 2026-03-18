@@ -1,4 +1,4 @@
-﻿﻿﻿// PATH: src/lib/i18n.ts
+﻿﻿﻿﻿﻿// PATH: src/lib/i18n.ts
 // Centrální překlady pro celou aplikaci
 
 export type Lang = 'cs' | 'sk' | 'en'
@@ -97,7 +97,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     cli_no_clients: 'Žádní klienti',
     cli_add_first: 'Přidejte svého prvního klienta',
     cli_visits: 'Návštěvy',
-    cli_spent: 'Utraceno',
+    cli_spent: 'Aktivum spoluprace',
     cli_last_visit: 'Poslední návštěva',
     cli_source: 'Zdroj',
     cli_edit: 'Upravit',
@@ -182,7 +182,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     dash_calendar: 'Kalendár',
     dash_loading: 'Načítavam dashboard...',
     dash_error: 'Chyba pri načítaní',
-    currency: '€',
+    currency: 'Kc',
 
     // Calendar
     cal_title: 'Kalendár',
@@ -234,7 +234,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     cli_no_clients: 'Žiadni klienti',
     cli_add_first: 'Pridajte svojho prvého klienta',
     cli_visits: 'Návštevy',
-    cli_spent: 'Utratené',
+    cli_spent: 'Aktivum spoluprace',
     cli_last_visit: 'Posledná návšteva',
     cli_source: 'Zdroj',
     cli_edit: 'Upraviť',
@@ -319,7 +319,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     dash_calendar: 'Calendar',
     dash_loading: 'Loading dashboard...',
     dash_error: 'Error loading data',
-    currency: 'CZK',
+    currency: 'Kc',
 
     // Calendar
     cal_title: 'Calendar',
@@ -371,7 +371,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     cli_no_clients: 'No clients',
     cli_add_first: 'Add your first client',
     cli_visits: 'Visits',
-    cli_spent: 'Spent',
+    cli_spent: 'Cooperation value',
     cli_last_visit: 'Last visit',
     cli_source: 'Source',
     cli_edit: 'Edit',

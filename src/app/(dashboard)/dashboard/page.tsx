@@ -1,4 +1,4 @@
-﻿﻿﻿// PATH: src/app/(dashboard)/dashboard/page.tsx
+﻿﻿﻿﻿// PATH: src/app/(dashboard)/dashboard/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -84,7 +84,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-gray-500">{t('dash_today_revenue')}</span>
             <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-bold text-green-600">Kc</span>
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatPrice(data.today.revenue)}</p>
@@ -103,7 +103,7 @@ export default function DashboardPage() {
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatPrice(data.month.revenue)}</p>
           <p className={`text-xs mt-1 font-medium ${data.month.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {data.month.revenueChange >= 0 ? 'â†‘' : 'â†“'} {Math.abs(data.month.revenueChange)}% {t('dash_vs_last_month')}
+            {data.month.revenueChange >= 0 ? "\u2191" : "\u2193"} {Math.abs(data.month.revenueChange)}% {t('dash_vs_last_month')}
           </p>
         </div>
 
