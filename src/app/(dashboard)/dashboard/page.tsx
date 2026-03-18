@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '../layout'
 import {
   Calendar, TrendingUp, TrendingDown, Users, DollarSign,
@@ -40,6 +41,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const { t, lang, modeGradient } = useLang()
+  const { organization } = useAuth()
 
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
   const currency = t('currency')
@@ -84,7 +86,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-gray-500">{t('dash_today_revenue')}</span>
             <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
-              <span className="text-sm font-bold text-green-600">Kc</span>
+              <span className="text-sm font-bold text-green-600">Kč</span>
             </div>
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatPrice(data.today.revenue)}</p>
@@ -295,6 +297,24 @@ export default function DashboardPage() {
               </button>
             </div>
           </div>
+
+          {/* Inspire upgrade banner - jen pro solo/team */}
+          {(organization?.mode === 'solo' || organization?.mode === 'team') && (
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">✨</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900 mb-1">Odemknete plny potencial s Inspire</h3>
+                  <p className="text-sm text-gray-600 mb-3">AI Business Coach, chytre navrhy, automatizace a vice. Nechte AI pracovat za vas.</p>
+                  <button onClick={() => router.push('/settings')} className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg text-sm font-medium hover:from-amber-600 hover:to-orange-600 transition-all shadow-sm">
+                    Zjistit vice o Inspire →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
