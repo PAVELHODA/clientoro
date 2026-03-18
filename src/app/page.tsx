@@ -1,4 +1,4 @@
-﻿'use client'
+﻿﻿﻿'use client'
 
 import { useState } from 'react'
 import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare } from 'lucide-react'
@@ -77,8 +77,8 @@ export default function LandingPage() {
         <div className="absolute top-16 right-16 w-72 h-72 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%)' }} />
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}><Zap className="w-4 h-4" /> Pro lidi, co pracují s lidmi</div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">Plný kalendář.<br />Spokojení klienti.<br /><span style={{ color: '#f59e0b' }}>Vy máte přehled.</span></h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>Rezervace, CRM a nástroje pro růst — vše na jednom místě. Férový ceník, žádné skryté poplatky.</p>
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">Méně administrativy.<br />Více klientů.<br /><span style={{ color: '#f59e0b' }}>Vy máte přehled.</span></h1>
+          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>Rezervační systém s AI i bez — pro české podnikatele. Kalendář, evidence klientů a nástroje pro růst. Férový ceník, žádné skryté poplatky.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <a href="/register" className="px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>Vyzkoušet 14 dní zdarma <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.15)' }}>Co vám přineseme?</a>
