@@ -1,4 +1,4 @@
-﻿﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
+﻿﻿﻿﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -20,6 +20,9 @@ export default function SettingsPage() {
   const [s, setS] = useState<OrgSettings>(EMPTY)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [showDeleteFlow, setShowDeleteFlow] = useState(false)
+  const [deleteConfirmName, setDeleteConfirmName] = useState('')
+  const [backupDone, setBackupDone] = useState(false)
   const [saved, setSaved] = useState(false)
   const { t, lang, modeGradient } = useLang()
 
@@ -323,22 +326,29 @@ export default function SettingsPage() {
         {/* Nebezpecna zona */}
         <div className="mt-8 bg-red-50 rounded-xl border border-red-200 p-6">
           <h3 className="text-lg font-bold text-red-800 mb-2">Nebezpecna zona</h3>
-          <p className="text-sm text-red-600 mb-4">Smazani organizace je nevratne. Vsechna data budou trvale odstranena.</p>
-          <button
-            onClick={async () => {
-              if (!confirm('Opravdu chcete smazat organizaci? Tato akce je NEVRATNA!')) return
-              if (!confirm('Jste si UPLNE jisti? Vsechna data budou trvale smazana!')) return
-              const r = await fetch('/api/settings/delete-org', { method: 'DELETE' })
-              if (r.ok) {
-                alert('Organizace byla smazana.')
-                window.location.href = '/login'
-              } else {
-                alert('Chyba pri mazani organizace.')
-              }
-            }}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">
-            Smazat organizaci
-          </button>
+          <p className="text-sm text-red-600 mb-4">Smazani organizace je nevratne. Vsechna data budou trvale odstranena. Pred smazanim vam nabidneme zalohovani dat.</p>
+          {!showDeleteFlow ? (
+            <button onClick={() => setShowDeleteFlow(true)} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">Smazat organizaci</button>
+          ) : (
+            <div className="space-y-4 mt-4">
+              <div className="bg-white rounded-lg border border-red-200 p-4">
+                <h4 className="font-semibold text-gray-900 mb-2">1. Zalohovani dat</h4>
+                <p className="text-sm text-gray-600 mb-3">Pred smazanim si muzete stahnout vsechna data.</p>
+                <button onClick={async () => { const r = await fetch('/api/settings/export'); if (r.ok) { const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click(); setBackupDone(true) } }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Stahnout zalohu (CSV)</button>
+                {backupDone && <p className="text-sm text-green-600 mt-2">✓ Zaloha stazena</p>}
+              </div>
+              <div className="bg-white rounded-lg border border-red-200 p-4">
+                <h4 className="font-semibold text-gray-900 mb-2">2. Potvrzeni smazani</h4>
+                <p className="text-sm text-gray-600 mb-3">Pro potvrzeni napi\u0161te nazev va\u0161i organizace:</p>
+                <input type="text" value={deleteConfirmName} onChange={e => setDeleteConfirmName(e.target.value)} placeholder="Zde napi\u0161te nazev organizace" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3" />
+                <div className="flex gap-3">
+                  <button disabled={deleteConfirmName !== s.name} onClick={async () => { const r = await fetch('/api/settings/delete-org', { method: 'DELETE' }); if (r.ok) { alert('Va\u0161 ucet bude smazan do 24 hodin. O vysledku vas budeme informovat emailem.'); window.location.href = '/login' } else { alert('Chyba pri zadosti o smazani.') } }} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed">Ano, smazat</button>
+                  <button onClick={() => { setShowDeleteFlow(false); setDeleteConfirmName(''); setBackupDone(false) }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">Ne, zrusit</button>
+                </div>
+                {deleteConfirmName === s.name && <p className="text-xs text-red-500 mt-2">Vas ucet bude smazan do 24 hodin. Superadmin overi zda jsou vsechny zavazky vyrovnany.</p>}
+              </div>
+            </div>
+          )}
         </div>
 
           <div className="mt-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
