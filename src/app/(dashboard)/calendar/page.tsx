@@ -1,4 +1,4 @@
-﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
+﻿﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -595,7 +595,7 @@ export default function CalendarPage() {
               <div className="flex-1 h-0.5 bg-red-500" />
             </div>
           )}
-          <table className="w-full min-w-[600px]">
+          <table className="w-full" style={{ minWidth: Math.max(600, staffList.length * 180 + 80) + 'px' }}>
             <thead>
               <tr className="border-b-2 border-gray-400">
                 <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-400 bg-gray-50"></th>
