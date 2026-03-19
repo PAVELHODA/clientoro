@@ -591,7 +591,7 @@ export default function CalendarPage() {
             </div>
           )}
           <table className="w-full" style={{ minWidth: Math.max(600, staffList.length * 180 + 80) + 'px' }}>
-            <thead>
+            <thead className="sticky top-0 z-20 bg-white">
               <tr className="border-b-2 border-gray-400">
                 <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-400 bg-gray-50"></th>
                 {staffList.map(staff => {
