@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
+﻿﻿﻿﻿﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -323,22 +323,22 @@ export default function SettingsPage() {
           </div>
 
 
-        {/* Nebezpecna zona */}
+        {/* Nebezpečná zóna */}
         <div className="mt-8 bg-red-50 rounded-xl border border-red-200 p-6">
-          <h3 className="text-lg font-bold text-red-800 mb-2">Nebezpecna zona</h3>
-          <p className="text-sm text-red-600 mb-4">Smazani organizace je nevratne. Vsechna data budou trvale odstranena. Pred smazanim vam nabidneme zalohovani dat.</p>
+          <h3 className="text-lg font-bold text-red-800 mb-2">Nebezpečná zóna</h3>
+          <p className="text-sm text-red-600 mb-4">Smazání organizace je nevratné. Všechna data budou trvale odstraněna. Před smazáním vám nabídneme zálohování dat.</p>
           {!showDeleteFlow ? (
             <button onClick={() => setShowDeleteFlow(true)} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">Smazat organizaci</button>
           ) : (
             <div className="space-y-4 mt-4">
               <div className="bg-white rounded-lg border border-red-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">1. Zalohovani dat</h4>
-                <p className="text-sm text-gray-600 mb-3">Pred smazanim si muzete stahnout vsechna data.</p>
-                <button onClick={async () => { const r = await fetch('/api/settings/export'); if (r.ok) { const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click(); setBackupDone(true) } }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Stahnout zalohu (CSV)</button>
-                {backupDone && <p className="text-sm text-green-600 mt-2">✓ Zaloha stazena</p>}
+                <h4 className="font-semibold text-gray-900 mb-2">1. Zálohování dat</h4>
+                <p className="text-sm text-gray-600 mb-3">Před smazáním si můžete stáhnout všechna data.</p>
+                <button onClick={async () => { const r = await fetch('/api/settings/export'); if (r.ok) { const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click(); setBackupDone(true) } }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Stáhnout zálohu (CSV)</button>
+                {backupDone && <p className="text-sm text-green-600 mt-2">✓ Záloha stažena</p>}
               </div>
               <div className="bg-white rounded-lg border border-red-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">2. Potvrzeni smazani</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">2. Potvrzení smazání</h4>
                 <p className="text-sm text-gray-600 mb-3">Pro potvrzeni napi\u0161te nazev va\u0161i organizace:</p>
                 <input type="text" value={deleteConfirmName} onChange={e => setDeleteConfirmName(e.target.value)} placeholder="Zde napi\u0161te nazev organizace" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3" />
                 <div className="flex gap-3">

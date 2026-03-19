@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿// PATH: src/app/(dashboard)/dashboard/page.tsx
+﻿﻿﻿﻿﻿﻿// PATH: src/app/(dashboard)/dashboard/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -306,10 +306,10 @@ export default function DashboardPage() {
                   <span className="text-lg">✨</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">Odemknete plny potencial s Inspire</h3>
-                  <p className="text-sm text-gray-600 mb-3">AI Business Coach, chytre navrhy, automatizace a vice. Nechte AI pracovat za vas.</p>
+                  <h3 className="font-semibold text-gray-900 mb-1">Odemkněte plný potenciál s Inspire</h3>
+                  <p className="text-sm text-gray-600 mb-3">AI Business Coach, chytré návrhy, automatizace a více. Nechte AI pracovat za vás.</p>
                   <button onClick={() => router.push('/settings')} className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg text-sm font-medium hover:from-amber-600 hover:to-orange-600 transition-all shadow-sm">
-                    Zjistit vice o Inspire →
+                    Zjistit více o Inspire →
                   </button>
                 </div>
               </div>
