@@ -25,6 +25,8 @@ export default function OnboardingPage() {
     fetch('/api/settings').then(r => r.json()).then(d => {
       if (d?.name) setOrgName(d.name)
       if (d?.email) setOrgEmail(d.email)
+      if (d?.phone) setOrgPhone(d.phone)
+      if (d?.address) setOrgAddress(d.address)
     }).catch(() => {})
   }, [])
   const [orgIco, setOrgIco] = useState('')
@@ -38,7 +40,7 @@ export default function OnboardingPage() {
   const [orgEmail, setOrgEmail] = useState('')
 
   const [categories, setCategories] = useState<Category[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set())
   const [selectedTemplates, setSelectedTemplates] = useState<Set<string>>(new Set())
   const [customServiceName, setCustomServiceName] = useState('')
   const [customServicePrice, setCustomServicePrice] = useState('')
@@ -96,7 +98,8 @@ export default function OnboardingPage() {
     }).catch(() => {})
   }, [])
 
-  const currentCategory = categories.find(c => c.id === selectedCategory)
+  const selectedCategoryList = categories.filter(c => selectedCategories.has(c.id))
+  const currentCategory = selectedCategoryList[0]
 
   const toggleTemplate = (id: string) => {
     setSelectedTemplates(prev => {
@@ -107,8 +110,7 @@ export default function OnboardingPage() {
   }
 
   const selectAllTemplates = () => {
-    if (!currentCategory) return
-    const allIds = currentCategory.service_templates.map(t => t.id)
+    const allIds = selectedCategoryList.flatMap(c => c.service_templates.map(t => t.id))
     setSelectedTemplates(new Set(allIds))
   }
 
@@ -116,15 +118,15 @@ export default function OnboardingPage() {
     setSaving(true)
     await fetch('/api/settings', {
       method: 'PUT', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: orgName, address: orgAddress, phone: orgPhone, email: orgEmail, ico: orgIco, dic: orgDic, booking_link: bookingSlug, category: currentCategory?.slug || 'other' }),
+      body: JSON.stringify({ name: orgName, address: orgAddress, phone: orgPhone, email: orgEmail, ico: orgIco, dic: orgDic, booking_link: bookingSlug, category: selectedCategoryList.map(c => c.slug).join(',') || 'other' }),
     })
     setSaving(false); setStep(1)
-    if (currentCategory) selectAllTemplates()
+    if (selectedCategories.size > 0) selectAllTemplates()
   }
 
   const saveStep2 = async () => {
     setSaving(true)
-    const templates = currentCategory?.service_templates.filter(t => selectedTemplates.has(t.id)) || []
+    const templates = selectedCategoryList.flatMap(c => c.service_templates).filter(t => selectedTemplates.has(t.id))
     for (const t of templates) {
       await fetch('/api/services', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -211,9 +213,9 @@ export default function OnboardingPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Obor podnikani * <span className="text-xs text-gray-400 font-normal">(vyberte jeden ci vice)</span></label>
                   <div className="grid grid-cols-3 gap-2">
                     {categories.map(cat => (
-                      <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}
+                      <button key={cat.id} onClick={() => { setSelectedCategories(prev => { const next = new Set(prev); if (next.has(cat.id)) next.delete(cat.id); else next.add(cat.id); return next }) }}
                         className={`p-3 rounded-xl border-2 text-center transition-all ${
-                          selectedCategory === cat.id
+                          selectedCategories.has(cat.id)
                             ? 'border-blue-500 bg-blue-50 shadow-sm'
                             : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                         }`}>
@@ -271,7 +273,7 @@ export default function OnboardingPage() {
                 )}
               </div>
 
-              <button onClick={saveStep1} disabled={!orgName || !selectedCategory || !icoValid || saving}
+              <button onClick={saveStep1} disabled={!orgName || selectedCategories.size === 0 || !icoValid || saving}
                 className="w-full mt-6 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
                 style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
                 {saving ? 'Ukládám...' : <>Další krok <ArrowRight className="w-4 h-4" /></>}
