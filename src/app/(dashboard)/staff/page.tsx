@@ -483,6 +483,43 @@ export default function StaffPage() {
                     )}
                   </div>
                 )}
+
+                {/* Inline edit pod kartou */}
+                {editingId === member.id && !showForm && (
+                  <div className="border-t border-blue-200 bg-blue-50/30 p-5">
+                    <h4 className="text-sm font-semibold text-blue-700 mb-3">{l.editMember}: {member.full_name}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.fullName}</label>
+                        <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.email}</label>
+                        <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.phone}</label>
+                        <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                      </div>
+                      <div className="flex items-center gap-3 pt-5">
+                        <button onClick={() => setForm({ ...form, active: !form.active })} className={`w-10 h-6 rounded-full transition-colors relative ${form.active ? 'bg-green-500' : 'bg-gray-300'}`}>
+                          <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${form.active ? 'left-5' : 'left-1'}`} />
+                        </button>
+                        <span className="text-sm text-gray-700">{form.active ? l.activeMember : l.inactiveMember}</span>
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-medium text-gray-600 mb-2">{l.assignedServices}</label>
+                        <div className="flex flex-wrap gap-2">
+                          {services.map(svc => { const sel = form.service_ids.includes(svc.id); return (<button key={svc.id} onClick={() => toggleService(svc.id)} className={`px-3 py-1.5 rounded-xl text-xs font-medium border-2 transition-all ${sel ? 'text-white border-transparent shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`} style={sel ? { backgroundColor: svc.color, borderColor: svc.color } : {}}>{sel && <Check className="w-3 h-3 inline mr-1" />}{svc.name}</button>) })}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-blue-100">
+                      <button onClick={handleSave} disabled={saving} style={{ background: modeGradient }} className="px-4 py-2 text-white rounded-lg text-sm font-medium hover:brightness-110 disabled:opacity-50">{saving ? l.saving : l.saveChanges}</button>
+                      <button onClick={() => { setEditingId(null); setForm(EMPTY_FORM) }} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">{l.cancel}</button>
+                    </div>
+                  </div>
+                )}
               </div>
             )
           })}
