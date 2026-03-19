@@ -784,27 +784,7 @@ export default function CalendarPage() {
           </div>
         </div>
       )}
-
-      {/* Free slots AI promo banner */}
-      {currentStats.freeSlots > 3 && (
-        <div className="mt-4 p-4 bg-gradient-to-r from-violet-50 to-blue-50 border border-violet-200 rounded-2xl flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-violet-600" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-900">{currentStats.freeSlots} {l.freeSlotsBanner}</p>
-              <p className="text-xs text-gray-500">{lang === 'en' ? 'Upgrade to Inspire plan for AI-powered slot filling' : 'Prejdete na Inspire plan pro AI zaplneni slotu'}</p>
-            </div>
-          </div>
-          <button className="px-4 py-2 text-white rounded-lg text-sm font-medium hover:brightness-110 transition-all flex items-center gap-1.5"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}>
-            <Sparkles className="w-3.5 h-3.5" /> {lang === 'en' ? 'Try AI' : 'Zkusit AI'}
-          </button>
-        </div>
-      )}
-
-      {/* Quick booking modal */}
+{/* Quick booking modal */}
       {selectedSlot && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
