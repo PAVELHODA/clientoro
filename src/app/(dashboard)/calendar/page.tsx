@@ -40,10 +40,10 @@ export default function CalendarPage() {
 
   // Mode theme colors for buttons
   const modeColors: Record<string, { gradient: string; text: string }> = {
-    solo: { gradient: 'linear-gradient(135deg, #0f766e, #059669)', text: 'white' },
+    solo: { gradient: 'linear-gradient(135deg, #059669, #10b981)', text: 'white' },
     team: { gradient: 'linear-gradient(135deg, #0c4a6e, #0369a1)', text: 'white' },
     solo_inspire: { gradient: 'linear-gradient(135deg, #92400e, #b45309)', text: 'white' },
-    pro_inspire: { gradient: 'linear-gradient(135deg, #78350f, #a16207)', text: 'white' },
+    pro_inspire: { gradient: 'linear-gradient(135deg, #881337, #e11d48)', text: 'white' },
   }
   const mc = modeColors[organization?.mode || 'team'] || modeColors.team
 
