@@ -110,7 +110,7 @@ export default function ClientsPage() {
       full_name: client.full_name || '', phone: client.phone || '', email: client.email || '',
       note: client.note || '', source: client.source || 'manual', tags: client.tags?.join(', ') || '',
     })
-    setEditingId(client.id); setSelectedClient(null); setShowForm(true)
+    setEditingId(client.id); setSelectedClient(null); setShowForm(false)
   }
 
   const handleSave = async () => {
