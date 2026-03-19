@@ -196,7 +196,7 @@ export default function StaffPage() {
   const handleNew = () => { setForm(EMPTY_FORM); setEditingId(null); setShowForm(true) }
   const handleEdit = (m: StaffMember) => {
     setForm({ full_name: m.full_name, email: m.email || '', phone: m.phone || '', active: m.active, service_ids: m.staff_services?.map(ss => ss.service_id) || [] })
-    setEditingId(m.id); setShowForm(true)
+    setEditingId(m.id); setShowForm(false)
   }
   const handleSave = async () => {
     if (!form.full_name.trim()) { alert(l.nameRequired); return }
