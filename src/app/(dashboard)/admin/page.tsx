@@ -13,6 +13,9 @@ export default function AdminPage() {
   const [stats, setStats] = useState<any>(null)
   const [categories, setCategories] = useState<any[]>([])
   const [goldenThoughts, setGoldenThoughts] = useState<any[]>([])
+  const [newOrgName, setNewOrgName] = useState('')
+  const [newOrgMode, setNewOrgMode] = useState('solo')
+  const [newOrgCategory, setNewOrgCategory] = useState('other')
   const [newThought, setNewThought] = useState('')
   const [editThoughtId, setEditThoughtId] = useState<string|null>(null)
   const [editThoughtText, setEditThoughtText] = useState('')
@@ -204,6 +207,24 @@ export default function AdminPage() {
       )}
 
       {tab === 'organizations' && (
+        <div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4">
+            <p className="text-sm font-medium text-gray-700 mb-3">➕ Nová organizace</p>
+            <div className="flex gap-2">
+              <input type="text" value={newOrgName} onChange={e => setNewOrgName(e.target.value)} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Název organizace" />
+              <select value={newOrgMode} onChange={e => setNewOrgMode(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                <option value="solo">Solo (OSVČ)</option>
+                <option value="team">Team (Firma)</option>
+                <option value="solo_inspire">Solo Inspire</option>
+                <option value="pro_inspire">Pro Inspire</option>
+              </select>
+              <select value={newOrgCategory} onChange={e => setNewOrgCategory(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                <option value="other">Jiné</option>
+                {categories.map(c => <option key={c.id} value={c.slug || c.name}>{c.icon} {c.name}</option>)}
+              </select>
+              <button onClick={async () => { if (!newOrgName.trim()) return; const r = await fetch('/api/admin/create-org', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: newOrgName, mode: newOrgMode, category: newOrgCategory }) }); if (r.ok) { const d = await r.json(); setOrgs(prev => [...prev, d]); setNewOrgName('') } else { const d = await r.json(); alert('Chyba: ' + (d.error || 'Neznámá chyba')) } }} disabled={!newOrgName.trim()} className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-amber-600"><Plus className="w-4 h-4" /></button>
+            </div>
+          </div>
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -251,6 +272,7 @@ export default function AdminPage() {
               ))}
             </tbody>
           </table>
+        </div>
         </div>
       )}
 
