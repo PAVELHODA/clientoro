@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/components/AuthProvider'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 import {
   UserCircle, Plus, Phone, Mail, Edit2, Trash2, X, Check,
   Clock, Palmtree, AlertTriangle,

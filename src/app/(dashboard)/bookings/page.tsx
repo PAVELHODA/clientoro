@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 import { ClipboardList, Search, Calendar, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, X, Trash2, ChevronRight, Phone, Mail, Plus } from 'lucide-react'
 
 interface Booking {

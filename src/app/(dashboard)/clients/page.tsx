@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight, ArrowUpDown } from 'lucide-react'
 
 interface Client {

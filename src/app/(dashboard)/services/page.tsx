@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check } from 'lucide-react'
 
 interface Service {

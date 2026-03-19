@@ -1,7 +1,7 @@
 ﻿﻿'use client'
 
 import { useState, useEffect } from 'react'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 import { Crown, Users, Calendar, Building2, Eye, Loader2, Shield, Bell, Plus, Trash2, ChevronDown, ChevronUp, Layers } from 'lucide-react'
 
 type Tab = 'dashboard' | 'categories' | 'organizations' | 'golden'
@@ -257,27 +257,35 @@ export default function AdminPage() {
       {tab === 'golden' && (
         <div>
           <div className="flex gap-2 mb-4">
-            <input type="text" value={newThought} onChange={e => setNewThought(e.target.value)} placeholder="Nov� zlat� my�lenka..." className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-            <button onClick={async () => { if (!newThought.trim()) return; const r = await fetch('/api/admin/golden-thoughts', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ text: newThought }) }); if (r.ok) { const d = await r.json(); setGoldenThoughts(prev => [...prev, d]); setNewThought('') } }} className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600">P�idat</button>
+            <input type="text" value={newThought} onChange={e => setNewThought(e.target.value)} placeholder="Nová zlatá myšlenka..." className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+            <button onClick={async () => { if (!newThought.trim()) return; const r = await fetch('/api/admin/golden-thoughts', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ text: newThought }) }); if (r.ok) { const d = await r.json(); setGoldenThoughts(prev => [...prev, d]); setNewThought('') } }} className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600">Přidat</button>
           </div>
           <div className="space-y-2">
             {goldenThoughts.map(gt => (
-              <div key={gt.id} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
+              <div key={gt.id} className="bg-white rounded-xl border border-gray-200 p-4">
                 {editThoughtId === gt.id ? (
-                  <div className="flex-1 flex gap-2">
-                    <input type="text" value={editThoughtText} onChange={e => setEditThoughtText(e.target.value)} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" style={{fontFamily:'Poppins,sans-serif'}} />
-                    <button onClick={async () => { const r = await fetch('/api/admin/golden-thoughts', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id: gt.id, text: editThoughtText, author: gt.author, modes: gt.modes, active: gt.active }) }); if (r.ok) { setGoldenThoughts(prev => prev.map(g => g.id === gt.id ? {...g, text: editThoughtText} : g)); setEditThoughtId(null) } }} className="px-3 py-2 bg-green-500 text-white rounded-lg text-xs">Ulo�it</button>
-                    <button onClick={() => setEditThoughtId(null)} className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs">Zru�it</button>
+                  <div className="space-y-3">
+                    <input type="text" value={editThoughtText} onChange={e => setEditThoughtText(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" style={{fontFamily:'Poppins,sans-serif'}} />
+                    <div className="flex flex-wrap gap-2">
+                      {['solo','team','solo_inspire','pro_inspire'].map(mode => {
+                        const active = (gt.modes||[]).includes(mode);
+                        return <button key={mode} onClick={() => { const newModes = active ? gt.modes.filter((m: string) => m !== mode) : [...(gt.modes||[]), mode]; setGoldenThoughts(prev => prev.map(g => g.id === gt.id ? {...g, modes: newModes} : g)) }} className={`px-2 py-1 rounded text-xs font-medium border ${active ? 'bg-amber-100 border-amber-300 text-amber-700' : 'bg-gray-50 border-gray-200 text-gray-400'}`}>{mode}</button>
+                      })}
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={async () => { const updatedGt = goldenThoughts.find(g => g.id === gt.id); const r = await fetch('/api/admin/golden-thoughts', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id: gt.id, text: editThoughtText, author: updatedGt?.author, modes: updatedGt?.modes, active: updatedGt?.active }) }); if (r.ok) { setGoldenThoughts(prev => prev.map(g => g.id === gt.id ? {...g, text: editThoughtText} : g)); setEditThoughtId(null) } }} className="px-3 py-2 bg-green-500 text-white rounded-lg text-xs">Uložit</button>
+                      <button onClick={() => setEditThoughtId(null)} className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs">Zrušit</button>
+                    </div>
                   </div>
                 ) : (
-                  <>
+                  <div className="flex items-center gap-3">
                     <div className="flex-1">
                       <p className="text-sm text-gray-900" style={{fontFamily:'Poppins,sans-serif'}}>{gt.text}</p>
                       <div className="flex gap-1 mt-1">{(gt.modes||[]).map((m: string) => <span key={m} className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px]">{m}</span>)}</div>
                     </div>
                     <button onClick={() => { setEditThoughtId(gt.id); setEditThoughtText(gt.text) }} className="px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100">Upravit</button>
                     <button onClick={async () => { if (!confirm('Smazat?')) return; await fetch('/api/admin/golden-thoughts?id='+gt.id, { method: 'DELETE' }); setGoldenThoughts(prev => prev.filter(g => g.id !== gt.id)) }} className="px-2 py-1 bg-red-50 text-red-600 rounded text-xs hover:bg-red-100">Smazat</button>
-                  </>
+                  </div>
                 )}
               </div>
             ))}

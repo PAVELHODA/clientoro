@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/AuthProvider'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 import {
   Calendar, TrendingUp, TrendingDown, Users, DollarSign,
   Clock, AlertTriangle, Star, ArrowRight, Zap,

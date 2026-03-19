@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useAuth } from '@/components/AuthProvider'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 import {
   Calendar, ChevronLeft, ChevronRight, Plus,
   X, Loader2, Filter, Sparkles, AlertTriangle,

@@ -3,29 +3,17 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect, createContext, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAuth } from '@/components/AuthProvider'
 import { translations, type Lang } from '@/lib/i18n'
+import { LangContext, useLang } from '@/lib/LangContext'
 import {
   Calendar, ClipboardList, Users, Scissors, UserCircle,
   BarChart3, Settings, LogOut, Waves, Sun, Megaphone, Bot,
   TrendingUp, Crown, Wrench, Star, QrCode, LayoutDashboard,
   Menu, X, Loader2, Globe, Bell,
 } from 'lucide-react'
-
-// ============================================
-// 🌐 Language Context
-// ============================================
-const LangContext = createContext<{
-  lang: string
-  setLang: (l: string) => void
-  t: (key: string) => string
-  modeGradient: string
-  modeText: string
-}>({ lang: 'cs', setLang: () => {}, t: (k) => k, modeGradient: '', modeText: 'white' })
-
-export const useLang = () => useContext(LangContext)
 
 // ============================================
 // 🎨 MODE THEMES

@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLang } from '../layout'
+import { useLang } from '@/lib/LangContext'
 
 interface OrgSettings {
   id: string; name: string; mode: string; address: string; phone: string
