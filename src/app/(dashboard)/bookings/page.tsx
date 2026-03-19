@@ -91,7 +91,7 @@ export default function BookingsPage() {
   // i18n labels
   const labels = {
     title: t('book_title'),
-    subtitle: lang === 'en' ? `All bookings overview (${total} total)` : lang === 'sk' ? `PrehÄľad vĹˇetkĂ˝ch rezervĂˇciĂ­ (${total} celkom)` : `PĹ™ehled vĹˇech rezervacĂ­ (${total} celkem)`,
+    subtitle: lang === 'en' ? `All bookings overview (${total} total)` : lang === 'sk' ? `Prehľad všetkých rezervácií (${total} celkom)` : `Přehled všech rezervací (${total} celkem)`,
     openCalendar: t('book_open_calendar'),
     total: lang === 'en' ? 'Total' : 'Celkem',
     confirmed: t('book_confirmed'),
@@ -100,20 +100,20 @@ export default function BookingsPage() {
     revenue: t('dash_revenue'),
     search: t('book_search'),
     service: t('cal_service'),
-    dateTime: lang === 'en' ? 'Date & time' : lang === 'sk' ? 'DĂˇtum a ÄŤas' : 'Datum a ÄŤas',
-    specialist: lang === 'en' ? 'Specialist' : lang === 'sk' ? 'Ĺ pecialista' : 'Specialista',
+    dateTime: lang === 'en' ? 'Date & time' : lang === 'sk' ? 'Dátum a čas' : 'Datum a čas',
+    specialist: lang === 'en' ? 'Specialist' : lang === 'sk' ? 'Špecialista' : 'Specialista',
     price: t('cal_price'),
     note: t('cal_note'),
     complete: t('cal_complete'),
-    confirm: lang === 'en' ? 'Confirm' : lang === 'sk' ? 'PotvrdiĹĄ' : 'Potvrdit',
-    cancel: lang === 'en' ? 'Cancel' : lang === 'sk' ? 'ZruĹˇiĹĄ' : 'ZruĹˇit',
+    confirm: lang === 'en' ? 'Confirm' : lang === 'sk' ? 'Potvrdiť' : 'Potvrdit',
+    cancel: lang === 'en' ? 'Cancel' : lang === 'sk' ? 'Zrušiť' : 'Zrušit',
     noShow: t('book_noshow'),
     delete: t('cal_delete'),
     noBookings: t('book_no_bookings'),
-    noResults: lang === 'en' ? 'No bookings found' : lang === 'sk' ? 'Ĺ˝iadne rezervĂˇcie nenĂˇjdenĂ©' : 'Ĺ˝ĂˇdnĂ© rezervace nenalezeny',
-    changeFilters: lang === 'en' ? 'Try changing filters' : lang === 'sk' ? 'SkĂşste zmeniĹĄ filtre' : 'Zkuste zmÄ›nit filtry',
-    createFirst: lang === 'en' ? 'Create your first booking in calendar' : lang === 'sk' ? 'Vytvorte prvĂş rezervĂˇciu v kalendĂˇri' : 'VytvoĹ™te prvnĂ­ rezervaci v kalendĂˇĹ™i',
-    loading: lang === 'en' ? 'Loading bookings...' : lang === 'sk' ? 'NaÄŤĂ­tavam rezervĂˇcie...' : 'NaÄŤĂ­tĂˇm rezervace...',
+    noResults: lang === 'en' ? 'No bookings found' : lang === 'sk' ? 'Žiadne rezervácie nenájdené' : 'Žádné rezervace nenalezeny',
+    changeFilters: lang === 'en' ? 'Try changing filters' : lang === 'sk' ? 'Skúste zmeniť filtre' : 'Zkuste změnit filtry',
+    createFirst: lang === 'en' ? 'Create your first booking in calendar' : lang === 'sk' ? 'Vytvorte prvú rezerváciu v kalendári' : 'Vytvořte první rezervaci v kalendáři',
+    loading: lang === 'en' ? 'Loading bookings...' : lang === 'sk' ? 'Načítavam rezervácie...' : 'Načítám rezervace...',
   }
 
   return (
