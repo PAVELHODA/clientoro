@@ -111,6 +111,7 @@ export default function StaffPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
+  const [allExpanded, setAllExpanded] = useState(false)
   const [expandedStaff, setExpandedStaff] = useState<string | null>(null)
   const [workingHours, setWorkingHours] = useState<WorkingHour[]>(DEFAULT_HOURS)
   const [timeOffs, setTimeOffs] = useState<TimeOff[]>([])
@@ -148,6 +149,20 @@ export default function StaffPage() {
       setTimeOffs(data.time_off || [])
     } catch (err) { console.error(err) }
     finally { setWhLoading(false) }
+  }
+
+  const toggleAllExpand = () => {
+    if (allExpanded) {
+      setExpandedStaff(null)
+      setAllExpanded(false)
+    } else {
+      // Expand first one and mark all as expanded
+      if (staff.length > 0) {
+        setExpandedStaff(staff[0].id)
+        fetchWorkingHours(staff[0].id)
+      }
+      setAllExpanded(true)
+    }
   }
 
   const toggleExpand = (staffId: string) => {
@@ -313,6 +328,7 @@ export default function StaffPage() {
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4"><UserCircle className="w-8 h-8 text-blue-400" /></div>
           <h3 className="text-lg font-semibold text-gray-900">{l.noStaff}</h3>
           <p className="mt-1 text-gray-500">{l.addFirst}</p>
+            <button onClick={toggleAllExpand} className="px-3 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 flex items-center gap-1.5"><Clock className="w-4 h-4" />{allExpanded ? 'Sbalit vše' : 'Rozbalit vše'}</button>
           <button onClick={handleNew} style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm"><Plus style={{ background: modeGradient }} className="w-4 h-4" /> {l.newMember}</button>
         </div>
       ) : (
