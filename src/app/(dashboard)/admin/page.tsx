@@ -113,7 +113,7 @@ export default function AdminPage() {
         {(['dashboard', 'categories', 'organizations', 'golden'] as Tab[]).map(t => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === t ? 'bg-amber-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
-            {t === 'dashboard' ? '📊 Dashboard' : t === 'categories' ? '📋 Kategorie' : '🏢 Organizace'}
+            {t === 'dashboard' ? '📊 Dashboard' : t === 'categories' ? '📋 Kategorie' : t === 'organizations' ? '🏢 Organizace' : '💡 Zlaté myšlenky'}
           </button>
         ))}
       </div>
