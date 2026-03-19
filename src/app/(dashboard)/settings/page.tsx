@@ -76,7 +76,7 @@ export default function SettingsPage() {
         : ['Kalendář + booking link', 'Rezervace (max 50/měs)', 'Klienti CRM (max 100)', 'Služby + basic reporty', 'Narozeniny + No-show SMS (30/měs)', 'Permanentky (max 3 typy)', 'Balíčky služeb (max 2)', 'Slevy + Happy Hours (max 1)', 'First visit + narozeninová sleva', 'Online booking sleva', 'Odznak "Ověřený profil"', 'Export dat (GDPR)', 'UTM tracking'],
       tiers: [
         { label: lang === 'en' ? 'Without AI' : 'Bez AI', price: '49', year: '39', rec: false },
-        { label: lang === 'en' ? 'With AI insights' : lang === 'sk' ? 'S AI insighty' : 'S AI insighty', price: '99', year: '79', rec: true },
+        { label: lang === 'en' ? 'With AI statistics' : lang === 'sk' ? 'S AI štatistikami' : 'S AI statistikami', price: '99', year: '79', rec: true },
       ],
       trial: l.trial, free: l.freeAfter, up: 'solo_inspire',
     },
@@ -91,7 +91,7 @@ export default function SettingsPage() {
         : ['Vše z OSVČ (neomezené)', '+ Správa týmu + staff kalendář', '+ Směny a notifikace', '+ Reporty per staff', '+ Týdenní email report', '+ Klientský mini-portál', '+ GA4 / Sklik / FB Pixel', '+ Google Calendar sync', '+ Permanentky na čas', '+ Neomezené permanentky + balíčky', '+ Sezónní + combo slevy', '+ Opakované rezervace', '+ Online platby / depozity', '+ Formuláře před návštěvou', '+ Více poboček (max 3)'],
       tiers: [
         { label: lang === 'en' ? 'Without AI' : 'Bez AI', price: '299', year: '239', rec: false },
-        { label: lang === 'en' ? 'With AI insights' : lang === 'sk' ? 'S AI insighty' : 'S AI insighty', price: '499', year: '399', rec: true },
+        { label: lang === 'en' ? 'With AI statistics' : lang === 'sk' ? 'S AI štatistikami' : 'S AI statistikami', price: '499', year: '399', rec: true },
       ],
       trial: null, free: null, up: 'pro_inspire',
     },
