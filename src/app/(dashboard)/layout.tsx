@@ -25,8 +25,8 @@ const MODE_THEMES: Record<string, {
   logoBg: string; logoBorder: string; dotColor: string; sunIcon: string;
 }> = {
   solo: {
-    label: 'solo', gradient: 'linear-gradient(180deg, #064e3b 0%, #059669 35%, #10b981 70%, #6ee7b7 100%)',
-    sunGlow: 'rgba(253, 230, 138, 0.18)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
+    label: 'solo', gradient: 'linear-gradient(180deg, #064e3b 0%, #059669 30%, #10b981 60%, #34d399 80%, #a7f3d0 100%)',
+    sunGlow: 'rgba(253, 230, 138, 0.30)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
     textHover: '#ffffff', accent: '#fde68a', activeBg: 'rgba(255,255,255,0.25)',
     activeBorder: 'rgba(255,255,255,0.22)', activeText: '#ffffff', activeIcon: '#fde68a',
     hoverBg: 'rgba(255,255,255,0.12)', borderColor: 'rgba(255,255,255,0.18)',
@@ -52,7 +52,7 @@ const MODE_THEMES: Record<string, {
     dotColor: '#fef3c7', sunIcon: '#fbbf24',
   },
   pro_inspire: {
-    label: 'pro_inspire', gradient: 'linear-gradient(180deg, #44060b 0%, #881337 35%, #be123c 70%, #f59e0b 100%)',
+    label: 'pro_inspire', gradient: 'linear-gradient(180deg, #4c0519 0%, #9f1239 30%, #e11d48 55%, #fb7185 80%, #fda4af 100%)',
     sunGlow: 'rgba(212, 160, 160, 0.12)', text: '#fef2f2', textMuted: 'rgba(254,242,242,0.92)',
     textHover: '#ffffff', accent: '#fecaca', activeBg: 'rgba(255,255,255,0.22)',
     activeBorder: 'rgba(255,255,255,0.18)', activeText: '#ffffff', activeIcon: '#fecaca',
