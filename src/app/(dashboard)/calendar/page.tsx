@@ -327,11 +327,6 @@ export default function CalendarPage() {
           customer_name: qbName, customer_phone: qbPhone,
           price: svc?.price || null,
           status: isPast ? 'completed' : 'confirmed',
-          source: 'manual',
-          is_backfill: isPast,
-          backfill_note: isPast ? qbNote : null,
-          backfilled_at: isPast ? new Date().toISOString() : null,
-          created_by: 'owner',
         }),
       })
       if (res.ok) {
