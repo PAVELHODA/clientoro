@@ -403,6 +403,44 @@ export default function ClientsPage() {
                 </button>
                 <ChevronRight className="w-4 h-4 text-gray-300 ml-1" />
               </div>
+                {/* Inline edit pod kartou klienta */}
+                {editingId === client.id && !showForm && (
+                  <div className="border-t border-blue-200 bg-blue-50/30 p-5 mt-3" onClick={e => e.stopPropagation()}>
+                    <h4 className="text-sm font-semibold text-blue-700 mb-3">{l.edit}: {client.full_name}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.fullName}</label>
+                        <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.phone}</label>
+                        <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.email}</label>
+                        <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.source}</label>
+                        <select value={form.source} onChange={e => setForm({ ...form, source: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                          {SOURCES.map(s => <option key={s.value} value={s.value}>{s.icon} {s.label}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.tags}</label>
+                        <input type="text" value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="VIP, staly" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.note}</label>
+                        <input type="text" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-blue-100">
+                      <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">{saving ? l.saving : l.saveChanges}</button>
+                      <button onClick={() => { setEditingId(null); setForm(EMPTY_FORM) }} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">{l.cancel}</button>
+                    </div>
+                  </div>
+                )}
             </div>
           ))}
         </div>
