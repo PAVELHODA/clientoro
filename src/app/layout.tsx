@@ -1,4 +1,5 @@
-﻿import type { Metadata, Viewport } from 'next'
+﻿// PATH: src/app/layout.tsx
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { PWARegister } from '@/components/PWARegister'
 import { AuthProvider } from '@/components/AuthProvider'
@@ -34,10 +35,7 @@ export default function RootLayout({
     <html lang="cs">
       <head>
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Clientoro" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body>
         <AuthProvider>

@@ -1,62 +1,22 @@
-const CACHE_NAME = 'winwin-v1'
+// PATH: public/sw.js
+// Clientoro Service Worker — minimal version
+// Full PWA caching will be added later
 
-const STATIC_ASSETS = [
-  '/dashboard',
-  '/calendar',
-  '/bookings',
-  '/clients',
-  '/services',
-  '/staff',
-  '/settings',
-  '/manifest.json',
-]
-
-// Install — cache static assets
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS)
-    })
-  )
   self.skipWaiting()
 })
 
-// Activate — clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        cacheNames.map((cacheName) => caches.delete(cacheName))
       )
-    })
+    }).then(() => self.clients.claim())
   )
-  self.clients.claim()
 })
 
-// Fetch — network first, fallback to cache
 self.addEventListener('fetch', (event) => {
-  // Skip API calls and auth
-  if (event.request.url.includes('/api/') || event.request.url.includes('/auth/')) {
-    return
-  }
-
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Cache successful responses
-        if (response.status === 200) {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, clone)
-          })
-        }
-        return response
-      })
-      .catch(() => {
-        // Fallback to cache
-        return caches.match(event.request).then((cached) => {
-          return cached || caches.match('/dashboard')
-        })
-      })
-  )
+  // Pass through all requests — no caching for now
+  return
 })

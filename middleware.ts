@@ -1,3 +1,4 @@
+// PATH: middleware.ts
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
@@ -26,22 +27,50 @@ export async function middleware(request: NextRequest) {
   )
 
   const { data: { session } } = await supabase.auth.getSession()
-
   const path = request.nextUrl.pathname
-  const isAuthPage = path.startsWith('/login') || path.startsWith('/register')
-  const isPublicPage = path.match(/^\/[a-z0-9-]+$/) && !path.startsWith('/api')
 
-  if (!session && !isAuthPage && !isPublicPage) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  // Public pages — no auth required
+  const isPublicPage =
+    path === '/' ||
+    path.startsWith('/book/') ||
+    path.startsWith('/privacy') ||
+    path.startsWith('/terms')
+
+  const isAuthPage =
+    path.startsWith('/login') ||
+    path.startsWith('/register')
+
+  const isOnboarding = path.startsWith('/onboarding')
+
+  if (isPublicPage) {
+    if (session && path === '/') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+    return response
   }
 
-  if (session && isAuthPage) {
-    return NextResponse.redirect(new URL('/calendar', request.url))
+  if (isAuthPage) {
+    if (session) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+    return response
+  }
+
+  if (isOnboarding) {
+    if (!session) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+    return response
+  }
+
+  // Protected pages — auth required
+  if (!session) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   return response
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api|icons|manifest).*)'],
 }
