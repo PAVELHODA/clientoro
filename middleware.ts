@@ -3,6 +3,29 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+// Route permissions: which minimum role is needed
+const ROUTE_ROLES: Record<string, string> = {
+  '/admin': 'superadmin',
+  '/dev': 'superadmin',
+  '/settings': 'owner',
+  '/staff': 'owner',
+  '/services': 'owner',
+  '/growth': 'manager',
+  '/reports': 'manager',
+  '/ai': 'manager',
+  '/dashboard': 'staff',
+  '/calendar': 'staff',
+  '/bookings': 'staff',
+  '/clients': 'staff',
+}
+
+const ROLE_LEVEL: Record<string, number> = {
+  staff: 10,
+  manager: 20,
+  owner: 30,
+  superadmin: 100,
+}
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: { headers: request.headers },
@@ -29,7 +52,7 @@ export async function middleware(request: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession()
   const path = request.nextUrl.pathname
 
-  // Public pages — no auth required
+  // Public pages
   const isPublicPage =
     path === '/' ||
     path.startsWith('/book/') ||
@@ -63,9 +86,71 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // Protected pages — auth required
+  // Protected pages
   if (!session) {
     return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  // Role check for protected routes
+  const matchedRoute = Object.keys(ROUTE_ROLES)
+    .sort((a, b) => b.length - a.length)
+    .find(route => path === route || path.startsWith(route + '/'))
+
+  if (matchedRoute) {
+    const requiredRole = ROUTE_ROLES[matchedRoute]
+    const requiredLevel = ROLE_LEVEL[requiredRole] || 10
+
+    // Only check role if route requires more than staff
+    if (requiredLevel > ROLE_LEVEL.staff) {
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id, is_superadmin')
+          .eq('auth_user_id', session.user.id)
+          .single()
+
+        if (!profile) {
+          return NextResponse.redirect(new URL('/onboarding', request.url))
+        }
+
+        let userRole = 'staff'
+
+        if (profile.is_superadmin) {
+          userRole = 'superadmin'
+        } else {
+          const { data: membership } = await supabase
+            .from('memberships')
+            .select('role')
+            .eq('user_id', profile.id)
+            .limit(1)
+            .single()
+
+          if (membership) {
+            userRole = membership.role || 'staff'
+          }
+
+          if (userRole === 'staff') {
+            const { data: staffRecord } = await supabase
+              .from('staff')
+              .select('app_role')
+              .eq('user_id', profile.id)
+              .limit(1)
+              .single()
+
+            if (staffRecord?.app_role === 'manager') {
+              userRole = 'manager'
+            }
+          }
+        }
+
+        const userLevel = ROLE_LEVEL[userRole] || 10
+        if (userLevel < requiredLevel) {
+          return NextResponse.redirect(new URL('/dashboard?access_denied=1', request.url))
+        }
+      } catch (err) {
+        console.error('[Middleware] Role check error:', err)
+      }
+    }
   }
 
   return response
