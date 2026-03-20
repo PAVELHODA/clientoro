@@ -3,7 +3,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAuth } from '@/components/AuthProvider'
 import { translations, type Lang } from '@/lib/i18n'
@@ -142,7 +142,7 @@ const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any
 }
 
 // ============================================
-// 💡 Motivational Tips — Slide system + ON/OFF
+// 💡 Motivational Tips
 // ============================================
 const TIPS: Record<string, string[]> = {
   '/dashboard': [
@@ -264,30 +264,39 @@ function MotivationalTip() {
 }
 
 // ============================================
-// 🏗️ DASHBOARD LAYOUT
+// 🔔 Notification Bell — 60s interval, user-dependent
 // ============================================
-
-// 🔔 Notification Bell Component
 function NotificationBell() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [showPanel, setShowPanel] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+  const { user } = useAuth()
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
+    if (!user) return
+
+    let isMounted = true
+
     const fetchNotifications = async () => {
       try {
         const res = await fetch('/api/notifications')
-        if (res.ok) {
+        if (res.ok && isMounted) {
           const data = await res.json()
           setNotifications(data || [])
           setUnreadCount((data || []).filter((n: any) => !n.read).length)
         }
       } catch (e) {}
     }
+
     fetchNotifications()
-    const interval = setInterval(fetchNotifications, 30000)
-    return () => clearInterval(interval)
-  }, [])
+    intervalRef.current = setInterval(fetchNotifications, 60000)
+
+    return () => {
+      isMounted = false
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [user?.id])
 
   const markAllRead = async () => {
     try {
@@ -311,11 +320,11 @@ function NotificationBell() {
       {showPanel && (
         <div className="absolute right-0 top-11 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
           <div className="p-3 border-b border-gray-100 flex justify-between items-center">
-            <span className="font-bold text-sm text-gray-900">Oznameni</span>
+            <span className="font-bold text-sm text-gray-900">Oznámení</span>
             <button onClick={() => setShowPanel(false)} className="text-gray-400 hover:text-gray-600"><X className="w-4 h-4" /></button>
           </div>
           {notifications.length === 0 ? (
-            <div className="p-6 text-center text-gray-400 text-sm">Zadna oznameni</div>
+            <div className="p-6 text-center text-gray-400 text-sm">Žádná oznámení</div>
           ) : (
             notifications.slice(0, 20).map((n: any) => (
               <div key={n.id} className={'p-3 border-b border-gray-50 ' + (n.read ? 'bg-white' : 'bg-blue-50/50')}>
@@ -334,24 +343,21 @@ function NotificationBell() {
   )
 }
 
+// ============================================
+// 🏗️ DASHBOARD LAYOUT
+// ============================================
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
-  const { organization, loading: authLoading } = useAuth()
+  const { organization, loading: authLoading, isSuperadmin } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [isSuperadmin, setIsSuperadmin] = useState(false)
   const [lang, setLangState] = useState('cs')
 
   const setLang = (l: string) => {
     setLangState(l)
     if (typeof window !== 'undefined') localStorage.setItem('clientoro_lang', l)
   }
-
-  // Check superadmin
-  useEffect(() => {
-    fetch('/api/admin/stats').then(r => { if (r.ok) setIsSuperadmin(true) }).catch(() => {})
-  }, [])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -384,8 +390,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
     )
   }
- 
-  // Pokud uživatel nemá organizaci — přesměruj na onboarding
+
   if (!organization) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
@@ -393,14 +398,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Waves className="w-8 h-8 text-amber-500" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">{"Nastaven\u00ed nen\u00ed kompletn\u00ed"}</h2>
-          <p className="text-gray-500 mb-6">{"V\u00e1\u0161 \u00fa\u010det nem\u00e1 p\u0159i\u0159azenou organizaci. Dokon\u010dete nastaven\u00ed nebo se odhlaste."}</p>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Nastavení není kompletní</h2>
+          <p className="text-gray-500 mb-6">Váš účet nemá přiřazenou organizaci. Dokončete nastavení nebo se odhlaste.</p>
           <div className="flex gap-3 justify-center">
             <a href="/onboarding" className="px-6 py-3 text-white rounded-xl font-semibold shadow-lg transition-all hover:shadow-xl" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
-              {"Dokon\u010dit nastaven\u00ed"}
+              Dokončit nastavení
             </a>
             <button onClick={handleLogout} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
-              {"Odhl\u00e1sit se"}
+              Odhlásit se
             </button>
           </div>
         </div>
@@ -570,13 +575,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </LangContext.Provider>
   )
 }
-
-
-
-
-
-
-
-
-
-

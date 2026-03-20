@@ -1,8 +1,9 @@
-// PATH: src/components/AuthProvider.tsx
+﻿// PATH: src/components/AuthProvider.tsx
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react'
+import { createClient } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
 export type UserRole = 'superadmin' | 'owner' | 'manager' | 'staff'
 
@@ -17,26 +18,20 @@ interface Organization {
   slug: string
   mode: string
   category: string
-  phone: string
-  email: string
-  website: string
-  address: string
-  city: string
-  zip: string
-  ico: string
-  dic: string
+  phone: string | null
+  email: string | null
+  website: string | null
+  address: string | null
+  city: string | null
+  zip: string | null
   logo_url: string | null
-  description: string
+  description: string | null
   work_start: number
   work_end: number
   timezone: string
   language: string
   onboarding_completed: boolean
   default_staff_id: string | null
-  slot_duration: number
-  notification_email: string | null
-  notify_on_booking: boolean
-  notify_on_cancel: boolean
 }
 
 interface AuthContextType {
@@ -52,6 +47,13 @@ interface AuthContextType {
   isAtLeastManager: boolean
   isAtLeastOwner: boolean
   refreshOrg: () => Promise<void>
+}
+
+const ROLE_HIERARCHY: Record<UserRole, number> = {
+  superadmin: 100,
+  owner: 80,
+  manager: 60,
+  staff: 40,
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -73,55 +75,35 @@ export function useAuth() {
   return useContext(AuthContext)
 }
 
-const ROLE_HIERARCHY: Record<UserRole, number> = {
-  superadmin: 100,
-  owner: 80,
-  manager: 60,
-  staff: 40,
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [organization, setOrganization] = useState<Organization | null>(null)
   const [role, setRole] = useState<UserRole>('staff')
   const [loading, setLoading] = useState(true)
+  const didInit = useRef(false)
   const supabase = createClient()
-
-  const fetchOrganization = async () => {
-    try {
-      const res = await fetch('/api/settings')
-      if (res.ok) {
-        const data = await res.json()
-        setOrganization(data)
-      }
-    } catch (err) {
-      console.error('Failed to fetch organization:', err)
-    }
-  }
-
-  const fetchRole = async () => {
-    try {
-      const res = await fetch('/api/auth/me')
-      if (res.ok) {
-        const data = await res.json()
-        setRole(data.role || 'staff')
-      }
-    } catch (err) {
-      console.error('Failed to fetch role:', err)
-    }
-  }
+  const router = useRouter()
 
   useEffect(() => {
+    if (didInit.current) return
+    didInit.current = true
+
     const init = async () => {
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser()
+        const [meRes, orgRes] = await Promise.all([
+          fetch('/api/auth/me'),
+          fetch('/api/settings')
+        ])
 
-        if (authUser) {
-          setUser({
-            id: authUser.id,
-            email: authUser.email || '',
-          })
-          await Promise.all([fetchOrganization(), fetchRole()])
+        if (meRes.ok) {
+          const meData = await meRes.json()
+          setUser({ id: meData.profileId || '', email: meData.email || '' })
+          setRole(meData.role || 'staff')
+        }
+
+        if (orgRes.ok) {
+          const orgData = await orgRes.json()
+          setOrganization(orgData)
         }
       } catch (err) {
         console.error('Auth init error:', err)
@@ -131,28 +113,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     init()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email || '',
-          })
-          await Promise.all([fetchOrganization(), fetchRole()])
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null)
-          setOrganization(null)
-          setRole('staff')
-        }
-      }
-    )
-
-    return () => { subscription.unsubscribe() }
   }, [])
 
   const refreshOrg = async () => {
-    await fetchOrganization()
+    try {
+      const res = await fetch('/api/settings')
+      if (res.ok) {
+        const data = await res.json()
+        setOrganization(data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch organization:', err)
+    }
   }
 
   const isSuperadmin = role === 'superadmin'
