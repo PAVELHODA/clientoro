@@ -1,11 +1,11 @@
-﻿﻿// PATH: src/app/(dashboard)/layout.tsx
+// PATH: src/app/(dashboard)/layout.tsx
 'use client'
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
-import { useAuth } from '@/components/AuthProvider'
+import { useAuth, type UserRole } from '@/components/AuthProvider'
 import { translations, type Lang } from '@/lib/i18n'
 import { LangContext, useLang } from '@/lib/LangContext'
 import {
@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 
 // ============================================
-// 🎨 MODE THEMES
+// ?? MODE THEMES
 // ============================================
 const MODE_THEMES: Record<string, {
   label: string; gradient: string; sunGlow: string; text: string; textMuted: string;
@@ -72,77 +72,77 @@ const MODE_THEMES: Record<string, {
 }
 
 // ============================================
-// 📋 NAVIGACE
+// ?? NAVIGACE
 // ============================================
-const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any }[]> = {
+const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any; minRole?: string }[]> = {
   solo: [
-    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
-    { href: '/calendar', labelKey: 'calendar', icon: Calendar },
-    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList },
-    { href: '/clients', labelKey: 'clients', icon: Users },
-    { href: '/services', labelKey: 'services', icon: Scissors },
-    { href: '/reports', labelKey: 'reports', icon: BarChart3 },
-    { href: '/settings', labelKey: 'settings', icon: Settings },
+    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, minRole: 'staff' },
+    { href: '/calendar', labelKey: 'calendar', icon: Calendar, minRole: 'staff' },
+    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList, minRole: 'staff' },
+    { href: '/clients', labelKey: 'clients', icon: Users, minRole: 'staff' },
+    { href: '/services', labelKey: 'services', icon: Scissors, minRole: 'owner' },
+    { href: '/reports', labelKey: 'reports', icon: BarChart3, minRole: 'manager' },
+    { href: '/settings', labelKey: 'settings', icon: Settings, minRole: 'owner' },
   ],
   team: [
-    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
-    { href: '/calendar', labelKey: 'calendar', icon: Calendar },
-    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList },
-    { href: '/clients', labelKey: 'clients', icon: Users },
-    { href: '/services', labelKey: 'services', icon: Scissors },
-    { href: '/staff', labelKey: 'staff', icon: UserCircle },
-    { href: '/reports', labelKey: 'reports', icon: BarChart3 },
-    { href: '/settings', labelKey: 'settings', icon: Settings },
+    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, minRole: 'staff' },
+    { href: '/calendar', labelKey: 'calendar', icon: Calendar, minRole: 'staff' },
+    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList, minRole: 'staff' },
+    { href: '/clients', labelKey: 'clients', icon: Users, minRole: 'staff' },
+    { href: '/services', labelKey: 'services', icon: Scissors, minRole: 'owner' },
+    { href: '/staff', labelKey: 'staff', icon: UserCircle, minRole: 'owner' },
+    { href: '/reports', labelKey: 'reports', icon: BarChart3, minRole: 'manager' },
+    { href: '/settings', labelKey: 'settings', icon: Settings, minRole: 'owner' },
   ],
   solo_inspire: [
-    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
-    { href: '/calendar', labelKey: 'calendar', icon: Calendar },
-    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList },
-    { href: '/clients', labelKey: 'clients', icon: Users },
-    { href: '/services', labelKey: 'services', icon: Scissors },
-    { href: '/reports', labelKey: 'reports', icon: BarChart3 },
-    { href: '/growth/campaigns', labelKey: 'campaigns', icon: Megaphone },
-    { href: '/growth/reviews', labelKey: 'reviews', icon: Star },
-    { href: '/growth/qr', labelKey: 'qr', icon: QrCode },
-    { href: '/ai', labelKey: 'ai', icon: Bot },
-    { href: '/settings', labelKey: 'settings', icon: Settings },
+    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, minRole: 'staff' },
+    { href: '/calendar', labelKey: 'calendar', icon: Calendar, minRole: 'staff' },
+    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList, minRole: 'staff' },
+    { href: '/clients', labelKey: 'clients', icon: Users, minRole: 'staff' },
+    { href: '/services', labelKey: 'services', icon: Scissors, minRole: 'owner' },
+    { href: '/reports', labelKey: 'reports', icon: BarChart3, minRole: 'manager' },
+    { href: '/growth/campaigns', labelKey: 'campaigns', icon: Megaphone, minRole: 'manager' },
+    { href: '/growth/reviews', labelKey: 'reviews', icon: Star, minRole: 'manager' },
+    { href: '/growth/qr', labelKey: 'qr', icon: QrCode, minRole: 'manager' },
+    { href: '/ai', labelKey: 'ai', icon: Bot, minRole: 'manager' },
+    { href: '/settings', labelKey: 'settings', icon: Settings, minRole: 'owner' },
   ],
   pro_inspire: [
-    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
-    { href: '/calendar', labelKey: 'calendar', icon: Calendar },
-    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList },
-    { href: '/clients', labelKey: 'clients', icon: Users },
-    { href: '/services', labelKey: 'services', icon: Scissors },
-    { href: '/staff', labelKey: 'staff', icon: UserCircle },
-    { href: '/reports', labelKey: 'reports', icon: BarChart3 },
-    { href: '/growth/campaigns', labelKey: 'campaigns', icon: Megaphone },
-    { href: '/growth/reviews', labelKey: 'reviews', icon: Star },
-    { href: '/growth/qr', labelKey: 'qr', icon: QrCode },
-    { href: '/ai', labelKey: 'ai', icon: Bot },
-    { href: '/growth/insights', labelKey: 'insights', icon: TrendingUp },
-    { href: '/settings', labelKey: 'settings', icon: Settings },
+    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, minRole: 'staff' },
+    { href: '/calendar', labelKey: 'calendar', icon: Calendar, minRole: 'staff' },
+    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList, minRole: 'staff' },
+    { href: '/clients', labelKey: 'clients', icon: Users, minRole: 'staff' },
+    { href: '/services', labelKey: 'services', icon: Scissors, minRole: 'owner' },
+    { href: '/staff', labelKey: 'staff', icon: UserCircle, minRole: 'owner' },
+    { href: '/reports', labelKey: 'reports', icon: BarChart3, minRole: 'manager' },
+    { href: '/growth/campaigns', labelKey: 'campaigns', icon: Megaphone, minRole: 'manager' },
+    { href: '/growth/reviews', labelKey: 'reviews', icon: Star, minRole: 'manager' },
+    { href: '/growth/qr', labelKey: 'qr', icon: QrCode, minRole: 'manager' },
+    { href: '/ai', labelKey: 'ai', icon: Bot, minRole: 'manager' },
+    { href: '/growth/insights', labelKey: 'insights', icon: TrendingUp, minRole: 'owner' },
+    { href: '/settings', labelKey: 'settings', icon: Settings, minRole: 'owner' },
   ],
   creator: [
-    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
-    { href: '/calendar', labelKey: 'calendar', icon: Calendar },
-    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList },
-    { href: '/clients', labelKey: 'clients', icon: Users },
-    { href: '/services', labelKey: 'services', icon: Scissors },
-    { href: '/staff', labelKey: 'staff', icon: UserCircle },
-    { href: '/reports', labelKey: 'reports', icon: BarChart3 },
-    { href: '/growth/campaigns', labelKey: 'campaigns', icon: Megaphone },
-    { href: '/growth/reviews', labelKey: 'reviews', icon: Star },
-    { href: '/growth/qr', labelKey: 'qr', icon: QrCode },
-    { href: '/ai', labelKey: 'ai', icon: Bot },
-    { href: '/growth/insights', labelKey: 'insights', icon: TrendingUp },
-    { href: '/admin', labelKey: 'admin', icon: Crown },
-    { href: '/dev', labelKey: 'devtools', icon: Wrench },
-    { href: '/settings', labelKey: 'settings', icon: Settings },
+    { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, minRole: 'staff' },
+    { href: '/calendar', labelKey: 'calendar', icon: Calendar, minRole: 'staff' },
+    { href: '/bookings', labelKey: 'bookings', icon: ClipboardList, minRole: 'staff' },
+    { href: '/clients', labelKey: 'clients', icon: Users, minRole: 'staff' },
+    { href: '/services', labelKey: 'services', icon: Scissors, minRole: 'owner' },
+    { href: '/staff', labelKey: 'staff', icon: UserCircle, minRole: 'owner' },
+    { href: '/reports', labelKey: 'reports', icon: BarChart3, minRole: 'manager' },
+    { href: '/growth/campaigns', labelKey: 'campaigns', icon: Megaphone, minRole: 'manager' },
+    { href: '/growth/reviews', labelKey: 'reviews', icon: Star, minRole: 'manager' },
+    { href: '/growth/qr', labelKey: 'qr', icon: QrCode, minRole: 'manager' },
+    { href: '/ai', labelKey: 'ai', icon: Bot, minRole: 'manager' },
+    { href: '/growth/insights', labelKey: 'insights', icon: TrendingUp, minRole: 'owner' },
+    { href: '/admin', labelKey: 'admin', icon: Crown, minRole: 'superadmin' },
+    { href: '/dev', labelKey: 'devtools', icon: Wrench, minRole: 'superadmin' },
+    { href: '/settings', labelKey: 'settings', icon: Settings, minRole: 'owner' },
   ],
 }
 
 // ============================================
-// 💡 Motivational Tips
+// ?? Motivational Tips
 // ============================================
 const TIPS: Record<string, string[]> = {
   '/dashboard': [
@@ -236,7 +236,7 @@ function MotivationalTip() {
       <div className="mb-4 flex justify-center">
         <button onClick={toggleTips}
           className="px-4 py-1.5 text-xs text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-full border border-gray-200 hover:border-amber-200 transition-all">
-          💡 Zapnout motivační tipy
+          ?? Zapnout motivační tipy
         </button>
       </div>
     )
@@ -245,13 +245,13 @@ function MotivationalTip() {
   return (
     <div className="mb-4 p-4 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">
       <p className={`text-sm text-amber-900 font-bold text-center flex-1 transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}`}>
-        💡 {tips[tipIndex] || ''}
+        ?? {tips[tipIndex] || ''}
       </p>
       <div className="flex items-center gap-1 flex-shrink-0">
         <button onClick={() => setPaused(!paused)}
           className="w-7 h-7 rounded-lg flex items-center justify-center text-amber-400 hover:text-amber-600 hover:bg-amber-100 transition-all"
           title={paused ? 'Pokračovat' : 'Pozastavit'}>
-          <span className="text-xs">{paused ? '▶' : '⏸'}</span>
+          <span className="text-xs">{paused ? '?' : '?'}</span>
         </button>
         <button onClick={toggleTips}
           className="w-7 h-7 rounded-lg flex items-center justify-center text-amber-400 hover:text-amber-600 hover:bg-amber-100 transition-all"
@@ -264,7 +264,7 @@ function MotivationalTip() {
 }
 
 // ============================================
-// 🔔 Notification Bell — 60s interval, user-dependent
+// ?? Notification Bell — 60s interval, user-dependent
 // ============================================
 function NotificationBell() {
   const [notifications, setNotifications] = useState<any[]>([])
@@ -344,13 +344,13 @@ function NotificationBell() {
 }
 
 // ============================================
-// 🏗️ DASHBOARD LAYOUT
+// ??? DASHBOARD LAYOUT
 // ============================================
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
-  const { organization, loading: authLoading, isSuperadmin } = useAuth()
+  const { organization, loading: authLoading, isSuperadmin, role } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [lang, setLangState] = useState('cs')
 
@@ -378,7 +378,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const orgMode = organization?.mode || 'team'
   const orgName = organization?.name || 'Clientoro'
   const theme = MODE_THEMES[orgMode] || MODE_THEMES.team
-  const navItems = MODE_NAV_ITEMS[orgMode] || MODE_NAV_ITEMS.team
+  const allNavItems = MODE_NAV_ITEMS[orgMode] || MODE_NAV_ITEMS.team
+  const ROLE_LEVEL: Record<string, number> = { staff: 10, manager: 20, owner: 30, superadmin: 100 }
+  const userLevel = ROLE_LEVEL[role] || 10
+  const navItems = allNavItems.filter((item: any) => userLevel >= (ROLE_LEVEL[item.minRole] || 10))
 
   if (authLoading) {
     return (

@@ -1,4 +1,4 @@
-﻿// PATH: src/app/layout.tsx
+﻿// PATH: src/app/(dashboard)/layout.tsx
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { PWARegister } from '@/components/PWARegister'
