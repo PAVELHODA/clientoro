@@ -25,8 +25,8 @@ const MODE_THEMES: Record<string, {
   logoBg: string; logoBorder: string; dotColor: string; sunIcon: string;
 }> = {
   solo: {
-    label: 'solo', gradient: 'linear-gradient(180deg, #064e3b 0%, #059669 30%, #10b981 60%, #34d399 80%, #a7f3d0 100%)',
-    sunGlow: 'rgba(253, 230, 138, 0.30)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
+    label: 'solo', gradient: 'linear-gradient(180deg, #011a13 0%, #022c22 20%, #064e3b 45%, #047857 70%, #059669 90%, #10b981 100%)',
+    sunGlow: 'rgba(0,0,0,0)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
     textHover: '#ffffff', accent: '#fde68a', activeBg: 'rgba(255,255,255,0.25)',
     activeBorder: 'rgba(255,255,255,0.22)', activeText: '#ffffff', activeIcon: '#fde68a',
     hoverBg: 'rgba(255,255,255,0.12)', borderColor: 'rgba(255,255,255,0.18)',
@@ -34,8 +34,8 @@ const MODE_THEMES: Record<string, {
     dotColor: '#fde68a', sunIcon: '#fde68a',
   },
   team: {
-    label: 'team', gradient: 'linear-gradient(180deg, #0c1445 0%, #1e3a8a 35%, #2563eb 70%, #60a5fa 100%)',
-    sunGlow: 'rgba(253, 230, 138, 0.15)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
+    label: 'team', gradient: 'linear-gradient(180deg, #020617 0%, #0a0f2e 20%, #0c1445 45%, #1e3a8a 70%, #1d4ed8 90%, #2563eb 100%)',
+    sunGlow: 'rgba(0,0,0,0)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
     textHover: '#ffffff', accent: '#fde68a', activeBg: 'rgba(255,255,255,0.25)',
     activeBorder: 'rgba(255,255,255,0.22)', activeText: '#ffffff', activeIcon: '#fde68a',
     hoverBg: 'rgba(255,255,255,0.12)', borderColor: 'rgba(255,255,255,0.18)',
@@ -44,7 +44,7 @@ const MODE_THEMES: Record<string, {
   },
   solo_inspire: {
     label: 'solo_inspire', gradient: 'linear-gradient(180deg, #450a0a 0%, #7c2d12 35%, #c2410c 70%, #f59e0b 100%)',
-    sunGlow: 'rgba(251, 191, 36, 0.20)', text: '#fef3c7', textMuted: 'rgba(254,243,199,0.92)',
+    sunGlow: 'rgba(0,0,0,0)', text: '#fef3c7', textMuted: 'rgba(254,243,199,0.92)',
     textHover: '#ffffff', accent: '#fef3c7', activeBg: 'rgba(255,255,255,0.22)',
     activeBorder: 'rgba(255,255,255,0.18)', activeText: '#ffffff', activeIcon: '#fef3c7',
     hoverBg: 'rgba(255,255,255,0.10)', borderColor: 'rgba(255,255,255,0.16)',
@@ -52,8 +52,8 @@ const MODE_THEMES: Record<string, {
     dotColor: '#fef3c7', sunIcon: '#fbbf24',
   },
   pro_inspire: {
-    label: 'pro_inspire', gradient: 'linear-gradient(180deg, #4c0519 0%, #9f1239 30%, #e11d48 55%, #fb7185 80%, #fda4af 100%)',
-    sunGlow: 'rgba(212, 160, 160, 0.12)', text: '#fef2f2', textMuted: 'rgba(254,242,242,0.92)',
+    label: 'pro_inspire', gradient: 'linear-gradient(180deg, #0d0008 0%, #1a0011 20%, #3b0720 45%, #6b1030 70%, #9f1239 90%, #be123c 100%)',
+    sunGlow: 'rgba(0,0,0,0)', text: '#fef2f2', textMuted: 'rgba(254,242,242,0.92)',
     textHover: '#ffffff', accent: '#fecaca', activeBg: 'rgba(255,255,255,0.22)',
     activeBorder: 'rgba(255,255,255,0.18)', activeText: '#ffffff', activeIcon: '#fecaca',
     hoverBg: 'rgba(255,255,255,0.10)', borderColor: 'rgba(255,255,255,0.16)',
@@ -62,7 +62,7 @@ const MODE_THEMES: Record<string, {
   },
   creator: {
     label: 'creator', gradient: 'linear-gradient(180deg, #0c1222 0%, #1e293b 35%, #334155 70%, #475569 100%)',
-    sunGlow: 'rgba(34, 211, 238, 0.08)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
+    sunGlow: 'rgba(0,0,0,0)', text: '#ffffff', textMuted: 'rgba(255,255,255,0.90)',
     textHover: '#ffffff', accent: '#67e8f9', activeBg: 'rgba(255,255,255,0.25)',
     activeBorder: 'rgba(255,255,255,0.20)', activeText: '#ffffff', activeIcon: '#67e8f9',
     hoverBg: 'rgba(255,255,255,0.12)', borderColor: 'rgba(255,255,255,0.18)',
@@ -418,8 +418,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const SidebarContent = () => (
     <>
-      <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-3xl pointer-events-none" style={{ background: theme.sunGlow }} />
-      <div className="absolute top-24 right-[-20px] w-28 h-28 rounded-full blur-2xl pointer-events-none" style={{ background: theme.sunGlow }} />
+      {/* clean sidebar - no light effects */}
+
 
       <div className="p-5 relative z-10">
         <div className="flex items-center gap-3">
