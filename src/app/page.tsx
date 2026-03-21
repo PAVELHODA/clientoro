@@ -78,8 +78,8 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}><Zap className="w-4 h-4" /> Chytrý rezervační systém s AI pro poskytovatele služeb
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">Interaktivní kalendář.<br />  přináší více klientů.<br /><span style={{ color: '#f59e0b' }}>Vy máte přehled o rezervacích, tržbách i týmu.</span></h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>Přehledný interaktivní kalendář pro správu klientů i týmu. Zaměřeno na získávání klientů. Pro růst vašeho podnikání s volbou AI. Férový ceník, žádné skryté poplatky.</p>
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">Interaktivní kalendář <br />  zaměřený na získávání klientů.<br /><span style={{ color: '#f59e0b' }}>Vy máte přehled o rezervacích, tržbách, týmu .</span></h1>
+          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>Přehledný kalendář pro správu klientů i týmu. Pro růst vašeho podnikání s volbou AI. Férový ceník, žádné skryté poplatky.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <a href="/register" className="px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>Vyzkoušet 14 dní zdarma <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.15)' }}>Co vám přineseme?</a>
@@ -109,7 +109,7 @@ export default function LandingPage() {
       <section id="features" className="py-20 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Vše co potřebujete na jednom místě</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Vše na jednom místě.</h2>
             <p className="text-gray-500">Žádné přepínání mezi aplikacemi. Žádné ztracené informace.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
