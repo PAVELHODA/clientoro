@@ -1,11 +1,11 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
@@ -13,7 +13,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       .from('bookings')
       .update(body)
       .eq('id', params.id)
-      .eq('organization_id', orgId)
+      .eq('organization_id', auth.organizationId)
       .select('*, clients(full_name, phone, email), services(name, color, duration, price), staff(full_name)')
       .single()
 
@@ -26,7 +26,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         await fetch(protocol + '://' + baseUrl + '/api/bookings/webhook', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'cancelled', booking_id: params.id, organization_id: orgId }),
+          body: JSON.stringify({ action: 'cancelled', booking_id: params.id, organization_id: auth.organizationId }),
         })
       } catch (e) { console.error('[webhook-trigger]', e) }
     }
@@ -39,14 +39,14 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'manager')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { error } = await supabaseAdmin
       .from('bookings')
       .delete()
       .eq('id', params.id)
-      .eq('organization_id', orgId)
+      .eq('organization_id', auth.organizationId)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ deleted: true })

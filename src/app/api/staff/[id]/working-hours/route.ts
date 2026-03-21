@@ -1,15 +1,14 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET — pracovní doba + výjimky + volna pro staff
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
     const staffId = params.id
 
-    // Pracovní doba (Po-Ne)
     const { data: workingHours, error: whError } = await supabaseAdmin
       .from('staff_working_hours')
       .select('*')
@@ -18,7 +17,6 @@ export async function GET(
 
     if (whError) return NextResponse.json({ error: whError.message }, { status: 500 })
 
-    // Výjimky (speciální hodiny na konkrétní den)
     const { data: exceptions, error: exError } = await supabaseAdmin
       .from('staff_exceptions')
       .select('*')
@@ -27,7 +25,6 @@ export async function GET(
 
     if (exError) return NextResponse.json({ error: exError.message }, { status: 500 })
 
-    // Volna (dovolená, nemoc...)
     const { data: timeOff, error: toError } = await supabaseAdmin
       .from('staff_time_off')
       .select('*')
@@ -46,12 +43,11 @@ export async function GET(
   }
 }
 
-// PUT — uložit celou pracovní dobu (smaž staré, vlož nové)
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
     const staffId = params.id
     const body = await request.json()
     const { working_hours } = body
@@ -60,7 +56,6 @@ export async function PUT(
       return NextResponse.json({ error: 'working_hours must be an array' }, { status: 400 })
     }
 
-    // Smaž staré záznamy
     const { error: deleteError } = await supabaseAdmin
       .from('staff_working_hours')
       .delete()
@@ -68,7 +63,6 @@ export async function PUT(
 
     if (deleteError) return NextResponse.json({ error: deleteError.message }, { status: 500 })
 
-    // Vlož nové (jen aktivní dny)
     const rows = working_hours
       .filter((wh: any) => wh.enabled)
       .map((wh: any) => ({
@@ -87,7 +81,6 @@ export async function PUT(
       if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 })
     }
 
-    // Vrať aktuální stav
     const { data } = await supabaseAdmin
       .from('staff_working_hours')
       .select('*')

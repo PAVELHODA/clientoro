@@ -1,11 +1,12 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
     const body = await request.json()
     const { service_ids, ...staffData } = body
 
@@ -42,11 +43,11 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
     const { error } = await supabaseAdmin
       .from('staff')
       .delete()

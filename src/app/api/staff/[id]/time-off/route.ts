@@ -1,15 +1,11 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
-// POST — přidat volno
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
@@ -17,7 +13,7 @@ export async function POST(
       .from('staff_time_off')
       .insert({
         staff_id: params.id,
-        organization_id: orgId,
+        organization_id: auth.organizationId,
         type: body.type || 'vacation',
         start_at: body.start_at,
         end_at: body.end_at,
@@ -33,9 +29,11 @@ export async function POST(
   }
 }
 
-// DELETE — smazat volno
 export async function DELETE(request: NextRequest) {
   try {
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
     const { searchParams } = new URL(request.url)
     const timeOffId = searchParams.get('time_off_id')
 
@@ -52,4 +50,3 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-
