@@ -1,11 +1,11 @@
 ﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const start = searchParams.get('start')
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         services (id, name, color, duration, price),
         staff (id, full_name)
       `)
-      .eq('organization_id', orgId)
+      .eq('organization_id', auth.organizationId)
       .order('start_at', { ascending: true })
 
     if (start) query = query.gte('start_at', start)
@@ -36,14 +36,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     const { data, error } = await supabaseAdmin
       .from('bookings')
-      .insert({ ...body, organization_id: orgId })
+      .insert({ ...body, organization_id: auth.organizationId })
       .select(`
         *,
         clients (id, full_name, phone, email),
@@ -54,14 +54,13 @@ export async function POST(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // Trigger webhook notification
     try {
       const baseUrl = request.headers.get('host') || 'localhost:3000'
       const protocol = baseUrl.includes('localhost') ? 'http' : 'https'
       await fetch(protocol + '://' + baseUrl + '/api/bookings/webhook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'created', booking_id: data.id, organization_id: orgId }),
+        body: JSON.stringify({ action: 'created', booking_id: data.id, organization_id: auth.organizationId }),
       })
     } catch (e) { console.error('[webhook-trigger]', e) }
 
@@ -70,4 +69,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-

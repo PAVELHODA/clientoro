@@ -1,11 +1,11 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     let query = supabaseAdmin
       .from('clients')
       .select('*')
-      .eq('organization_id', orgId)
+      .eq('organization_id', auth.organizationId)
       .order('created_at', { ascending: false })
 
     if (search) {
@@ -31,14 +31,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'manager')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     const { data, error } = await supabaseAdmin
       .from('clients')
-      .insert({ ...body, organization_id: orgId })
+      .insert({ ...body, organization_id: auth.organizationId })
       .select()
       .single()
 

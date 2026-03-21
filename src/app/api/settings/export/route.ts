@@ -1,11 +1,13 @@
 ﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+    const orgId = auth.organizationId
 
     const [clients, bookings, services, staff] = await Promise.all([
       supabaseAdmin.from('clients').select('*').eq('organization_id', orgId),
@@ -16,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     const lines = ['=== CLIENTORO BACKUP ===', '']
     lines.push('--- KLIENTI ---')
-    lines.push('Jmeno;Telefon;Email;Navstevy;Aktivum spoluprace')
+    lines.push('Jmeno;Telefon;Email;Navstevy;Utrata')
     ;(clients.data || []).forEach((c: any) => lines.push(`${c.full_name};${c.phone || ''};${c.email || ''};${c.total_visits || 0};${c.total_spent || 0}`))
     lines.push('')
     lines.push('--- REZERVACE ---')

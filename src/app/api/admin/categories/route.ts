@@ -1,18 +1,6 @@
 ﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
-
-async function checkSuperadmin(request: NextRequest) {
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get(name: string) { return request.cookies.get(name)?.value }, set() {}, remove() {} } }
-  )
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return false
-  const { data: profile } = await supabaseAdmin.from('profiles').select('is_superadmin').eq('auth_user_id', user.id).single()
-  return profile?.is_superadmin === true
-}
 
 export async function GET(request: NextRequest) {
   try {
@@ -31,7 +19,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    if (!await checkSuperadmin(request)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    const auth = await requireAuth(request, 'superadmin')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
     const body = await request.json()
 
     if (body.type === 'category') {
@@ -58,7 +48,9 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    if (!await checkSuperadmin(request)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    const auth = await requireAuth(request, 'superadmin')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
     const type = searchParams.get('type')

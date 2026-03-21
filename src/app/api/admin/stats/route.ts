@@ -1,25 +1,11 @@
 ﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { cookies: { get(name: string) { return request.cookies.get(name)?.value }, set() {}, remove() {} } }
-    )
-
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('is_superadmin')
-      .eq('auth_user_id', user.id)
-      .single()
-
-    if (!profile?.is_superadmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    const auth = await requireAuth(request, 'superadmin')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { data: organizations } = await supabaseAdmin.from('organizations').select('*').order('created_at')
     const { count: totalUsers } = await supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true })

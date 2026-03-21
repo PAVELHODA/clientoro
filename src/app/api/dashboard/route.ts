@@ -1,13 +1,13 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) {
-      return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
-    }
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+    const orgId = auth.organizationId
 
     const now = new Date()
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5)
 
-    const weekDays = ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne']
+    const weekDays = ['Po', 'Ut', 'St', 'Ct', 'Pa', 'So', 'Ne']
     const dailyBookings = weekDays.map((day, i) => {
       const dayDate = new Date(weekStart)
       dayDate.setDate(weekStart.getDate() + i)

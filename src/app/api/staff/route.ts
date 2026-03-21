@@ -1,16 +1,16 @@
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { data, error } = await supabaseAdmin
       .from('staff')
       .select(`*, staff_services (service_id)`)
-      .eq('organization_id', orgId)
+      .eq('organization_id', auth.organizationId)
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
 
@@ -23,15 +23,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { service_ids, ...staffData } = body
 
     const { data: staff, error: staffError } = await supabaseAdmin
       .from('staff')
-      .insert({ ...staffData, organization_id: orgId })
+      .insert({ ...staffData, organization_id: auth.organizationId })
       .select()
       .single()
 
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         .from('staff_services')
         .insert(staffServices)
 
-      if (ssError) console.error('Chyba při přiřazení služeb:', ssError)
+      if (ssError) console.error('Error assigning services:', ssError)
     }
 
     return NextResponse.json(staff, { status: 201 })

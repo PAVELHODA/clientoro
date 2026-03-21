@@ -1,16 +1,14 @@
-﻿// PATH: src/app/api/settings/delete-org/route.ts
-import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function DELETE(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) {
-      return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
-    }
+    const auth = await requireAuth(request, 'owner')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    // Smazat v poradi: bookings, services, staff, notifications, memberships, org
+    const orgId = auth.organizationId
+
     await supabaseAdmin.from('bookings').delete().eq('organization_id', orgId)
     await supabaseAdmin.from('services').delete().eq('organization_id', orgId)
     await supabaseAdmin.from('staff').delete().eq('organization_id', orgId)
@@ -19,11 +17,8 @@ export async function DELETE(request: NextRequest) {
     await supabaseAdmin.from('waitlist').delete().eq('organization_id', orgId)
     await supabaseAdmin.from('memberships').delete().eq('organization_id', orgId)
 
-    // Smazat organizaci
     const { error } = await supabaseAdmin.from('organizations').delete().eq('id', orgId)
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
     return NextResponse.json({ success: true })
   } catch (err) {

@@ -1,17 +1,16 @@
-﻿// PATH: src/app/api/notifications/route.ts
-import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { getOrgId } from '@/lib/api/getOrgId'
+﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { data, error } = await supabaseAdmin
       .from('notifications')
       .select('*')
-      .eq('organization_id', orgId)
+      .eq('organization_id', auth.organizationId)
       .order('created_at', { ascending: false })
       .limit(50)
 
@@ -24,13 +23,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { data, error } = await supabaseAdmin
       .from('notifications')
-      .insert({ ...body, organization_id: orgId })
+      .insert({ ...body, organization_id: auth.organizationId })
       .select()
       .single()
 
@@ -43,13 +42,13 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const orgId = await getOrgId(request)
-    if (!orgId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { data, error } = await supabaseAdmin
       .from('notifications')
       .update({ read: true })
-      .eq('organization_id', orgId)
+      .eq('organization_id', auth.organizationId)
       .eq('read', false)
       .select()
 
