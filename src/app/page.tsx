@@ -76,8 +76,9 @@ export default function LandingPage() {
       <section className="relative pt-32 pb-20 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0c2d48 20%, #0e4d64 40%, #0f6b7a 55%, #0e5460 70%, #0c3a50 85%, #0a1e30 100%)' }}>
         <div className="absolute top-16 right-16 w-72 h-72 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%)' }} />
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}><Zap className="w-4 h-4" /> Chytrý rezervační systém pro ty, kdo pracují s lidmi</div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">Méně administrativy.<br />Více klientů.<br /><span style={{ color: '#f59e0b' }}>Vy máte přehled o rezervacích, tržbách i týmu.</span></h1>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}><Zap className="w-4 h-4" /> Chytrý rezervační systém s AI pro poskytovatele služeb
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">Interaktivní kalendář.<br />  přináší více klientů.<br /><span style={{ color: '#f59e0b' }}>Vy máte přehled o rezervacích, tržbách i týmu.</span></h1>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>Přehledný interaktivní kalendář pro správu klientů i týmu. Zaměřeno na získávání klientů. Pro růst vašeho podnikání s volbou AI. Férový ceník, žádné skryté poplatky.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <a href="/register" className="px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>Vyzkoušet 14 dní zdarma <ArrowRight className="w-5 h-5" /></a>
