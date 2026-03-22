@@ -58,7 +58,7 @@ export default function PublicBookingPage() {
     const fetchData = async () => {
       try {
         const res = await fetch(`/api/public/booking?slug=${slug}`)
-        if (!res.ok) { setError('Salon not found'); setLoading(false); return }
+        if (!res.ok) { setError('Salon nenalezen'); setLoading(false); return }
         const data = await res.json()
         setOrg(data.organization)
         setServices(data.services || [])
@@ -66,7 +66,7 @@ export default function PublicBookingPage() {
         setWorkingHours(data.working_hours || [])
         setTimeOffs(data.time_off || [])
         setExistingBookings(data.bookings || [])
-      } catch { setError('Loading error') }
+      } catch { setError('Chyba na\u010D\u00EDt\u00E1n\u00ED') }
       finally { setLoading(false) }
     }
     if (slug) fetchData()
@@ -144,8 +144,8 @@ export default function PublicBookingPage() {
   }
 
   const handleSubmit = async () => {
-    if (!customerName.trim() || !customerPhone.trim()) { setSubmitError('Please fill in name and phone'); return }
-    if (!gdprConsent) { setSubmitError('Please agree to the processing of personal data'); return }
+    if (!customerName.trim() || !customerPhone.trim()) { setSubmitError('Vypl\u0148te pros\u00EDm jm\u00E9no a telefon'); return }
+    if (!gdprConsent) { setSubmitError('Potvr\u010Fte pros\u00EDm souhlas se zpracov\u00E1n\u00EDm osobn\u00EDch \u00FAdaj\u016F'); return }
 
     setSubmitting(true); setSubmitError('')
     const startDate = new Date(`${selectedDate}T${selectedTime}:00`)
@@ -175,11 +175,11 @@ export default function PublicBookingPage() {
       const result = await res.json()
       if (res.ok) setStep('done')
       else setSubmitError(result.error || 'Error')
-    } catch { setSubmitError('Connection error') }
+    } catch { setSubmitError('Chyba p\u0159ipojen\u00ED') }
     finally { setSubmitting(false) }
   }
 
-  const formatDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'long' })
+  const formatDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('cs-CZ', { weekday: 'short', day: 'numeric', month: 'long' })
 
   const resetAll = () => {
     setStep('service'); setSelectedService(null); setSelectedStaff(null); setAnyStaff(false)
@@ -192,7 +192,7 @@ export default function PublicBookingPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
-      <div className="text-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" /><p className="text-gray-500">Loading...</p></div>
+      <div className="text-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" /><p className="text-gray-500">Na\u010D\u00EDt\u00E1n\u00ED...</p></div>
     </div>
   )
 
@@ -227,7 +227,7 @@ export default function PublicBookingPage() {
             })}
           </div>
           <div className="flex justify-between mt-1 text-xs text-gray-400">
-            <span>Service</span><span>Who</span><span>When</span><span>Contact</span>
+            <span>Slu\u017Eba</span><span>Kdo</span><span>Kdy</span><span>Kontakt</span>
           </div>
         </div>
       )}
@@ -235,7 +235,7 @@ export default function PublicBookingPage() {
       <div className="max-w-lg mx-auto px-4 pb-8">
         {step === 'service' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Choose a service</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Vyberte slu\u017Ebu</h2>
             <div className="space-y-3">
               {services.map(svc => (
                 <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
@@ -248,7 +248,7 @@ export default function PublicBookingPage() {
                       <p className="font-semibold text-gray-900">{svc.name}</p>
                       <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {svc.duration} min</span>
-                        {svc.price && <span className="font-medium text-gray-700">{svc.price} CZK</span>}
+                        {svc.price && <span className="font-medium text-gray-700">{svc.price} K\u010D</span>}
                       </div>
                     </div>
                     <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
@@ -261,10 +261,10 @@ export default function PublicBookingPage() {
 
         {step === 'staff' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Choose a specialist</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Vyberte specialistu</h2>
             <button onClick={() => { setSelectedStaff(null); setAnyStaff(true); setSelectedDate(''); setSelectedTime(''); setStep('datetime') }}
               className="w-full bg-white rounded-xl border border-gray-200 p-4 text-left hover:border-blue-300 hover:shadow-md transition-all mb-3">
-              <p className="font-semibold text-gray-900">Anyone available</p>
+              <p className="font-semibold text-gray-900">Kdokoliv voln\u00FD</p>
             </button>
             {availableStaff.map(s => (
               <button key={s.id} onClick={() => { setSelectedStaff(s); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('datetime') }}
@@ -279,14 +279,14 @@ export default function PublicBookingPage() {
               </button>
             ))}
             <button onClick={() => setStep('service')} className="mt-3 text-sm text-gray-500 flex items-center gap-1 hover:text-blue-600">
-              <ChevronLeft className="w-4 h-4" /> Back
+              <ChevronLeft className="w-4 h-4" /> Zp\u011Bt
             </button>
           </div>
         )}
 
         {step === 'datetime' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Choose date & time</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Vyberte datum a \u010Das</h2>
             <div className="mb-4">
               <p className="text-sm font-medium text-gray-700 mb-2">Date</p>
               <div className="grid grid-cols-3 gap-2">
@@ -309,36 +309,36 @@ export default function PublicBookingPage() {
                     </button>
                   ))}
                 </div>
-                {availableSlots.length === 0 && <p className="text-sm text-gray-400 text-center py-4">No available slots for this date</p>}
+                {availableSlots.length === 0 && <p className="text-sm text-gray-400 text-center py-4">Pro tento den nejsou voln\u00E9 term\u00EDny</p>}
               </div>
             )}
             <button onClick={() => setStep('staff')} className="mt-4 text-sm text-gray-500 flex items-center gap-1 hover:text-blue-600">
-              <ChevronLeft className="w-4 h-4" /> Back
+              <ChevronLeft className="w-4 h-4" /> Zp\u011Bt
             </button>
           </div>
         )}
 
         {step === 'contact' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Your details</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Va\u0161e \u00FAdaje</h2>
             <div className="bg-blue-50 rounded-xl p-3 mb-4 space-y-1">
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Service:</span><span className="font-medium text-gray-900">{selectedService?.name}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Specialist:</span><span className="font-medium text-gray-900">{selectedStaff?.full_name || 'Anyone available'}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Date & time:</span><span className="font-medium text-gray-900">{formatDate(selectedDate)} at {selectedTime}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Duration:</span><span className="font-medium text-gray-900">{selectedService?.duration} min</span></div>
-              {selectedService?.price && <div className="flex justify-between text-sm"><span className="text-blue-600">Price:</span><span className="font-medium text-gray-900">{selectedService.price} CZK</span></div>}
+              <div className="flex justify-between text-sm"><span className="text-blue-600">Slu\u017Eba:</span><span className="font-medium text-gray-900">{selectedService?.name}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-blue-600">Specialista:</span><span className="font-medium text-gray-900">{selectedStaff?.full_name || 'Kdokoliv voln\u00FD'}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-blue-600">Datum a \u010Das:</span><span className="font-medium text-gray-900">{formatDate(selectedDate)} at {selectedTime}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-blue-600">D\u00E9lka:</span><span className="font-medium text-gray-900">{selectedService?.duration} min</span></div>
+              {selectedService?.price && <div className="flex justify-between text-sm"><span className="text-blue-600">Cena:</span><span className="font-medium text-gray-900">{selectedService.price} K\u010D</span></div>}
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cel\u00E9 jm\u00E9no *</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="John Smith" />
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Jan Nov\u00E1k" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon *</label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)}
@@ -346,17 +346,17 @@ export default function PublicBookingPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email (optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email (nepovinn\u00FD)</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="email" value={customerEmail} onChange={e => setCustomerEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="john@email.com" />
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="jan@email.cz" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Note (optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Pozn\u00E1mka (nepovinn\u00E1)</label>
                 <textarea value={customerNote} onChange={e => setCustomerNote(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" rows={2} placeholder="Special requests..." />
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" rows={2} placeholder="Speci\u00E1ln\u00ED po\u017Eadavky..." />
               </div>
             </div>
 
@@ -365,18 +365,18 @@ export default function PublicBookingPage() {
               <input type="checkbox" id="gdpr" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)}
                 className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" />
               <label htmlFor="gdpr" className="text-xs text-gray-500 cursor-pointer leading-relaxed">
-                I agree to the processing of my personal data (name, phone, email) for the purpose of booking and communication.
-                Data is processed in accordance with <span className="text-blue-600 underline">GDPR</span> and will not be shared with third parties.
+                Souhlas\u00EDm se zpracov\u00E1n\u00EDm osobn\u00EDch \u00FAdaj\u016F (jm\u00E9no, telefon, email) za \u00FA\u010Delem rezervace a komunikace.
+                \u00DAdaje jsou zpracov\u00E1ny v souladu s <span className="text-blue-600 underline">GDPR</span> a nebudou sd\u00EDleny t\u0159et\u00EDm stran\u00E1m.
               </label>
             </div>
 
             {submitError && <p className="mt-3 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{submitError}</p>}
             <button onClick={handleSubmit} disabled={submitting || !gdprConsent}
               className="w-full mt-5 py-3.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all disabled:opacity-50">
-              {submitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Confirm booking'}
+              {submitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Potvrdit rezervaci'}
             </button>
             <button onClick={() => setStep('datetime')} className="w-full mt-2 text-sm text-gray-500 flex items-center justify-center gap-1 hover:text-blue-600">
-              <ChevronLeft className="w-4 h-4" /> Back
+              <ChevronLeft className="w-4 h-4" /> Zp\u011Bt
             </button>
           </div>
         )}
@@ -386,16 +386,16 @@ export default function PublicBookingPage() {
             <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
               <Check className="w-10 h-10 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking confirmed!</h2>
-            <p className="text-gray-500 mb-6">We look forward to seeing you.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Rezervace potvrzena!</h2>
+            <p className="text-gray-500 mb-6">T\u011B\u0161\u00EDme se na v\u00E1s.</p>
             <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 text-left space-y-2">
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Service:</span><span className="font-medium">{selectedService?.name}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Date:</span><span className="font-medium">{formatDate(selectedDate)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Time:</span><span className="font-medium">{selectedTime}</span></div>
-              {selectedStaff && <div className="flex justify-between text-sm"><span className="text-gray-500">Specialist:</span><span className="font-medium">{selectedStaff.full_name}</span></div>}
+              <div className="flex justify-between text-sm"><span className="text-gray-500">Slu\u017Eba:</span><span className="font-medium">{selectedService?.name}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">Datum:</span><span className="font-medium">{formatDate(selectedDate)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">\u010Cas:</span><span className="font-medium">{selectedTime}</span></div>
+              {selectedStaff && <div className="flex justify-between text-sm"><span className="text-gray-500">Specialista:</span><span className="font-medium">{selectedStaff.full_name}</span></div>}
             </div>
             <button onClick={resetAll} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors">
-              Book another appointment
+              Rezervovat dal\u0161\u00ED term\u00EDn
             </button>
           </div>
         )}
