@@ -22,9 +22,9 @@ const SEGMENTS = [
 ]
 
 const FEATURES = [
-  { icon: Calendar, color: 'from-blue-500 to-cyan-400', title: 'Chytrý kalendář', items: ['Online rezervace 24/7', 'Denní / týdenní / měsíční zobrazení', 'Zálohy a předplatby (volitelné)', 'Automatické připomínky', 'Sledování nedorazivších (no-show)'] },
-  { icon: Users, color: 'from-emerald-500 to-teal-400', title: 'CRM klientů', items: ['Karty klientů s kompletní historií', 'Řazení a filtry (A-Z, útrata, návštěvy)', 'Štítky a segmenty', 'Export CSV / JSON / PDF', 'Narozeninové přání a nabídky'] },
-  { icon: Brain, color: 'from-amber-500 to-yellow-400', title: 'AI asistent', items: ['AI insighty a doporučení', 'Detekce mrtvých hodin', 'Návrhy na reaktivaci klientů', 'Přehledy tržeb', 'Vše ZAP/VYP — rozhodujete vy'] },
+  { icon: Calendar, color: 'from-emerald-500 to-teal-400', title: 'Chytrý kalendář', items: ['Online rezervace 24/7', 'Denní / týdenní / měsíční zobrazení', 'Zálohy a předplatby (volitelné)', 'Automatické připomínky', 'Sledování nedorazivších (no-show)'] },
+  { icon: Users, color: 'from-blue-500 to-cyan-400', title: 'CRM klientů', items: ['Karty klientů s kompletní historií', 'Řazení a filtry (A-Z, útrata, návštěvy)', 'Štítky a segmenty', 'Export CSV / JSON / PDF', 'Narozeninové přání a nabídky'] },
+  { icon: Brain, color: 'from-amber-500 to-yellow-400', title: 'AI asistent', items: ['AI insighty a doporučení', 'Detekce volných termínů', 'Návrhy na reaktivaci klientů', 'Přehledy tržeb', 'Vše ZAP/VYP — rozhodujete vy'] },
   { icon: TrendingUp, color: 'from-rose-500 to-pink-400', title: 'Nástroje pro růst', items: ['Referral program', 'Věrnostní body a odměny', 'Slevové kódy a vouchery', 'QR kódy s trackingem', 'Dárkové poukazy'] },
 ]
 
