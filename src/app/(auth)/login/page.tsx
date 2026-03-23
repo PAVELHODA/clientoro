@@ -1,10 +1,11 @@
 ﻿// PATH: src/app/(auth)/login/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { Waves, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { Waves, Mail, Lock, ArrowRight, Eye, EyeOff, Globe } from 'lucide-react'
+import { publicTranslations, type PublicLang } from '@/lib/publicI18n'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -12,8 +13,21 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [lang, setLangState] = useState<PublicLang>('cs')
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    const stored = localStorage.getItem('clientoro_lang') as PublicLang | null
+    if (stored && ['cs', 'sk', 'en'].includes(stored)) setLangState(stored)
+  }, [])
+
+  const t = (key: string) => publicTranslations[lang]?.[key] || publicTranslations.cs[key] || key
+
+  const setLang = (l: PublicLang) => {
+    setLangState(l)
+    localStorage.setItem('clientoro_lang', l)
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,15 +36,14 @@ export default function LoginPage() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
-        setError(error.message === 'Invalid login credentials' ? 'Špatný email nebo heslo' : error.message)
+        setError(error.message === 'Invalid login credentials' ? t('login_error_credentials') : error.message)
       } else { router.push('/dashboard'); router.refresh() }
-    } catch (err) { setError('Neočekávaná chyba') }
+    } catch (err) { setError(t('login_error_unexpected')) }
     finally { setLoading(false) }
   }
 
   return (
     <div className="min-h-screen flex">
-      {/* Levá strana — Deep Ocean + Gold */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
         style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0c2d48 20%, #0e4d64 40%, #0f6b7a 55%, #0e5460 70%, #0c3a50 85%, #0a1e30 100%)' }}>
 
@@ -56,28 +69,28 @@ export default function LoginPage() {
           </div>
 
           <h2 className="text-4xl font-bold text-white leading-tight mb-4">
-            {"Z\u00edsk\u00e1vejte v\u00edce klient\u016f."}<br />
-            {"Pln\u00fd kalend\u00e1\u0159. Spokojen\u00ed klienti."}<br />
-            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>{"S AI po Va\u0161em boku."}</span>
+            {t('login_hero_1')}<br />
+            {t('login_hero_2')}<br />
+            <span style={{ color: '#f59e0b', textShadow: '0 0 30px rgba(245,158,11,0.2)' }}>{t('login_hero_3')}</span>
           </h2>
 
           <p className="text-lg mb-10 max-w-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {"Rezerva\u010dn\u00ed syst\u00e9m s AI, kter\u00fd v\u00e1m pom\u016f\u017ee r\u016fst. \u017d\u00e1dn\u00e9 ztracen\u00e9 leady, \u017e\u00e1dn\u00e1 pr\u00e1zdn\u00e1 \u010dasov\u00e1 okna."}
+            {t('login_hero_desc')}
           </p>
 
           <div className="space-y-3">
             {[
-              '\ud83d\udcc5 Online booking 24/7',
-              '\ud83e\udd16 AI asistent pro r\u016fst',
-              '\ud83d\udcca P\u0159ehledy tr\u017eeb & KPI',
-              '\ud83c\udfc6 Va\u0161i klienti jsou zlato',
-            ].map((text, i) => (
+              { emoji: '\ud83d\udcc5', key: 'login_feature_1', highlight: false },
+              { emoji: '\ud83e\udd16', key: 'login_feature_2', highlight: false },
+              { emoji: '\ud83d\udcca', key: 'login_feature_3', highlight: false },
+              { emoji: '\ud83c\udfc6', key: 'login_feature_4', highlight: true },
+            ].map((item, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <span className="text-sm">{text.slice(0, 2)}</span>
+                  <span className="text-sm">{item.emoji}</span>
                 </div>
-                <span className="text-sm" style={{ color: i === 3 ? '#f59e0b' : 'rgba(255,255,255,0.6)' }}>
-                  {i === 3 ? <strong>{text.slice(2)}</strong> : text.slice(2)}
+                <span className="text-sm" style={{ color: item.highlight ? '#f59e0b' : 'rgba(255,255,255,0.6)' }}>
+                  {item.highlight ? <strong>{t(item.key)}</strong> : t(item.key)}
                 </span>
               </div>
             ))}
@@ -85,7 +98,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Pravá strana — Formulář */}
       <div className="flex-1 flex items-center justify-center px-6 bg-gray-50">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
@@ -98,8 +110,20 @@ export default function LoginPage() {
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">{"\u0050\u0159ihl\u00e1\u0161en\u00ed"}</h2>
-            <p className="text-sm text-gray-400 mb-6">{"\u0056\u00edtejte zp\u011bt! P\u0159ihlaste se do sv\u00e9ho \u00fa\u010dtu."}</p>
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('login_title')}</h2>
+                <p className="text-sm text-gray-400">{t('login_subtitle')}</p>
+              </div>
+              <div className="flex gap-1">
+                {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
+                  <button key={l} onClick={() => setLang(l)}
+                    className={`px-2 py-1 rounded text-xs font-bold transition-all ${lang === l ? 'bg-gray-900 text-white' : 'text-gray-400 hover:text-gray-600'}`}>
+                    {l === 'cs' ? 'CZ' : l === 'sk' ? 'SK' : 'EN'}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-center gap-2">
@@ -109,21 +133,21 @@ export default function LoginPage() {
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('login_email')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
-                    placeholder="vas@email.cz" required />
+                    placeholder={t('email_placeholder')} required />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Heslo</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('login_password')}</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
-                    placeholder={"Va\u0161e heslo"} required />
+                    placeholder={t('login_password_placeholder')} required />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -135,20 +159,20 @@ export default function LoginPage() {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                    {"\u0050\u0159ihla\u0161uji..."}
+                    {t('login_loading')}
                   </span>
-                ) : (<>{"\u0050\u0159ihl\u00e1sit se"} <ArrowRight className="w-4 h-4" /></>)}
+                ) : (<>{t('login_submit')} <ArrowRight className="w-4 h-4" /></>)}
               </button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-400">
-                {"Nem\u00e1te \u00fa\u010det?"}{' '}
-                <a href="/register" className="font-semibold" style={{ color: '#0f6b7a' }}>{"Zaregistrujte se"}</a>
+                {t('login_no_account')}{' '}
+                <a href="/register" className="font-semibold" style={{ color: '#0f6b7a' }}>{t('login_register_link')}</a>
               </p>
             </div>
           </div>
-          <p className="text-center text-xs text-gray-300 mt-6">{"\ud83c\udfc6 Clientoro \u2014 Va\u0161i klienti jsou zlato"}</p>
+          <p className="text-center text-xs text-gray-300 mt-6">{"\ud83c\udfc6"} {t('login_footer')}</p>
         </div>
       </div>
     </div>
