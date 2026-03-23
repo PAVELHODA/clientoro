@@ -1,34 +1,35 @@
 ﻿﻿// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { validateBody } from '@/lib/validations'
+
+const registerSchema = z.object({
+  email: z.string().email('Neplatný formát emailu'),
+  password: z.string()
+    .min(8, 'Heslo musí mít alespoň 8 znaků')
+    .regex(/\d/, 'Heslo musí obsahovat alespoň 1 číslici')
+    .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, 'Heslo musí obsahovat alespoň 1 speciální znak (!@#$%...)'),
+  businessName: z.string()
+    .min(2, 'Název firmy musí mít alespoň 2 znaky')
+    .max(200, 'Název firmy je příliš dlouhý')
+    .transform(val => val.trim()),
+  mode: z.enum(['solo', 'team']).optional().default('solo'),
+})
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, businessName, mode } = await request.json()
+    const body = await request.json()
 
-    if (!email || !password || !businessName) {
-      return NextResponse.json({ error: 'Vyplnte vsechna povinna pole' }, { status: 400 })
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Neplatny format emailu' }, { status: 400 })
+    // Zod validace
+    const validation = validateBody(registerSchema, body)
+    if (!validation.success || !validation.data) {
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
-    if (password.length < 8) {
-      return NextResponse.json({ error: 'Heslo musi mit alespon 8 znaku' }, { status: 400 })
-    }
-    if (!/\d/.test(password)) {
-      return NextResponse.json({ error: 'Heslo musi obsahovat alespon 1 cislici' }, { status: 400 })
-    }
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      return NextResponse.json({ error: 'Heslo musi obsahovat alespon 1 specialni znak (!@#$%...)' }, { status: 400 })
-    }
+    const { email, password, businessName, mode } = validation.data
 
-    if (businessName.length < 2) {
-      return NextResponse.json({ error: 'Nazev firmy musi mit alespon 2 znaky' }, { status: 400 })
-    }
-
+    // Vytvoření uživatele v Supabase Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
@@ -37,20 +38,36 @@ export async function POST(request: NextRequest) {
 
     if (authError) {
       if (authError.message.includes('already been registered')) {
-        return NextResponse.json({ error: 'Tento email je jiz registrovan' }, { status: 400 })
+        return NextResponse.json({ error: 'Tento email je již registrován' }, { status: 400 })
       }
       return NextResponse.json({ error: authError.message }, { status: 400 })
     }
 
     if (!authData.user) {
-      return NextResponse.json({ error: 'Nepodarilo se vytvorit ucet' }, { status: 500 })
+      return NextResponse.json({ error: 'Nepodařilo se vytvořit účet' }, { status: 500 })
     }
 
     const userId = authData.user.id
-    let slug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-    const { data: existingSlug } = await supabaseAdmin.from('organizations').select('id').eq('slug', slug).single()
-    if (existingSlug) { slug = slug + '-' + Math.random().toString(36).substring(2, 6) }
 
+    // Generování slugu
+    let slug = businessName
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+
+    const { data: existingSlug } = await supabaseAdmin
+      .from('organizations')
+      .select('id')
+      .eq('slug', slug)
+      .single()
+
+    if (existingSlug) {
+      slug = slug + '-' + Math.random().toString(36).substring(2, 6)
+    }
+
+    // Vytvoření profilu
     const { error: profileError } = await supabaseAdmin.from('profiles').insert({
       auth_user_id: userId,
       email,
@@ -58,6 +75,7 @@ export async function POST(request: NextRequest) {
     })
     if (profileError) console.error('Profile insert error:', profileError)
 
+    // Vytvoření organizace
     const { data: orgData, error: orgError } = await supabaseAdmin.from('organizations').insert({
       name: businessName,
       slug,
@@ -73,12 +91,16 @@ export async function POST(request: NextRequest) {
 
     if (orgError) {
       console.error('Org insert error:', orgError)
-      return NextResponse.json({ error: 'Ucet vytvoren, ale organizace selhala: ' + orgError.message }, { status: 500 })
+      return NextResponse.json({ error: 'Účet vytvořen, ale organizace selhala: ' + orgError.message }, { status: 500 })
     }
 
+    // Vytvoření membership
     if (orgData) {
       const { data: profileData } = await supabaseAdmin
-        .from('profiles').select('id').eq('auth_user_id', userId).single()
+        .from('profiles')
+        .select('id')
+        .eq('auth_user_id', userId)
+        .single()
 
       if (profileData) {
         const { error: memberError } = await supabaseAdmin.from('memberships').insert({
@@ -90,6 +112,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Notifikace pro admina
     try {
       if (orgData) {
         await supabaseAdmin.from('notifications').insert({
@@ -97,8 +120,8 @@ export async function POST(request: NextRequest) {
           type: 'new_organization',
           channel: 'system',
           recipient: 'admin@clientoro.pro',
-          subject: 'Nova organizace: ' + businessName,
-          body: 'Email: ' + email + ', Mod: ' + (mode || 'solo') + ', Slug: ' + slug,
+          subject: 'Nová organizace: ' + businessName,
+          body: 'Email: ' + email + ', Mód: ' + (mode || 'solo') + ', Slug: ' + slug,
           status: 'pending',
         })
       }
@@ -109,6 +132,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, userId })
   } catch (err) {
     console.error('Register error:', err)
-    return NextResponse.json({ error: 'Neocekavana chyba' }, { status: 500 })
+    return NextResponse.json({ error: 'Neočekávaná chyba' }, { status: 500 })
   }
 }
