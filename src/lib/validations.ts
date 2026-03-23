@@ -146,14 +146,13 @@ export const serviceCreateSchema = z.object({
 export const serviceUpdateSchema = serviceCreateSchema.partial().passthrough()
 
 // ============================================================
-// STAFF
+// STAFF (BEZ role — tabulka nemá sloupec role)
 // ============================================================
 
 export const staffCreateSchema = z.object({
   full_name: sanitizedString(100).pipe(z.string().min(1, 'Jméno je povinné')),
   email: optionalEmail.or(z.null()),
   phone: phone.optional().or(z.literal('')).or(z.null()),
-  role: z.enum(['staff', 'manager']).optional().default('staff'),
   color: color,
   position: optionalSanitizedString(100).or(z.null()),
   active: z.boolean().optional().default(true),
@@ -228,7 +227,6 @@ export function validateBody<T>(schema: z.ZodSchema<T>, data: unknown): {
   if (result.success) {
     return { success: true, data: result.data as T, error: null }
   }
-  // Lepší error reporting — ukáže i které pole selhalo
   const errorMsg = result.error?.issues?.map((i: any) => {
     const path = i.path?.join('.') || ''
     return path ? `${path}: ${i.message}` : i.message

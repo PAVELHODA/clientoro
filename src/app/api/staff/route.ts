@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { staffCreateSchema, validateBody } from '@/lib/validations'
 import { z } from 'zod'
 
-// Schema pro POST body včetně service_ids
 const staffPostSchema = staffCreateSchema.extend({
   service_ids: z.array(z.string().uuid('Neplatné ID služby')).optional().default([]),
 }).passthrough()
@@ -36,7 +35,6 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    // Zod validace
     const validation = validateBody(staffPostSchema, body)
     if (!validation.success) {
       console.warn('[Staff POST] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
@@ -91,7 +89,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Vložení zaměstnance — jen povolená pole
+    // Vložení zaměstnance — jen povolená pole (BEZ role!)
     const insertData: any = {
       organization_id: auth.organizationId,
       full_name: validData.full_name,
@@ -99,7 +97,6 @@ export async function POST(request: NextRequest) {
     }
     if (validData.email) insertData.email = validData.email
     if (validData.phone) insertData.phone = validData.phone
-    if (validData.role) insertData.role = validData.role
     if (validData.color) insertData.color = validData.color
     if (validData.position) insertData.position = validData.position
 
