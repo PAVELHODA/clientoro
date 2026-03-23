@@ -7,11 +7,14 @@ import {
   Calendar, Clock, User, Phone, Mail, ChevronRight, ChevronLeft,
   Check, Loader2, MapPin, Waves,
 } from 'lucide-react'
+import { PublicLang, publicTranslations } from '@/lib/publicI18n'
+
+const flags: Record<PublicLang, string> = { cs: '🇨🇿', sk: '🇸🇰', en: '🇬🇧' }
 
 interface Organization {
   id: string; name: string; mode: string; work_start: number; work_end: number
   slug: string; description: string | null; phone: string | null
-  address: string | null; logo_url: string | null
+  address: string | null; logo_url: string | null; language?: string
 }
 interface Service {
   id: string; name: string; duration: number; price: number | null
@@ -53,12 +56,20 @@ export default function PublicBookingPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [gdprConsent, setGdprConsent] = useState(false)
+  const [lang, setLangState] = useState<PublicLang>('cs')
+
+  const t = (key: string) => publicTranslations[lang]?.[key] || publicTranslations.cs[key] || key
+
+  const setLang = (l: PublicLang) => {
+    localStorage.setItem('clientoro_book_lang', l)
+    setLangState(l)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await fetch(`/api/public/booking?slug=${slug}`)
-        if (!res.ok) { setError('Salon nenalezen'); setLoading(false); return }
+        if (!res.ok) { setError('book_not_found'); setLoading(false); return }
         const data = await res.json()
         setOrg(data.organization)
         setServices(data.services || [])
@@ -66,7 +77,15 @@ export default function PublicBookingPage() {
         setWorkingHours(data.working_hours || [])
         setTimeOffs(data.time_off || [])
         setExistingBookings(data.bookings || [])
-      } catch { setError('Chyba načítání') }
+
+        // Jazyk: 1) localStorage override, 2) jazyk organizace, 3) cs
+        const stored = localStorage.getItem('clientoro_book_lang') as PublicLang | null
+        if (stored && ['cs', 'sk', 'en'].includes(stored)) {
+          setLangState(stored)
+        } else if (data.organization?.language && ['cs', 'sk', 'en'].includes(data.organization.language)) {
+          setLangState(data.organization.language as PublicLang)
+        }
+      } catch { setError('book_load_error') }
       finally { setLoading(false) }
     }
     if (slug) fetchData()
@@ -144,8 +163,8 @@ export default function PublicBookingPage() {
   }
 
   const handleSubmit = async () => {
-    if (!customerName.trim() || !customerPhone.trim()) { setSubmitError('Vyplňte prosím jméno a telefon'); return }
-    if (!gdprConsent) { setSubmitError('Potvrďte prosím souhlas se zpracováním osobních údajů'); return }
+    if (!customerName.trim() || !customerPhone.trim()) { setSubmitError(t('book_error_name_phone')); return }
+    if (!gdprConsent) { setSubmitError(t('book_error_gdpr')); return }
 
     setSubmitting(true); setSubmitError('')
     const startDate = new Date(`${selectedDate}T${selectedTime}:00`)
@@ -174,12 +193,14 @@ export default function PublicBookingPage() {
       })
       const result = await res.json()
       if (res.ok) setStep('done')
-      else setSubmitError(result.error || 'Chyba při vytváření rezervace')
-    } catch { setSubmitError('Chyba připojení') }
+      else setSubmitError(result.error || t('book_load_error'))
+    } catch { setSubmitError(t('book_error_connection')) }
     finally { setSubmitting(false) }
   }
 
-  const formatDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('cs-CZ', { weekday: 'short', day: 'numeric', month: 'long' })
+  const getLocale = () => lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
+
+  const formatDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString(getLocale(), { weekday: 'short', day: 'numeric', month: 'long' })
 
   const resetAll = () => {
     setStep('service'); setSelectedService(null); setSelectedStaff(null); setAnyStaff(false)
@@ -192,13 +213,13 @@ export default function PublicBookingPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
-      <div className="text-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" /><p className="text-gray-500">Načítání...</p></div>
+      <div className="text-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" /><p className="text-gray-500">{t('book_loading')}</p></div>
     </div>
   )
 
   if (error) return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
-      <div className="text-center bg-white rounded-2xl p-8 shadow-lg"><p className="text-red-500 text-lg font-medium">{error}</p></div>
+      <div className="text-center bg-white rounded-2xl p-8 shadow-lg"><p className="text-red-500 text-lg font-medium">{t(error)}</p></div>
     </div>
   )
 
@@ -207,13 +228,24 @@ export default function PublicBookingPage() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-lg mx-auto px-4 py-5">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
-              <Waves className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                <Waves className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">{org?.name}</h1>
+                {org?.address && <p className="text-sm text-gray-500 flex items-center gap-1"><MapPin className="w-3 h-3" /> {org.address}</p>}
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">{org?.name}</h1>
-              {org?.address && <p className="text-sm text-gray-500 flex items-center gap-1"><MapPin className="w-3 h-3" /> {org.address}</p>}
+            {/* Language switcher */}
+            <div className="flex gap-1">
+              {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
+                <button key={l} onClick={() => setLang(l)}
+                  className={`px-2 py-1 rounded-lg text-xs font-medium transition-all ${lang === l ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-400 hover:text-gray-600'}`}>
+                  {flags[l]}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -229,7 +261,7 @@ export default function PublicBookingPage() {
             })}
           </div>
           <div className="flex justify-between mt-1 text-xs text-gray-400">
-            <span>Služba</span><span>Kdo</span><span>Kdy</span><span>Kontakt</span>
+            <span>{t('book_step_service')}</span><span>{t('book_step_who')}</span><span>{t('book_step_when')}</span><span>{t('book_step_contact')}</span>
           </div>
         </div>
       )}
@@ -239,7 +271,7 @@ export default function PublicBookingPage() {
         {/* KROK 1: Výběr služby */}
         {step === 'service' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Vyberte službu</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">{t('book_choose_service')}</h2>
             <div className="space-y-3">
               {services.map(svc => (
                 <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
@@ -251,8 +283,8 @@ export default function PublicBookingPage() {
                     <div className="flex-1">
                       <p className="font-semibold text-gray-900">{svc.name}</p>
                       <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
-                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {svc.duration} min</span>
-                        {svc.price && <span className="font-medium text-gray-700">{svc.price} Kč</span>}
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {svc.duration} {t('book_min')}</span>
+                        {svc.price && <span className="font-medium text-gray-700">{svc.price} {t('book_currency')}</span>}
                       </div>
                     </div>
                     <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
@@ -266,10 +298,10 @@ export default function PublicBookingPage() {
         {/* KROK 2: Výběr specialisty */}
         {step === 'staff' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Vyberte specialistu</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">{t('book_choose_specialist')}</h2>
             <button onClick={() => { setSelectedStaff(null); setAnyStaff(true); setSelectedDate(''); setSelectedTime(''); setStep('datetime') }}
               className="w-full bg-white rounded-xl border border-gray-200 p-4 text-left hover:border-blue-300 hover:shadow-md transition-all mb-3">
-              <p className="font-semibold text-gray-900">Kdokoliv volný</p>
+              <p className="font-semibold text-gray-900">{t('book_anyone')}</p>
             </button>
             {availableStaff.map(s => (
               <button key={s.id} onClick={() => { setSelectedStaff(s); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('datetime') }}
@@ -284,7 +316,7 @@ export default function PublicBookingPage() {
               </button>
             ))}
             <button onClick={() => setStep('service')} className="mt-3 text-sm text-gray-500 flex items-center gap-1 hover:text-blue-600">
-              <ChevronLeft className="w-4 h-4" /> Zpět
+              <ChevronLeft className="w-4 h-4" /> {t('book_back')}
             </button>
           </div>
         )}
@@ -292,9 +324,9 @@ export default function PublicBookingPage() {
         {/* KROK 3: Výběr data a času */}
         {step === 'datetime' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Vyberte datum a čas</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">{t('book_choose_datetime')}</h2>
             <div className="mb-4">
-              <p className="text-sm font-medium text-gray-700 mb-2">Datum</p>
+              <p className="text-sm font-medium text-gray-700 mb-2">{t('book_date')}</p>
               <div className="grid grid-cols-3 gap-2">
                 {availableDates.map(d => (
                   <button key={d} onClick={() => { setSelectedDate(d); setSelectedTime('') }}
@@ -306,20 +338,20 @@ export default function PublicBookingPage() {
             </div>
             {selectedDate && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Čas</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">{t('book_time')}</p>
                 <div className="grid grid-cols-4 gap-2">
-                  {availableSlots.map(t => (
-                    <button key={t} onClick={() => { setSelectedTime(t); setStep('contact') }}
-                      className={`p-2.5 rounded-xl text-sm font-medium border transition-all ${selectedTime === t ? 'bg-blue-600 text-white border-blue-600' : 'bg-white border-gray-200 text-gray-700 hover:border-blue-300'}`}>
-                      {t}
+                  {availableSlots.map(ti => (
+                    <button key={ti} onClick={() => { setSelectedTime(ti); setStep('contact') }}
+                      className={`p-2.5 rounded-xl text-sm font-medium border transition-all ${selectedTime === ti ? 'bg-blue-600 text-white border-blue-600' : 'bg-white border-gray-200 text-gray-700 hover:border-blue-300'}`}>
+                      {ti}
                     </button>
                   ))}
                 </div>
-                {availableSlots.length === 0 && <p className="text-sm text-gray-400 text-center py-4">Pro tento den nejsou volné termíny</p>}
+                {availableSlots.length === 0 && <p className="text-sm text-gray-400 text-center py-4">{t('book_no_slots')}</p>}
               </div>
             )}
             <button onClick={() => setStep('staff')} className="mt-4 text-sm text-gray-500 flex items-center gap-1 hover:text-blue-600">
-              <ChevronLeft className="w-4 h-4" /> Zpět
+              <ChevronLeft className="w-4 h-4" /> {t('book_back')}
             </button>
           </div>
         )}
@@ -327,29 +359,29 @@ export default function PublicBookingPage() {
         {/* KROK 4: Kontaktní údaje */}
         {step === 'contact' && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Vaše údaje</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">{t('book_your_details')}</h2>
 
             {/* Shrnutí rezervace */}
             <div className="bg-blue-50 rounded-xl p-3 mb-4 space-y-1">
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Služba:</span><span className="font-medium text-gray-900">{selectedService?.name}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Specialista:</span><span className="font-medium text-gray-900">{selectedStaff?.full_name || 'Kdokoliv volný'}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Datum a čas:</span><span className="font-medium text-gray-900">{formatDate(selectedDate)}, {selectedTime}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-blue-600">Délka:</span><span className="font-medium text-gray-900">{selectedService?.duration} min</span></div>
-              {selectedService?.price && <div className="flex justify-between text-sm"><span className="text-blue-600">Cena:</span><span className="font-medium text-gray-900">{selectedService.price} Kč</span></div>}
+              <div className="flex justify-between text-sm"><span className="text-blue-600">{t('book_service')}</span><span className="font-medium text-gray-900">{selectedService?.name}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-blue-600">{t('book_specialist')}</span><span className="font-medium text-gray-900">{selectedStaff?.full_name || t('book_anyone')}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-blue-600">{t('book_datetime')}</span><span className="font-medium text-gray-900">{formatDate(selectedDate)}, {selectedTime}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-blue-600">{t('book_duration')}</span><span className="font-medium text-gray-900">{selectedService?.duration} {t('book_min')}</span></div>
+              {selectedService?.price && <div className="flex justify-between text-sm"><span className="text-blue-600">{t('book_price')}</span><span className="font-medium text-gray-900">{selectedService.price} {t('book_currency')}</span></div>}
             </div>
 
             {/* Formulář */}
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Celé jméno *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('book_name')}</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Jan Novák" />
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={t('book_name_placeholder')} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('book_phone')}</label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)}
@@ -357,17 +389,17 @@ export default function PublicBookingPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email (nepovinný)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('book_email')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="email" value={customerEmail} onChange={e => setCustomerEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="jan@email.cz" />
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={t('book_email_placeholder')} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Poznámka (nepovinná)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('book_note')}</label>
                 <textarea value={customerNote} onChange={e => setCustomerNote(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" rows={2} placeholder="Speciální požadavky..." />
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" rows={2} placeholder={t('book_note_placeholder')} />
               </div>
             </div>
 
@@ -376,8 +408,7 @@ export default function PublicBookingPage() {
               <input type="checkbox" id="gdpr" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)}
                 className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" />
               <label htmlFor="gdpr" className="text-xs text-gray-500 cursor-pointer leading-relaxed">
-                Souhlasím se zpracováním osobních údajů (jméno, telefon, email) za účelem rezervace a komunikace.
-                Údaje jsou zpracovány v souladu s <span className="text-blue-600 underline">GDPR</span> a nebudou sdíleny třetím stranám.
+                {t('book_gdpr')}
               </label>
             </div>
 
@@ -385,10 +416,10 @@ export default function PublicBookingPage() {
 
             <button onClick={handleSubmit} disabled={submitting || !gdprConsent}
               className="w-full mt-5 py-3.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all disabled:opacity-50">
-              {submitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Potvrdit rezervaci'}
+              {submitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : t('book_confirm')}
             </button>
             <button onClick={() => setStep('datetime')} className="w-full mt-2 text-sm text-gray-500 flex items-center justify-center gap-1 hover:text-blue-600">
-              <ChevronLeft className="w-4 h-4" /> Zpět
+              <ChevronLeft className="w-4 h-4" /> {t('book_back')}
             </button>
           </div>
         )}
@@ -399,16 +430,16 @@ export default function PublicBookingPage() {
             <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
               <Check className="w-10 h-10 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Rezervace potvrzena!</h2>
-            <p className="text-gray-500 mb-6">Těšíme se na vás.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('book_confirmed')}</h2>
+            <p className="text-gray-500 mb-6">{t('book_see_you')}</p>
             <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 text-left space-y-2">
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Služba:</span><span className="font-medium">{selectedService?.name}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Datum:</span><span className="font-medium">{formatDate(selectedDate)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Čas:</span><span className="font-medium">{selectedTime}</span></div>
-              {selectedStaff && <div className="flex justify-between text-sm"><span className="text-gray-500">Specialista:</span><span className="font-medium">{selectedStaff.full_name}</span></div>}
+              <div className="flex justify-between text-sm"><span className="text-gray-500">{t('book_service')}</span><span className="font-medium">{selectedService?.name}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">{t('book_date')}:</span><span className="font-medium">{formatDate(selectedDate)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">{t('book_time')}:</span><span className="font-medium">{selectedTime}</span></div>
+              {selectedStaff && <div className="flex justify-between text-sm"><span className="text-gray-500">{t('book_specialist')}</span><span className="font-medium">{selectedStaff.full_name}</span></div>}
             </div>
             <button onClick={resetAll} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors">
-              Rezervovat další termín
+              {t('book_another')}
             </button>
           </div>
         )}
