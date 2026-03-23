@@ -1,6 +1,8 @@
-﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+﻿// PATH: src/app/api/bookings/route.ts
+import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
+import { bookingCreateSchema, validateBody } from '@/lib/validations'
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,9 +43,55 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    // Zod validace
+    const validation = validateBody(bookingCreateSchema, {
+      ...body,
+      organization_id: auth.organizationId,
+    })
+    if (!validation.success || !validation.data) {
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+    }
+
+    const validData = validation.data
+
+    // Validace: end_at musí být po start_at
+    if (new Date(validData.end_at) <= new Date(validData.start_at)) {
+      return NextResponse.json({ error: 'Konec rezervace musí být po začátku' }, { status: 400 })
+    }
+
+    // Rezervace v minulosti:
+    // - Backfill (6× klik): kdokoliv může (is_backfill = true)
+    // - Owner / Superadmin: může vždy
+    // - Staff / Manager: NEMŮŽE (pokud není backfill)
+    if (!validData.is_backfill && new Date(validData.start_at) < new Date()) {
+      if (auth.role !== 'owner' && auth.role !== 'superadmin') {
+        return NextResponse.json({ error: 'Pouze majitel může vytvořit rezervaci v minulosti' }, { status: 403 })
+      }
+    }
+
+    // Kontrola kolize — POUZE u stejného zaměstnance na stejný čas
+    // Firma / Pro Inspire: různí zaměstnanci mohou mít rezervace ve stejný čas
+    // Solo: má jen 1 zaměstnance, takže kolize = vždy blokuje
+    // Backfill: ignoruje kolize (zpětné doplnění)
+    if (validData.staff_id && !validData.is_backfill) {
+      const { data: conflicts } = await supabaseAdmin
+        .from('bookings')
+        .select('id')
+        .eq('organization_id', auth.organizationId)
+        .eq('staff_id', validData.staff_id)
+        .neq('status', 'cancelled')
+        .lt('start_at', validData.end_at)
+        .gt('end_at', validData.start_at)
+
+      if (conflicts && conflicts.length > 0) {
+        return NextResponse.json({ error: 'Tento zaměstnanec má v daném čase již rezervaci' }, { status: 409 })
+      }
+    }
+
+    // Vložení rezervace
     const { data, error } = await supabaseAdmin
       .from('bookings')
-      .insert({ ...body, organization_id: auth.organizationId })
+      .insert({ ...validData, organization_id: auth.organizationId })
       .select(`
         *,
         clients (id, full_name, phone, email),
@@ -54,6 +102,7 @@ export async function POST(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+    // Webhook notifikace
     try {
       const baseUrl = request.headers.get('host') || 'localhost:3000'
       const protocol = baseUrl.includes('localhost') ? 'http' : 'https'

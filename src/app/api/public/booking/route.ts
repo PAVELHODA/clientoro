@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
 import { rateLimit } from '@/lib/rateLimit'
+import { publicBookingPostSchema, publicBookingGetSchema, validateBody } from '@/lib/validations'
 
 // GET — veřejné služby, staff a working hours pro booking
 export async function GET(request: NextRequest) {
@@ -10,12 +11,16 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
 
-    if (!slug) return NextResponse.json({ error: 'Slug is required' }, { status: 400 })
+    // Zod validace
+    const validation = validateBody(publicBookingGetSchema, { slug })
+    if (!validation.success || !validation.data) {
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+    }
 
     const { data: org, error: orgError } = await supabaseAdmin
       .from('organizations')
       .select('id, name, mode, work_start, work_end, slug, description, phone, address, logo_url')
-      .eq('slug', slug)
+      .eq('slug', validation.data.slug)
       .single()
 
     if (orgError || !org) return NextResponse.json({ error: 'Organizace nenalezena' }, { status: 404 })
@@ -91,11 +96,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Příliš mnoho požadavků. Zkuste to za minutu.' }, { status: 429 })
     }
 
+    // Zod validace
     const body = await request.json()
-    const { slug, service_id, staff_id, start_at, end_at, customer_name, customer_phone, customer_email, note, price } = body
+    const validation = validateBody(publicBookingPostSchema, body)
+    if (!validation.success || !validation.data) {
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+    }
 
-    if (!slug || !service_id || !start_at || !end_at || !customer_name || !customer_phone) {
-      return NextResponse.json({ error: 'Vyplňte všechna povinná pole' }, { status: 400 })
+    const { slug, service_id, staff_id, start_at, end_at, customer_name, customer_phone, customer_email, note, price } = validation.data
+
+    // Validace: end_at musí být po start_at
+    if (new Date(end_at) <= new Date(start_at)) {
+      return NextResponse.json({ error: 'Konec rezervace musí být po začátku' }, { status: 400 })
+    }
+
+    // Validace: rezervace nesmí být v minulosti (veřejný endpoint — vždy platí)
+    if (new Date(start_at) < new Date()) {
+      return NextResponse.json({ error: 'Nelze vytvořit rezervaci v minulosti' }, { status: 400 })
+    }
+
+    // Validace: maximální délka rezervace 8 hodin
+    const durationMs = new Date(end_at).getTime() - new Date(start_at).getTime()
+    if (durationMs > 8 * 60 * 60 * 1000) {
+      return NextResponse.json({ error: 'Maximální délka rezervace je 8 hodin' }, { status: 400 })
     }
 
     // Najdi organizaci + email majitele
@@ -107,7 +130,7 @@ export async function POST(request: NextRequest) {
 
     if (!org) return NextResponse.json({ error: 'Organizace nenalezena' }, { status: 404 })
 
-    // Kontrola kolize
+    // Kontrola kolize — POUZE u stejného zaměstnance
     if (staff_id) {
       const { data: conflicts } = await supabaseAdmin
         .from('bookings')
@@ -195,7 +218,7 @@ export async function POST(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // 📧 ODESLAT EMAILY (na pozadí — nečekáme na výsledek)
+    // Odeslat emaily (na pozadí — nečekáme na výsledek)
     const startDate = new Date(start_at)
     const dateStr = startDate.toLocaleDateString('cs-CZ', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'

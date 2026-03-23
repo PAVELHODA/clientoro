@@ -1,6 +1,14 @@
+// PATH: src/app/api/staff/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
+import { staffCreateSchema, validateBody } from '@/lib/validations'
+import { z } from 'zod'
+
+// Schema pro POST body včetně service_ids
+const staffPostSchema = staffCreateSchema.extend({
+  service_ids: z.array(z.string().uuid('Neplatné ID služby')).optional().default([]),
+})
 
 export async function GET(request: NextRequest) {
   try {
@@ -27,8 +35,64 @@ export async function POST(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { service_ids, ...staffData } = body
 
+    // Zod validace
+    const validation = validateBody(staffPostSchema, {
+      ...body,
+      organization_id: auth.organizationId,
+    })
+    if (!validation.success || !validation.data) {
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+    }
+
+    const { service_ids, ...staffData } = validation.data
+
+    // Kontrola limitu zaměstnanců dle módu
+    const { data: org } = await supabaseAdmin
+      .from('organizations')
+      .select('mode')
+      .eq('id', auth.organizationId)
+      .single()
+
+    if (org) {
+      const { count } = await supabaseAdmin
+        .from('staff')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', auth.organizationId)
+        .eq('active', true)
+
+      const limits: Record<string, number> = {
+        solo: 1,
+        solo_inspire: 1,
+        team: 5,         // majitel + 4 zaměstnanci
+        pro_inspire: 25,  // majitel + 24 zaměstnanců
+      }
+
+      const maxStaff = limits[org.mode] || 5
+      if ((count || 0) >= maxStaff) {
+        return NextResponse.json({
+          error: `Dosáhli jste limitu zaměstnanců pro váš plán (${maxStaff}). Upgradujte pro více.`,
+        }, { status: 403 })
+      }
+    }
+
+    // Kontrola duplicity emailu ve stejné organizaci
+    if (staffData.email) {
+      const { data: existing } = await supabaseAdmin
+        .from('staff')
+        .select('id, full_name')
+        .eq('organization_id', auth.organizationId)
+        .eq('email', staffData.email)
+        .single()
+
+      if (existing) {
+        return NextResponse.json({
+          error: `Zaměstnanec s tímto emailem již existuje: ${existing.full_name}`,
+        }, { status: 409 })
+      }
+    }
+
+    // Vložení zaměstnance
     const { data: staff, error: staffError } = await supabaseAdmin
       .from('staff')
       .insert({ ...staffData, organization_id: auth.organizationId })
@@ -37,6 +101,7 @@ export async function POST(request: NextRequest) {
 
     if (staffError) return NextResponse.json({ error: staffError.message }, { status: 500 })
 
+    // Přiřazení služeb
     if (service_ids && service_ids.length > 0) {
       const staffServices = service_ids.map((serviceId: string) => ({
         staff_id: staff.id,
