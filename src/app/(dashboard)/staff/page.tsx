@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
+import { useToast } from '@/components/Toast'
 import {
   UserCircle, Plus, Phone, Mail, Edit2, Trash2, X, Check,
   Clock, Palmtree, AlertTriangle,
@@ -29,6 +30,7 @@ const AVATAR_COLORS = [
 export default function StaffPage() {
   const { organization } = useAuth()
   const { t, lang, modeGradient } = useLang()
+  const toast = useToast()
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
 
   const WEEKDAYS = lang === 'en'
@@ -156,7 +158,6 @@ export default function StaffPage() {
       setExpandedStaff(null)
       setAllExpanded(false)
     } else {
-      // Expand first one and mark all as expanded
       if (staff.length > 0) {
         setExpandedStaff(staff[0].id)
         fetchWorkingHours(staff[0].id)
@@ -178,13 +179,13 @@ export default function StaffPage() {
         method: 'PUT', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ working_hours: workingHours.map(wh => ({ ...wh, organization_id: organization?.id || null })) }),
       })
-      alert(l.whSaved)
-    } catch (err) { console.error(err); alert(l.errorSaving) }
+      toast.success(l.whSaved)
+    } catch (err) { console.error(err); toast.error(l.errorSaving) }
     finally { setWhSaving(false) }
   }
 
   const addTimeOff = async () => {
-    if (!expandedStaff || !toForm.start_at || !toForm.end_at) { alert(l.fillDates); return }
+    if (!expandedStaff || !toForm.start_at || !toForm.end_at) { toast.warning(l.fillDates); return }
     try {
       await fetch(`/api/staff/${expandedStaff}/time-off`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -214,14 +215,14 @@ export default function StaffPage() {
     setEditingId(m.id); setShowForm(false)
   }
   const handleSave = async () => {
-    if (!form.full_name.trim()) { alert(l.nameRequired); return }
+    if (!form.full_name.trim()) { toast.warning(l.nameRequired); return }
     setSaving(true)
     const payload = { full_name: form.full_name.trim(), email: form.email.trim() || null, phone: form.phone.trim() || null, active: form.active, service_ids: form.service_ids }
     try {
       if (editingId) { await fetch(`/api/staff/${editingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }) }
       else { await fetch('/api/staff', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }) }
       setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchStaff()
-    } catch (err) { console.error(err); alert(l.errorSaving) }
+    } catch (err) { console.error(err); toast.error(l.errorSaving) }
     finally { setSaving(false) }
   }
 
@@ -544,4 +545,3 @@ export default function StaffPage() {
     </div>
   )
 }
-

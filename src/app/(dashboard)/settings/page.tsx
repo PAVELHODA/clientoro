@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
+import { useToast } from '@/components/Toast'
 
 interface OrgSettings {
   id: string; name: string; mode: string; address: string; phone: string
@@ -26,6 +27,7 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false)
   const [deletingAccount, setDeletingAccount] = useState(false)
   const { t, lang, modeGradient } = useLang()
+  const toast = useToast()
 
   const l = {
     title: t('set_title'),
@@ -164,7 +166,7 @@ export default function SettingsPage() {
       body: JSON.stringify(s),
     })
     if (r.ok) { setSaved(true); setTimeout(() => setSaved(false), 3000) }
-    else { const e = await r.json(); alert(`${l.error} ${e.error || 'Unknown'}`) }
+    else { const e = await r.json(); toast.error(`${l.error} ${e.error || 'Unknown'}`) }
     setSaving(false)
   }
 
@@ -187,13 +189,13 @@ export default function SettingsPage() {
       const res = await fetch('/api/settings/delete-account', { method: 'DELETE' })
       const data = await res.json()
       if (res.ok) {
-        alert(l.gdprSuccess)
-        window.location.href = '/'
+        toast.success(l.gdprSuccess)
+        setTimeout(() => { window.location.href = '/' }, 2000)
       } else {
-        alert(data.error || l.gdprError)
+        toast.error(data.error || l.gdprError)
       }
     } catch {
-      alert(l.gdprError)
+      toast.error(l.gdprError)
     } finally {
       setDeletingAccount(false)
     }
@@ -297,7 +299,7 @@ export default function SettingsPage() {
                 onChange={e => setS({ ...s, booking_link: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
                 className="flex-1 bg-transparent py-2 px-1 focus:outline-none text-sm" placeholder="salon-krasa" />
             </div>
-            <button onClick={() => { navigator.clipboard.writeText(`clientoro.pro/book/${s.booking_link}`); alert(l.copied) }}
+            <button onClick={() => { navigator.clipboard.writeText(`clientoro.pro/book/${s.booking_link}`); toast.success(l.copied) }}
               className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">{l.copy}</button>
           </div>
         </div>
@@ -390,7 +392,7 @@ export default function SettingsPage() {
               <div className="bg-white rounded-lg border border-red-200 p-4">
                 <h4 className="font-semibold text-gray-900 mb-2">{l.backupTitle}</h4>
                 <p className="text-sm text-gray-600 mb-3">{l.backupDesc}</p>
-                <button onClick={async () => { const r = await fetch('/api/settings/export'); if (r.ok) { const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click(); setBackupDone(true) } }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">{l.backupBtn}</button>
+                <button onClick={async () => { const r = await fetch('/api/settings/export'); if (r.ok) { const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click(); setBackupDone(true); toast.success(l.backupDone) } }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">{l.backupBtn}</button>
                 {backupDone && <p className="text-sm text-green-600 mt-2">{l.backupDone}</p>}
               </div>
               <div className="bg-white rounded-lg border border-red-200 p-4">
@@ -398,7 +400,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-gray-600 mb-3">{l.confirmDesc}</p>
                 <input type="text" value={deleteConfirmName} onChange={e => setDeleteConfirmName(e.target.value)} placeholder={l.confirmPlaceholder} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3" />
                 <div className="flex gap-3">
-                  <button disabled={deleteConfirmName !== s.name} onClick={async () => { const r = await fetch('/api/settings/delete-org', { method: 'DELETE' }); if (r.ok) { alert(l.deleteSuccess); window.location.href = '/login' } else { alert(l.deleteError) } }} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed">{l.confirmYes}</button>
+                  <button disabled={deleteConfirmName !== s.name} onClick={async () => { const r = await fetch('/api/settings/delete-org', { method: 'DELETE' }); if (r.ok) { toast.success(l.deleteSuccess); setTimeout(() => { window.location.href = '/login' }, 2000) } else { toast.error(l.deleteError) } }} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed">{l.confirmYes}</button>
                   <button onClick={() => { setShowDeleteFlow(false); setDeleteConfirmName(''); setBackupDone(false) }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">{l.confirmNo}</button>
                 </div>
                 {deleteConfirmName === s.name && <p className="text-xs text-red-500 mt-2">{l.confirmNote}</p>}

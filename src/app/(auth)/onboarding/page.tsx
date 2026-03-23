@@ -1,7 +1,9 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿'use client'
+﻿﻿// PATH: src/app/(auth)/onboarding/page.tsx
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/components/Toast'
 import { Building2, Scissors, Clock, PartyPopper, ArrowRight, ArrowLeft, Check, Waves, Loader2 } from 'lucide-react'
 
 const STEPS = [
@@ -18,9 +20,9 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0)
   const [saving, setSaving] = useState(false)
   const router = useRouter()
+  const toast = useToast()
 
   const [orgName, setOrgName] = useState('')
-  // Predvyplnit nazev z organizations
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
       if (d?.name) setOrgName(d.name)
@@ -50,7 +52,7 @@ export default function OnboardingPage() {
   const [workEnd, setWorkEnd] = useState(17)
   const [slotDuration, setSlotDuration] = useState(30)
 
-    const formatPhone = (val: string) => {
+  const formatPhone = (val: string) => {
     let digits = val.replace(/[^\d+]/g, '')
     if (digits.startsWith('00420')) digits = '+420' + digits.slice(5)
     else if (digits.startsWith('00421')) digits = '+421' + digits.slice(5)
@@ -68,7 +70,6 @@ export default function OnboardingPage() {
     return val
   }
 
-  
   const lookupIco = async (ico: string) => {
     setOrgIco(ico)
     setIcoError('')
@@ -83,10 +84,10 @@ export default function OnboardingPage() {
         if (d.dic) setOrgDic(d.dic)
         setIcoValid(true)
       } else {
-        setIcoError('ICO nenalezeno v ARES')
-      setIcoValid(false)
+        setIcoError('IČO nenalezeno v ARES')
+        setIcoValid(false)
       }
-    } catch { setIcoError('Chyba pri overeni ICO'); setIcoValid(false) }
+    } catch { setIcoError('Chyba při ověření IČO'); setIcoValid(false) }
     setIcoLoading(false)
   }
 
@@ -210,7 +211,7 @@ export default function OnboardingPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Obor podnikani * <span className="text-xs text-gray-400 font-normal">(vyberte jeden ci vice)</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Obor podnikání * <span className="text-xs text-gray-400 font-normal">(vyberte jeden či více)</span></label>
                   <div className="grid grid-cols-3 gap-2">
                     {categories.map(cat => (
                       <button key={cat.id} onClick={() => { setSelectedCategories(prev => { const next = new Set(prev); if (next.has(cat.id)) next.delete(cat.id); else next.add(cat.id); return next }) }}
@@ -228,19 +229,19 @@ export default function OnboardingPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">ICO *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">IČO *</label>
                     <div className="relative">
                       <input type="text" value={orgIco} onChange={e => lookupIco(e.target.value.replace(/\D/g, '').slice(0, 8))}
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="12345678" maxLength={8} />
-                      {icoLoading && <span className="absolute right-3 top-3 text-xs text-blue-500">Overuji...</span>}
+                      {icoLoading && <span className="absolute right-3 top-3 text-xs text-blue-500">Ověřuji...</span>}
                     </div>
                     {icoError && <p className="text-xs text-red-500 mt-1">{icoError}</p>}
                   </div>
                   <div>
                     <label className="flex items-center gap-2 mt-1">
                       <input type="checkbox" checked={isDphPayer} onChange={e => { setIsDphPayer(e.target.checked); if (!e.target.checked) setOrgDic('') }} className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
-                      <span className="text-sm font-medium text-gray-700">Jste platce DPH?</span>
+                      <span className="text-sm font-medium text-gray-700">Jste plátce DPH?</span>
                     </label>
                     {isDphPayer && <input type="text" value={orgDic} onChange={e => setOrgDic(e.target.value)} className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="CZ12345678" />}
                   </div>
@@ -411,7 +412,7 @@ export default function OnboardingPage() {
               <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200 mb-6">
                 <p className="text-sm text-emerald-700 mb-1">Váš booking link:</p>
                 <span className="text-lg font-bold text-emerald-800">clientoro.pro/{bookingSlug}</span>
-                <button onClick={() => { navigator.clipboard.writeText(`clientoro.pro/${bookingSlug}`); alert('Zkopírováno!') }}
+                <button onClick={() => { navigator.clipboard.writeText(`clientoro.pro/${bookingSlug}`); toast.success('Zkopírováno!') }}
                   className="ml-2 text-xs text-emerald-600 hover:underline">📋 Kopírovat</button>
               </div>
 

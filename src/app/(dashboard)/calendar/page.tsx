@@ -4,11 +4,13 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
+import { useToast } from '@/components/Toast'
 import {
   Calendar, ChevronLeft, ChevronRight, Plus,
   X, Loader2, Filter, Sparkles, AlertTriangle,
   Users, Clock, DollarSign,
 } from 'lucide-react'
+
 
 interface Booking {
   id: string
@@ -34,6 +36,7 @@ type ViewMode = 'day' | 'week' | 'month'
 export default function CalendarPage() {
   const { organization } = useAuth()
   const { t, lang } = useLang()
+  const toast = useToast()
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
   const currency = 'Kc'
   const isTeam = organization?.mode === 'team'
@@ -110,7 +113,8 @@ export default function CalendarPage() {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
       setShowDetail(prev => prev ? { ...prev, status: newStatus } : null)
     } catch (e) {
-      alert(lang === 'en' ? 'Error updating status' : 'Chyba pri aktualizaci stavu')
+    toast.error(lang === 'en' ? 'Error updating status' : 'Chyba při aktualizaci stavu')
+    
     }
   }
 

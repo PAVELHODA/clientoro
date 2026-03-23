@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
+import { useToast } from '@/components/Toast'
 import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight, ArrowUpDown } from 'lucide-react'
 
 interface Client {
@@ -37,6 +38,7 @@ export default function ClientsPage() {
   const [sortBy, setSortBy] = useState<string>('name_asc')
   const [filterSource, setFilterSource] = useState<string>('all')
   const { t, lang, modeGradient } = useLang()
+  const toast = useToast()
 
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
   const currency = t('currency')
@@ -114,7 +116,7 @@ export default function ClientsPage() {
   }
 
   const handleSave = async () => {
-    if (!form.full_name.trim() && !form.phone.trim()) { alert(l.fillRequired); return }
+    if (!form.full_name.trim() && !form.phone.trim()) { toast.warning(l.fillRequired); return }
     setSaving(true)
     const payload = {
       full_name: form.full_name.trim() || null, phone: form.phone.trim() || null,
@@ -128,7 +130,7 @@ export default function ClientsPage() {
         await fetch('/api/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       }
       setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchClients()
-    } catch (err) { console.error(err); alert(l.errorSaving) }
+    } catch (err) { console.error(err); toast.error(l.errorSaving) }
     finally { setSaving(false) }
   }
 
@@ -448,4 +450,3 @@ export default function ClientsPage() {
     </div>
   )
 }
-

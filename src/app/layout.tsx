@@ -5,6 +5,7 @@ import './globals.css'
 import { PWARegister } from '@/components/PWARegister'
 import { AuthProvider } from '@/components/AuthProvider'
 import CookieConsent from '@/components/CookieConsent'
+import { ToastProvider } from '@/components/Toast'
 
 export const metadata: Metadata = {
   title: 'Clientoro | Booking & Growth OS',
@@ -41,7 +42,9 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </AuthProvider>
         <PWARegister />
         <CookieConsent />

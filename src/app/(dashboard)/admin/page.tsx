@@ -1,13 +1,16 @@
-﻿﻿'use client'
+﻿﻿// PATH: src/app/(dashboard)/admin/page.tsx
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useLang } from '@/lib/LangContext'
+import { useToast } from '@/components/Toast'
 import { Crown, Users, Calendar, Building2, Eye, Loader2, Shield, Bell, Plus, Trash2, ChevronDown, ChevronUp, Layers } from 'lucide-react'
 
 type Tab = 'dashboard' | 'categories' | 'organizations' | 'golden'
 
 export default function AdminPage() {
   const { t, lang, modeGradient } = useLang()
+  const toast = useToast()
   const [tab, setTab] = useState<Tab>('dashboard')
   const [orgs, setOrgs] = useState<any[]>([])
   const [stats, setStats] = useState<any>(null)
@@ -222,7 +225,7 @@ export default function AdminPage() {
                 <option value="other">Jiné</option>
                 {categories.map(c => <option key={c.id} value={c.slug || c.name}>{c.icon} {c.name}</option>)}
               </select>
-              <button onClick={async () => { if (!newOrgName.trim()) return; const r = await fetch('/api/admin/create-org', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: newOrgName, mode: newOrgMode, category: newOrgCategory }) }); if (r.ok) { const d = await r.json(); setOrgs(prev => [...prev, d]); setNewOrgName('') } else { const d = await r.json(); alert('Chyba: ' + (d.error || 'Neznámá chyba')) } }} disabled={!newOrgName.trim()} className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-amber-600"><Plus className="w-4 h-4" /></button>
+              <button onClick={async () => { if (!newOrgName.trim()) return; const r = await fetch('/api/admin/create-org', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: newOrgName, mode: newOrgMode, category: newOrgCategory }) }); if (r.ok) { const d = await r.json(); setOrgs(prev => [...prev, d]); setNewOrgName(''); toast.success('Organizace vytvořena') } else { const d = await r.json(); toast.error('Chyba: ' + (d.error || 'Neznámá chyba')) } }} disabled={!newOrgName.trim()} className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-amber-600"><Plus className="w-4 h-4" /></button>
             </div>
           </div>
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -260,10 +263,10 @@ export default function AdminPage() {
                   <td className="p-3 text-center">
                     <button onClick={async () => {
                       if (!confirm('Opravdu smazat organizaci ' + org.name + '?')) return
-                      if (!confirm('POZOR: Tato akce je NEVRATNA! Vsechna data budou smazana.')) return
+                      if (!confirm('POZOR: Tato akce je NEVRATNÁ! Všechna data budou smazána.')) return
                       const r = await fetch('/api/admin/delete-org', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orgId: org.id }) })
-                      if (r.ok) { alert('Organizace ' + org.name + ' smazana.'); setOrgs(orgs.filter((o: any) => o.id !== org.id)) }
-                      else { const d = await r.json(); alert('Chyba: ' + (d.error || 'Neznama chyba')) }
+                      if (r.ok) { toast.success('Organizace ' + org.name + ' smazána.'); setOrgs(orgs.filter((o: any) => o.id !== org.id)) }
+                      else { const d = await r.json(); toast.error('Chyba: ' + (d.error || 'Neznámá chyba')) }
                     }} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Smazat organizaci">
                       <Trash2 className="w-4 h-4" />
                     </button>

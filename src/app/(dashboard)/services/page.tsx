@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
+import { useToast } from '@/components/Toast'
 import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check } from 'lucide-react'
 
 interface Service {
@@ -45,6 +46,7 @@ export default function ServicesPage() {
   const [form, setForm] = useState<FormData>(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const { t, lang, modeGradient } = useLang()
+  const toast = useToast()
 
   const currency = t('currency')
 
@@ -123,7 +125,7 @@ export default function ServicesPage() {
   }
 
   const handleSave = async () => {
-    if (!form.name.trim()) { alert(l.nameRequired); return }
+    if (!form.name.trim()) { toast.warning(l.nameRequired); return }
     setSaving(true)
     const payload = {
       name: form.name.trim(), description: form.description.trim() || null,
@@ -139,7 +141,7 @@ export default function ServicesPage() {
         await fetch('/api/services', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       }
       setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchServices()
-    } catch (err) { console.error(err); alert(l.errorSaving) }
+    } catch (err) { console.error(err); toast.error(l.errorSaving) }
     finally { setSaving(false) }
   }
 
@@ -321,4 +323,3 @@ export default function ServicesPage() {
     </div>
   )
 }
-
