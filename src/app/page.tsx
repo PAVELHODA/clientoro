@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿'use client'
+﻿﻿﻿﻿'use client'
 
 import { useState } from 'react'
 import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare } from 'lucide-react'
@@ -114,12 +114,12 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {FEATURES.map(f => (
-              <div key={f.title} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all">
-                <div className="flex items-center gap-3 mb-4">
+              <div key={f.title} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all text-center">
+                <div className="flex items-center justify-center gap-3 mb-4">
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center`}><f.icon className="w-5 h-5 text-white" /></div>
                   <h3 className="text-lg font-bold text-gray-900">{f.title}</h3>
                 </div>
-                <ul className="space-y-2">{f.items.map(item => (<li key={item} className="flex items-start gap-2 text-sm text-gray-600"><Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />{item}</li>))}</ul>
+                <ul className="space-y-2 inline-block text-left">{f.items.map(item => (<li key={item} className="flex items-start gap-2 text-sm text-gray-600"><Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />{item}</li>))}</ul>
               </div>
             ))}
           </div>
