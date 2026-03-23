@@ -100,6 +100,8 @@ export default function StaffPage() {
     deleteArmedTooltip: lang === 'en' ? '⚠️ Click again to delete!' : lang === 'sk' ? '⚠️ Kliknite znovu pre zmazanie!' : '⚠️ Klikněte znovu pro smazání!',
     namePlaceholder: lang === 'en' ? 'e.g. Jane Smith' : lang === 'sk' ? 'Napr. Jana Nováková' : 'Např. Jana Nováková',
     edit: lang === 'en' ? 'Edit' : lang === 'sk' ? 'Upraviť' : 'Upravit',
+    memberAdded: lang === 'en' ? 'Member added!' : lang === 'sk' ? 'Člen pridaný!' : 'Člen přidán!',
+    memberUpdated: lang === 'en' ? 'Member updated!' : lang === 'sk' ? 'Člen aktualizovaný!' : 'Člen aktualizován!',
   }
 
   const DEFAULT_HOURS: WorkingHour[] = WEEKDAYS.map((_, i) => ({
@@ -212,16 +214,26 @@ export default function StaffPage() {
   const handleNew = () => { setForm(EMPTY_FORM); setEditingId(null); setShowForm(true) }
   const handleEdit = (m: StaffMember) => {
     setForm({ full_name: m.full_name, email: m.email || '', phone: m.phone || '', active: m.active, service_ids: m.staff_services?.map(ss => ss.service_id) || [] })
-    setEditingId(m.id); setShowForm(false)
+    setEditingId(m.id); setShowForm(true)
   }
+
   const handleSave = async () => {
     if (!form.full_name.trim()) { toast.warning(l.nameRequired); return }
     setSaving(true)
-    const payload = { full_name: form.full_name.trim(), email: form.email.trim() || null, phone: form.phone.trim() || null, active: form.active, service_ids: form.service_ids }
+    const payload: any = { full_name: form.full_name.trim(), active: form.active, service_ids: form.service_ids }
+    if (form.email.trim()) payload.email = form.email.trim()
+    if (form.phone.trim()) payload.phone = form.phone.trim()
     try {
-      if (editingId) { await fetch(`/api/staff/${editingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }) }
-      else { await fetch('/api/staff', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }) }
-      setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchStaff()
+      const url = editingId ? `/api/staff/${editingId}` : '/api/staff'
+      const method = editingId ? 'PUT' : 'POST'
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      if (res.ok) {
+        toast.success(editingId ? l.memberUpdated : l.memberAdded)
+        setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchStaff()
+      } else {
+        const err = await res.json()
+        toast.error(err.error || l.errorSaving)
+      }
     } catch (err) { console.error(err); toast.error(l.errorSaving) }
     finally { setSaving(false) }
   }
@@ -279,7 +291,7 @@ export default function StaffPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{l.fullName}</label>
-              <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.namePlaceholder} />
+              <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.namePlaceholder} autoFocus />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{l.email}</label>
@@ -329,8 +341,7 @@ export default function StaffPage() {
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4"><UserCircle className="w-8 h-8 text-blue-400" /></div>
           <h3 className="text-lg font-semibold text-gray-900">{l.noStaff}</h3>
           <p className="mt-1 text-gray-500">{l.addFirst}</p>
-            <button onClick={toggleAllExpand} className="px-3 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 flex items-center gap-1.5"><Clock className="w-4 h-4" />{allExpanded ? 'Sbalit vše' : 'Rozbalit vše'}</button>
-          <button onClick={handleNew} style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm"><Plus style={{ background: modeGradient }} className="w-4 h-4" /> {l.newMember}</button>
+          <button onClick={handleNew} style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm"><Plus className="w-4 h-4" /> {l.newMember}</button>
         </div>
       ) : (
         <div className="space-y-4">
@@ -498,43 +509,6 @@ export default function StaffPage() {
                         </div>
                       </>
                     )}
-                  </div>
-                )}
-
-                {/* Inline edit pod kartou */}
-                {editingId === member.id && !showForm && (
-                  <div className="border-t border-blue-200 bg-blue-50/30 p-5">
-                    <h4 className="text-sm font-semibold text-blue-700 mb-3">{l.editMember}: {member.full_name}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.fullName}</label>
-                        <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.email}</label>
-                        <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.phone}</label>
-                        <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                      </div>
-                      <div className="flex items-center gap-3 pt-5">
-                        <button onClick={() => setForm({ ...form, active: !form.active })} className={`w-10 h-6 rounded-full transition-colors relative ${form.active ? 'bg-green-500' : 'bg-gray-300'}`}>
-                          <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${form.active ? 'left-5' : 'left-1'}`} />
-                        </button>
-                        <span className="text-sm text-gray-700">{form.active ? l.activeMember : l.inactiveMember}</span>
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-600 mb-2">{l.assignedServices}</label>
-                        <div className="flex flex-wrap gap-2">
-                          {services.map(svc => { const sel = form.service_ids.includes(svc.id); return (<button key={svc.id} onClick={() => toggleService(svc.id)} className={`px-3 py-1.5 rounded-xl text-xs font-medium border-2 transition-all ${sel ? 'text-white border-transparent shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`} style={sel ? { backgroundColor: svc.color, borderColor: svc.color } : {}}>{sel && <Check className="w-3 h-3 inline mr-1" />}{svc.name}</button>) })}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-3 pt-3 border-t border-blue-100">
-                      <button onClick={handleSave} disabled={saving} style={{ background: modeGradient }} className="px-4 py-2 text-white rounded-lg text-sm font-medium hover:brightness-110 disabled:opacity-50">{saving ? l.saving : l.saveChanges}</button>
-                      <button onClick={() => { setEditingId(null); setForm(EMPTY_FORM) }} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">{l.cancel}</button>
-                    </div>
                   </div>
                 )}
               </div>
