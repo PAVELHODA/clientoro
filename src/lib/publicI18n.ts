@@ -213,7 +213,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     book_error_gdpr: 'Potvrďte prosím súhlas so spracovaním osobných údajov',
     book_error_connection: 'Chyba pripojenia',
     book_min: 'min',
-    book_currency: '\u20AC',
+    book_currency: 'Kč',
     book_at: 'o',
 
     // Landing
@@ -332,7 +332,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     book_error_gdpr: 'Please agree to the processing of personal data',
     book_error_connection: 'Connection error',
     book_min: 'min',
-    book_currency: 'EUR',
+    book_currency: 'Kč',
     book_at: 'at',
 
     // Landing
