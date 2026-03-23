@@ -36,13 +36,12 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json()
 
-    // Zod validace
+    // Zod validace — flexibilní, propustí neznámá pole
     const validation = validateBody(settingsUpdateSchema, body)
-    if (!validation.success || !validation.data) {
+    if (!validation.success) {
+      console.warn('[Settings PUT] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
       return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
-
-    const validData = validation.data
 
     // Povolená pole — pouze tato se mohou aktualizovat
     const allowedFields = [
@@ -55,10 +54,9 @@ export async function PUT(request: NextRequest) {
 
     const updateData: any = {}
     for (const field of allowedFields) {
-      const value = (validData as any)[field] ?? (body as any)[field]
-      if (value !== undefined) {
+      if (body[field] !== undefined) {
         const dbField = field === 'booking_link' ? 'slug' : field
-        updateData[dbField] = value
+        updateData[dbField] = body[field]
       }
     }
 
@@ -71,7 +69,6 @@ export async function PUT(request: NextRequest) {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '')
 
-      // Kontrola unikátnosti slugu
       const { data: existingSlug } = await supabaseAdmin
         .from('organizations')
         .select('id')

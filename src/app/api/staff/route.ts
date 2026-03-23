@@ -8,7 +8,7 @@ import { z } from 'zod'
 // Schema pro POST body včetně service_ids
 const staffPostSchema = staffCreateSchema.extend({
   service_ids: z.array(z.string().uuid('Neplatné ID služby')).optional().default([]),
-})
+}).passthrough()
 
 export async function GET(request: NextRequest) {
   try {
@@ -37,15 +37,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Zod validace
-    const validation = validateBody(staffPostSchema, {
-      ...body,
-      organization_id: auth.organizationId,
-    })
-    if (!validation.success || !validation.data) {
+    const validation = validateBody(staffPostSchema, body)
+    if (!validation.success) {
+      console.warn('[Staff POST] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
       return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
-    const { service_ids, ...staffData } = validation.data
+    const validData = validation.data as any
+    const service_ids = validData.service_ids || []
 
     // Kontrola limitu zaměstnanců dle módu
     const { data: org } = await supabaseAdmin
@@ -64,8 +63,8 @@ export async function POST(request: NextRequest) {
       const limits: Record<string, number> = {
         solo: 1,
         solo_inspire: 1,
-        team: 5,         // majitel + 4 zaměstnanci
-        pro_inspire: 25,  // majitel + 24 zaměstnanců
+        team: 5,
+        pro_inspire: 25,
       }
 
       const maxStaff = limits[org.mode] || 5
@@ -77,12 +76,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Kontrola duplicity emailu ve stejné organizaci
-    if (staffData.email) {
+    if (validData.email) {
       const { data: existing } = await supabaseAdmin
         .from('staff')
         .select('id, full_name')
         .eq('organization_id', auth.organizationId)
-        .eq('email', staffData.email)
+        .eq('email', validData.email)
         .single()
 
       if (existing) {
@@ -92,10 +91,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Vložení zaměstnance
+    // Vložení zaměstnance — jen povolená pole
+    const insertData: any = {
+      organization_id: auth.organizationId,
+      full_name: validData.full_name,
+      active: validData.active !== undefined ? validData.active : true,
+    }
+    if (validData.email) insertData.email = validData.email
+    if (validData.phone) insertData.phone = validData.phone
+    if (validData.role) insertData.role = validData.role
+    if (validData.color) insertData.color = validData.color
+    if (validData.position) insertData.position = validData.position
+
     const { data: staff, error: staffError } = await supabaseAdmin
       .from('staff')
-      .insert({ ...staffData, organization_id: auth.organizationId })
+      .insert(insertData)
       .select()
       .single()
 

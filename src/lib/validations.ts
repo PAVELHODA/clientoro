@@ -85,7 +85,6 @@ export const publicBookingPostSchema = z.object({
 // ============================================================
 
 export const bookingCreateSchema = z.object({
-  organization_id: uuid,
   service_id: uuid,
   staff_id: optionalUuid,
   client_id: optionalUuid,
@@ -101,73 +100,66 @@ export const bookingCreateSchema = z.object({
   source: z.enum(['manual', 'online', 'phone', 'walk_in', 'backfill']).optional().default('manual'),
   is_backfill: z.boolean().optional().default(false),
   backfill_note: optionalSanitizedString(500),
-})
+}).passthrough()
 
 export const bookingUpdateSchema = bookingCreateSchema.partial().extend({
-  id: uuid,
-})
+  id: uuid.optional(),
+}).passthrough()
 
 // ============================================================
 // CLIENTS
 // ============================================================
 
 export const clientCreateSchema = z.object({
-  organization_id: uuid,
-  full_name: sanitizedString(100).pipe(z.string().min(1, 'Jméno je povinné')),
-  phone: phone.optional().or(z.literal('')),
-  email: optionalEmail,
-  note: optionalSanitizedString(2000),
-  tags: z.array(z.string().max(50)).max(20).optional(),
+  full_name: sanitizedString(100).pipe(z.string().min(1, 'Jméno je povinné')).optional().or(z.literal('')).or(z.null()),
+  phone: phone.optional().or(z.literal('')).or(z.null()),
+  email: optionalEmail.or(z.null()),
+  note: optionalSanitizedString(2000).or(z.null()),
+  tags: z.array(z.string().max(50)).max(20).optional().nullable(),
   birthday: z.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Neplatný formát data')
     .nullable()
     .optional(),
-  source: optionalSanitizedString(50),
-})
+  source: optionalSanitizedString(50).or(z.null()),
+}).passthrough()
 
-export const clientUpdateSchema = clientCreateSchema.partial().extend({
-  id: uuid,
-})
+export const clientUpdateSchema = clientCreateSchema.partial().passthrough()
 
 // ============================================================
 // SERVICES
 // ============================================================
 
 export const serviceCreateSchema = z.object({
-  organization_id: uuid,
   name: sanitizedString(100).pipe(z.string().min(1, 'Název je povinný')),
-  duration: duration,
+  duration: duration.optional().default(60),
   price: price,
   color: color,
-  category: optionalSanitizedString(100),
-  description: optionalSanitizedString(1000),
+  category: optionalSanitizedString(100).or(z.null()),
+  description: optionalSanitizedString(1000).or(z.null()),
   visibility: z.enum(['public', 'private']).optional().default('public'),
   active: z.boolean().optional().default(true),
   sort_order: z.number().int().min(0).max(9999).optional(),
-})
+  buffer_before_minutes: z.number().int().min(0).max(120).optional(),
+  buffer_after_minutes: z.number().int().min(0).max(120).optional(),
+}).passthrough()
 
-export const serviceUpdateSchema = serviceCreateSchema.partial().extend({
-  id: uuid,
-})
+export const serviceUpdateSchema = serviceCreateSchema.partial().passthrough()
 
 // ============================================================
 // STAFF
 // ============================================================
 
 export const staffCreateSchema = z.object({
-  organization_id: uuid,
   full_name: sanitizedString(100).pipe(z.string().min(1, 'Jméno je povinné')),
-  email: optionalEmail,
-  phone: phone.optional().or(z.literal('')),
+  email: optionalEmail.or(z.null()),
+  phone: phone.optional().or(z.literal('')).or(z.null()),
   role: z.enum(['staff', 'manager']).optional().default('staff'),
   color: color,
-  position: optionalSanitizedString(100),
+  position: optionalSanitizedString(100).or(z.null()),
   active: z.boolean().optional().default(true),
-})
+}).passthrough()
 
-export const staffUpdateSchema = staffCreateSchema.partial().extend({
-  id: uuid,
-})
+export const staffUpdateSchema = staffCreateSchema.partial().passthrough()
 
 // ============================================================
 // STAFF WORKING HOURS
@@ -178,26 +170,35 @@ export const staffWorkingHoursSchema = z.object({
   weekday: z.number().int().min(0).max(6),
   start_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/, 'Neplatný formát času'),
   end_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/, 'Neplatný formát času'),
-})
+}).passthrough()
 
 // ============================================================
-// SETTINGS
+// SETTINGS — velmi flexibilní, frontend posílá různá pole
 // ============================================================
 
 export const settingsUpdateSchema = z.object({
   name: sanitizedString(200).optional(),
   slug: slug.optional(),
-  phone: phone.optional().or(z.literal('')),
-  email: optionalEmail,
-  address: optionalSanitizedString(300),
-  website: optionalSanitizedString(200),
-  description: optionalSanitizedString(2000),
+  phone: z.string().max(30).optional().or(z.literal('')).or(z.null()),
+  email: optionalEmail.or(z.null()),
+  address: optionalSanitizedString(300).or(z.null()),
+  website: optionalSanitizedString(200).or(z.null()),
+  description: optionalSanitizedString(2000).or(z.null()),
   work_start: z.number().int().min(0).max(23).optional(),
   work_end: z.number().int().min(1).max(24).optional(),
-  ico: z.string().max(20).optional().or(z.literal('')),
-  dic: z.string().max(20).optional().or(z.literal('')),
+  slot_duration: z.number().int().min(5).max(240).optional(),
+  ico: z.string().max(20).optional().or(z.literal('')).or(z.null()),
+  dic: z.string().max(20).optional().or(z.literal('')).or(z.null()),
   mode: z.enum(['solo', 'team', 'solo_inspire', 'pro_inspire']).optional(),
-})
+  booking_link: z.string().max(100).optional().or(z.literal('')),
+  category: z.string().max(200).optional().or(z.literal('')),
+  onboarding_completed: z.boolean().optional(),
+  timezone: z.string().max(50).optional(),
+  city: optionalSanitizedString(100).or(z.null()),
+  zip: z.string().max(20).optional().or(z.literal('')).or(z.null()),
+  logo_url: z.string().max(500).optional().or(z.literal('')).or(z.null()),
+  language: z.string().max(5).optional(),
+}).passthrough()
 
 // ============================================================
 // WAITLIST
@@ -212,7 +213,7 @@ export const waitlistCreateSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Neplatný formát data')
     .nullable()
     .optional(),
-})
+}).passthrough()
 
 // ============================================================
 // HELPER: Validační funkce pro API routes
@@ -227,8 +228,10 @@ export function validateBody<T>(schema: z.ZodSchema<T>, data: unknown): {
   if (result.success) {
     return { success: true, data: result.data as T, error: null }
   }
-  const errorMsg = 'error' in result
-    ? (result as any).error?.issues?.map((i: any) => i.message).join(', ') || 'Neplatná data'
-    : 'Neplatná data'
+  // Lepší error reporting — ukáže i které pole selhalo
+  const errorMsg = result.error?.issues?.map((i: any) => {
+    const path = i.path?.join('.') || ''
+    return path ? `${path}: ${i.message}` : i.message
+  }).join(', ') || 'Neplatná data'
   return { success: false, data: null, error: errorMsg }
 }
