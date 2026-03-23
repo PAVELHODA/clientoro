@@ -1,9 +1,10 @@
-﻿// PATH: src/app/(dashboard)/layout.tsx
+﻿// PATH: src/app/layout.tsx
 
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { PWARegister } from '@/components/PWARegister'
 import { AuthProvider } from '@/components/AuthProvider'
+import CookieConsent from '@/components/CookieConsent'
 
 export const metadata: Metadata = {
   title: 'Clientoro | Booking & Growth OS',
@@ -43,6 +44,7 @@ export default function RootLayout({
           {children}
         </AuthProvider>
         <PWARegister />
+        <CookieConsent />
       </body>
     </html>
   )
