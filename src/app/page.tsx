@@ -1,4 +1,4 @@
-﻿﻿﻿﻿'use client'
+﻿﻿﻿'use client'
 
 import { useState } from 'react'
 import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare } from 'lucide-react'
@@ -179,21 +179,21 @@ export default function LandingPage() {
 
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-6">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4"><CreditCard className="w-5 h-5 text-blue-600" /></div>
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
+            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4 mx-auto"><CreditCard className="w-5 h-5 text-blue-600" /></div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Zálohy a předplatby</h3>
             <p className="text-sm text-gray-500 mb-4">Snižte nedorazivší (no-show) o 60–80 %. Klient zaplatí zálohu při rezervaci.</p>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Nastavíte % zálohy per služba</li>
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> VIP klienti mohou být osvobozeni</li>
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Volitelné — zapnete jen pokud chcete</li>
             </ul>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-200 p-6">
-            <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4"><Banknote className="w-5 h-5 text-green-600" /></div>
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
+            <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto"><Banknote className="w-5 h-5 text-green-600" /></div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Hotovostní bonus</h3>
             <p className="text-sm text-gray-500 mb-4">Nabídněte klientům bonus za platbu hotově. Ušetříte na poplatcích za platební bránu.</p>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Sleva nebo věrnostní body za hotovost</li>
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Platební brána není povinná</li>
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Fungujete i čistě na hotovosti</li>
