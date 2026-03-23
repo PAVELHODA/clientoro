@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
-import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight, ArrowUpDown } from 'lucide-react'
+import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight } from 'lucide-react'
 
 interface Client {
   id: string
@@ -89,6 +89,9 @@ export default function ClientsPage() {
     confirmDelete: (name: string) => lang === 'en' ? `Delete client "${name}"?` : lang === 'sk' ? `Zmazať klienta "${name}"?` : `Smazat klienta "${name}"?`,
     fillRequired: lang === 'en' ? 'Fill in name or phone' : lang === 'sk' ? 'Vyplňte meno alebo telefón' : 'Vyplňte jméno nebo telefon',
     errorSaving: lang === 'en' ? 'Error saving' : lang === 'sk' ? 'Chyba pri ukladaní' : 'Chyba při ukládání',
+    saved: lang === 'en' ? 'Client saved!' : lang === 'sk' ? 'Klient uložený!' : 'Klient uložen!',
+    created: lang === 'en' ? 'Client created!' : lang === 'sk' ? 'Klient vytvorený!' : 'Klient vytvořen!',
+    deleted: lang === 'en' ? 'Client deleted' : lang === 'sk' ? 'Klient zmazaný' : 'Klient smazán',
     namePlaceholder: lang === 'en' ? 'e.g. Jane Smith' : lang === 'sk' ? 'Napr. Jana Nováková' : 'Např. Jana Nováková',
     close: lang === 'en' ? 'Close' : lang === 'sk' ? 'Zavrieť' : 'Zavřít',
   }
@@ -112,7 +115,7 @@ export default function ClientsPage() {
       full_name: client.full_name || '', phone: client.phone || '', email: client.email || '',
       note: client.note || '', source: client.source || 'manual', tags: client.tags?.join(', ') || '',
     })
-    setEditingId(client.id); setSelectedClient(null); setShowForm(false)
+    setEditingId(client.id); setSelectedClient(null); setShowForm(true)
   }
 
   const handleSave = async () => {
@@ -124,20 +127,30 @@ export default function ClientsPage() {
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
     }
     try {
-      if (editingId) {
-        await fetch(`/api/clients/${editingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      const url = editingId ? `/api/clients/${editingId}` : '/api/clients'
+      const method = editingId ? 'PUT' : 'POST'
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+
+      if (res.ok) {
+        toast.success(editingId ? l.saved : l.created)
+        setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchClients()
       } else {
-        await fetch('/api/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        const err = await res.json()
+        toast.error(err.error || l.errorSaving)
       }
-      setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchClients()
     } catch (err) { console.error(err); toast.error(l.errorSaving) }
     finally { setSaving(false) }
   }
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(l.confirmDelete(name || l.noName))) return
-    try { await fetch(`/api/clients/${id}`, { method: 'DELETE' }); setSelectedClient(null); fetchClients() }
-    catch (err) { console.error(err) }
+    try {
+      const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        toast.success(l.deleted)
+        setSelectedClient(null); fetchClients()
+      }
+    } catch (err) { console.error(err) }
   }
 
   const getInitials = (name: string | null) => {
@@ -156,26 +169,16 @@ export default function ClientsPage() {
       filtered = filtered.filter(c => c.source === filterSource)
     }
     switch (sortBy) {
-      case 'name_asc':
-        return filtered.sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', locale))
-      case 'name_desc':
-        return filtered.sort((a, b) => (b.full_name || '').localeCompare(a.full_name || '', locale))
-      case 'visits_desc':
-        return filtered.sort((a, b) => b.total_visits - a.total_visits)
-      case 'visits_asc':
-        return filtered.sort((a, b) => a.total_visits - b.total_visits)
-      case 'spent_desc':
-        return filtered.sort((a, b) => b.total_spent - a.total_spent)
-      case 'spent_asc':
-        return filtered.sort((a, b) => a.total_spent - b.total_spent)
-      case 'recent':
-        return filtered.sort((a, b) => new Date(b.last_visit_at || 0).getTime() - new Date(a.last_visit_at || 0).getTime())
-      case 'newest':
-        return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      case 'oldest':
-        return filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-      default:
-        return filtered
+      case 'name_asc': return filtered.sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', locale))
+      case 'name_desc': return filtered.sort((a, b) => (b.full_name || '').localeCompare(a.full_name || '', locale))
+      case 'visits_desc': return filtered.sort((a, b) => b.total_visits - a.total_visits)
+      case 'visits_asc': return filtered.sort((a, b) => a.total_visits - b.total_visits)
+      case 'spent_desc': return filtered.sort((a, b) => b.total_spent - a.total_spent)
+      case 'spent_asc': return filtered.sort((a, b) => a.total_spent - b.total_spent)
+      case 'recent': return filtered.sort((a, b) => new Date(b.last_visit_at || 0).getTime() - new Date(a.last_visit_at || 0).getTime())
+      case 'newest': return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      case 'oldest': return filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      default: return filtered
     }
   }
 
@@ -224,7 +227,7 @@ export default function ClientsPage() {
         </select>
       </div>
 
-      {/* Formulář */}
+      {/* Formulář — nový klient / editace */}
       {showForm && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 shadow-sm">
           <div className="flex items-center justify-between mb-5">
@@ -238,7 +241,7 @@ export default function ClientsPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{l.fullName}</label>
               <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.namePlaceholder} />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.namePlaceholder} autoFocus />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{l.phone}</label>
@@ -314,7 +317,7 @@ export default function ClientsPage() {
             </div>
             <div className="bg-gray-50 rounded-xl p-3">
               <p className="text-xs text-gray-500 mb-1">{l.source}</p>
-              <p className="text-lg font-bold text-gray-900">{SOURCES.find(s => s.value === selectedClient.source)?.icon || '📌'} {SOURCES.find(s => s.value === selectedClient.source)?.label || selectedClient.source}</p>
+              <p className="text-sm font-bold text-gray-900">{SOURCES.find(s => s.value === selectedClient.source)?.icon || '📌'} {SOURCES.find(s => s.value === selectedClient.source)?.label || selectedClient.source}</p>
             </div>
           </div>
           {selectedClient.tags?.length > 0 && (
@@ -362,87 +365,52 @@ export default function ClientsPage() {
       ) : (
         <div className="space-y-2">
           {sortedClients.map(client => (
-            <div key={client.id} onClick={() => setSelectedClient(client)}
-              className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-200 hover:shadow-sm cursor-pointer transition-all flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0 shadow-sm">
-                {getInitials(client.full_name)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-900 truncate">{client.full_name || l.noName}</span>
-                  {client.tags?.slice(0, 2).map((tag, i) => (
-                    <span key={i} className="hidden sm:inline px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs font-medium">{tag}</span>
-                  ))}
-                  {client.tags?.length > 2 && <span className="hidden sm:inline text-xs text-gray-400">+{client.tags.length - 2}</span>}
+            <div key={client.id}
+              className="bg-white rounded-xl border border-gray-200 hover:border-blue-200 hover:shadow-sm transition-all">
+              <div onClick={() => setSelectedClient(client)}
+                className="p-4 cursor-pointer flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0 shadow-sm">
+                  {getInitials(client.full_name)}
                 </div>
-                <div className="flex flex-wrap gap-3 mt-0.5 text-xs text-gray-400">
-                  {client.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {client.phone}</span>}
-                  {client.email && <span className="hidden sm:flex items-center gap-1"><Mail className="w-3 h-3" /> {client.email}</span>}
-                </div>
-              </div>
-              <div className="hidden md:flex items-center gap-6 text-sm">
-                <div className="text-center">
-                  <p className="font-bold text-gray-900">{client.total_visits}</p>
-                  <p className="text-xs text-gray-400">{l.visits}</p>
-                </div>
-                <div className="text-center">
-                  <p className="font-bold text-gray-900">{client.total_spent > 0 ? `${client.total_spent} ${currency}` : '-'}</p>
-                  <p className="text-xs text-gray-400">{l.spent}</p>
-                </div>
-                <div className="text-center">
-                  <p className="font-bold text-gray-900">{formatDate(client.last_visit_at)}</p>
-                  <p className="text-xs text-gray-400">{l.last}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                <button onClick={() => handleEdit(client)}
-                  className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors">
-                  <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => handleDelete(client.id, client.full_name || '')}
-                  className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-                <ChevronRight className="w-4 h-4 text-gray-300 ml-1" />
-              </div>
-                {/* Inline edit pod kartou klienta */}
-                {editingId === client.id && !showForm && (
-                  <div className="border-t border-blue-200 bg-blue-50/30 p-5 mt-3" onClick={e => e.stopPropagation()}>
-                    <h4 className="text-sm font-semibold text-blue-700 mb-3">{l.edit}: {client.full_name}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.fullName}</label>
-                        <input type="text" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.phone}</label>
-                        <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.email}</label>
-                        <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.source}</label>
-                        <select value={form.source} onChange={e => setForm({ ...form, source: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                          {SOURCES.map(s => <option key={s.value} value={s.value}>{s.icon} {s.label}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.tags}</label>
-                        <input type="text" value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="VIP, staly" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{l.note}</label>
-                        <input type="text" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-3 pt-3 border-t border-blue-100">
-                      <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">{saving ? l.saving : l.saveChanges}</button>
-                      <button onClick={() => { setEditingId(null); setForm(EMPTY_FORM) }} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">{l.cancel}</button>
-                    </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-gray-900 truncate">{client.full_name || l.noName}</span>
+                    {client.tags?.slice(0, 2).map((tag, i) => (
+                      <span key={i} className="hidden sm:inline px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs font-medium">{tag}</span>
+                    ))}
+                    {client.tags?.length > 2 && <span className="hidden sm:inline text-xs text-gray-400">+{client.tags.length - 2}</span>}
                   </div>
-                )}
+                  <div className="flex flex-wrap gap-3 mt-0.5 text-xs text-gray-400">
+                    {client.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {client.phone}</span>}
+                    {client.email && <span className="hidden sm:flex items-center gap-1"><Mail className="w-3 h-3" /> {client.email}</span>}
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center gap-6 text-sm">
+                  <div className="text-center">
+                    <p className="font-bold text-gray-900">{client.total_visits}</p>
+                    <p className="text-xs text-gray-400">{l.visits}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-gray-900">{client.total_spent > 0 ? `${client.total_spent} ${currency}` : '-'}</p>
+                    <p className="text-xs text-gray-400">{l.spent}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-gray-900">{formatDate(client.last_visit_at)}</p>
+                    <p className="text-xs text-gray-400">{l.last}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                  <button onClick={() => handleEdit(client)}
+                    className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors">
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => handleDelete(client.id, client.full_name || '')}
+                    className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400 transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                  <ChevronRight className="w-4 h-4 text-gray-300 ml-1" />
+                </div>
+              </div>
             </div>
           ))}
         </div>

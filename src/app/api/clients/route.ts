@@ -36,27 +36,33 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await requireAuth(request, 'manager')
+    // Owner může taky přidávat klienty (ne jen manager)
+    const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
-    // Zod validace
-    const validation = validateBody(clientCreateSchema, {
-      ...body,
-      organization_id: auth.organizationId,
-    })
-    if (!validation.success || !validation.data) {
+    // Zod validace — BEZ organization_id (přidáme sami)
+    const validation = validateBody(clientCreateSchema, body)
+    if (!validation.success) {
+      console.warn('[Clients POST] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
       return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
+    const validData = validation.data as any
+
+    // Musí mít alespoň jméno nebo telefon
+    if (!validData.full_name && !validData.phone) {
+      return NextResponse.json({ error: 'Vyplňte jméno nebo telefon' }, { status: 400 })
+    }
+
     // Kontrola duplicity telefonu ve stejné organizaci
-    if (validation.data.phone) {
+    if (validData.phone) {
       const { data: existing } = await supabaseAdmin
         .from('clients')
         .select('id, full_name')
         .eq('organization_id', auth.organizationId)
-        .eq('phone', validation.data.phone)
+        .eq('phone', validData.phone)
         .single()
 
       if (existing) {
@@ -67,9 +73,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Vložení — jen povolená pole
+    const insertData: any = {
+      organization_id: auth.organizationId,
+    }
+    if (validData.full_name) insertData.full_name = validData.full_name
+    if (validData.phone) insertData.phone = validData.phone
+    if (validData.email) insertData.email = validData.email
+    if (validData.note) insertData.note = validData.note
+    if (validData.source) insertData.source = validData.source
+    if (validData.tags && Array.isArray(validData.tags)) insertData.tags = validData.tags
+    if (validData.birthday) insertData.birthday = validData.birthday
+
     const { data, error } = await supabaseAdmin
       .from('clients')
-      .insert({ ...validation.data, organization_id: auth.organizationId })
+      .insert(insertData)
       .select()
       .single()
 

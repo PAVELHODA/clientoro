@@ -61,33 +61,24 @@ export default function SettingsPage() {
     save_amount: lang === 'en' ? 'save' : lang === 'sk' ? 'ušetríte' : 'ušetříte',
     loading: lang === 'en' ? 'Loading settings...' : lang === 'sk' ? 'Načítavam nastavenia...' : 'Načítám nastavení...',
     error: lang === 'en' ? 'Error:' : 'Chyba:',
-    tipText: lang === 'en' ? '💡 1 new client per month = the plan pays for itself 5×. Clientoro helps you get new clients, retain existing ones and increase revenue.' : lang === 'sk' ? '💡 1 nový klient mesačne = plán sa zaplatí 5×. Clientoro vám pomôže získať nových klientov, udržať existujúcich a zvýšiť tržby.' : '💡 1 nový klient měsíčně = plán se zaplatí 5×. Clientoro vám pomůže získat nové klienty, udržet stávající a zvýšit tržby.',
     trial: lang === 'en' ? '14 days free — full access, no card' : lang === 'sk' ? '14 dní zadarmo — plný prístup, bez karty' : '14 dní zdarma — plný přístup, bez karty',
     freeAfter: lang === 'en' ? 'After trial: 20 bookings/mo, 50 clients free' : lang === 'sk' ? 'Po triale: 20 rez/mes, 50 klientov zadarmo' : 'Po trialu: 20 rez/měs, 50 klientů zdarma',
     namePlaceholder: lang === 'en' ? 'e.g. Beauty Salon' : lang === 'sk' ? 'Napr. Salón Krása' : 'Např. Salon Krása',
     dangerZone: lang === 'en' ? 'Danger zone' : lang === 'sk' ? 'Nebezpečná zóna' : 'Nebezpečná zóna',
-    dangerDesc: lang === 'en' ? 'Deleting the organization is irreversible. All data will be permanently removed. Before deletion, we offer data backup.' : lang === 'sk' ? 'Smazanie organizácie je nevratné. Všetky dáta budú trvalo odstránené. Pred smazaním vám ponúkneme zálohovanie dát.' : 'Smazání organizace je nevratné. Všechna data budou trvale odstraněna. Před smazáním vám nabídneme zálohování dat.',
-    deleteOrg: lang === 'en' ? 'Delete organization' : lang === 'sk' ? 'Smazať organizáciu' : 'Smazat organizaci',
+    dangerDesc: lang === 'en' ? 'Permanently delete your account and ALL data (bookings, clients, services, settings). This action is IRREVERSIBLE. Before deletion, you can download a backup.' : lang === 'sk' ? 'Trvalo smazať váš účet a VŠETKY dáta (rezervácie, klienti, služby, nastavenia). Táto akcia je NEVRATNÁ. Pred smazaním si môžete stiahnuť zálohu.' : 'Trvale smazat váš účet a VŠECHNA data (rezervace, klienti, služby, nastavení). Tato akce je NEVRATNÁ. Před smazáním si můžete stáhnout zálohu.',
+    deleteBtn: lang === 'en' ? 'Delete account and all data' : lang === 'sk' ? 'Smazať účet a všetky dáta' : 'Smazat účet a všechna data',
     backupTitle: lang === 'en' ? '1. Data backup' : lang === 'sk' ? '1. Zálohovanie dát' : '1. Zálohování dat',
     backupDesc: lang === 'en' ? 'Before deletion, you can download all your data.' : lang === 'sk' ? 'Pred smazaním si môžete stiahnuť všetky dáta.' : 'Před smazáním si můžete stáhnout všechna data.',
     backupBtn: lang === 'en' ? 'Download backup (CSV)' : lang === 'sk' ? 'Stiahnuť zálohu (CSV)' : 'Stáhnout zálohu (CSV)',
-    backupDone: lang === 'en' ? '✓ Backup downloaded' : lang === 'sk' ? '✓ Záloha stiahnutá' : '✓ Záloha stažena',
+    backupDoneLabel: lang === 'en' ? '✓ Backup downloaded' : lang === 'sk' ? '✓ Záloha stiahnutá' : '✓ Záloha stažena',
     confirmTitle: lang === 'en' ? '2. Confirm deletion' : lang === 'sk' ? '2. Potvrdenie smazania' : '2. Potvrzení smazání',
     confirmDesc: lang === 'en' ? 'To confirm, type the name of your organization:' : lang === 'sk' ? 'Pre potvrdenie napíšte názov vašej organizácie:' : 'Pro potvrzení napište název vaší organizace:',
     confirmPlaceholder: lang === 'en' ? 'Type organization name here' : lang === 'sk' ? 'Sem napíšte názov organizácie' : 'Zde napište název organizace',
-    confirmYes: lang === 'en' ? 'Yes, delete' : lang === 'sk' ? 'Áno, smazať' : 'Ano, smazat',
+    confirmYes: lang === 'en' ? 'Yes, permanently delete everything' : lang === 'sk' ? 'Áno, trvalo smazať všetko' : 'Ano, trvale smazat vše',
     confirmNo: lang === 'en' ? 'No, cancel' : lang === 'sk' ? 'Nie, zrušiť' : 'Ne, zrušit',
     confirmNote: lang === 'en' ? 'Your account will be deleted within 24 hours. Superadmin will verify all obligations are settled.' : lang === 'sk' ? 'Váš účet bude smazaný do 24 hodín. Superadmin overí, či sú všetky záväzky vyrovnané.' : 'Váš účet bude smazán do 24 hodin. Superadmin ověří, zda jsou všechny závazky vyrovnány.',
-    deleteSuccess: lang === 'en' ? 'Your account will be deleted within 24 hours. We will inform you by email.' : lang === 'sk' ? 'Váš účet bude smazaný do 24 hodín. O výsledku vás budeme informovať emailom.' : 'Váš účet bude smazán do 24 hodin. O výsledku vás budeme informovat emailem.',
+    deleteSuccess: lang === 'en' ? 'Deletion requested. You will be informed by email within 24 hours.' : lang === 'sk' ? 'Žiadosť o smazanie odoslaná. O výsledku vás budeme informovať emailom do 24 hodín.' : 'Žádost o smazání odeslána. O výsledku vás budeme informovat emailem do 24 hodin.',
     deleteError: lang === 'en' ? 'Error requesting deletion.' : lang === 'sk' ? 'Chyba pri žiadosti o smazanie.' : 'Chyba při žádosti o smazání.',
-    gdprTitle: lang === 'en' ? 'GDPR — Delete my account' : lang === 'sk' ? 'GDPR — Smazať môj účet' : 'GDPR — Smazat můj účet',
-    gdprDesc: lang === 'en' ? 'Permanently delete your account and ALL data (bookings, clients, services, settings). This action is IRREVERSIBLE.' : lang === 'sk' ? 'Trvalo smazať váš účet a VŠETKY dáta (rezervácie, klienti, služby, nastavenia). Táto akcia je NEVRATNÁ.' : 'Trvale smazat váš účet a VŠECHNA data (rezervace, klienti, služby, nastavení). Tato akce je NEVRATNÁ.',
-    gdprBtn: lang === 'en' ? 'Delete account and all data' : lang === 'sk' ? 'Smazať účet a všetky dáta' : 'Smazat účet a všechna data',
-    gdprConfirm1: lang === 'en' ? 'Do you really want to PERMANENTLY delete your account and ALL data? This action is IRREVERSIBLE!' : lang === 'sk' ? 'Naozaj chcete TRVALO smazať váš účet a VŠETKY dáta? Táto akcia je NEVRATNÁ!' : 'Opravdu chcete TRVALE smazat svůj účet a VŠECHNA data? Tato akce je NEVRATNÁ!',
-    gdprConfirm2: lang === 'en' ? 'To confirm, type "DELETE"' : lang === 'sk' ? 'Pre potvrdenie napíšte "SMAZAT"' : 'Pro potvrzení napište "SMAZAT"',
-    gdprConfirmWord: lang === 'en' ? 'DELETE' : 'SMAZAT',
-    gdprSuccess: lang === 'en' ? 'Account deleted. You will be logged out.' : lang === 'sk' ? 'Účet bol smazaný. Budete odhlásený.' : 'Účet byl smazán. Budete odhlášeni.',
-    gdprError: lang === 'en' ? 'Error deleting account' : lang === 'sk' ? 'Chyba pri mazaní účtu' : 'Chyba při mazání účtu',
   }
 
   const MODE_CARDS = [
@@ -165,8 +156,11 @@ export default function SettingsPage() {
       method: 'PUT', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(s),
     })
-    if (r.ok) { setSaved(true); setTimeout(() => setSaved(false), 3000) }
-    else { const e = await r.json(); toast.error(`${l.error} ${e.error || 'Unknown'}`) }
+    if (r.ok) {
+      setSaved(true); toast.success(l.saved); setTimeout(() => setSaved(false), 3000)
+    } else {
+      const e = await r.json(); toast.error(`${l.error} ${e.error || 'Unknown'}`)
+    }
     setSaving(false)
   }
 
@@ -178,24 +172,19 @@ export default function SettingsPage() {
     window.location.reload()
   }
 
-  const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(l.gdprConfirm1)
-    if (!confirmed) return
-    const doubleConfirm = window.prompt(l.gdprConfirm2)
-    if (doubleConfirm !== l.gdprConfirmWord) return
-
+  const handleDelete = async () => {
     setDeletingAccount(true)
     try {
       const res = await fetch('/api/settings/delete-account', { method: 'DELETE' })
       const data = await res.json()
       if (res.ok) {
-        toast.success(l.gdprSuccess)
-        setTimeout(() => { window.location.href = '/' }, 2000)
+        toast.success(l.deleteSuccess)
+        setTimeout(() => { window.location.href = '/' }, 3000)
       } else {
-        toast.error(data.error || l.gdprError)
+        toast.error(data.error || l.deleteError)
       }
     } catch {
-      toast.error(l.gdprError)
+      toast.error(l.deleteError)
     } finally {
       setDeletingAccount(false)
     }
@@ -283,6 +272,7 @@ export default function SettingsPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                 <option value={15}>15 {l.minutes}</option>
                 <option value={30}>30 {l.minutes}</option>
+                <option value={45}>45 {l.minutes}</option>
                 <option value={60}>60 {l.minutes}</option>
               </select>
             </div>
@@ -375,48 +365,58 @@ export default function SettingsPage() {
               )
             })}
           </div>
-
-          <div className="mt-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
-            <p className="text-sm text-blue-800 font-medium">{l.tipText}</p>
-          </div>
         </div>
 
-        {/* Nebezpečná zóna — smazání organizace */}
+        {/* Nebezpečná zóna — SLOUČENÁ */}
         <div className="bg-red-50 rounded-xl border border-red-200 p-6">
-          <h3 className="text-lg font-bold text-red-800 mb-2">{l.dangerZone}</h3>
+          <h3 className="text-lg font-bold text-red-800 mb-2">⚠️ {l.dangerZone}</h3>
           <p className="text-sm text-red-600 mb-4">{l.dangerDesc}</p>
+
           {!showDeleteFlow ? (
-            <button onClick={() => setShowDeleteFlow(true)} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">{l.deleteOrg}</button>
+            <button onClick={() => setShowDeleteFlow(true)}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">
+              {l.deleteBtn}
+            </button>
           ) : (
             <div className="space-y-4 mt-4">
+              {/* Krok 1: Záloha */}
               <div className="bg-white rounded-lg border border-red-200 p-4">
                 <h4 className="font-semibold text-gray-900 mb-2">{l.backupTitle}</h4>
                 <p className="text-sm text-gray-600 mb-3">{l.backupDesc}</p>
-                <button onClick={async () => { const r = await fetch('/api/settings/export'); if (r.ok) { const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click(); setBackupDone(true); toast.success(l.backupDone) } }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">{l.backupBtn}</button>
-                {backupDone && <p className="text-sm text-green-600 mt-2">{l.backupDone}</p>}
+                <button onClick={async () => {
+                  const r = await fetch('/api/settings/export')
+                  if (r.ok) {
+                    const blob = await r.blob()
+                    const url = URL.createObjectURL(blob)
+                    const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click()
+                    setBackupDone(true); toast.success(l.backupDoneLabel)
+                  }
+                }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
+                  {backupDone ? l.backupDoneLabel : l.backupBtn}
+                </button>
               </div>
+
+              {/* Krok 2: Potvrzení */}
               <div className="bg-white rounded-lg border border-red-200 p-4">
                 <h4 className="font-semibold text-gray-900 mb-2">{l.confirmTitle}</h4>
-                <p className="text-sm text-gray-600 mb-3">{l.confirmDesc}</p>
-                <input type="text" value={deleteConfirmName} onChange={e => setDeleteConfirmName(e.target.value)} placeholder={l.confirmPlaceholder} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3" />
+                <p className="text-sm text-gray-600 mb-3">{l.confirmDesc} <strong>{s.name}</strong></p>
+                <input type="text" value={deleteConfirmName} onChange={e => setDeleteConfirmName(e.target.value)}
+                  placeholder={l.confirmPlaceholder}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3" />
                 <div className="flex gap-3">
-                  <button disabled={deleteConfirmName !== s.name} onClick={async () => { const r = await fetch('/api/settings/delete-org', { method: 'DELETE' }); if (r.ok) { toast.success(l.deleteSuccess); setTimeout(() => { window.location.href = '/login' }, 2000) } else { toast.error(l.deleteError) } }} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed">{l.confirmYes}</button>
-                  <button onClick={() => { setShowDeleteFlow(false); setDeleteConfirmName(''); setBackupDone(false) }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">{l.confirmNo}</button>
+                  <button disabled={deleteConfirmName !== s.name || deletingAccount} onClick={handleDelete}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed">
+                    {deletingAccount ? '...' : l.confirmYes}
+                  </button>
+                  <button onClick={() => { setShowDeleteFlow(false); setDeleteConfirmName(''); setBackupDone(false) }}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">
+                    {l.confirmNo}
+                  </button>
                 </div>
                 {deleteConfirmName === s.name && <p className="text-xs text-red-500 mt-2">{l.confirmNote}</p>}
               </div>
             </div>
           )}
-        </div>
-
-        {/* GDPR — Smazání účtu */}
-        <div className="bg-white rounded-xl border-2 border-red-300 p-6">
-          <h3 className="text-lg font-bold text-red-700 mb-2">{l.gdprTitle}</h3>
-          <p className="text-sm text-gray-500 mb-4">{l.gdprDesc}</p>
-          <button onClick={handleDeleteAccount} disabled={deletingAccount}
-            className="px-6 py-2.5 bg-red-600 text-white rounded-xl font-semibold text-sm hover:bg-red-700 transition-colors disabled:opacity-50">
-            {deletingAccount ? '...' : l.gdprBtn}
-          </button>
         </div>
       </div>
     </div>
