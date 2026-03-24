@@ -1,4 +1,4 @@
-﻿﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
+﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -30,7 +30,7 @@ interface Booking {
 }
 
 interface Service { id: string; name: string; color: string; duration: number; price: number | null }
-interface StaffMember { id: string; full_name: string }
+interface StaffMember { id: string; full_name: string; staff_services?: { service_id: string }[] }
 type ViewMode = 'day' | 'week' | 'month'
 
 export default function CalendarPage() {
@@ -76,7 +76,7 @@ export default function CalendarPage() {
   const [qbNote, setQbNote] = useState('')
   const [qbSaving, setQbSaving] = useState(false)
 
-  // Zpetny zapis — 6 kliku na nadpis
+  // Zpetny zapis � 6 kliku na nadpis
   const [backfillMode, setBackfillMode] = useState(false)
   const [backfillCount, setBackfillCount] = useState(0)
   const clickCountRef = useRef(0)
@@ -122,7 +122,7 @@ export default function CalendarPage() {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
       setShowDetail(prev => prev ? { ...prev, status: newStatus } : null)
     } catch (e) {
-    toast.error(lang === 'en' ? 'Error updating status' : 'Chyba při aktualizaci stavu')
+    toast.error(lang === 'en' ? 'Error updating status' : 'Chyba p�i aktualizaci stavu')
     
     }
   }
@@ -164,7 +164,7 @@ export default function CalendarPage() {
     slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervacie v tomto termine' : 'Rezervace v tomto terminu',
     noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Ziadne rezervacie' : 'Zadne rezervace',
     working: lang === 'en' ? 'Working' : lang === 'sk' ? 'Pracuju' : 'Pracuji',
-    backfillBanner: lang === 'en' ? 'Backfill mode — you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis — moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis — moznost pridat rezervace do minulosti (max 90 dni)',
+    backfillBanner: lang === 'en' ? 'Backfill mode � you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis � moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis � moznost pridat rezervace do minulosti (max 90 dni)',
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
     backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dovod zpetneho zapisu *' : 'Duvod zpetneho zapisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
@@ -473,7 +473,7 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* Stats bar — ALL views */}
+      {/* Stats bar � ALL views */}
       <div className={`grid ${isTeam ? 'grid-cols-4' : 'grid-cols-3'} gap-3 mb-4`}>
         <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
           <div className="flex items-center justify-center gap-1.5 mb-1"><Calendar className="w-4 h-4 text-blue-600" /></div>
@@ -536,7 +536,7 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* DAY VIEW — SOLO */}
+      {/* DAY VIEW � SOLO */}
       {viewMode === 'day' && !isTeam && (
         <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm relative">
           {/* Red current time line */}
@@ -594,7 +594,7 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* DAY VIEW — TEAM (staff columns) */}
+      {/* DAY VIEW � TEAM (staff columns) */}
       {viewMode === 'day' && isTeam && (
         <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-x-auto shadow-sm relative">
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
@@ -826,7 +826,7 @@ export default function CalendarPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.service} *</label>
                 <select value={qbService} onChange={e => setQbService(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-service" name="qb-service">
                   <option value="">{l.select}</option>
-                  {services.map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min - {s.price} {currency})</option>)}
+                  {(qbStaff ? services.filter(s => { const staff = staffList.find(st => st.id === qbStaff); return !staff?.staff_services?.length || staff.staff_services.some(ss => ss.service_id === s.id) }) : services).map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min - {s.price} {currency})</option>)}
                 </select>
               </div>
               {isTeam && (
