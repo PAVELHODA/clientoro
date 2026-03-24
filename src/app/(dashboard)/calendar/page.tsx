@@ -841,12 +841,19 @@ export default function CalendarPage() {
                     <option value="">{l.anyone}</option>
                     {getAvailableStaff().map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
                   </select>
-                  {qbService && getAvailableStaff().length === 0 && (
+                                    {qbService && getAvailableStaff().length === 0 && (
                     <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
                       {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'Ziadny zamestnanec pre tuto sluzbu' : 'Zadny zamestnanec pro tuto sluzbu'}
                     </p>
                   )}
+                  {qbService && selectedSlot && getAvailableStaff().length > 0 && getAvailableStaff().every(s => getBookingsForSlot(selectedSlot.date, selectedSlot.time, s.id).length > 0) && (
+                    <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+                      <AlertTriangle className="w-3 h-3" />
+                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Vsetci zamestnanci su v tomto case obsadeni' : 'Vsichni zamestnanci jsou v tomto case obsazeni'}
+                    </p>
+                  )}
+
                 </div>
               )}
               <div>
