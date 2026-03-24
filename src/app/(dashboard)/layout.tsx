@@ -558,14 +558,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center">
               <Menu className="w-5 h-5 text-gray-600" />
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-1">
               <Waves className="w-5 h-5 text-blue-600" />
               <span className="font-bold text-gray-900">{orgName}</span>
             </div>
+            <NotificationBell />
           </header>
 
           <div className="hidden md:flex items-center justify-end gap-3 px-6 py-2 bg-white border-b border-gray-100">
-            <NotificationBell />
           </div>
           <main className="flex-1 overflow-auto">
             <div className="p-4 md:p-8 max-w-7xl">
