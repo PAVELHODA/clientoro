@@ -91,8 +91,8 @@ export default function SettingsPage() {
     confirmPlaceholder: lang === 'en' ? 'Type organization name here' : lang === 'sk' ? 'Sem napiste nazov organizacie' : 'Zde napiste nazev organizace',
     confirmYes: lang === 'en' ? 'Yes, permanently delete everything' : lang === 'sk' ? 'Ano, trvalo smazat vsetko' : 'Ano, trvale smazat vse',
     confirmNo: lang === 'en' ? 'No, cancel' : lang === 'sk' ? 'Nie, zrusit' : 'Ne, zrusit',
-    confirmNote: lang === 'en' ? 'Your account will be deleted within 24 hours. Superadmin will verify all obligations are settled.' : lang === 'sk' ? 'Vas ucet bude smazany do 24 hodin. Superadmin overi, ci su vsetky zavazky vyrovnane.' : 'Vas ucet bude smazan do 24 hodin. Superadmin overi, zda jsou vsechny zavazky vyrovnany.',
-    deleteSuccess: lang === 'en' ? 'Deletion requested. You will be informed by email within 24 hours.' : lang === 'sk' ? 'Ziadost o smazanie odoslana. O vysledku vas budeme informovat emailom do 24 hodin.' : 'Zadost o smazani odeslana. O vysledku vas budeme informovat emailem do 24 hodin.',
+    confirmNote: lang === 'en' ? 'Your account will be deleted within 24 hours.' : lang === 'sk' ? 'Vas ucet bude smazany do 24 hodin.' : 'Vas ucet bude smazan do 24 hodin.',
+    deleteSuccess: lang === 'en' ? 'Deletion requested.' : lang === 'sk' ? 'Ziadost o smazanie odoslana.' : 'Zadost o smazani odeslana.',
     deleteError: lang === 'en' ? 'Error requesting deletion.' : lang === 'sk' ? 'Chyba pri ziadosti o smazanie.' : 'Chyba pri zadosti o smazani.',
   }
 
@@ -193,10 +193,11 @@ export default function SettingsPage() {
     try {
       const r = await fetch('/api/bookings/webhook', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'test', booking_id: 'test', organization_id: s.id }),
+        body: JSON.stringify({ action: 'test', organization_id: s.id }),
       })
-      if (r.ok) toast.success(l.testSent)
-      else toast.error('Email test failed')
+      const data = await r.json()
+      if (data.success) toast.success(l.testSent + ' → ' + (data.sent_to || s.notification_email))
+      else toast.error('Email test failed: ' + (data.error || 'Unknown'))
     } catch { toast.error('Email test failed') }
     finally { setTestingSend(false) }
   }
@@ -417,7 +418,7 @@ export default function SettingsPage() {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className={`text-sm font-medium ${tier.rec ? 'text-amber-700' : 'text-gray-600'}`}>
-                              {tier.rec ? '* ' : ''}{tier.label}
+                              {tier.rec ? '⭐ ' : ''}{tier.label}
                             </span>
                             {(tier as any).save && <span className="ml-2 text-xs text-amber-600">({l.save_amount} {(tier as any).save} Kc{l.perMonth})</span>}
                           </div>
@@ -439,7 +440,7 @@ export default function SettingsPage() {
                     <div className="mt-2 space-y-1">
                       {c.features.map(f => (
                         <div key={f} className="flex items-start gap-2 text-sm">
-                          <span className="text-green-500 flex-shrink-0 mt-0.5">&#10003;</span>
+                          <span className="text-green-500 flex-shrink-0 mt-0.5">✓</span>
                           <span className="text-gray-600">{f}</span>
                         </div>
                       ))}
@@ -466,7 +467,7 @@ export default function SettingsPage() {
 
         {/* Nebezpecna zona */}
         <div className="bg-red-50 rounded-xl border border-red-200 p-6">
-          <h3 className="text-lg font-bold text-red-800 mb-2">{l.dangerZone}</h3>
+          <h3 className="text-lg font-bold text-red-800 mb-2">⚠️ {l.dangerZone}</h3>
           <p className="text-sm text-red-600 mb-4">{l.dangerDesc}</p>
 
           {!showDeleteFlow ? (
