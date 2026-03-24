@@ -34,9 +34,12 @@ const EMPTY_FORM: FormData = {
 }
 
 const COLORS = [
-  '#3b82f6', '#ef4444', '#10b981', '#f59e0b',
-  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+  '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7',
+  '#ec4899', '#f43f5e', '#ef4444', '#f97316',
+  '#f59e0b', '#eab308', '#84cc16', '#22c55e',
+  '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',
 ]
+
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([])
@@ -284,10 +287,10 @@ export default function ServicesPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">{l.calendarColor}</label>
-              <div className="flex gap-2">
+                            <div className="flex flex-wrap gap-2">
                 {COLORS.map(c => (
                   <button key={c} onClick={() => setForm({ ...form, color: c })}
-                    className={`w-9 h-9 rounded-xl border-2 transition-all ${form.color === c ? 'border-gray-900 scale-110 shadow-md' : 'border-transparent hover:scale-105'}`}
+                    className={`w-8 h-8 rounded-lg border-2 transition-all ${form.color === c ? 'border-gray-900 scale-110 shadow-lg ring-2 ring-offset-1 ring-gray-400' : 'border-transparent hover:scale-110 hover:shadow-md'}`}
                     style={{ backgroundColor: c }} />
                 ))}
               </div>

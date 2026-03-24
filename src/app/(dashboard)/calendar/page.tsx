@@ -70,7 +70,8 @@ export default function CalendarPage() {
     if (digits.length === 9) return `+420 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
     if (digits.length === 12 && digits.startsWith('420')) return `+420 ${digits.slice(3, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`
     if (digits.length === 13 && digits.startsWith('421')) return `+421 ${digits.slice(3, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`
-    return p
+    if (digits.length >= 6 && digits.length < 9) return `+420 ${digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim()}`
+    return p.startsWith('+') ? p : digits.length > 0 ? `+420 ${digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim()}` : p
   }
   const [qbNote, setQbNote] = useState('')
   const [qbSaving, setQbSaving] = useState(false)
