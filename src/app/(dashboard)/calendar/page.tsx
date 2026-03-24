@@ -41,7 +41,6 @@ export default function CalendarPage() {
   const currency = 'Kc'
   const isTeam = organization?.mode === 'team'
 
-  // Mode theme colors for buttons
   const modeColors: Record<string, { gradient: string; text: string }> = {
     solo: { gradient: 'linear-gradient(135deg, #059669, #10b981)', text: 'white' },
     team: { gradient: 'linear-gradient(135deg, #0c4a6e, #0369a1)', text: 'white' },
@@ -63,20 +62,24 @@ export default function CalendarPage() {
   const [qbService, setQbService] = useState('')
   const [qbStaff, setQbStaff] = useState('')
   const [qbName, setQbName] = useState('')
-  const [qbPhone, setQbPhone] = useState('')
+  const [qbPhone, setQbPhone] = useState('+420 ')
+  const [qbPhonePrefix, setQbPhonePrefix] = useState('+420')
+
   const formatPhone = (p: string | null | undefined): string => {
     if (!p) return ''
-    const digits = p.replace(/\D/g, '')
-    if (digits.length === 9) return `+420 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
-    if (digits.length === 12 && digits.startsWith('420')) return `+420 ${digits.slice(3, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`
-    if (digits.length === 13 && digits.startsWith('421')) return `+421 ${digits.slice(3, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`
-    if (digits.length >= 6 && digits.length < 9) return `+420 ${digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim()}`
-    return p.startsWith('+') ? p : digits.length > 0 ? `+420 ${digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim()}` : p
+    let raw = p.replace(/\D/g, '')
+    if (raw.length === 12 && raw.startsWith('420')) raw = raw.slice(3)
+    if (raw.length === 13 && raw.startsWith('421')) { return `+421 ${raw.slice(3, 6)} ${raw.slice(6, 9)} ${raw.slice(9)}` }
+    if (raw.length === 9) return `+420 ${raw.slice(0, 3)} ${raw.slice(3, 6)} ${raw.slice(6)}`
+    if (raw.length >= 4 && raw.length < 9) return `+420 ${raw.replace(/(\d{3})(?=\d)/g, '$1 ').trim()}`
+    if (p.startsWith('+')) return p
+    return p
   }
+
   const [qbNote, setQbNote] = useState('')
   const [qbSaving, setQbSaving] = useState(false)
 
-  // Zpetny zapis � 6 kliku na nadpis
+  // Zpetny zapis - 6 kliku na nadpis
   const [backfillMode, setBackfillMode] = useState(false)
   const [backfillCount, setBackfillCount] = useState(0)
   const clickCountRef = useRef(0)
@@ -122,8 +125,7 @@ export default function CalendarPage() {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
       setShowDetail(prev => prev ? { ...prev, status: newStatus } : null)
     } catch (e) {
-    toast.error(lang === 'en' ? 'Error updating status' : 'Chyba p�i aktualizaci stavu')
-    
+      toast.error(lang === 'en' ? 'Error updating status' : 'Chyba pri aktualizaci stavu')
     }
   }
 
@@ -150,7 +152,7 @@ export default function CalendarPage() {
     specialist: lang === 'en' ? 'Specialist' : 'Specialista',
     clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jmeno klienta *',
     phone: lang === 'en' ? 'Phone *' : 'Telefon *',
-    anyone: lang === 'en' ? 'Anyone' : lang === 'sk' ? 'Ktokolvek' : 'Kdokoliv',
+    anyone: lang === 'en' ? 'Anyone available' : lang === 'sk' ? 'Ktokolvek volny' : 'Kdokoliv volny',
     select: lang === 'en' ? 'Select...' : 'Vyberte...',
     createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvorit rezervaciu' : 'Vytvorit rezervaci',
     bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervacie' : 'Detail rezervace',
@@ -164,7 +166,7 @@ export default function CalendarPage() {
     slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervacie v tomto termine' : 'Rezervace v tomto terminu',
     noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Ziadne rezervacie' : 'Zadne rezervace',
     working: lang === 'en' ? 'Working' : lang === 'sk' ? 'Pracuju' : 'Pracuji',
-    backfillBanner: lang === 'en' ? 'Backfill mode � you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis � moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis � moznost pridat rezervace do minulosti (max 90 dni)',
+    backfillBanner: lang === 'en' ? 'Backfill mode - you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis - moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis - moznost pridat rezervace do minulosti (max 90 dni)',
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
     backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dovod zpetneho zapisu *' : 'Duvod zpetneho zapisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
@@ -263,7 +265,6 @@ export default function CalendarPage() {
     return currentDate.toLocaleDateString(locale, { month: 'long', year: 'numeric' })
   }
 
-  // 15min slots
   const timeSlots: string[] = []
   for (let h = workStart; h < workEnd; h++) {
     timeSlots.push(`${String(h).padStart(2, '0')}:00`)
@@ -344,7 +345,7 @@ export default function CalendarPage() {
       })
       if (res.ok) {
         if (isPast) setBackfillCount(prev => prev + 1)
-        setSelectedSlot(null); setQbService(''); setQbStaff(''); setQbName(''); setQbPhone(''); setQbNote(''); fetchData()
+        setSelectedSlot(null); setQbService(''); setQbStaff(''); setQbName(''); setQbPhone(qbPhonePrefix + ' '); setQbNote(''); fetchData()
       }
     } catch (err) { console.error(err) }
     finally { setQbSaving(false) }
@@ -414,7 +415,6 @@ export default function CalendarPage() {
     }
   }
 
-  // Current time position for red line
   const getCurrentTimePosition = () => {
     const now = new Date()
     const hours = now.getHours()
@@ -425,13 +425,18 @@ export default function CalendarPage() {
     return (totalMinutes / totalWorkMinutes) * 100
   }
 
+  // Helper: get staff who can do selected service
+  const getAvailableStaff = () => {
+    if (!qbService) return staffList.filter(s => !!s.staff_services?.length)
+    return staffList.filter(s => s.staff_services?.length && s.staff_services.some(ss => ss.service_id === qbService))
+  }
+
   if (loading) return (
     <div className="flex items-center justify-center py-20">
       <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
     </div>
   )
 
-  // Empty state
   if (services.length === 0) return (
     <div className="text-center py-20">
       <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
@@ -473,7 +478,7 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* Stats bar � ALL views */}
+      {/* Stats bar */}
       <div className={`grid ${isTeam ? 'grid-cols-4' : 'grid-cols-3'} gap-3 mb-4`}>
         <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
           <div className="flex items-center justify-center gap-1.5 mb-1"><Calendar className="w-4 h-4 text-blue-600" /></div>
@@ -536,10 +541,9 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* DAY VIEW � SOLO */}
+      {/* DAY VIEW - SOLO */}
       {viewMode === 'day' && !isTeam && (
         <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm relative">
-          {/* Red current time line */}
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
             <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}%` }}>
               <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
@@ -594,7 +598,7 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* DAY VIEW � TEAM (staff columns) */}
+      {/* DAY VIEW - TEAM (staff columns) */}
       {viewMode === 'day' && isTeam && (
         <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-x-auto shadow-sm relative">
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
@@ -682,9 +686,9 @@ export default function CalendarPage() {
 
       {/* WEEK VIEW */}
       {viewMode === 'week' && (
-        <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-x-auto shadow-sm">
+        <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-auto shadow-sm" style={{ maxHeight: '75vh' }}>
           <table className="w-full min-w-[700px]">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-white shadow-sm">
               <tr className="border-b-2 border-gray-400">
                 <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-400 bg-gray-50"></th>
                 {getWeekDays().map((day, i) => {
@@ -797,7 +801,8 @@ export default function CalendarPage() {
           </div>
         </div>
       )}
-{/* Quick booking modal */}
+
+      {/* Quick booking modal */}
       {selectedSlot && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
@@ -822,7 +827,7 @@ export default function CalendarPage() {
               </span>
             </div>
             <div className="space-y-3">
-                           <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.service} *</label>
                 <select value={qbService} onChange={e => { setQbService(e.target.value); setQbStaff('') }} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-service" name="qb-service">
                   <option value="">{l.select}</option>
@@ -834,17 +839,14 @@ export default function CalendarPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">{l.specialist}</label>
                   <select value={qbStaff} onChange={e => setQbStaff(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-staff" name="qb-staff">
                     <option value="">{l.anyone}</option>
-                    {(qbService ? staffList.filter(s => !s.staff_services?.length || s.staff_services.some(ss => ss.service_id === qbService)) : staffList).map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
+                    {getAvailableStaff().map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
                   </select>
-                </div>
-              )}
-              {isTeam && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{l.specialist}</label>
-                  <select value={qbStaff} onChange={e => setQbStaff(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-staff" name="qb-staff">
-                    <option value="">{l.anyone}</option>
-                    {staffList.map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
-                  </select>
+                  {qbService && getAvailableStaff().length === 0 && (
+                    <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                      <AlertTriangle className="w-3 h-3" />
+                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'Ziadny zamestnanec pre tuto sluzbu' : 'Zadny zamestnanec pro tuto sluzbu'}
+                    </p>
+                  )}
                 </div>
               )}
               <div>
@@ -853,7 +855,23 @@ export default function CalendarPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.phone}</label>
-                <input type="tel" id="qb-phone" name="qb-phone" value={qbPhone} onChange={e => setQbPhone(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="+420 777 123 456" />
+                <div className="flex gap-2">
+                  <select value={qbPhonePrefix} onChange={e => {
+                    setQbPhonePrefix(e.target.value)
+                    const digits = qbPhone.replace(/\D/g, '').replace(/^420|^421/, '')
+                    setQbPhone(e.target.value + ' ' + digits)
+                  }} className="w-[110px] px-2 py-2.5 border border-gray-200 rounded-xl text-sm font-medium bg-gray-50">
+                    <option value="+420">&#127464;&#127487; +420</option>
+                    <option value="+421">&#127480;&#127472; +421</option>
+                  </select>
+                  <input type="tel" id="qb-phone" name="qb-phone"
+                    value={qbPhone.replace(/^\+42[01]\s?/, '')}
+                    onChange={e => {
+                      const digits = e.target.value.replace(/[^\d\s]/g, '')
+                      setQbPhone(qbPhonePrefix + ' ' + digits)
+                    }}
+                    className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="777 123 456" />
+                </div>
               </div>
               {(() => {
                 const isDayPast = selectedSlot.date < todayStr
@@ -869,7 +887,7 @@ export default function CalendarPage() {
                 ) : null
               })()}
             </div>
-            <button onClick={handleQuickBook} disabled={qbSaving || !qbService || !qbName || !qbPhone || ((() => {
+            <button onClick={handleQuickBook} disabled={qbSaving || !qbService || !qbName || !qbPhone.replace(/^\+42[01]\s?/, '').trim() || ((() => {
               const isDayPast = selectedSlot.date < todayStr
               const slotTime = new Date(`${selectedSlot.date}T${selectedSlot.time}:00`)
               const isPast = (selectedSlot.date === todayStr && slotTime < new Date()) || isDayPast
@@ -997,7 +1015,3 @@ export default function CalendarPage() {
     </div>
   )
 }
-
-
-
-
