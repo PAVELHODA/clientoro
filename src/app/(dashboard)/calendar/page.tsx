@@ -64,6 +64,14 @@ export default function CalendarPage() {
   const [qbStaff, setQbStaff] = useState('')
   const [qbName, setQbName] = useState('')
   const [qbPhone, setQbPhone] = useState('')
+  const formatPhone = (p: string | null | undefined): string => {
+    if (!p) return ''
+    const digits = p.replace(/\D/g, '')
+    if (digits.length === 9) return `+420 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
+    if (digits.length === 12 && digits.startsWith('420')) return `+420 ${digits.slice(3, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`
+    if (digits.length === 13 && digits.startsWith('421')) return `+421 ${digits.slice(3, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`
+    return p
+  }
   const [qbNote, setQbNote] = useState('')
   const [qbSaving, setQbSaving] = useState(false)
 
@@ -328,7 +336,7 @@ export default function CalendarPage() {
         body: JSON.stringify({
           service_id: qbService, staff_id: qbStaff || null,
           start_at: startDate.toISOString(), end_at: endDate.toISOString(),
-          customer_name: qbName, customer_phone: qbPhone,
+          customer_name: qbName, customer_phone: formatPhone(qbPhone),
           price: svc?.price || null,
           status: isPast ? 'completed' : 'confirmed',
         }),
@@ -934,7 +942,7 @@ export default function CalendarPage() {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">{showDetail.clients?.full_name || showDetail.customer_name || l.unknown}</p>
-                  <p className="text-sm text-gray-500">{showDetail.clients?.phone || showDetail.customer_phone || ''}</p>
+                  <p className="text-sm text-gray-500">{formatPhone(showDetail.clients?.phone || showDetail.customer_phone)}</p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
