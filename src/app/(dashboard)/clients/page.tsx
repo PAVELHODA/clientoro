@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
-import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight } from 'lucide-react'
+import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight, Calendar, Clock } from 'lucide-react'
 
 interface Client {
   id: string
@@ -18,6 +18,16 @@ interface Client {
   total_spent: number
   last_visit_at: string | null
   created_at: string
+}
+
+interface Booking {
+  id: string
+  start_at: string
+  end_at: string
+  status: string
+  price: number
+  services: { name: string; color: string; duration: number } | null
+  staff: { full_name: string } | null
 }
 
 interface FormData {
@@ -35,6 +45,8 @@ export default function ClientsPage() {
   const [saving, setSaving] = useState(false)
   const [search, setSearch] = useState('')
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
+  const [clientHistory, setClientHistory] = useState<Booking[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
   const [sortBy, setSortBy] = useState<string>('name_asc')
   const [filterSource, setFilterSource] = useState<string>('all')
   const { t, lang, modeGradient } = useLang()
@@ -94,6 +106,15 @@ export default function ClientsPage() {
     deleted: lang === 'en' ? 'Client deleted' : lang === 'sk' ? 'Klient zmazaný' : 'Klient smazán',
     namePlaceholder: lang === 'en' ? 'e.g. Jane Smith' : lang === 'sk' ? 'Napr. Jana Nováková' : 'Např. Jana Nováková',
     close: lang === 'en' ? 'Close' : lang === 'sk' ? 'Zavrieť' : 'Zavřít',
+    history: lang === 'en' ? 'Visit history' : lang === 'sk' ? 'História návštev' : 'Historie návštěv',
+    noHistory: lang === 'en' ? 'No visits yet' : lang === 'sk' ? 'Zatiaľ žiadne návštevy' : 'Zatím žádné návštěvy',
+    loadingHistory: lang === 'en' ? 'Loading history...' : lang === 'sk' ? 'Načítavam históriu...' : 'Načítám historii...',
+    confirmed: lang === 'en' ? 'Confirmed' : lang === 'sk' ? 'Potvrdená' : 'Potvrzená',
+    completed: lang === 'en' ? 'Completed' : lang === 'sk' ? 'Dokončená' : 'Dokončená',
+    noShow: 'No-show',
+    cancelled: lang === 'en' ? 'Cancelled' : lang === 'sk' ? 'Zrušená' : 'Zrušená',
+    upcoming: lang === 'en' ? 'Upcoming' : lang === 'sk' ? 'Nadchádzajúce' : 'Nadcházející',
+    past: lang === 'en' ? 'Past' : lang === 'sk' ? 'Minulé' : 'Minulé',
   }
 
   const fetchClients = async () => {
@@ -106,16 +127,32 @@ export default function ClientsPage() {
     finally { setLoading(false) }
   }
 
+  const fetchHistory = async (clientId: string) => {
+    setHistoryLoading(true)
+    try {
+      const res = await fetch(`/api/clients/${clientId}/history`)
+      const data = await res.json()
+      if (Array.isArray(data)) setClientHistory(data)
+      else setClientHistory([])
+    } catch { setClientHistory([]) }
+    finally { setHistoryLoading(false) }
+  }
+
   useEffect(() => { fetchClients() }, [search])
 
-  const handleNew = () => { setForm(EMPTY_FORM); setEditingId(null); setSelectedClient(null); setShowForm(true) }
+  const handleSelectClient = (client: Client) => {
+    setSelectedClient(client)
+    fetchHistory(client.id)
+  }
+
+  const handleNew = () => { setForm(EMPTY_FORM); setEditingId(null); setSelectedClient(null); setClientHistory([]); setShowForm(true) }
 
   const handleEdit = (client: Client) => {
     setForm({
       full_name: client.full_name || '', phone: client.phone || '', email: client.email || '',
       note: client.note || '', source: client.source || 'manual', tags: client.tags?.join(', ') || '',
     })
-    setEditingId(client.id); setSelectedClient(null); setShowForm(true)
+    setEditingId(client.id); setSelectedClient(null); setClientHistory([]); setShowForm(true)
   }
 
   const handleSave = async () => {
@@ -130,7 +167,6 @@ export default function ClientsPage() {
       const url = editingId ? `/api/clients/${editingId}` : '/api/clients'
       const method = editingId ? 'PUT' : 'POST'
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-
       if (res.ok) {
         toast.success(editingId ? l.saved : l.created)
         setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchClients()
@@ -148,7 +184,7 @@ export default function ClientsPage() {
       const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' })
       if (res.ok) {
         toast.success(l.deleted)
-        setSelectedClient(null); fetchClients()
+        setSelectedClient(null); setClientHistory([]); fetchClients()
       }
     } catch (err) { console.error(err) }
   }
@@ -163,11 +199,24 @@ export default function ClientsPage() {
     return new Date(d).toLocaleDateString(locale, { day: 'numeric', month: 'short' })
   }
 
+  const formatDateTime = (d: string) => {
+    return new Date(d).toLocaleDateString(locale, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  }
+
+  const getStatusBadge = (status: string) => {
+    const map: Record<string, { label: string; bg: string; text: string }> = {
+      confirmed: { label: l.confirmed, bg: 'bg-blue-50', text: 'text-blue-700' },
+      completed: { label: l.completed, bg: 'bg-green-50', text: 'text-green-700' },
+      no_show: { label: l.noShow, bg: 'bg-red-50', text: 'text-red-700' },
+      cancelled: { label: l.cancelled, bg: 'bg-gray-100', text: 'text-gray-500' },
+    }
+    const s = map[status] || { label: status, bg: 'bg-gray-100', text: 'text-gray-500' }
+    return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${s.bg} ${s.text}`}>{s.label}</span>
+  }
+
   const getSortedClients = () => {
     let filtered = [...clients]
-    if (filterSource !== 'all') {
-      filtered = filtered.filter(c => c.source === filterSource)
-    }
+    if (filterSource !== 'all') filtered = filtered.filter(c => c.source === filterSource)
     switch (sortBy) {
       case 'name_asc': return filtered.sort((a, b) => (a.full_name || '').localeCompare(b.full_name || '', locale))
       case 'name_desc': return filtered.sort((a, b) => (b.full_name || '').localeCompare(a.full_name || '', locale))
@@ -183,6 +232,9 @@ export default function ClientsPage() {
   }
 
   const sortedClients = getSortedClients()
+  const now = new Date()
+  const upcomingBookings = clientHistory.filter(b => new Date(b.start_at) >= now && b.status !== 'cancelled')
+  const pastBookings = clientHistory.filter(b => new Date(b.start_at) < now || b.status === 'cancelled')
 
   return (
     <div>
@@ -227,7 +279,7 @@ export default function ClientsPage() {
         </select>
       </div>
 
-      {/* Formulář — nový klient / editace */}
+      {/* Formulář */}
       {showForm && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 shadow-sm">
           <div className="flex items-center justify-between mb-5">
@@ -284,7 +336,7 @@ export default function ClientsPage() {
         </div>
       )}
 
-      {/* Detail klienta */}
+      {/* Detail klienta + Historie */}
       {selectedClient && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
@@ -297,11 +349,13 @@ export default function ClientsPage() {
                 <p className="text-sm text-gray-500">{l.clientSince} {new Date(selectedClient.created_at).toLocaleDateString(locale)}</p>
               </div>
             </div>
-            <button onClick={() => setSelectedClient(null)}
+            <button onClick={() => { setSelectedClient(null); setClientHistory([]) }}
               className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200">
               <X className="w-4 h-4 text-gray-500" />
             </button>
           </div>
+
+          {/* KPI */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div className="bg-gray-50 rounded-xl p-3">
               <p className="text-xs text-gray-500 mb-1">{l.visits}</p>
@@ -320,6 +374,8 @@ export default function ClientsPage() {
               <p className="text-sm font-bold text-gray-900">{SOURCES.find(s => s.value === selectedClient.source)?.icon || '📌'} {SOURCES.find(s => s.value === selectedClient.source)?.label || selectedClient.source}</p>
             </div>
           </div>
+
+          {/* Tags */}
           {selectedClient.tags?.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-4">
               {selectedClient.tags.map((tag, i) => (
@@ -327,11 +383,84 @@ export default function ClientsPage() {
               ))}
             </div>
           )}
+
+          {/* Contact */}
           <div className="flex flex-wrap gap-3 text-sm text-gray-500">
             {selectedClient.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {selectedClient.phone}</span>}
             {selectedClient.email && <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {selectedClient.email}</span>}
           </div>
           {selectedClient.note && <p className="mt-3 text-sm text-gray-500 bg-gray-50 rounded-lg p-3">📝 {selectedClient.note}</p>}
+
+          {/* Historie návštěv */}
+          <div className="mt-5 pt-5 border-t border-gray-100">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-blue-500" /> {l.history}
+              <span className="text-xs text-gray-400 font-normal">({clientHistory.length})</span>
+            </h3>
+
+            {historyLoading ? (
+              <p className="text-sm text-gray-400 py-4 text-center">{l.loadingHistory}</p>
+            ) : clientHistory.length === 0 ? (
+              <p className="text-sm text-gray-400 py-4 text-center">{l.noHistory}</p>
+            ) : (
+              <div className="space-y-4">
+                {/* Upcoming */}
+                {upcomingBookings.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-blue-600 mb-2 uppercase tracking-wide">{l.upcoming}</p>
+                    <div className="space-y-1.5">
+                      {upcomingBookings.map(b => (
+                        <div key={b.id} className="flex items-center gap-3 p-2.5 bg-blue-50/50 rounded-lg border border-blue-100">
+                          <div className="w-1 h-8 rounded-full" style={{ backgroundColor: b.services?.color || '#3b82f6' }} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900">{b.services?.name || '?'}</p>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDateTime(b.start_at)}</span>
+                              {b.staff?.full_name && <span>• {b.staff.full_name}</span>}
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-sm font-bold text-gray-900">{b.price > 0 ? `${b.price} ${currency}` : '-'}</p>
+                            {getStatusBadge(b.status)}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Past */}
+                {pastBookings.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">{l.past}</p>
+                    <div className="space-y-1.5">
+                      {pastBookings.slice(0, 10).map(b => (
+                        <div key={b.id} className="flex items-center gap-3 p-2.5 bg-gray-50/50 rounded-lg">
+                          <div className="w-1 h-8 rounded-full" style={{ backgroundColor: b.services?.color || '#9ca3af' }} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-700">{b.services?.name || '?'}</p>
+                            <div className="flex items-center gap-2 text-xs text-gray-400">
+                              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDateTime(b.start_at)}</span>
+                              {b.staff?.full_name && <span>• {b.staff.full_name}</span>}
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-sm font-bold text-gray-700">{b.price > 0 ? `${b.price} ${currency}` : '-'}</p>
+                            {getStatusBadge(b.status)}
+                          </div>
+                        </div>
+                      ))}
+                      {pastBookings.length > 10 && (
+                        <p className="text-xs text-gray-400 text-center py-2">+{pastBookings.length - 10} {lang === 'en' ? 'more' : 'dalších'}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Actions */}
           <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
             <button onClick={() => handleEdit(selectedClient)}
               className="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-sm font-medium hover:bg-blue-100">
@@ -367,7 +496,7 @@ export default function ClientsPage() {
           {sortedClients.map(client => (
             <div key={client.id}
               className="bg-white rounded-xl border border-gray-200 hover:border-blue-200 hover:shadow-sm transition-all">
-              <div onClick={() => setSelectedClient(client)}
+              <div onClick={() => handleSelectClient(client)}
                 className="p-4 cursor-pointer flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0 shadow-sm">
                   {getInitials(client.full_name)}
