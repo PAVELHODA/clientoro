@@ -2,8 +2,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
+import { getServiceCategories } from '@/lib/serviceCategories'
 import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check, Search } from 'lucide-react'
 
 interface Service {
@@ -51,16 +53,13 @@ export default function ServicesPage() {
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState<string>('name_asc')
   const [filterCategory, setFilterCategory] = useState<string>('all')
+  const { organization } = useAuth()
   const { t, lang, modeGradient } = useLang()
   const toast = useToast()
 
   const currency = t('currency')
+  const CATEGORIES = getServiceCategories(organization?.category, lang)
 
-  const CATEGORIES = lang === 'en'
-    ? ['Haircut', 'Coloring', 'Styling', 'Massage', 'Cosmetics', 'Nails', 'Physiotherapy', 'Other']
-    : lang === 'sk'
-    ? ['Strihanie', 'Farbenie', 'Styling', 'Masaze', 'Kozmetika', 'Nechty', 'Fyzioterapia', 'Ostatne']
-    : ['Strihani', 'Barveni', 'Styling', 'Masaze', 'Kosmetika', 'Nehty', 'Fyzioterapie', 'Ostatni']
 
   const l = {
     title: t('svc_title'),
