@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
     const service_ids = validData.service_ids || []
 
     // Kontrola limitu zaměstnanců dle módu
+    // Majitel se nepočítá — solo = 0 staff, team = 4 staff + majitel, pro = 24 staff + majitel
     const { data: org } = await supabaseAdmin
       .from('organizations')
       .select('mode')
@@ -59,16 +60,19 @@ export async function POST(request: NextRequest) {
         .eq('active', true)
 
       const limits: Record<string, number> = {
-        solo: 1,
-        solo_inspire: 1,
-        team: 5,
-        pro_inspire: 25,
+        solo: 0,          // jen majitel, žádní zaměstnanci
+        solo_inspire: 0,  // jen majitel, žádní zaměstnanci
+        team: 4,          // majitel + 4 zaměstnanci = 5 lidí
+        pro_inspire: 24,  // majitel + 24 zaměstnanců = 25 lidí
       }
 
-      const maxStaff = limits[org.mode] || 5
+      const maxStaff = limits[org.mode] ?? 4
       if ((count || 0) >= maxStaff) {
+        const planName = org.mode === 'solo' || org.mode === 'solo_inspire' ? 'Solo' : org.mode === 'team' ? 'Firma' : 'Pro Inspire'
         return NextResponse.json({
-          error: `Dosáhli jste limitu zaměstnanců pro váš plán (${maxStaff}). Upgradujte pro více.`,
+          error: maxStaff === 0
+            ? `Plán ${planName} je pro jednu osobu — nepodporuje zaměstnance. Upgradujte na Firma nebo Pro Inspire.`
+            : `Dosáhli jste limitu ${maxStaff} zaměstnanců pro plán ${planName}. Upgradujte pro více.`,
         }, { status: 403 })
       }
     }
