@@ -822,13 +822,22 @@ export default function CalendarPage() {
               </span>
             </div>
             <div className="space-y-3">
-              <div>
+                           <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{l.service} *</label>
-                <select value={qbService} onChange={e => setQbService(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-service" name="qb-service">
+                <select value={qbService} onChange={e => { setQbService(e.target.value); setQbStaff('') }} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-service" name="qb-service">
                   <option value="">{l.select}</option>
-                  {(qbStaff ? services.filter(s => { const staff = staffList.find(st => st.id === qbStaff); return !staff?.staff_services?.length || staff.staff_services.some(ss => ss.service_id === s.id) }) : services).map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min - {s.price} {currency})</option>)}
+                  {services.map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min - {s.price} {currency})</option>)}
                 </select>
               </div>
+              {isTeam && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{l.specialist}</label>
+                  <select value={qbStaff} onChange={e => setQbStaff(e.target.value)} className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" id="qb-staff" name="qb-staff">
+                    <option value="">{l.anyone}</option>
+                    {(qbService ? staffList.filter(s => !s.staff_services?.length || s.staff_services.some(ss => ss.service_id === qbService)) : staffList).map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
+                  </select>
+                </div>
+              )}
               {isTeam && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{l.specialist}</label>
