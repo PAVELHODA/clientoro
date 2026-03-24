@@ -1,4 +1,5 @@
-﻿import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+﻿// PATH: src/app/api/bookings/webhook/route.ts
+import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { sendBookingNotification } from '@/lib/email/sendNotification'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -7,8 +8,35 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { action, booking_id, organization_id } = body
 
-    if (!action || !booking_id || !organization_id) {
+    if (!action || !organization_id) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
+    }
+
+    // TEST EMAIL — nepotřebuje booking
+    if (action === 'test') {
+      const { data: org } = await supabaseAdmin
+        .from('organizations')
+        .select('name, notification_email, notify_on_booking, notify_on_cancel')
+        .eq('id', organization_id)
+        .single()
+
+      if (!org?.notification_email) {
+        return NextResponse.json({ error: 'Notification email not set' }, { status: 400 })
+      }
+
+      const now = new Date().toLocaleString('cs-CZ')
+      await sendBookingNotification(
+        org.notification_email,
+        'Testovaci email z Clientoro',
+        'Toto je testovaci email. Notifikace funguji spravne! Odeslano: ' + now + '\n\nOrganizace: ' + org.name
+      )
+
+      return NextResponse.json({ success: true, sent_to: org.notification_email })
+    }
+
+    // Pro ostatní akce potřebujeme booking_id
+    if (!booking_id) {
+      return NextResponse.json({ error: 'Missing booking_id' }, { status: 400 })
     }
 
     const { data: booking } = await supabaseAdmin
