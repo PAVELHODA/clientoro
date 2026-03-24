@@ -3,7 +3,8 @@
 
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
-import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check } from 'lucide-react'
+import { useToast } from '@/components/Toast'
+import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check, Search } from 'lucide-react'
 
 interface Service {
   id: string
@@ -44,7 +45,11 @@ export default function ServicesPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
+  const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState<string>('name_asc')
+  const [filterCategory, setFilterCategory] = useState<string>('all')
   const { t, lang, modeGradient } = useLang()
+  const toast = useToast()
 
   const currency = t('currency')
 
@@ -56,7 +61,7 @@ export default function ServicesPage() {
 
   const l = {
     title: t('svc_title'),
-    subtitle: lang === 'en' ? `Manage services and pricing (${services.length} services)` : lang === 'sk' ? `Správa služieb a cenníka (${services.length} služieb)` : `Správa služeb a ceníku (${services.length} služeb)`,
+    subtitle: lang === 'en' ? 'Manage services and pricing' : lang === 'sk' ? 'Správa služieb a cenníka' : 'Správa služeb a ceníku',
     newService: t('svc_new'),
     noServices: t('svc_no_services'),
     addFirst: lang === 'en' ? 'Add your first service' : lang === 'sk' ? 'Pridajte svoju prvú službu' : 'Přidejte svou první službu',
@@ -96,6 +101,13 @@ export default function ServicesPage() {
     after: lang === 'en' ? 'after' : 'po',
     inactive: lang === 'en' ? 'Inactive' : lang === 'sk' ? 'Neaktívna' : 'Neaktivní',
     eg: lang === 'en' ? 'e.g. Massage' : lang === 'sk' ? 'Napr. Masáž' : 'Např. Masáž',
+    search: lang === 'en' ? 'Search services...' : lang === 'sk' ? 'Hľadať služby...' : 'Hledat služby...',
+    allCategories: lang === 'en' ? 'All categories' : lang === 'sk' ? 'Všetky kategórie' : 'Všechny kategorie',
+    noResults: lang === 'en' ? 'No services found' : lang === 'sk' ? 'Žiadne služby nenájdené' : 'Žádné služby nenalezeny',
+    tryOther: lang === 'en' ? 'Try different search' : lang === 'sk' ? 'Skúste iný výraz' : 'Zkuste jiný výraz',
+    created: lang === 'en' ? 'Service created!' : lang === 'sk' ? 'Služba vytvorená!' : 'Služba vytvořena!',
+    saved: lang === 'en' ? 'Service saved!' : lang === 'sk' ? 'Služba uložená!' : 'Služba uložena!',
+    deleted: lang === 'en' ? 'Service deleted' : lang === 'sk' ? 'Služba zmazaná' : 'Služba smazána',
   }
 
   const fetchServices = async () => {
@@ -123,7 +135,7 @@ export default function ServicesPage() {
   }
 
   const handleSave = async () => {
-    if (!form.name.trim()) { alert(l.nameRequired); return }
+    if (!form.name.trim()) { toast.warning(l.nameRequired); return }
     setSaving(true)
     const payload = {
       name: form.name.trim(), description: form.description.trim() || null,
@@ -133,21 +145,58 @@ export default function ServicesPage() {
       buffer_after_minutes: form.buffer_after_minutes, active: form.active,
     }
     try {
-      if (editingId) {
-        await fetch(`/api/services/${editingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      const url = editingId ? `/api/services/${editingId}` : '/api/services'
+      const method = editingId ? 'PUT' : 'POST'
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      if (res.ok) {
+        toast.success(editingId ? l.saved : l.created)
+        setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchServices()
       } else {
-        await fetch('/api/services', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        const err = await res.json()
+        toast.error(err.error || l.errorSaving)
       }
-      setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); fetchServices()
-    } catch (err) { console.error(err); alert(l.errorSaving) }
+    } catch (err) { console.error(err); toast.error(l.errorSaving) }
     finally { setSaving(false) }
   }
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(l.confirmDelete(name))) return
-    try { await fetch(`/api/services/${id}`, { method: 'DELETE' }); fetchServices() }
-    catch (err) { console.error(err) }
+    try {
+      const res = await fetch(`/api/services/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        toast.success(l.deleted)
+        fetchServices()
+      }
+    } catch (err) { console.error(err) }
   }
+
+  const getFilteredServices = () => {
+    let filtered = [...services]
+    if (search) {
+      const s = search.toLowerCase()
+      filtered = filtered.filter(svc =>
+        svc.name.toLowerCase().includes(s) ||
+        svc.description?.toLowerCase().includes(s) ||
+        svc.category?.toLowerCase().includes(s)
+      )
+    }
+    if (filterCategory !== 'all') {
+      filtered = filtered.filter(svc => svc.category === filterCategory)
+    }
+    switch (sortBy) {
+      case 'name_asc': return filtered.sort((a, b) => a.name.localeCompare(b.name))
+      case 'name_desc': return filtered.sort((a, b) => b.name.localeCompare(a.name))
+      case 'price_asc': return filtered.sort((a, b) => (a.price || 0) - (b.price || 0))
+      case 'price_desc': return filtered.sort((a, b) => (b.price || 0) - (a.price || 0))
+      case 'duration_asc': return filtered.sort((a, b) => a.duration - b.duration)
+      case 'duration_desc': return filtered.sort((a, b) => b.duration - a.duration)
+      case 'newest': return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      default: return filtered
+    }
+  }
+
+  const filteredServices = getFilteredServices()
+  const usedCategories = [...new Set(services.map(s => s.category).filter(Boolean))] as string[]
 
   return (
     <div>
@@ -156,13 +205,42 @@ export default function ServicesPage() {
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Scissors className="w-7 h-7 text-blue-600" /> {l.title}
           </h1>
-          <p className="mt-1 text-gray-500">{l.subtitle}</p>
+          <p className="mt-1 text-gray-500">{l.subtitle} ({filteredServices.length}/{services.length})</p>
         </div>
         <button onClick={handleNew}
           style={{ background: modeGradient }} className="inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm transition-colors">
           <Plus className="w-4 h-4" /> {l.newService}
         </button>
       </div>
+
+      {/* Search + Sort + Filter */}
+      {services.length > 0 && (
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white"
+              placeholder={l.search} />
+          </div>
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+            className="px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500">
+            <option value="name_asc">{lang === 'en' ? '↑ Name A-Z' : '↑ Název A-Z'}</option>
+            <option value="name_desc">{lang === 'en' ? '↓ Name Z-A' : '↓ Název Z-A'}</option>
+            <option value="price_asc">{lang === 'en' ? '↑ Cheapest' : '↑ Nejlevnější'}</option>
+            <option value="price_desc">{lang === 'en' ? '↓ Most expensive' : '↓ Nejdražší'}</option>
+            <option value="duration_asc">{lang === 'en' ? '↑ Shortest' : '↑ Nejkratší'}</option>
+            <option value="duration_desc">{lang === 'en' ? '↓ Longest' : '↓ Nejdelší'}</option>
+            <option value="newest">{lang === 'en' ? '↓ Newest' : '↓ Nejnovější'}</option>
+          </select>
+          {usedCategories.length > 0 && (
+            <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
+              className="px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500">
+              <option value="all">{l.allCategories}</option>
+              {usedCategories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          )}
+        </div>
+      )}
 
       {showForm && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 shadow-sm">
@@ -177,7 +255,7 @@ export default function ServicesPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{l.name} *</label>
               <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.eg} />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder={l.eg} autoFocus />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{l.duration}</label>
@@ -257,21 +335,23 @@ export default function ServicesPage() {
 
       {loading ? (
         <div className="text-center py-12 text-gray-400">{l.loading}</div>
-      ) : services.length === 0 ? (
+      ) : filteredServices.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Scissors className="w-8 h-8 text-blue-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">{l.noServices}</h3>
-          <p className="mt-1 text-gray-500">{l.addFirst}</p>
-          <button onClick={handleNew}
-            style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm">
-            <Plus className="w-4 h-4" /> {l.newService}
-          </button>
+          <h3 className="text-lg font-semibold text-gray-900">{search || filterCategory !== 'all' ? l.noResults : l.noServices}</h3>
+          <p className="mt-1 text-gray-500">{search || filterCategory !== 'all' ? l.tryOther : l.addFirst}</p>
+          {!search && filterCategory === 'all' && (
+            <button onClick={handleNew}
+              style={{ background: modeGradient }} className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 text-white rounded-xl hover:brightness-110 font-medium text-sm shadow-sm">
+              <Plus className="w-4 h-4" /> {l.newService}
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map(service => (
+          {filteredServices.map(service => (
             <div key={service.id}
               className={`bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-all ${!service.active ? 'opacity-60' : ''}`}>
               <div className="h-2" style={{ backgroundColor: service.color || '#3b82f6' }} />
@@ -321,4 +401,3 @@ export default function ServicesPage() {
     </div>
   )
 }
-
