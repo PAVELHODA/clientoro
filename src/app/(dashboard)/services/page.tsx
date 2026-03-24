@@ -59,15 +59,15 @@ export default function ServicesPage() {
   const CATEGORIES = lang === 'en'
     ? ['Haircut', 'Coloring', 'Styling', 'Massage', 'Cosmetics', 'Nails', 'Physiotherapy', 'Other']
     : lang === 'sk'
-    ? ['Strihanie', 'Farbenie', 'Styling', 'Masáže', 'Kozmetika', 'Nechty', 'Fyzioterapia', 'Ostatné']
-    : ['Střihání', 'Barvení', 'Styling', 'Masáže', 'Kosmetika', 'Nehty', 'Fyzioterapie', 'Ostatní']
+    ? ['Strihanie', 'Farbenie', 'Styling', 'Masaze', 'Kozmetika', 'Nechty', 'Fyzioterapia', 'Ostatne']
+    : ['Strihani', 'Barveni', 'Styling', 'Masaze', 'Kosmetika', 'Nehty', 'Fyzioterapie', 'Ostatni']
 
   const l = {
     title: t('svc_title'),
-    subtitle: lang === 'en' ? 'Manage services and pricing' : lang === 'sk' ? 'Správa služieb a cenníka' : 'Správa služeb a ceníku',
+    subtitle: lang === 'en' ? 'Manage services and pricing' : lang === 'sk' ? 'Sprava sluzieb a cennika' : 'Sprava sluzeb a ceniku',
     newService: t('svc_new'),
     noServices: t('svc_no_services'),
-    addFirst: lang === 'en' ? 'Add your first service' : lang === 'sk' ? 'Pridajte svoju prvú službu' : 'Přidejte svou první službu',
+    addFirst: lang === 'en' ? 'Add your first service' : lang === 'sk' ? 'Pridajte svoju prvu sluzbu' : 'Pridejte svou prvni sluzbu',
     name: t('svc_name'),
     duration: t('svc_duration'),
     price: t('svc_price'),
@@ -75,42 +75,43 @@ export default function ServicesPage() {
     active: t('svc_active'),
     save: t('svc_save'),
     cancel: t('cli_cancel'),
-    saving: lang === 'en' ? 'Saving...' : lang === 'sk' ? 'Ukladám...' : 'Ukládám...',
-    editService: lang === 'en' ? '✏️ Edit service' : lang === 'sk' ? '✏️ Upraviť službu' : '✏️ Upravit službu',
-    newServiceForm: lang === 'en' ? '➕ New service' : lang === 'sk' ? '➕ Nová služba' : '➕ Nová služba',
-    saveChanges: lang === 'en' ? 'Save changes' : lang === 'sk' ? 'Uložiť zmeny' : 'Uložit změny',
-    createService: lang === 'en' ? 'Create service' : lang === 'sk' ? 'Vytvoriť službu' : 'Vytvořit službu',
+    saving: lang === 'en' ? 'Saving...' : lang === 'sk' ? 'Ukladam...' : 'Ukladam...',
+    editService: lang === 'en' ? 'Edit service' : lang === 'sk' ? 'Upravit sluzbu' : 'Upravit sluzbu',
+    newServiceForm: lang === 'en' ? 'New service' : lang === 'sk' ? 'Nova sluzba' : 'Nova sluzba',
+    saveChanges: lang === 'en' ? 'Save changes' : lang === 'sk' ? 'Ulozit zmeny' : 'Ulozit zmeny',
+    createService: lang === 'en' ? 'Create service' : lang === 'sk' ? 'Vytvorit sluzbu' : 'Vytvorit sluzbu',
     description: lang === 'en' ? 'Description' : 'Popis',
-    category: lang === 'en' ? 'Category' : lang === 'sk' ? 'Kategória' : 'Kategorie',
-    visibility: lang === 'en' ? 'Visibility' : lang === 'sk' ? 'Viditeľnosť' : 'Viditelnost',
-    publicVis: lang === 'en' ? '🌐 Public (visible on booking page)' : lang === 'sk' ? '🌐 Verejná (viditeľná na booking stránke)' : '🌐 Veřejná (viditelná na booking stránce)',
-    privateVis: lang === 'en' ? '🔒 Private (internal only)' : lang === 'sk' ? '🔒 Súkromná (len interná)' : '🔒 Soukromá (jen interní)',
-    bufferBefore: lang === 'en' ? 'Buffer before (min)' : lang === 'sk' ? 'Buffer pred (min)' : 'Buffer před (min)',
+    category: lang === 'en' ? 'Category' : lang === 'sk' ? 'Kategoria' : 'Kategorie',
+    visibility: lang === 'en' ? 'Visibility' : lang === 'sk' ? 'Viditelnost' : 'Viditelnost',
+    publicVis: lang === 'en' ? 'Public (visible on booking page)' : lang === 'sk' ? 'Verejna (viditelna na booking stranke)' : 'Verejna (viditelna na booking strance)',
+    privateVis: lang === 'en' ? 'Private (internal only)' : lang === 'sk' ? 'Sukromna (len interna)' : 'Soukroma (jen interni)',
+    bufferBefore: lang === 'en' ? 'Buffer before (min)' : lang === 'sk' ? 'Buffer pred (min)' : 'Buffer pred (min)',
     bufferAfter: lang === 'en' ? 'Buffer after (min)' : lang === 'sk' ? 'Buffer po (min)' : 'Buffer po (min)',
-    activeService: lang === 'en' ? 'Active service' : lang === 'sk' ? 'Aktívna služba' : 'Aktivní služba',
-    inactiveService: lang === 'en' ? 'Inactive service' : lang === 'sk' ? 'Neaktívna služba' : 'Neaktivní služba',
-    publicLabel: lang === 'en' ? 'Public' : lang === 'sk' ? 'Verejná' : 'Veřejná',
-    privateLabel: lang === 'en' ? 'Private' : lang === 'sk' ? 'Súkromná' : 'Soukromá',
+    activeService: lang === 'en' ? 'Active service' : lang === 'sk' ? 'Aktivna sluzba' : 'Aktivni sluzba',
+    inactiveService: lang === 'en' ? 'Inactive service' : lang === 'sk' ? 'Neaktivna sluzba' : 'Neaktivni sluzba',
+    publicLabel: lang === 'en' ? 'Public' : lang === 'sk' ? 'Verejna' : 'Verejna',
+    privateLabel: lang === 'en' ? 'Private' : lang === 'sk' ? 'Sukromna' : 'Soukroma',
     free: lang === 'en' ? 'Free' : 'Zdarma',
     minutes: 'min',
     select: lang === 'en' ? '-- Select --' : '-- Vyberte --',
-    calendarColor: lang === 'en' ? 'Calendar color' : lang === 'sk' ? 'Farba v kalendári' : 'Barva v kalendáři',
-    shortDesc: lang === 'en' ? 'Short description...' : lang === 'sk' ? 'Krátky popis služby...' : 'Krátký popis služby...',
-    loading: lang === 'en' ? 'Loading services...' : lang === 'sk' ? 'Načítavam služby...' : 'Načítám služby...',
-    nameRequired: lang === 'en' ? 'Service name is required' : lang === 'sk' ? 'Názov služby je povinný' : 'Název služby je povinný',
-    errorSaving: lang === 'en' ? 'Error saving' : lang === 'sk' ? 'Chyba pri ukladaní' : 'Chyba při ukládání',
-    confirmDelete: (name: string) => lang === 'en' ? `Delete service "${name}"?` : lang === 'sk' ? `Zmazať službu "${name}"?` : `Smazat službu "${name}"?`,
-    before: lang === 'en' ? 'before' : lang === 'sk' ? 'pred' : 'před',
+    calendarColor: lang === 'en' ? 'Calendar color' : lang === 'sk' ? 'Farba v kalendari' : 'Barva v kalendari',
+    shortDesc: lang === 'en' ? 'Short description...' : lang === 'sk' ? 'Kratky popis sluzby...' : 'Kratky popis sluzby...',
+    loading: lang === 'en' ? 'Loading services...' : lang === 'sk' ? 'Nacitavam sluzby...' : 'Nacitam sluzby...',
+    nameRequired: lang === 'en' ? 'Service name is required' : lang === 'sk' ? 'Nazov sluzby je povinny' : 'Nazev sluzby je povinny',
+    errorSaving: lang === 'en' ? 'Error saving' : lang === 'sk' ? 'Chyba pri ukladani' : 'Chyba pri ukladani',
+    confirmDelete: (name: string) => lang === 'en' ? `Delete service "${name}"?` : lang === 'sk' ? `Zmazat sluzbu "${name}"?` : `Smazat sluzbu "${name}"?`,
+    before: lang === 'en' ? 'before' : lang === 'sk' ? 'pred' : 'pred',
     after: lang === 'en' ? 'after' : 'po',
-    inactive: lang === 'en' ? 'Inactive' : lang === 'sk' ? 'Neaktívna' : 'Neaktivní',
-    eg: lang === 'en' ? 'e.g. Massage' : lang === 'sk' ? 'Napr. Masáž' : 'Např. Masáž',
-    search: lang === 'en' ? 'Search services...' : lang === 'sk' ? 'Hľadať služby...' : 'Hledat služby...',
-    allCategories: lang === 'en' ? 'All categories' : lang === 'sk' ? 'Všetky kategórie' : 'Všechny kategorie',
-    noResults: lang === 'en' ? 'No services found' : lang === 'sk' ? 'Žiadne služby nenájdené' : 'Žádné služby nenalezeny',
-    tryOther: lang === 'en' ? 'Try different search' : lang === 'sk' ? 'Skúste iný výraz' : 'Zkuste jiný výraz',
-    created: lang === 'en' ? 'Service created!' : lang === 'sk' ? 'Služba vytvorená!' : 'Služba vytvořena!',
-    saved: lang === 'en' ? 'Service saved!' : lang === 'sk' ? 'Služba uložená!' : 'Služba uložena!',
-    deleted: lang === 'en' ? 'Service deleted' : lang === 'sk' ? 'Služba zmazaná' : 'Služba smazána',
+    inactive: lang === 'en' ? 'Inactive' : lang === 'sk' ? 'Neaktivna' : 'Neaktivni',
+    eg: lang === 'en' ? 'e.g. Massage' : lang === 'sk' ? 'Napr. Masaz' : 'Napr. Masaz',
+    search: lang === 'en' ? 'Search services...' : lang === 'sk' ? 'Hladat sluzby...' : 'Hledat sluzby...',
+    allCategories: lang === 'en' ? 'All categories' : lang === 'sk' ? 'Vsetky kategorie' : 'Vsechny kategorie',
+    noResults: lang === 'en' ? 'No services found' : lang === 'sk' ? 'Ziadne sluzby nenajdene' : 'Zadne sluzby nenalezeny',
+    tryOther: lang === 'en' ? 'Try different search' : lang === 'sk' ? 'Skuste iny vyraz' : 'Zkuste jiny vyraz',
+    created: lang === 'en' ? 'Service created!' : lang === 'sk' ? 'Sluzba vytvorena!' : 'Sluzba vytvorena!',
+    saved: lang === 'en' ? 'Service saved!' : lang === 'sk' ? 'Sluzba ulozena!' : 'Sluzba ulozena!',
+    deleted: lang === 'en' ? 'Service deleted' : lang === 'sk' ? 'Sluzba zmazana' : 'Sluzba smazana',
+    uncategorized: lang === 'en' ? 'Uncategorized' : lang === 'sk' ? 'Bez kategorie' : 'Bez kategorie',
   }
 
   const fetchServices = async () => {
@@ -201,6 +202,73 @@ export default function ServicesPage() {
   const filteredServices = getFilteredServices()
   const usedCategories = [...new Set(services.map(s => s.category).filter(Boolean))] as string[]
 
+  // Group services by category
+  const getGroupedServices = () => {
+    const grouped: Record<string, Service[]> = {}
+    const uncategorized: Service[] = []
+    filteredServices.forEach(s => {
+      if (s.category) {
+        if (!grouped[s.category]) grouped[s.category] = []
+        grouped[s.category].push(s)
+      } else {
+        uncategorized.push(s)
+      }
+    })
+    const categoryOrder = Object.keys(grouped).sort()
+    return [
+      ...categoryOrder.map(cat => ({ label: cat, services: grouped[cat] })),
+      ...(uncategorized.length > 0 ? [{ label: l.uncategorized, services: uncategorized }] : []),
+    ]
+  }
+
+  const sections = getGroupedServices()
+  const showHeaders = sections.length > 1 && filterCategory === 'all'
+
+  const ServiceCard = ({ service }: { service: Service }) => (
+    <div className={`bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-all ${!service.active ? 'opacity-60' : ''}`}>
+      <div className="h-2" style={{ backgroundColor: service.color || '#3b82f6' }} />
+      <div className="p-5">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-gray-900 text-lg truncate">{service.name}</h3>
+            {service.category && !showHeaders && <span className="text-xs text-gray-400 font-medium">{service.category}</span>}
+          </div>
+          <div className="flex items-center gap-1.5 ml-2">
+            {service.visibility === 'public' ? (
+              <span className="flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-600 rounded-lg text-xs font-medium"><Eye className="w-3 h-3" /> {l.publicLabel}</span>
+            ) : (
+              <span className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-500 rounded-lg text-xs font-medium"><EyeOff className="w-3 h-3" /> {l.privateLabel}</span>
+            )}
+          </div>
+        </div>
+        {service.description && <p className="text-sm text-gray-500 mb-3 line-clamp-2">{service.description}</p>}
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-lg">
+            <Clock className="w-3.5 h-3.5 text-blue-500" /><span className="text-sm font-semibold text-blue-700">{service.duration} {l.minutes}</span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-green-50 px-3 py-1.5 rounded-lg">
+            <DollarSign className="w-3.5 h-3.5 text-green-500" /><span className="text-sm font-semibold text-green-700">{service.price ? `${service.price} ${currency}` : l.free}</span>
+          </div>
+        </div>
+        {(service.buffer_before_minutes > 0 || service.buffer_after_minutes > 0) && (
+          <div className="flex gap-2 mb-4">
+            {service.buffer_before_minutes > 0 && <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">&#9194; {service.buffer_before_minutes} min {l.before}</span>}
+            {service.buffer_after_minutes > 0 && <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">&#9193; {service.buffer_after_minutes} min {l.after}</span>}
+          </div>
+        )}
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium ${service.active ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
+            {service.active ? <><Check className="w-3 h-3" /> {l.active}</> : l.inactive}
+          </span>
+          <div className="flex items-center gap-1">
+            <button onClick={() => handleEdit(service)} className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
+            <button onClick={() => handleDelete(service.id, service.name)} className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -227,13 +295,13 @@ export default function ServicesPage() {
           </div>
           <select value={sortBy} onChange={e => setSortBy(e.target.value)}
             className="px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500">
-            <option value="name_asc">{lang === 'en' ? '↑ Name A-Z' : '↑ Název A-Z'}</option>
-            <option value="name_desc">{lang === 'en' ? '↓ Name Z-A' : '↓ Název Z-A'}</option>
-            <option value="price_asc">{lang === 'en' ? '↑ Cheapest' : '↑ Nejlevnější'}</option>
-            <option value="price_desc">{lang === 'en' ? '↓ Most expensive' : '↓ Nejdražší'}</option>
-            <option value="duration_asc">{lang === 'en' ? '↑ Shortest' : '↑ Nejkratší'}</option>
-            <option value="duration_desc">{lang === 'en' ? '↓ Longest' : '↓ Nejdelší'}</option>
-            <option value="newest">{lang === 'en' ? '↓ Newest' : '↓ Nejnovější'}</option>
+            <option value="name_asc">{lang === 'en' ? 'Name A-Z' : 'Nazev A-Z'}</option>
+            <option value="name_desc">{lang === 'en' ? 'Name Z-A' : 'Nazev Z-A'}</option>
+            <option value="price_asc">{lang === 'en' ? 'Cheapest' : 'Nejlevnejsi'}</option>
+            <option value="price_desc">{lang === 'en' ? 'Most expensive' : 'Nejdrazsi'}</option>
+            <option value="duration_asc">{lang === 'en' ? 'Shortest' : 'Nejkratsi'}</option>
+            <option value="duration_desc">{lang === 'en' ? 'Longest' : 'Nejdelsi'}</option>
+            <option value="newest">{lang === 'en' ? 'Newest' : 'Nejnovejsi'}</option>
           </select>
           {usedCategories.length > 0 && (
             <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
@@ -287,7 +355,7 @@ export default function ServicesPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">{l.calendarColor}</label>
-                            <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2">
                 {COLORS.map(c => (
                   <button key={c} onClick={() => setForm({ ...form, color: c })}
                     className={`w-8 h-8 rounded-lg border-2 transition-all ${form.color === c ? 'border-gray-900 scale-110 shadow-lg ring-2 ring-offset-1 ring-gray-400' : 'border-transparent hover:scale-110 hover:shadow-md'}`}
@@ -353,49 +421,20 @@ export default function ServicesPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredServices.map(service => (
-            <div key={service.id}
-              className={`bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-all ${!service.active ? 'opacity-60' : ''}`}>
-              <div className="h-2" style={{ backgroundColor: service.color || '#3b82f6' }} />
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 text-lg truncate">{service.name}</h3>
-                    {service.category && <span className="text-xs text-gray-400 font-medium">{service.category}</span>}
-                  </div>
-                  <div className="flex items-center gap-1.5 ml-2">
-                    {service.visibility === 'public' ? (
-                      <span className="flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-600 rounded-lg text-xs font-medium"><Eye className="w-3 h-3" /> {l.publicLabel}</span>
-                    ) : (
-                      <span className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-500 rounded-lg text-xs font-medium"><EyeOff className="w-3 h-3" /> {l.privateLabel}</span>
-                    )}
-                  </div>
+        <div className="space-y-8">
+          {sections.map(section => (
+            <div key={section.label}>
+              {showHeaders && (
+                <div className="flex items-center gap-3 mb-3">
+                  <h2 className="text-lg font-bold text-gray-800">{section.label}</h2>
+                  <span className="px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full text-xs font-medium">{section.services.length}</span>
+                  <div className="flex-1 h-px bg-gray-200" />
                 </div>
-                {service.description && <p className="text-sm text-gray-500 mb-3 line-clamp-2">{service.description}</p>}
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-lg">
-                    <Clock className="w-3.5 h-3.5 text-blue-500" /><span className="text-sm font-semibold text-blue-700">{service.duration} {l.minutes}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-green-50 px-3 py-1.5 rounded-lg">
-                    <DollarSign className="w-3.5 h-3.5 text-green-500" /><span className="text-sm font-semibold text-green-700">{service.price ? `${service.price} ${currency}` : l.free}</span>
-                  </div>
-                </div>
-                {(service.buffer_before_minutes > 0 || service.buffer_after_minutes > 0) && (
-                  <div className="flex gap-2 mb-4">
-                    {service.buffer_before_minutes > 0 && <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">⏪ {service.buffer_before_minutes} min {l.before}</span>}
-                    {service.buffer_after_minutes > 0 && <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">⏩ {service.buffer_after_minutes} min {l.after}</span>}
-                  </div>
-                )}
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium ${service.active ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
-                    {service.active ? <><Check className="w-3 h-3" /> {l.active}</> : l.inactive}
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <button onClick={() => handleEdit(service)} className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => handleDelete(service.id, service.name)} className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
-                  </div>
-                </div>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {section.services.map(service => (
+                  <ServiceCard key={service.id} service={service} />
+                ))}
               </div>
             </div>
           ))}
