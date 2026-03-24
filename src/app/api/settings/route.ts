@@ -44,12 +44,13 @@ export async function PUT(request: NextRequest) {
     }
 
     // Povolená pole — pouze tato se mohou aktualizovat
-    const allowedFields = [
+        const allowedFields = [
       'name', 'mode', 'address', 'phone', 'email',
       'website', 'work_start', 'work_end', 'slot_duration',
       'booking_link', 'timezone', 'onboarding_completed',
       'category', 'description', 'city', 'zip', 'logo_url',
       'language', 'ico', 'dic',
+      'notification_email', 'notify_on_booking', 'notify_on_cancel',
     ]
 
     const updateData: any = {}
