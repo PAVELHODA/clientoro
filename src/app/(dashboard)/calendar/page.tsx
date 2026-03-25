@@ -38,7 +38,7 @@ export default function CalendarPage() {
   const { t, lang } = useLang()
   const toast = useToast()
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
-  const currency = 'Kc'
+  const currency = 'Kč'
   const isTeam = organization?.mode === 'team'
 
   const modeColors: Record<string, { gradient: string; text: string }> = {
@@ -150,28 +150,28 @@ export default function CalendarPage() {
     client: lang === 'en' ? 'Client' : 'Klient',
     service: t('cal_service'),
     specialist: lang === 'en' ? 'Specialist' : 'Specialista',
-    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jmeno klienta *',
+    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jméno klienta *',
     phone: lang === 'en' ? 'Phone *' : 'Telefon *',
     anyone: lang === 'en' ? 'Anyone available' : lang === 'sk' ? 'Ktokolvek volny' : 'Kdokoliv volny',
     select: lang === 'en' ? 'Select...' : 'Vyberte...',
-    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvorit rezervaciu' : 'Vytvorit rezervaci',
-    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervacie' : 'Detail rezervace',
-    time: lang === 'en' ? 'Time' : 'Cas',
+    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvoriť rezerváciu' : 'Vytvořit rezervaci',
+    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervácie' : 'Detail rezervace',
+    time: lang === 'en' ? 'Time' : 'Čas',
     price: t('cal_price'),
     status: lang === 'en' ? 'Status' : 'Stav',
     close: lang === 'en' ? 'Close' : 'Zavrit',
-    unknown: lang === 'en' ? 'Unknown' : 'Neznamy',
+    unknown: lang === 'en' ? 'Unknown' : 'Neznámý',
     rez: lang === 'en' ? 'book.' : 'rez.',
     at: lang === 'en' ? 'at' : 'v',
-    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervacie v tomto termine' : 'Rezervace v tomto terminu',
-    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Ziadne rezervacie' : 'Zadne rezervace',
+    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervácie v tomto termíne' : 'Rezervace v tomto termínu',
+    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Žiadne rezervácie' : 'Žádné rezervace',
     working: lang === 'en' ? 'Working' : lang === 'sk' ? 'Pracuju' : 'Pracuji',
     backfillBanner: lang === 'en' ? 'Backfill mode - you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis - moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis - moznost pridat rezervace do minulosti (max 90 dni)',
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
-    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dovod zpetneho zapisu *' : 'Duvod zpetneho zapisu *',
+    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dôvod spätného zápisu *' : 'Důvod zpětného zápisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
-    backfillLabel: lang === 'en' ? 'Backfill' : 'Zpetny zapis',
-    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvu sluzbu pre rezervacie' : 'Pridejte prvni sluzbu pro rezervace',
+    backfillLabel: lang === 'en' ? 'Backfill' : 'Zpětný zápis',
+    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvú službu pre rezervácie' : 'Přidejte první službu pro rezervace',
     emptyStaff: lang === 'en' ? 'Add team members to see staff columns' : lang === 'sk' ? 'Pridajte clenov timu' : 'Pridejte cleny tymu',
     conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
@@ -381,9 +381,9 @@ export default function CalendarPage() {
 
   const statusLabel = (status: string) => {
     const m: Record<string, Record<string, string>> = {
-      confirmed: { cs: 'Potvrzeno', sk: 'Potvrdena', en: 'Confirmed' },
-      completed: { cs: 'Dokonceno', sk: 'Dokoncena', en: 'Completed' },
-      cancelled: { cs: 'Zruseno', sk: 'Zrusena', en: 'Cancelled' },
+      confirmed: { cs: 'Potvrzeno', sk: 'Potvrdená', en: 'Confirmed' },
+      completed: { cs: 'Dokončeno', sk: 'Dokončená', en: 'Completed' },
+      cancelled: { cs: 'Zrušeno', sk: 'Zrušená', en: 'Cancelled' },
       no_show: { cs: 'Nedorazil/a (no-show)', sk: 'Nedostavil/a sa', en: 'No-show' },
     }
     return m[status]?.[lang] || status
@@ -844,13 +844,13 @@ export default function CalendarPage() {
                                     {qbService && getAvailableStaff().length === 0 && (
                     <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'Ziadny zamestnanec pre tuto sluzbu' : 'Zadny zamestnanec pro tuto sluzbu'}
+                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'Žiadny zamestnanec pre túto službu' : 'Žádný zaměstnanec pro tuto službu'}
                     </p>
                   )}
                   {qbService && selectedSlot && getAvailableStaff().length > 0 && getAvailableStaff().every(s => getBookingsForSlot(selectedSlot.date, selectedSlot.time, s.id).length > 0) && (
                     <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Vsetci zamestnanci su v tomto case obsadeni' : 'Vsichni zamestnanci jsou v tomto case obsazeni'}
+                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Všetci zamestnanci sú v tomto čase obsadení' : 'Všichni zaměstnanci jsou v tomto čase obsazeni'}
                     </p>
                   )}
 
@@ -889,7 +889,7 @@ export default function CalendarPage() {
                     <label className="block text-sm font-medium text-amber-700 mb-1">{l.backfillNote}</label>
                     <input type="text" id="qb-note" name="qb-note" value={qbNote} onChange={e => setQbNote(e.target.value)}
                       className="w-full px-3 py-2.5 border-2 border-amber-300 rounded-xl text-sm bg-amber-50"
-                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'napr. Klient nastoupil v pulce mesice'} />
+                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'např. Klient nastoupil v půlce měsíce'} />
                   </div>
                 ) : null
               })()}
@@ -998,7 +998,7 @@ export default function CalendarPage() {
                 <div className="grid grid-cols-2 gap-2">
                   {showDetail.status !== 'completed' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'completed')}
-                      className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokonceno'}</button>
+                      className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokončeno'}</button>
                   )}
                   {showDetail.status !== 'cancelled' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'cancelled')}
