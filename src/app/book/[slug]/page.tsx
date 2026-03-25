@@ -383,6 +383,34 @@ export default function PublicBookingPage() {
         </div>
       )}
 
+
+      {/* ===== KOMPAKTNÍ SUMMARY PANEL ===== */}
+      {step !== 'service' && step !== 'done' && (
+        <div className="max-w-lg mx-auto px-5 mt-3 relative z-10">
+          <div className="flex items-center gap-2 flex-wrap">
+            {selectedService && (
+              <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1.5 border border-gray-100 text-xs font-medium text-gray-600 shadow-sm">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: selectedService.color || '#0f6b7a' }} />
+                {selectedService.name}
+                {selectedService.price ? ` · ${selectedService.price} ${lang === 'en' ? 'CZK' : 'Kč'}` : ''}
+              </div>
+            )}
+            {step !== 'staff' && selectedStaff && (
+              <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1.5 border border-gray-100 text-xs font-medium text-gray-600 shadow-sm">
+                <User className="w-3 h-3 text-gray-400" />
+                {selectedStaff.full_name}
+              </div>
+            )}
+            {step === 'contact' && selectedDate && (
+              <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1.5 border border-gray-100 text-xs font-medium text-gray-600 shadow-sm">
+                <Calendar className="w-3 h-3 text-gray-400" />
+                {formatDate(selectedDate)} · {selectedTime}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ===== CONTENT ===== */}
       <div className="max-w-lg mx-auto px-5 pt-7 pb-24 relative z-10">
 
@@ -423,8 +451,8 @@ export default function PublicBookingPage() {
         {/* KROK 2: SPECIALISTA */}
         {step === 'staff' && (
           <div>
-            <button onClick={() => setStep('service')} className="text-xs text-gray-400 flex items-center gap-1 hover:text-gray-600 transition-colors mb-4 font-medium">
-              <ChevronLeft className="w-3.5 h-3.5" /> {t('book_back')}
+            <button onClick={() => setStep('service')} className="text-sm text-gray-500 flex items-center gap-1.5 hover:text-gray-700 transition-colors mb-5 font-medium">
+              <ChevronLeft className="w-4 h-4" /> {t('book_back')}
             </button>
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1.5 h-5 rounded-full" style={{ backgroundColor: selectedService?.color || '#0f6b7a' }} />
@@ -466,18 +494,9 @@ export default function PublicBookingPage() {
         {/* KROK 3: DATUM A ČAS */}
         {step === 'datetime' && (
           <div>
-            <button onClick={() => setStep('staff')} className="text-xs text-gray-400 flex items-center gap-1 hover:text-gray-600 transition-colors mb-4 font-medium">
-              <ChevronLeft className="w-3.5 h-3.5" /> {t('book_back')}
+            <button onClick={() => setStep('staff')} className="text-sm text-gray-500 flex items-center gap-1.5 hover:text-gray-700 transition-colors mb-5 font-medium">
+              <ChevronLeft className="w-4 h-4" /> {t('book_back')}
             </button>
-            <div className="flex items-center gap-2 flex-wrap mb-5">
-              <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1.5 border border-gray-100 text-sm text-gray-600 font-medium">
-                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedService?.color || '#0f6b7a' }} />
-                {selectedService?.name}
-              </div>
-              <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1.5 border border-gray-100 text-sm text-gray-600 font-medium">
-                {selectedStaff?.full_name || t('book_anyone')}
-              </div>
-            </div>
             <h2 className="font-playfair text-gray-900 mb-5" style={{ fontSize: '24px', fontWeight: 500 }}>{t('book_choose_datetime')}</h2>
 
             {/* ===== TÝDENNÍ KALENDÁŘ ===== */}
@@ -636,8 +655,8 @@ export default function PublicBookingPage() {
         {/* KROK 4: KONTAKT */}
         {step === 'contact' && (
           <div>
-            <button onClick={() => setStep('datetime')} className="text-xs text-gray-400 flex items-center gap-1 hover:text-gray-600 transition-colors mb-4 font-medium">
-              <ChevronLeft className="w-3.5 h-3.5" /> {t('book_back')}
+            <button onClick={() => setStep('datetime')} className="text-sm text-gray-500 flex items-center gap-1.5 hover:text-gray-700 transition-colors mb-5 font-medium">
+              <ChevronLeft className="w-4 h-4" /> {t('book_back')}
             </button>
 
             {/* Summary */}
