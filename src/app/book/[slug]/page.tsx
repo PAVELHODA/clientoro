@@ -4,7 +4,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import {
-  Calendar, Clock, User, Phone, Mail, ChevronRight, ChevronLeft,
+  Calendar, Clock, User, Phone, Mail, ChevronRight, ChevronLeft, ChevronDown,
   Check, Loader2, MapPin, Waves, Star, MessageSquare,
 } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
@@ -59,6 +59,8 @@ export default function PublicBookingPage() {
   const [gdprConsent, setGdprConsent] = useState(false)
   const [lang, setLangState] = useState<PublicLang>('cs')
   const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() } })
+  const [weekOffset, setWeekOffset] = useState(0)
+  const [showMonthly, setShowMonthly] = useState(false)
 
   const t = (key: string) => publicTranslations[lang]?.[key] || publicTranslations.cs[key] || key
   const setLang = (l: PublicLang) => { localStorage.setItem('clientoro_book_lang', l); setLangState(l) }
@@ -123,6 +125,28 @@ export default function PublicBookingPage() {
   }
 
   const dayNames = lang === 'en' ? ['Mo','Tu','We','Th','Fr','Sa','Su'] : lang === 'sk' ? ['Po','Ut','St','Št','Pi','So','Ne'] : ['Po','Út','St','Čt','Pá','So','Ne']
+
+
+  const getWeekDays = (offset: number) => {
+    const today = new Date()
+    const monday = new Date(today)
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7) + offset * 7)
+    const days: string[] = []
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday)
+      d.setDate(monday.getDate() + i)
+      days.push(d.toISOString().split('T')[0])
+    }
+    return days
+  }
+
+  const weekDays = getWeekDays(weekOffset)
+  const weekLabel = (() => {
+    const first = new Date(weekDays[0])
+    const last = new Date(weekDays[6])
+    if (first.getMonth() === last.getMonth()) return first.toLocaleDateString(getLocale(), { day: 'numeric' }) + '–' + last.toLocaleDateString(getLocale(), { day: 'numeric', month: 'long' })
+    return first.toLocaleDateString(getLocale(), { day: 'numeric', month: 'short' }) + ' – ' + last.toLocaleDateString(getLocale(), { day: 'numeric', month: 'short' })
+  })()
 
   const getAvailableDates = () => {
     const dates: string[] = []; const today = new Date()
@@ -422,62 +446,47 @@ export default function PublicBookingPage() {
                 {selectedStaff?.full_name || t('book_anyone')}
               </div>
             </div>
-            <h2 className="font-playfair text-gray-900 mb-6" style={{ fontSize: '24px', fontWeight: 500 }}>{t('book_choose_datetime')}</h2>
+            <h2 className="font-playfair text-gray-900 mb-5" style={{ fontSize: '24px', fontWeight: 500 }}>{t('book_choose_datetime')}</h2>
 
-            {/* ===== MĚSÍČNÍ KALENDÁŘ ===== */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-6">
-              {/* Navigace měsíce */}
-              <div className="flex items-center justify-between mb-4">
-                <button onClick={() => {
-                  const prev = calMonth.month === 0 ? { year: calMonth.year - 1, month: 11 } : { year: calMonth.year, month: calMonth.month - 1 }
-                  const now = new Date(); if (prev.year > now.getFullYear() || (prev.year === now.getFullYear() && prev.month >= now.getMonth())) setCalMonth(prev)
-                }} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors">
+            {/* ===== TÝDENNÍ KALENDÁŘ ===== */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <button onClick={() => { if (weekOffset > 0) setWeekOffset(weekOffset - 1) }}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors disabled:opacity-30"
+                  disabled={weekOffset === 0}>
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <span className="text-sm font-semibold text-gray-800 capitalize">{calMonthName(calMonth.year, calMonth.month)}</span>
-                <button onClick={() => {
-                  const next = calMonth.month === 11 ? { year: calMonth.year + 1, month: 0 } : { year: calMonth.year, month: calMonth.month + 1 }
-                  const maxDate = new Date(); maxDate.setDate(maxDate.getDate() + 60)
-                  if (next.year < maxDate.getFullYear() || (next.year === maxDate.getFullYear() && next.month <= maxDate.getMonth())) setCalMonth(next)
-                }} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors">
+                <span className="text-sm font-semibold text-gray-700 capitalize">{weekLabel}</span>
+                <button onClick={() => { if (weekOffset < 3) setWeekOffset(weekOffset + 1) }}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors disabled:opacity-30"
+                  disabled={weekOffset >= 3}>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
-
-              {/* Dny v týdnu */}
-              <div className="grid grid-cols-7 gap-1 mb-2">
-                {dayNames.map(d => (
-                  <div key={d} className="text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wider py-1">{d}</div>
-                ))}
-              </div>
-
-              {/* Dny v měsíci */}
-              <div className="grid grid-cols-7 gap-1">
-                {getCalendarDays(calMonth.year, calMonth.month).map((d, i) => {
-                  if (!d) return <div key={'e' + i} />
-                  const past = isPast(d)
-                  const far = isFarFuture(d)
-                  const available = !past && !far && hasAnyStaffWorking(d)
+              <div className="grid grid-cols-7 gap-1.5">
+                {weekDays.map((d, i) => {
+                  const past = d < todayStr
+                  const isWeekend = i >= 5
                   const active = selectedDate === d
                   const today = d === todayStr
+                  const dayNum = parseInt(d.split('-')[2])
+                  const dayLabel = dayNames[i]
 
                   return (
-                    <button key={d} disabled={!available}
-                      onClick={() => { if (available) { setSelectedDate(d); setSelectedTime('') } }}
-                      className="relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm transition-all duration-150"
+                    <button key={d} disabled={past}
+                      onClick={() => { if (!past) { setSelectedDate(d); setSelectedTime(''); setShowMonthly(false) } }}
+                      className="flex flex-col items-center py-2 rounded-xl transition-all duration-200"
                       style={active
                         ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#fff', boxShadow: '0 4px 12px rgba(12,45,72,0.25)' }
-                        : available
-                          ? { color: '#111827', cursor: 'pointer' }
-                          : { color: '#d1d5db', cursor: 'default' }
+                        : past
+                          ? { opacity: 0.35 }
+                          : isWeekend
+                            ? { background: 'rgba(14,77,100,0.04)' }
+                            : {}
                       }>
-                      <span className={`font-semibold ${today && !active ? 'text-[#0f6b7a]' : ''}`}>{parseInt(d.split('-')[2])}</span>
-                      {available && !active && (
-                        <div className="absolute bottom-1 w-1 h-1 rounded-full" style={{ background: '#0f6b7a', opacity: 0.5 }} />
-                      )}
-                      {today && !active && (
-                        <div className="absolute bottom-1 w-4 h-0.5 rounded-full" style={{ background: '#0f6b7a', opacity: 0.3 }} />
-                      )}
+                      <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ opacity: active ? 0.7 : 0.5 }}>{dayLabel}</span>
+                      <span className={`text-lg font-bold mt-0.5 ${today && !active ? 'text-[#0f6b7a]' : ''}`}>{dayNum}</span>
+                      {today && !active && <div className="w-4 h-0.5 rounded-full mt-0.5" style={{ background: '#0f6b7a', opacity: 0.4 }} />}
                     </button>
                   )
                 })}
@@ -486,13 +495,9 @@ export default function PublicBookingPage() {
 
             {/* ===== TIME SLOTY ===== */}
             {selectedDate && (
-              <div>
-                <p className="text-sm font-semibold text-gray-700 mb-3">
-                  {formatDate(selectedDate)}
-                </p>
+              <div className="mb-4">
                 {availableSlots.length === 0 ? (
                   <div className="text-center py-10 bg-white rounded-2xl border border-gray-100">
-                    <Calendar className="w-8 h-8 text-gray-200 mx-auto mb-2" />
                     <p className="text-sm text-gray-400">{t('book_no_slots')}</p>
                   </div>
                 ) : (
@@ -507,8 +512,7 @@ export default function PublicBookingPage() {
                         <div className="grid grid-cols-4 gap-2">
                           {group.slots.map(ti => (
                             <button key={ti} onClick={() => { setSelectedTime(ti); setStep('contact') }}
-                              className="py-2.5 bg-white rounded-xl text-sm font-semibold text-gray-700 border border-gray-100 transition-all duration-150 hover:shadow-md hover:border-transparent"
-                              style={{}}
+                              className="py-2.5 bg-white rounded-xl text-sm font-semibold text-gray-700 border border-gray-100 transition-all duration-150 hover:shadow-md"
                               onMouseEnter={e => { e.currentTarget.style.background = 'linear-gradient(135deg, #0c2d48, #0f6b7a)'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'transparent' }}
                               onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#f3f4f6' }}>
                               {ti}
@@ -519,6 +523,78 @@ export default function PublicBookingPage() {
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* ===== MĚSÍČNÍ KALENDÁŘ — rozbalovací ===== */}
+            <button onClick={() => setShowMonthly(!showMonthly)}
+              className="w-full py-2.5 bg-white rounded-xl border border-gray-100 text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+              <Calendar className="w-4 h-4" />
+              {showMonthly
+                ? (lang === 'en' ? 'Hide month view' : lang === 'sk' ? 'Skryť mesačný pohľad' : 'Skrýt měsíční pohled')
+                : (lang === 'en' ? 'Show full month' : lang === 'sk' ? 'Zobraziť celý mesiac' : 'Zobrazit celý měsíc')
+              }
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showMonthly ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showMonthly && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-4 mt-3 transition-all">
+                {/* Navigace měsíce */}
+                <div className="flex items-center justify-between mb-4">
+                  <button onClick={() => {
+                    const prev = calMonth.month === 0 ? { year: calMonth.year - 1, month: 11 } : { year: calMonth.year, month: calMonth.month - 1 }
+                    const now = new Date(); if (prev.year > now.getFullYear() || (prev.year === now.getFullYear() && prev.month >= now.getMonth())) setCalMonth(prev)
+                  }} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors">
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="text-sm font-semibold text-gray-800 capitalize">{calMonthName(calMonth.year, calMonth.month)}</span>
+                  <button onClick={() => {
+                    const next = calMonth.month === 11 ? { year: calMonth.year + 1, month: 0 } : { year: calMonth.year, month: calMonth.month + 1 }
+                    const maxDate = new Date(); maxDate.setDate(maxDate.getDate() + 60)
+                    if (next.year < maxDate.getFullYear() || (next.year === maxDate.getFullYear() && next.month <= maxDate.getMonth())) setCalMonth(next)
+                  }} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors">
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Hlavička dnů */}
+                <div className="grid grid-cols-7 gap-0">
+                  {dayNames.map((d, i) => (
+                    <div key={d} className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-wider py-2 border-b border-gray-100"
+                      style={i >= 5 ? { background: 'rgba(14,77,100,0.03)' } : {}}>
+                      {d}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Grid dnů */}
+                <div className="grid grid-cols-7 gap-0">
+                  {getCalendarDays(calMonth.year, calMonth.month).map((d, i) => {
+                    if (!d) return <div key={'e' + i} className="aspect-square border-b border-r border-gray-50" style={i % 7 >= 5 ? { background: 'rgba(14,77,100,0.03)' } : {}} />
+                    const past = isPast(d)
+                    const far = isFarFuture(d)
+                    const available = !past && !far
+                    const active = selectedDate === d
+                    const today = d === todayStr
+                    const isWeekend = i % 7 >= 5
+                    const dayNum = parseInt(d.split('-')[2])
+
+                    return (
+                      <button key={d} disabled={!available}
+                        onClick={() => { if (available) { setSelectedDate(d); setSelectedTime(''); setShowMonthly(false) } }}
+                        className="aspect-square flex items-center justify-center border-b border-r border-gray-50 transition-all duration-150 relative"
+                        style={{
+                          ...(isWeekend && !active ? { background: 'rgba(14,77,100,0.03)' } : {}),
+                          ...(active ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#fff', borderRadius: '10px', boxShadow: '0 2px 8px rgba(12,45,72,0.2)' } : {}),
+                          ...(past || far ? { opacity: 0.3 } : {}),
+                        }}>
+                        <span className={`text-sm font-bold ${today && !active ? 'text-[#0f6b7a]' : ''} ${active ? 'text-white' : ''}`}>{dayNum}</span>
+                        {today && !active && <div className="absolute bottom-1 w-4 h-0.5 rounded-full" style={{ background: '#0f6b7a', opacity: 0.5 }} />}
+                        {available && !active && !past && <div className="absolute bottom-1.5 w-1 h-1 rounded-full" style={{ background: '#0f6b7a', opacity: 0.3 }} />}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
             )}
           </div>
