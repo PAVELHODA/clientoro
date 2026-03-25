@@ -8,8 +8,12 @@ module.exports = {
 
   theme: {
     extend: {
+      fontFamily: {
+        poppins: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
+        playfair: ['var(--font-playfair)', 'Georgia', 'serif'],
+      },
+
       backgroundImage: {
-        // INSPIRE světelný highlight – diagonální, perleťový, 60 %
         "inspire-highlight": `linear-gradient(
           -22deg,
           #faf7ff 0%,
@@ -21,7 +25,6 @@ module.exports = {
       },
 
       maskImage: {
-        // Jemná elipsa – širší, lehce vyšší, posun zleva
         "inspire-ellipse": `radial-gradient(
           ellipse 120% 55% at 20% 0%,
           white 0%,

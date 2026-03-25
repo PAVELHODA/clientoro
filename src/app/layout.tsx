@@ -6,6 +6,21 @@ import { PWARegister } from '@/components/PWARegister'
 import { AuthProvider } from '@/components/AuthProvider'
 import CookieConsent from '@/components/CookieConsent'
 import { ToastProvider } from '@/components/Toast'
+import { Poppins, Playfair_Display } from 'next/font/google'
+
+const poppins = Poppins({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
+
+const playfair = Playfair_Display({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-playfair',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Clientoro | Booking & Growth OS',
@@ -35,12 +50,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="cs">
+    <html lang="cs" className={`${poppins.variable} ${playfair.variable}`}>
       <head>
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body>
+      <body className="font-poppins">
         <AuthProvider>
           <ToastProvider>
             {children}
