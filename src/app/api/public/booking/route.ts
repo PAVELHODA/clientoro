@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
         status: 'confirmed',
         source: 'online',
       })
-      .select()
+      .select('*, manage_token')
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -229,6 +229,7 @@ export async function POST(request: NextRequest) {
 
     // Email klientovi — potvrzení
     if (customer_email) {
+      const manageUrl = `https://clientoro.pro/booking/manage?token=${data.manage_token}`
       sendBookingConfirmation({
         to: customer_email,
         customerName: customer_name,
