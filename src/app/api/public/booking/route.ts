@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Konec rezervace musí být po začátku' }, { status: 400 })
     }
 
-    // Validace: rezervace nesmí být v minulosti (veřejný endpoint — vždy platí)
+    // Validace: rezervace nesmí být v minulosti
     if (new Date(start_at) < new Date()) {
       return NextResponse.json({ error: 'Nelze vytvořit rezervaci v minulosti' }, { status: 400 })
     }
@@ -121,10 +121,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Maximální délka rezervace je 8 hodin' }, { status: 400 })
     }
 
-    // Najdi organizaci + email majitele
+    // Najdi organizaci + email majitele + telefon
     const { data: org } = await supabaseAdmin
       .from('organizations')
-      .select('id, name, email')
+      .select('id, name, email, phone, notification_email, notify_on_booking')
       .eq('slug', slug)
       .single()
 
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
       hour: '2-digit', minute: '2-digit'
     })
 
-    // Email klientovi
+    // Email klientovi — potvrzení
     if (customer_email) {
       sendBookingConfirmation({
         to: customer_email,
@@ -238,25 +238,30 @@ export async function POST(request: NextRequest) {
         time: timeStr,
         price: price || undefined,
         orgName: org.name,
-      }).catch(err => console.error('Email to client failed:', err))
+        orgPhone: org.phone || undefined,
+      }).catch(err => console.error('[Email to client failed]', err))
     }
 
-    // Email majiteli
-    if (org.email) {
+    // Email majiteli — notifikace
+    const ownerEmail = org.notification_email || org.email
+    if (ownerEmail && org.notify_on_booking !== false) {
       sendOwnerNotification({
-        to: org.email,
+        to: ownerEmail,
         customerName: customer_name,
         customerPhone: customer_phone,
+        customerEmail: customer_email || undefined,
         serviceName: service?.name || 'Služba',
         staffName: staffName || undefined,
         date: dateStr,
         time: timeStr,
+        price: price || undefined,
         orgName: org.name,
-      }).catch(err => console.error('Email to owner failed:', err))
+      }).catch(err => console.error('[Email to owner failed]', err))
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
+    console.error('[public-booking]', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

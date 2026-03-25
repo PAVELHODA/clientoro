@@ -1,6 +1,9 @@
 ﻿// PATH: src/app/api/bookings/webhook/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { sendBookingNotification } from '@/lib/email/sendNotification'
+import {
+  sendBookingConfirmation, sendOwnerNotification,
+  sendBookingCancellation, sendOwnerCancellation, sendTestEmail,
+} from '@/lib/email'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -12,11 +15,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
 
-    // TEST EMAIL
+    // ========== TEST ==========
     if (action === 'test') {
       const { data: org } = await supabaseAdmin
         .from('organizations')
-        .select('name, notification_email, notify_on_booking, notify_on_cancel')
+        .select('name, notification_email')
         .eq('id', organization_id)
         .single()
 
@@ -24,13 +27,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Notification email not set' }, { status: 400 })
       }
 
-      const now = new Date().toLocaleString('cs-CZ')
-      await sendBookingNotification(
-        org.notification_email,
-        'Testovaci email z Clientoro',
-        'Toto je testovaci email. Notifikace funguji spravne! Odeslano: ' + now + '\n\nOrganizace: ' + org.name
-      )
-
+      await sendTestEmail({ to: org.notification_email, orgName: org.name })
       return NextResponse.json({ success: true, sent_to: org.notification_email })
     }
 
@@ -49,44 +46,66 @@ export async function POST(request: NextRequest) {
 
     const { data: org } = await supabaseAdmin
       .from('organizations')
-      .select('name, notification_email, notify_on_booking, notify_on_cancel')
+      .select('name, phone, address, notification_email, notify_on_booking, notify_on_cancel')
       .eq('id', organization_id)
       .single()
 
     const clientName = booking.clients?.full_name || booking.customer_name || 'Klient'
+    const clientPhone = booking.clients?.phone || booking.customer_phone || ''
     const clientEmail = booking.clients?.email || booking.customer_email
-    const serviceName = booking.services?.name || 'Sluzba'
-    const staffName = booking.staff?.full_name || ''
-    const dateStr = new Date(booking.start_at).toLocaleString('cs-CZ', {
+    const serviceName = booking.services?.name || 'Služba'
+    const staffName = booking.staff?.full_name || undefined
+    const orgName = org?.name || 'Salon'
+    const orgPhone = org?.phone || undefined
+
+    const startDate = new Date(booking.start_at)
+    const date = startDate.toLocaleDateString('cs-CZ', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    })
+    const time = startDate.toLocaleTimeString('cs-CZ', {
       hour: '2-digit', minute: '2-digit',
     })
-    const orgName = org?.name || 'Salon'
 
     // ========== CREATED ==========
     if (action === 'created') {
       // In-app notifikace
       await supabaseAdmin.from('notifications').insert({
-        organization_id, type: 'new_booking', title: 'Nova rezervace',
-        body: clientName + ' - ' + serviceName + ' (' + dateStr + ')', booking_id,
+        organization_id,
+        type: 'new_booking',
+        title: 'Nová rezervace',
+        body: `${clientName} — ${serviceName} (${date}, ${time})`,
+        booking_id,
       })
 
       // Email majiteli
       if (org?.notify_on_booking && org?.notification_email) {
-        await sendBookingNotification(
-          org.notification_email,
-          'Nova rezervace: ' + serviceName,
-          'Klient: ' + clientName + '\nSluzba: ' + serviceName + (staffName ? '\nSpecialista: ' + staffName : '') + '\nDatum: ' + dateStr + (booking.price ? '\nCena: ' + booking.price + ' Kc' : '')
-        )
+        await sendOwnerNotification({
+          to: org.notification_email,
+          customerName: clientName,
+          customerPhone: clientPhone,
+          customerEmail: clientEmail || undefined,
+          serviceName,
+          staffName,
+          date,
+          time,
+          price: booking.price || undefined,
+          orgName,
+        })
       }
 
-      // Email klientovi (potvrzení)
+      // Email klientovi
       if (clientEmail) {
-        await sendBookingNotification(
-          clientEmail,
-          'Potvrzeni rezervace - ' + orgName,
-          'Dobry den ' + clientName + ',\n\nvase rezervace byla uspesne vytvorena.\n\nSluzba: ' + serviceName + (staffName ? '\nSpecialista: ' + staffName : '') + '\nDatum: ' + dateStr + (booking.price ? '\nCena: ' + booking.price + ' Kc' : '') + '\n\nProvozovatel: ' + orgName + '\n\nTesime se na Vas!'
-        )
+        await sendBookingConfirmation({
+          to: clientEmail,
+          customerName: clientName,
+          serviceName,
+          staffName,
+          date,
+          time,
+          price: booking.price || undefined,
+          orgName,
+          orgPhone,
+        })
       }
     }
 
@@ -94,26 +113,37 @@ export async function POST(request: NextRequest) {
     if (action === 'cancelled') {
       // In-app notifikace
       await supabaseAdmin.from('notifications').insert({
-        organization_id, type: 'booking_cancelled', title: 'Rezervace zrusena',
-        body: clientName + ' zrusil/a ' + serviceName + ' (' + dateStr + ')', booking_id,
+        organization_id,
+        type: 'booking_cancelled',
+        title: 'Rezervace zrušena',
+        body: `${clientName} zrušil/a ${serviceName} (${date}, ${time})`,
+        booking_id,
       })
 
       // Email majiteli
       if (org?.notify_on_cancel && org?.notification_email) {
-        await sendBookingNotification(
-          org.notification_email,
-          'Rezervace zrusena: ' + serviceName,
-          'Klient: ' + clientName + '\nSluzba: ' + serviceName + '\nDatum: ' + dateStr + '\n\nRezervace byla zrusena.'
-        )
+        await sendOwnerCancellation({
+          to: org.notification_email,
+          customerName: clientName,
+          customerPhone: clientPhone,
+          serviceName,
+          date,
+          time,
+          orgName,
+        })
       }
 
-      // Email klientovi (zrušení)
+      // Email klientovi
       if (clientEmail) {
-        await sendBookingNotification(
-          clientEmail,
-          'Rezervace zrusena - ' + orgName,
-          'Dobry den ' + clientName + ',\n\nvase rezervace byla zrusena.\n\nSluzba: ' + serviceName + '\nDatum: ' + dateStr + '\n\nPokud chcete novy termin, zarezervujte si prosim znovu.\n\nProvozovatel: ' + orgName
-        )
+        await sendBookingCancellation({
+          to: clientEmail,
+          customerName: clientName,
+          serviceName,
+          date,
+          time,
+          orgName,
+          orgPhone,
+        })
       }
 
       // Waitlist
@@ -132,19 +162,12 @@ export async function POST(request: NextRequest) {
         }).eq('id', first.id)
 
         await supabaseAdmin.from('notifications').insert({
-          organization_id, type: 'waitlist_notified', title: 'Waitlist - slot nabidnut',
-          body: 'Uvolneny slot nabidnut: ' + (first.customer_name || 'Klient') + ' (' + (first.customer_phone || first.customer_email || '') + ')',
+          organization_id,
+          type: 'waitlist_notified',
+          title: 'Waitlist — slot nabídnut',
+          body: `Uvolněný slot nabídnut: ${first.customer_name || 'Klient'} (${first.customer_phone || first.customer_email || ''})`,
           booking_id,
         })
-
-        // Email waitlist klientovi
-        if (first.customer_email) {
-          await sendBookingNotification(
-            first.customer_email,
-            'Uvolnil se termin - ' + orgName,
-            'Dobry den ' + (first.customer_name || '') + ',\n\nuvolnil se termin, o ktery jste meli zajem.\n\nSluzba: ' + serviceName + '\nDatum: ' + dateStr + '\n\nZarezervujte si ho co nejdrive!\n\nProvozovatel: ' + orgName
-          )
-        }
       }
     }
 
