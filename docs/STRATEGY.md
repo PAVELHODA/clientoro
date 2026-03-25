@@ -147,3 +147,28 @@
 - Profesionální, čistý, důvěryhodný
 - World-class UX — Stripe/Linear úroveň
 - Mobile-first
+
+
+// update-strategy-contest.js
+const fs = require('fs')
+const p = 'docs/STRATEGY.md'
+let c = fs.readFileSync(p, 'utf8')
+
+c = c.replace(
+  '- Účast: jméno, email, telefon, obor, město (= lead databáze)',
+  `- Podmínky účasti:
+  - Jméno a příjmení (povinné)
+  - Email (povinné)
+  - Telefon (povinné)
+  - Obor / činnost (povinné, dropdown)
+  - Město (povinné)
+  - IČO — povinné pro hlavní výherce (ověření přes ARES)
+  - Bez IČO "plánuji podnikat" = může být náhradník
+  - Bez IČO a neplánuje = nemůže soutěžit
+  - Souhlas se zpracováním osobních údajů (GDPR)
+  - Souhlas se zasíláním novinek (marketing)
+- Výsledek: kvalitní lead databáze reálných podnikatelů`
+)
+
+fs.writeFileSync(p, c, 'utf8')
+console.log('Done - contest conditions updated')
