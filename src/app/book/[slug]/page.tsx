@@ -99,6 +99,8 @@ export default function PublicBookingPage() {
   }
 
 
+  const getLocale = () => lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
+
   const getCalendarDays = (year: number, month: number) => {
     const first = new Date(year, month, 1)
     const last = new Date(year, month + 1, 0)
@@ -207,7 +209,6 @@ export default function PublicBookingPage() {
     finally { setSubmitting(false) }
   }
 
-  const getLocale = () => lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
   const formatDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString(getLocale(), { weekday: 'short', day: 'numeric', month: 'long' })
   const getDayName = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString(getLocale(), { weekday: 'short' })
   const getDayNum = (d: string) => new Date(d + 'T12:00:00').getDate()
