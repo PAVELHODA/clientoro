@@ -4,9 +4,11 @@
 ---
 
 ## 💰 Cenová strategie
-- 4 módy: OSVČ, Solo Inspire, Firma, Pro Inspire
-- Sleva za vlastní API klíč ve všech módech
+→ **Detailní rozpis viz [PRICING.md](./PRICING.md)**
+- 4 módy: OSVČ (299), Solo Inspire (799/499), Firma (1499), Pro Inspire (2499/1799)
+- Sleva za vlastní API klíč v AI módech (Solo Inspire, Pro Inspire)
 - WIN-WIN filozofie — žádné provize, žádné skryté poplatky
+- 14 dní trial zdarma, roční platba = 2 měsíce zdarma
 
 ---
 
