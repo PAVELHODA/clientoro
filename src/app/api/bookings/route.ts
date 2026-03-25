@@ -70,9 +70,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Kontrola kolize — POUZE u stejného zaměstnance na stejný čas
-    // Firma / Pro Inspire: různí zaměstnanci mohou mít rezervace ve stejný čas
-    // Solo: má jen 1 zaměstnance, takže kolize = vždy blokuje
-    // Backfill: ignoruje kolize (zpětné doplnění)
     if (validData.staff_id && !validData.is_backfill) {
       const { data: conflicts } = await supabaseAdmin
         .from('bookings')
@@ -88,10 +85,52 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Auto-create klienta pokud má telefon a nemá client_id
+    let clientId = validData.client_id || null
+    if (!clientId && validData.customer_phone) {
+      // Hledej existujícího klienta podle telefonu
+      const { data: existingClient } = await supabaseAdmin
+        .from('clients')
+        .select('id, total_visits')
+        .eq('organization_id', auth.organizationId)
+        .eq('phone', validData.customer_phone)
+        .single()
+
+      if (existingClient) {
+        clientId = existingClient.id
+        // Aktualizuj počet návštěv
+        await supabaseAdmin.from('clients').update({
+          total_visits: (existingClient.total_visits || 0) + 1,
+          last_visit_at: validData.start_at,
+          full_name: validData.customer_name || existingClient.full_name,
+        }).eq('id', clientId)
+      } else if (validData.customer_name) {
+        // Vytvoř nového klienta
+        const { data: newClient } = await supabaseAdmin
+          .from('clients')
+          .insert({
+            organization_id: auth.organizationId,
+            full_name: validData.customer_name,
+            phone: validData.customer_phone,
+            email: validData.customer_email || null,
+            source: validData.source === 'online' ? 'online' : 'manual',
+            total_visits: 1,
+            last_visit_at: validData.start_at,
+          })
+          .select('id')
+          .single()
+        clientId = newClient?.id || null
+      }
+    }
+
     // Vložení rezervace
     const { data, error } = await supabaseAdmin
       .from('bookings')
-      .insert({ ...validData, organization_id: auth.organizationId })
+      .insert({
+        ...validData,
+        organization_id: auth.organizationId,
+        client_id: clientId,
+      })
       .select(`
         *,
         clients (id, full_name, phone, email),
