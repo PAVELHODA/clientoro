@@ -172,3 +172,31 @@ c = c.replace(
 
 fs.writeFileSync(p, c, 'utf8')
 console.log('Done - contest conditions updated')
+
+// update-dark-mode-docs.js
+const fs = require('fs')
+const p = 'docs/STRATEGY.md'
+let c = fs.readFileSync(p, 'utf8')
+
+c = c.replace(
+  '## 🎨 Design principy',
+  `## 🌙 Dark mode
+- Přepínač v Settings nebo sidebaru (Sun/Moon Lucide ikona)
+- Pozadí: nikdy čistě černá — vždy s nádechem modré (#0f1419)
+- Text: nikdy čistě bílý — vždy #e5e7eb (šetří oči)
+- Kontrast min 4.5:1 (WCAG AA) — texty MUSÍ být čitelné
+- Sidebar: hlubší oceánový gradient (#0a1628 → #0c2235)
+- Karty: #1a2332 (tmavě šedá s modrou)
+- Accent: #14b8a6 (světlejší teal — svítí v tmavém)
+- Stíny nahradit jemnými bordery (#2d3748)
+- Oceánový brand v dark modu = premium noční dashboard
+- Implementace: Tailwind dark: prefix
+
+---
+
+## 🎨 Design principy`
+)
+
+fs.writeFileSync(p, c, 'utf8')
+console.log('Done - dark mode strategy added')
+
