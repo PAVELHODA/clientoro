@@ -58,6 +58,7 @@ export default function PublicBookingPage() {
   const [submitError, setSubmitError] = useState('')
   const [gdprConsent, setGdprConsent] = useState(false)
   const [lang, setLangState] = useState<PublicLang>('cs')
+  const [reminderChecked, setReminderChecked] = useState(true)
   const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() } })
   const [weekOffset, setWeekOffset] = useState(0)
   const [showMonthly, setShowMonthly] = useState(false)
@@ -81,6 +82,16 @@ export default function PublicBookingPage() {
     }
     if (slug) fetchData()
   }, [slug])
+
+  useEffect(() => {
+    if (!document.querySelector('link[href*="Poppins"]')) {
+      const l = document.createElement('link')
+      l.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'
+      l.rel = 'stylesheet'
+      document.head.appendChild(l)
+    }
+  }, [])
+
 
   // ===== BUSINESS LOGIC =====
   const availableStaff = selectedService ? staffList.filter(s => s.staff_services?.some(ss => ss.service_id === selectedService.id)) : staffList
@@ -341,19 +352,20 @@ export default function PublicBookingPage() {
                 { key: 'datetime', label: t('book_step_when') },
                 { key: 'contact', label: t('book_step_contact') },
               ].map((s, i) => {
-                const isActive = s.key === step; const isDone = i < stepIndex
+                const isActive = s.key === step; const isDone = i < stepIndex; const canClick = isDone
                 return (
                   <div key={s.key} className="flex items-center">
                     {i > 0 && <div className="w-6 h-px mx-1.5" style={{ background: isDone ? '#059669' : '#e5e7eb' }} />}
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold"
+                    <button onClick={() => { if (canClick) setStep(s.key as Step) }}
+                      className="flex items-center gap-1.5 transition-all" style={{ cursor: canClick ? 'pointer' : 'default' }}>
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-transform ${canClick ? 'hover:scale-110' : ''}`}
                         style={isDone ? { background: '#059669', color: '#fff' } : isActive ? { background: '#0c2d48', color: '#fff' } : { background: '#f3f4f6', color: '#9ca3af' }}>
                         {isDone ? '✓' : i + 1}
                       </div>
                       <span className="text-[11px] font-medium hidden sm:inline" style={{ color: isActive ? '#0c2d48' : isDone ? '#059669' : '#9ca3af' }}>
                         {s.label}
                       </span>
-                    </div>
+                    </button>
                   </div>
                 )
               })}
@@ -729,10 +741,10 @@ export default function PublicBookingPage() {
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">
                 {lang === 'en'
-                  ? `Thank you, ${customerName}! We look forward to seeing you.`
+                  ? 'Thank you! We look forward to meeting you.'
                   : lang === 'sk'
-                    ? `Ďakujeme, ${customerName}! Tešíme sa na stretnutie s Vami.`
-                    : `Děkujeme, ${customerName}! Těšíme se na setkání s Vámi.`}
+                    ? 'Ďakujeme! Tešíme sa na stretnutie s Vami.'
+                    : 'Děkujeme! Těšíme se na společný čas.'}
               </p>
             </div>
 
@@ -808,23 +820,26 @@ export default function PublicBookingPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'linear-gradient(135deg, #059669, #0d9488)' }}>
-                    <Clock className="w-3 h-3 text-white" />
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <div className="mt-0.5 flex-shrink-0">
+                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${reminderChecked ? 'border-emerald-500 bg-emerald-500' : 'border-gray-300 group-hover:border-emerald-400'}`}
+                      onClick={() => setReminderChecked(!reminderChecked)}>
+                      {reminderChecked && <Check className="w-3 h-3 text-white" />}
+                    </div>
                   </div>
-                  <div>
+                  <div onClick={() => setReminderChecked(!reminderChecked)}>
                     <p className="text-sm font-semibold text-gray-800">
-                      {lang === 'en' ? 'Reminder before your visit' : lang === 'sk' ? 'Pripomienka pred návštevou' : 'Připomínka před návštěvou'}
+                      {lang === 'en' ? 'Send me a reminder the day before' : lang === 'sk' ? 'Pošlite mi pripomienku deň vopred' : 'Pošlete mi připomínku den předem'}
                     </p>
                     <p className="text-xs text-gray-400 leading-relaxed">
                       {lang === 'en'
-                        ? 'We will send you a reminder the day before so you don\'t forget.'
+                        ? 'We\'ll email you a reminder so you don\'t forget.'
                         : lang === 'sk'
-                          ? 'Deň pred návštevou Vám pošleme pripomienku, aby ste nezabudli.'
-                          : 'Den před návštěvou Vám pošleme připomínku, abyste nezapomněli.'}
+                          ? 'Pošleme Vám e-mail, aby ste nezabudli.'
+                          : 'Pošleme Vám e-mail, abyste nezapomněli.'}
                     </p>
                   </div>
-                </div>
+                </label>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-amber-50">
                     <MessageSquare className="w-3 h-3 text-amber-600" />
