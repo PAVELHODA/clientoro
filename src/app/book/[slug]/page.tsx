@@ -699,60 +699,127 @@ export default function PublicBookingPage() {
 
         {/* KROK 5: HOTOVO */}
         {step === 'done' && (
-          <div className="text-center pt-10 pb-4">
-            <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8" style={{ background: 'linear-gradient(135deg, #059669, #0f6b7a)', boxShadow: '0 15px 40px rgba(5,150,105,0.25)' }}>
-              <Check className="w-12 h-12 text-white" strokeWidth={2.5} />
+          <div className="pt-6 pb-4">
+            {/* Poděkování */}
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: 'linear-gradient(135deg, #059669, #0f6b7a)', boxShadow: '0 12px 30px rgba(5,150,105,0.25)' }}>
+                <Check className="w-10 h-10 text-white" strokeWidth={2.5} />
+              </div>
+              <h2 className="font-poppins text-gray-900 mb-2" style={{ fontSize: '22px', fontWeight: 600 }}>
+                {lang === 'en' ? 'Reservation confirmed!' : lang === 'sk' ? 'Rezervácia potvrdená!' : 'Rezervace potvrzena!'}
+              </h2>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">
+                {lang === 'en'
+                  ? `Thank you, ${customerName}! We look forward to seeing you.`
+                  : lang === 'sk'
+                    ? `Ďakujeme, ${customerName}! Tešíme sa na stretnutie s Vami.`
+                    : `Děkujeme, ${customerName}! Těšíme se na setkání s Vámi.`}
+              </p>
             </div>
 
-            <h2 className="font-playfair text-gray-900 mb-1" style={{ fontSize: '28px', fontWeight: 500 }}>{t('book_confirmed')}</h2>
-            <p className="text-gray-400 mb-8 text-sm">{t('book_see_you')}</p>
-
-            <div className="bg-white rounded-2xl p-5 mb-8 text-left border border-gray-100">
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t('book_service')}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedService?.color || '#0f6b7a' }} />
-                    <span className="font-bold text-gray-900">{selectedService?.name}</span>
+            {/* Shrnutí rezervace */}
+            <div className="rounded-2xl overflow-hidden mb-6" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48, #0e4d64)' }}>
+              <div className="p-5">
+                <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-4">
+                  {lang === 'en' ? 'Reservation summary' : lang === 'sk' ? 'Zhrnutie rezervácie' : 'Shrnutí rezervace'}
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <User className="w-4 h-4 text-white/30 flex-shrink-0" />
+                    <span className="text-white/50 text-sm">{lang === 'en' ? 'Client' : 'Klient'}</span>
+                    <span className="text-white font-semibold text-sm ml-auto">{customerName}</span>
                   </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t('book_date')}</span>
-                  <span className="font-semibold text-gray-900">{formatDate(selectedDate)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t('book_time')}</span>
-                  <span className="font-semibold text-gray-900">{selectedTime}</span>
-                </div>
-                {selectedStaff && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">{t('book_specialist')}</span>
-                    <span className="font-medium text-gray-700">{selectedStaff.full_name}</span>
-                  </div>
-                )}
-                {selectedService?.price && (
-                  <>
-                    <div className="h-px bg-gray-100" />
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-400">{t('book_price')}</span>
-                      <div>
-                        <span className="text-xl font-bold text-gray-900">{selectedService.price}</span>
-                        <span className="text-sm font-medium text-gray-500 ml-1">{t('book_currency')}</span>
-                      </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedService?.color || '#0f6b7a' }} />
                     </div>
-                  </>
-                )}
+                    <span className="text-white/50 text-sm">{lang === 'en' ? 'Service' : 'Služba'}</span>
+                    <span className="text-white font-semibold text-sm ml-auto">{selectedService?.name}</span>
+                  </div>
+                  {selectedStaff && (
+                    <div className="flex items-center gap-3">
+                      <Star className="w-4 h-4 text-white/30 flex-shrink-0" />
+                      <span className="text-white/50 text-sm">{lang === 'en' ? 'Specialist' : 'Specialista'}</span>
+                      <span className="text-white font-semibold text-sm ml-auto">{selectedStaff.full_name}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-4 h-4 text-white/30 flex-shrink-0" />
+                    <span className="text-white/50 text-sm">{lang === 'en' ? 'Date' : 'Datum'}</span>
+                    <span className="text-white font-semibold text-sm ml-auto">{formatDate(selectedDate)}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-4 h-4 text-white/30 flex-shrink-0" />
+                    <span className="text-white/50 text-sm">{lang === 'en' ? 'Time' : 'Čas'}</span>
+                    <span className="text-white font-semibold text-sm ml-auto">{selectedTime}</span>
+                  </div>
+                  {selectedService?.price && (
+                    <>
+                      <div className="h-px bg-white/10 my-1" />
+                      <div className="flex items-center gap-3">
+                        <span className="text-white/50 text-sm ml-7">{lang === 'en' ? 'Price' : 'Cena'}</span>
+                        <span className="text-white font-bold text-lg ml-auto">{selectedService.price} <span className="text-white/40 text-sm font-normal">{t('book_currency')}</span></span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
+            {/* Mapa */}
+            {org?.address && (
+              <a href={`https://maps.google.com/?q=${encodeURIComponent(org.address)}`} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 mb-3 hover:bg-gray-50 transition-colors">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                  <MapPin className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">{lang === 'en' ? 'Show on map' : lang === 'sk' ? 'Zobraziť na mape' : 'Zobrazit na mapě'}</p>
+                  <p className="text-sm text-gray-700 font-medium truncate">{org.address}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+              </a>
+            )}
+
+            {/* Přidat do kalendáře */}
+            <a href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent((selectedService?.name || '') + ' — ' + (org?.name || ''))}&dates=${selectedDate.replace(/-/g, '')}T${selectedTime.replace(':', '')}00/${selectedDate.replace(/-/g, '')}T${(() => { const [h, m] = selectedTime.split(':').map(Number); const end = h * 60 + m + (selectedService?.duration || 60); return String(Math.floor(end / 60)).padStart(2, '0') + String(end % 60).padStart(2, '0'); })()}00&location=${encodeURIComponent(org?.address || '')}`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 mb-3 hover:bg-gray-50 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">{lang === 'en' ? 'Add to calendar' : lang === 'sk' ? 'Pridať do kalendára' : 'Přidat do kalendáře'}</p>
+                <p className="text-sm text-gray-700 font-medium">Google Calendar</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+            </a>
+
+            {/* Kontakt na salon */}
+            {org?.phone && (
+              <a href={`tel:${org.phone}`}
+                className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 mb-6 hover:bg-gray-50 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">{lang === 'en' ? 'Need to change?' : lang === 'sk' ? 'Potrebujete zmeniť?' : 'Potřebujete změnit?'}</p>
+                  <p className="text-sm text-gray-700 font-medium">{org.phone}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+              </a>
+            )}
+
+            {/* Další rezervace */}
             <button onClick={resetAll}
-              className="px-8 py-3.5 text-white rounded-2xl font-semibold transition-all active:scale-[0.98]"
+              className="w-full py-3.5 text-white rounded-2xl font-semibold text-sm transition-all active:scale-[0.98]"
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', boxShadow: '0 8px 25px rgba(12,45,72,0.3)' }}>
-              {t('book_another')}
+              {lang === 'en' ? 'Book another appointment' : lang === 'sk' ? 'Rezervovať ďalší termín' : 'Rezervovat další termín'}
             </button>
-            <div className="mt-14 flex items-center justify-center gap-2">
-              <Waves className="w-4 h-4 text-gray-300" />
-              <span className="text-gray-400 text-[11px] font-bold" style={{ letterSpacing: '0.2em' }}>POWERED BY CLIENTORO</span>
+
+            <div className="mt-10 flex items-center justify-center gap-2">
+              <Waves className="w-3.5 h-3.5 text-gray-300" />
+              <span className="text-gray-300 text-[10px] font-semibold" style={{ letterSpacing: '0.2em' }}>POWERED BY CLIENTORO</span>
             </div>
           </div>
         )}
