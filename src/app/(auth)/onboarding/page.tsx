@@ -154,13 +154,23 @@ export default function OnboardingPage() {
 
   const finishOnboarding = async () => {
     setSaving(true)
-    await fetch('/api/settings', {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ onboarding_completed: true }),
-    })
-    setSaving(false); router.push('/dashboard'); router.refresh()
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ onboarding_completed: true }),
+      })
+      if (res.ok) {
+        // Hard refresh — AuthProvider se reinicializuje a načte aktuální data
+        window.location.href = '/dashboard'
+      } else {
+        toast.error('Chyba při dokončení nastavení')
+        setSaving(false)
+      }
+    } catch {
+      toast.error('Chyba při dokončení nastavení')
+      setSaving(false)
+    }
   }
-
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
       <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #052e16 0%, #065f46 30%, #059669 50%, #0369a1 75%, #1e3a5f 100%)' }} />
