@@ -240,6 +240,7 @@ export async function POST(request: NextRequest) {
         price: price || undefined,
         orgName: org.name,
         orgPhone: org.phone || undefined,
+        manageUrl,
       }).catch(err => console.error('[Email to client failed]', err))
     }
 

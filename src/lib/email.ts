@@ -62,10 +62,10 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
 
 // ===== 1. POTVRZENÍ REZERVACE — klientovi =====
 export async function sendBookingConfirmation({
-  to, customerName, serviceName, staffName, date, time, price, orgName, orgPhone,
+  to, customerName, serviceName, staffName, date, time, price, orgName, orgPhone, manageUrl,
 }: {
   to: string; customerName: string; serviceName: string; staffName?: string
-  date: string; time: string; price?: number; orgName: string; orgPhone?: string
+  date: string; time: string; price?: number; orgName: string; orgPhone?: string; manageUrl?: string
 }) {
   const items = [
     { label: 'Služba', value: serviceName },
@@ -89,7 +89,11 @@ export async function sendBookingConfirmation({
           Provozovatel: <strong>${orgName}</strong>${orgPhone ? ` · ${orgPhone}` : ''}
         </p>
       `,
-      footer: `<p style="color:#6b7280;font-size:12px;margin:0;">Těšíme se na Vás! 🙌</p>`,
+      footer: `<p style="color:#6b7280;font-size:12px;margin:0;">Těšíme se na Vás! 🙌</p>
+        ${manageUrl ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;">
+          <a href="${manageUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
+          <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Změnit nebo zrušit rezervaci</p>
+        </div>` : ''}`,
     }),
   })
 }
