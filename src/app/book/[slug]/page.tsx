@@ -150,6 +150,37 @@ export default function PublicBookingPage() {
     return first.toLocaleDateString(getLocale(), { day: 'numeric', month: 'short' }) + ' – ' + last.toLocaleDateString(getLocale(), { day: 'numeric', month: 'short' })
   })()
 
+
+  // Kontrola zda je den dostupný (staff pracuje + není time off)
+  const isDayAvailable = (dateStr: string) => {
+    if (dateStr < todayStr) return false
+    const d = new Date(dateStr + 'T12:00:00')
+    const jsDay = d.getDay() // 0=Ne, 1=Po...
+    const dbWeekday = jsDay === 0 ? 7 : jsDay // 1=Po...7=Ne
+
+    // Najdi relevantní staff (podle vybrané služby)
+    const relevantStaff = selectedStaff
+      ? [selectedStaff]
+      : staffList.filter(s => {
+          const ss = (s as any).staff_services || []
+          return ss.length === 0 || ss.some((svc: any) => svc.service_id === selectedService?.id)
+        })
+
+    // Aspoň jeden staff musí mít working hours pro tento den
+    const anyStaffWorks = relevantStaff.some(s => {
+      // Kontrola working hours
+      const staffWH = workingHours.filter(wh => wh.staff_id === s.id && wh.weekday === dbWeekday)
+      if (staffWH.length === 0 && workingHours.filter(wh => wh.staff_id === s.id).length > 0) return false
+      // Kontrola time off
+      const hasTimeOff = timeOffs.some(to =>
+        to.staff_id === s.id && to.start_at.split('T')[0] <= dateStr && to.end_at.split('T')[0] >= dateStr
+      )
+      return !hasTimeOff
+    })
+
+    return anyStaffWorks
+  }
+
   const getAvailableDates = () => {
     const dates: string[] = []; const today = new Date()
     for (let i = 0; i < 21; i++) { const d = new Date(today); d.setDate(today.getDate() + i); const ds = d.toISOString().split('T')[0]; if (hasAnyStaffWorking(ds)) dates.push(ds) }
@@ -466,6 +497,7 @@ export default function PublicBookingPage() {
               </div>
               <div className="grid grid-cols-7 gap-1.5">
                 {weekDays.map((d, i) => {
+                  const available = isDayAvailable(d)
                   const past = d < todayStr
                   const isWeekend = i >= 5
                   const active = selectedDate === d
@@ -474,8 +506,8 @@ export default function PublicBookingPage() {
                   const dayLabel = dayNames[i]
 
                   return (
-                    <button key={d} disabled={past}
-                      onClick={() => { if (!past) { setSelectedDate(d); setSelectedTime(''); setShowMonthly(false) } }}
+                    <button key={d} disabled={!available}
+                      onClick={() => { if (available) { setSelectedDate(d); setSelectedTime(''); setShowMonthly(false) } }}
                       className="flex flex-col items-center py-2 rounded-xl transition-all duration-200"
                       style={active
                         ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#fff', boxShadow: '0 4px 12px rgba(12,45,72,0.25)' }
@@ -574,7 +606,7 @@ export default function PublicBookingPage() {
                     if (!d) return <div key={'e' + i} className="aspect-square border-b border-r border-gray-50" style={i % 7 >= 5 ? { background: 'rgba(14,77,100,0.03)' } : {}} />
                     const past = isPast(d)
                     const far = isFarFuture(d)
-                    const available = !past && !far
+                    const available = !past && !far && isDayAvailable(d)
                     const active = selectedDate === d
                     const today = d === todayStr
                     const isWeekend = i % 7 >= 5
