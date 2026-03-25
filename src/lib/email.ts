@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 // ===== ŠABLONA =====
-function emailTemplate({ title, body, footer }: { title: string; body: string; footer?: string }) {
+function emailTemplate({ title, body, footer, orgName }: { title: string; body: string; footer?: string; orgName?: string }) {
   return `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -12,8 +12,8 @@ function emailTemplate({ title, body, footer }: { title: string; body: string; f
 <div style="max-width:520px;margin:0 auto;padding:24px 16px;">
   <!-- Header -->
   <div style="background:linear-gradient(135deg,#0a1628 0%,#0c2d48 40%,#0e4d64 70%,#0f6b7a 100%);padding:28px 24px;border-radius:16px 16px 0 0;text-align:center;">
-    <img src="https://clientoro.pro/icons/icon.svg" alt="Clientoro" width="32" height="32" style="margin-bottom:8px;opacity:0.8;" />
-    <h1 style="color:white;margin:0;font-size:18px;font-weight:600;letter-spacing:0.15em;">CLIENTORO</h1>
+    <h1 style="color:white;margin:0;font-size:20px;font-weight:600;letter-spacing:0.03em;">${orgName || 'Rezervace'}</h1>
+    <p style="color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:11px;letter-spacing:0.1em;">ONLINE REZERVACE</p>
   </div>
   <!-- Body -->
   <div style="background:white;padding:28px 24px;border:1px solid #e5e7eb;border-top:none;">
@@ -78,6 +78,7 @@ export async function sendBookingConfirmation({
     to,
     subject: `Potvrzení rezervace — ${orgName}`,
     html: emailTemplate({
+      orgName,
       title: 'Vaše rezervace je potvrzena ✓',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
@@ -114,6 +115,7 @@ export async function sendOwnerNotification({
     to,
     subject: `Nová rezervace — ${customerName} · ${serviceName}`,
     html: emailTemplate({
+      orgName,
       title: 'Nová rezervace!',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
@@ -141,6 +143,7 @@ export async function sendBookingCancellation({
     to,
     subject: `Rezervace zrušena — ${orgName}`,
     html: emailTemplate({
+      orgName,
       title: 'Rezervace byla zrušena',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
@@ -174,6 +177,7 @@ export async function sendOwnerCancellation({
     to,
     subject: `Rezervace zrušena — ${customerName}`,
     html: emailTemplate({
+      orgName,
       title: 'Rezervace zrušena ✕',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
@@ -203,6 +207,7 @@ export async function sendBookingReminder({
     to,
     subject: `Připomínka: zítra ${serviceName} — ${orgName}`,
     html: emailTemplate({
+      orgName,
       title: 'Připomínka na zítřek 📅',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
@@ -224,6 +229,7 @@ export async function sendTestEmail({ to, orgName }: { to: string; orgName: stri
     to,
     subject: `Testovací email — ${orgName}`,
     html: emailTemplate({
+      orgName,
       title: 'Notifikace fungují! ✓',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
