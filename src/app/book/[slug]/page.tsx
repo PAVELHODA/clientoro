@@ -58,6 +58,7 @@ export default function PublicBookingPage() {
   const [submitError, setSubmitError] = useState('')
   const [gdprConsent, setGdprConsent] = useState(false)
   const [lang, setLangState] = useState<PublicLang>('cs')
+  const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() } })
 
   const t = (key: string) => publicTranslations[lang]?.[key] || publicTranslations.cs[key] || key
   const setLang = (l: PublicLang) => { localStorage.setItem('clientoro_book_lang', l); setLangState(l) }
@@ -94,6 +95,34 @@ export default function PublicBookingPage() {
       return !timeOffs.some(to => to.staff_id === staff.id && dateStr >= to.start_at.split('T')[0] && dateStr <= to.end_at.split('T')[0])
     })
   }
+
+
+  const getCalendarDays = (year: number, month: number) => {
+    const first = new Date(year, month, 1)
+    const last = new Date(year, month + 1, 0)
+    const startDay = first.getDay() === 0 ? 6 : first.getDay() - 1 // Po=0
+    const days: (string | null)[] = []
+    for (let i = 0; i < startDay; i++) days.push(null)
+    for (let d = 1; d <= last.getDate(); d++) {
+      const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+      days.push(ds)
+    }
+    return days
+  }
+
+  const calMonthName = (y: number, m: number) => {
+    const d = new Date(y, m, 1)
+    return d.toLocaleDateString(getLocale(), { month: 'long', year: 'numeric' })
+  }
+
+  const todayStr = new Date().toISOString().split('T')[0]
+  const isPast = (d: string) => d < todayStr
+  const isFarFuture = (d: string) => {
+    const max = new Date(); max.setDate(max.getDate() + 21)
+    return d > max.toISOString().split('T')[0]
+  }
+
+  const dayNames = lang === 'en' ? ['Mo','Tu','We','Th','Fr','Sa','Su'] : lang === 'sk' ? ['Po','Ut','St','Št','Pi','So','Ne'] : ['Po','Út','St','Čt','Pá','So','Ne']
 
   const getAvailableDates = () => {
     const dates: string[] = []; const today = new Date()
@@ -191,14 +220,8 @@ export default function PublicBookingPage() {
   return (
     <div className="min-h-screen relative font-poppins" style={{ background: '#f7f8fa' }}>
 
-      {/* ===== GLOW LINE ===== */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(14,77,100,0.12) 25%, rgba(15,107,122,0.2) 50%, rgba(14,77,100,0.12) 75%, transparent 100%)' }} />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="w-2.5 h-2.5 rounded-full" style={{ background: 'radial-gradient(circle, rgba(15,107,122,0.7) 0%, rgba(14,77,100,0.3) 40%, transparent 70%)', boxShadow: '0 0 15px 6px rgba(15,107,122,0.12), 0 0 50px 18px rgba(14,77,100,0.06)' }} />
-        </div>
-        <div className="absolute left-1/2 top-0 bottom-0 w-16 -translate-x-1/2" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(14,77,100,0.02) 30%, rgba(15,107,122,0.04) 50%, rgba(14,77,100,0.02) 70%, transparent 100%)' }} />
-      </div>
+          
+
 
       {/* ===== HEADER ===== */}
       <div className="relative overflow-hidden">
@@ -283,8 +306,29 @@ export default function PublicBookingPage() {
         </div>
       )}
 
+      {/* ===== GLOW LINE — pod step indicator ===== */}
+      {step !== 'done' && (
+        <div className="max-w-lg mx-auto px-5 relative z-10 -mt-0.5">
+          <div className="relative h-4">
+            <div className="absolute left-5 right-5 top-1/2 h-px" style={{ background: 'linear-gradient(90deg, rgba(14,77,100,0.06) 0%, rgba(15,107,122,0.12) 50%, rgba(14,77,100,0.06) 100%)' }} />
+            <div className="absolute left-5 top-1/2 h-px transition-all duration-1000 ease-in-out"
+              style={{
+                width: step === 'service' ? '12.5%' : step === 'staff' ? '37.5%' : step === 'datetime' ? '62.5%' : '87.5%',
+                background: 'linear-gradient(90deg, rgba(15,107,122,0.08) 0%, rgba(15,107,122,0.4) 100%)',
+              }} />
+            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-1000 ease-in-out"
+              style={{ left: `calc(20px + ${step === 'service' ? 12.5 : step === 'staff' ? 37.5 : step === 'datetime' ? 62.5 : 87.5}%)` }}>
+              <div className="w-2 h-2 rounded-full" style={{
+                background: 'radial-gradient(circle, rgba(15,107,122,0.85) 0%, rgba(14,77,100,0.35) 40%, transparent 70%)',
+                boxShadow: '0 0 10px 4px rgba(15,107,122,0.18), 0 0 30px 12px rgba(14,77,100,0.06)',
+              }} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ===== CONTENT ===== */}
-      <div className="max-w-lg mx-auto px-5 pt-7 pb-12 relative z-10">
+      <div className="max-w-lg mx-auto px-5 pt-7 pb-24 relative z-10">
 
         {/* KROK 1: SLUŽBY */}
         {step === 'service' && (
@@ -340,7 +384,7 @@ export default function PublicBookingPage() {
                   </div>
                   <div className="flex-1">
                     <p className="font-semibold text-gray-900">{t('book_anyone')}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{t('book_anyone_desc') || 'Přiřadíme prvního volného'}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{lang === 'en' ? 'We\'ll assign the first available' : lang === 'sk' ? 'Priradíme prvého voľného' : 'Přiřadíme prvního volného'}</p>
                   </div>
                 </div>
               </button>
@@ -380,46 +424,91 @@ export default function PublicBookingPage() {
             </div>
             <h2 className="font-playfair text-gray-900 mb-6" style={{ fontSize: '24px', fontWeight: 500 }}>{t('book_choose_datetime')}</h2>
 
-            {/* Date scroll */}
-            <div className="mb-8">
-              <div ref={dateScrollRef} className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5" style={{ scrollbarWidth: 'none' }}>
-                {availableDates.map(d => {
+            {/* ===== MĚSÍČNÍ KALENDÁŘ ===== */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-6">
+              {/* Navigace měsíce */}
+              <div className="flex items-center justify-between mb-4">
+                <button onClick={() => {
+                  const prev = calMonth.month === 0 ? { year: calMonth.year - 1, month: 11 } : { year: calMonth.year, month: calMonth.month - 1 }
+                  const now = new Date(); if (prev.year > now.getFullYear() || (prev.year === now.getFullYear() && prev.month >= now.getMonth())) setCalMonth(prev)
+                }} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-sm font-semibold text-gray-800 capitalize">{calMonthName(calMonth.year, calMonth.month)}</span>
+                <button onClick={() => {
+                  const next = calMonth.month === 11 ? { year: calMonth.year + 1, month: 0 } : { year: calMonth.year, month: calMonth.month + 1 }
+                  const maxDate = new Date(); maxDate.setDate(maxDate.getDate() + 60)
+                  if (next.year < maxDate.getFullYear() || (next.year === maxDate.getFullYear() && next.month <= maxDate.getMonth())) setCalMonth(next)
+                }} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Dny v týdnu */}
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {dayNames.map(d => (
+                  <div key={d} className="text-center text-[10px] font-semibold text-gray-400 uppercase tracking-wider py-1">{d}</div>
+                ))}
+              </div>
+
+              {/* Dny v měsíci */}
+              <div className="grid grid-cols-7 gap-1">
+                {getCalendarDays(calMonth.year, calMonth.month).map((d, i) => {
+                  if (!d) return <div key={'e' + i} />
+                  const past = isPast(d)
+                  const far = isFarFuture(d)
+                  const available = !past && !far && hasAnyStaffWorking(d)
                   const active = selectedDate === d
+                  const today = d === todayStr
+
                   return (
-                    <button key={d} onClick={() => { setSelectedDate(d); setSelectedTime('') }}
-                      className="flex-shrink-0 w-[68px] py-3 rounded-2xl text-center transition-all duration-200"
-                      style={active ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#fff', boxShadow: '0 8px 20px rgba(12,45,72,0.25)' } : { background: '#fff', color: '#374151', border: '1px solid #f3f4f6' }}>
-                      <span className="block text-[10px] uppercase tracking-wider font-semibold" style={{ opacity: active ? 0.7 : 0.5 }}>
-                        {isToday(d) ? (lang === 'en' ? 'Today' : 'Dnes') : isTomorrow(d) ? (lang === 'en' ? 'Tmrw' : 'Zítra') : getDayName(d)}
-                      </span>
-                      <span className="block text-xl font-bold mt-0.5">{getDayNum(d)}</span>
-                      <span className="block text-[10px] font-medium" style={{ opacity: 0.5 }}>{getMonthShort(d)}</span>
+                    <button key={d} disabled={!available}
+                      onClick={() => { if (available) { setSelectedDate(d); setSelectedTime('') } }}
+                      className="relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm transition-all duration-150"
+                      style={active
+                        ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#fff', boxShadow: '0 4px 12px rgba(12,45,72,0.25)' }
+                        : available
+                          ? { color: '#111827', cursor: 'pointer' }
+                          : { color: '#d1d5db', cursor: 'default' }
+                      }>
+                      <span className={`font-semibold ${today && !active ? 'text-[#0f6b7a]' : ''}`}>{parseInt(d.split('-')[2])}</span>
+                      {available && !active && (
+                        <div className="absolute bottom-1 w-1 h-1 rounded-full" style={{ background: '#0f6b7a', opacity: 0.5 }} />
+                      )}
+                      {today && !active && (
+                        <div className="absolute bottom-1 w-4 h-0.5 rounded-full" style={{ background: '#0f6b7a', opacity: 0.3 }} />
+                      )}
                     </button>
                   )
                 })}
               </div>
             </div>
 
-            {/* Time slots */}
+            {/* ===== TIME SLOTY ===== */}
             {selectedDate && (
               <div>
+                <p className="text-sm font-semibold text-gray-700 mb-3">
+                  {formatDate(selectedDate)}
+                </p>
                 {availableSlots.length === 0 ? (
-                  <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+                  <div className="text-center py-10 bg-white rounded-2xl border border-gray-100">
+                    <Calendar className="w-8 h-8 text-gray-200 mx-auto mb-2" />
                     <p className="text-sm text-gray-400">{t('book_no_slots')}</p>
                   </div>
                 ) : (
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     {[
                       { slots: slotGroups.morning, label: lang === 'en' ? 'Morning' : lang === 'sk' ? 'Ráno' : 'Dopoledne' },
                       { slots: slotGroups.afternoon, label: lang === 'en' ? 'Afternoon' : lang === 'sk' ? 'Popoludnie' : 'Odpoledne' },
                       { slots: slotGroups.evening, label: lang === 'en' ? 'Evening' : lang === 'sk' ? 'Večer' : 'Večer' },
                     ].filter(g => g.slots.length > 0).map(group => (
                       <div key={group.label}>
-                        <p className="text-xs text-gray-400 mb-2.5 uppercase tracking-wider font-semibold">{group.label}</p>
+                        <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider font-semibold">{group.label}</p>
                         <div className="grid grid-cols-4 gap-2">
                           {group.slots.map(ti => (
                             <button key={ti} onClick={() => { setSelectedTime(ti); setStep('contact') }}
-                              className="py-3 bg-white rounded-xl text-sm font-semibold text-gray-700 border border-gray-100 transition-all duration-150 hover:shadow-md"
+                              className="py-2.5 bg-white rounded-xl text-sm font-semibold text-gray-700 border border-gray-100 transition-all duration-150 hover:shadow-md hover:border-transparent"
+                              style={{}}
                               onMouseEnter={e => { e.currentTarget.style.background = 'linear-gradient(135deg, #0c2d48, #0f6b7a)'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'transparent' }}
                               onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#f3f4f6' }}>
                               {ti}
