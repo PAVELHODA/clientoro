@@ -785,6 +785,66 @@ export default function PublicBookingPage() {
               </div>
             </div>
 
+            {/* Co bude dál */}
+            <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 p-5 mb-4">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                {lang === 'en' ? 'What happens next?' : lang === 'sk' ? 'Čo bude nasledovať?' : 'Co bude následovat?'}
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                    <Mail className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {lang === 'en' ? 'Confirmation email' : lang === 'sk' ? 'Potvrdzovací e-mail' : 'Potvrzovací e-mail'}
+                    </p>
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      {lang === 'en'
+                        ? 'You will receive a confirmation with all the details to your email shortly.'
+                        : lang === 'sk'
+                          ? 'Čoskoro Vám príde e-mail s potvrdením a všetkými detailmi.'
+                          : 'Brzy Vám přijde e-mail s potvrzením a všemi detaily.'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'linear-gradient(135deg, #059669, #0d9488)' }}>
+                    <Clock className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {lang === 'en' ? 'Reminder before your visit' : lang === 'sk' ? 'Pripomienka pred návštevou' : 'Připomínka před návštěvou'}
+                    </p>
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      {lang === 'en'
+                        ? 'We will send you a reminder the day before so you don\'t forget.'
+                        : lang === 'sk'
+                          ? 'Deň pred návštevou Vám pošleme pripomienku, aby ste nezabudli.'
+                          : 'Den před návštěvou Vám pošleme připomínku, abyste nezapomněli.'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-amber-50">
+                    <MessageSquare className="w-3 h-3 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {lang === 'en' ? 'Need to change or cancel?' : lang === 'sk' ? 'Potrebujete zmeniť alebo zrušiť?' : 'Potřebujete změnit nebo zrušit?'}
+                    </p>
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      {lang === 'en'
+                        ? 'You can easily change or cancel your reservation via the link in the confirmation email.'
+                        : lang === 'sk'
+                          ? 'Rezerváciu môžete jednoducho zmeniť alebo zrušiť cez odkaz v potvrdzujúcom e-maile.'
+                          : 'Rezervaci můžete jednoduše změnit nebo zrušit přes odkaz v potvrzovacím e-mailu.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Mapa */}
             {org?.address && (
               <a href={`https://maps.google.com/?q=${encodeURIComponent(org.address)}`} target="_blank" rel="noopener noreferrer"
