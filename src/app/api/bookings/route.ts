@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       // Hledej existujícího klienta podle telefonu
       const { data: existingClient } = await supabaseAdmin
         .from('clients')
-        .select('id, total_visits')
+        .select('id, total_visits, full_name')
         .eq('organization_id', auth.organizationId)
         .eq('phone', validData.customer_phone)
         .single()
