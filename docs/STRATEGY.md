@@ -318,3 +318,37 @@ console.log('Done - dark mode strategy added')
 - Revenue při 1500 klientech: ~1 050 000 Kč/měs → zisk ~955 000 Kč/měs
 
 ### SaaS marže: 85-90%
+
+
+---
+
+## 🔑 VIP kódy — skryté funkce
+- Superadmin generuje VIP kódy pro vybrané klienty
+- Klient zadá v Settings → "Mám VIP kód"
+- Odemčené funkce se zobrazí s ikonkou ⭐
+
+### Skryté funkce:
+1. **Zpětná rezervace** — 6x klik na Kalendář (VIP-BACKFILL)
+2. **Neomezené kampaně** — Solo Inspire bez limitu 5/měs (VIP-CAMPAIGNS)
+3. **Prioritní podpora** — odpověď do 2h (VIP-SUPPORT-GOLD)
+4. **Beta přístup** — nové funkce 30 dní předem (VIP-BETA)
+5. **Vlastní branding emailů** — kompletní customizace (VIP-BRAND-EMAIL)
+6. **API přístup** — REST API pro napojení (VIP-API-ACCESS)
+7. **Multi-jazyk booking** — CZ+SK+EN+DE na booking stránce (VIP-MULTILANG)
+
+---
+
+## 💼 Investor / sponzor strategie
+- Preferovaný model: Strategický partner (dodavatel kosmetiky, školící centrum)
+- Poměr: 90% Clientoro / 10% provize partnerovi za přivedené klienty
+- Pavel = superadmin + vývoj, partner = marketing + akvizice
+- Prerekvizita: MVP + 10 platících klientů + pitch deck
+- Kanály: CzechInvest, JIC Brno, UP21, dodavatelé kosmetiky, školící centra
+
+---
+
+## 💱 Změna měny
+- Klient požádá v Settings → "Změnit měnu"
+- Superadmin schválí do 3 pracovních dnů
+- Přepočet score/billing před schválením
+- Email klientovi po schválení/zamítnutí

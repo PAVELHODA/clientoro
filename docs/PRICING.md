@@ -152,3 +152,35 @@
 4. **Roční platba** — sleva 2 měsíce zdarma (platí 10, dostane 12)
 5. **Referral** — "Přiveď kamaráda, oba dostanete měsíc zdarma"
 6. **Upgrade path** — OSVČ → Solo Inspire → Firma → Pro Inspire
+
+
+---
+
+## 📊 Ziskovost per mód
+
+| Mód | Cena/měs | Náklad/klient/měs | Zisk/klient/měs | Marže |
+|-----|----------|-------------------|-----------------|-------|
+| OSVČ | 299 Kč | ~30 Kč | ~269 Kč | 90% |
+| Solo Inspire (náš API) | 799 Kč | ~130 Kč | ~669 Kč | 84% |
+| Solo Inspire (vlastní API) | 499 Kč | ~30 Kč | ~469 Kč | 94% |
+| Firma | 1 499 Kč | ~50 Kč | ~1 449 Kč | 97% |
+| Pro Inspire (náš API) | 2 499 Kč | ~250 Kč | ~2 249 Kč | 90% |
+| Pro Inspire (vlastní API) | 1 799 Kč | ~50 Kč | ~1 749 Kč | 97% |
+
+## 💶 EUR ceny (pevné, ne kurzem)
+
+| Mód | CZK | EUR |
+|-----|-----|-----|
+| OSVČ | 299 Kč | 12 € |
+| Solo Inspire | 799/499 Kč | 32/20 € |
+| Firma | 1 499 Kč | 60 € |
+| Pro Inspire | 2 499/1 799 Kč | 100/72 € |
+
+## 🎯 Break-even projekce
+
+| Klientů | Revenue/měs | Náklady/měs | Zisk/měs | Zisk/rok |
+|---------|-------------|-------------|----------|----------|
+| 10 | ~5 000 Kč | ~3 000 Kč | +2 000 Kč | +24 000 Kč |
+| 50 | ~43 000 Kč | ~6 800 Kč | +36 200 Kč | +434 000 Kč |
+| 300 | ~180 000 Kč | ~18 000 Kč | +162 000 Kč | +1 944 000 Kč |
+| 1 500 | ~1 050 000 Kč | ~95 000 Kč | +955 000 Kč | +11 460 000 Kč |
