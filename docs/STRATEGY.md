@@ -200,3 +200,67 @@ c = c.replace(
 fs.writeFileSync(p, c, 'utf8')
 console.log('Done - dark mode strategy added')
 
+
+
+---
+
+## 🔄 Migrace
+- Import z: Google Calendar (.ics), Reservio (CSV), Fresha (CSV), MYFOX, Reenio, Bookio, Anolla, Excel, Apple/Outlook Calendar
+- Co migrovat: klienti, rezervace (historie), služby, zaměstnanci, kalendář, permanentky, věrnostní body
+- Formáty: CSV, JSON, .ics
+- UI: Settings → Import dat → výběr zdroje → upload → mapování sloupců → náhled → import
+- Musí být SNADNÉ — jeden upload, automatické mapování, žádné technické znalosti
+
+---
+
+## 🤖 AI Chat
+- NIKDY nevyskakuje — diskrétní ikonka v rohu
+- Klient/majitel klikne sám když chce
+- Inspire módy = zapnutý by default
+- OSVČ/Firma = vypnutý by default
+- Umí: tržby, volné sloty, doporučení, kampaně, odpovědi klientům
+
+---
+
+## 🇨🇿🇸🇰🇪🇺 Právní a legislativní
+- GDPR: souhlas, výmaz, export, DPO kontakt
+- Cookie consent: nutné přidat cookie lištu
+- VOP: CZ + SK verze
+- DPH: CZ 21%, SK 23%
+- Hosting dat v EU (Supabase AWS eu-central)
+- Later: DSA, ePrivacy, PSD2 pro EU expanzi
+
+---
+
+## 🇸🇰 Slovenský trh
+- Konkurence: Reservio, Bookio, Anolla, Fresha
+- Naše výhoda: AI, žádné provize, fér ceny, CRM, growth nástroje
+- Kulturně: plná slovenčina (ne překlad), vřelejší tón, "vy" forma
+- Měna: EUR (přepínání CZK/EUR v nastavení)
+- Reference: slovenské case studies
+- Instagram dominuje v SK beauty segmentu
+
+---
+
+## 💰 Podpora CZK
+- Ceník primárně v CZK, sekundárně EUR pro SK
+- Fakturace v měně organizace
+- DB: currency pole v organizations ('CZK' | 'EUR')
+- Stripe: nativní podpora CZK i EUR
+
+---
+
+## 🧲 Magnetický generátor — přívod klientů
+### Pro klienty našich klientů (9-12 nových/měsíc):
+- SEO: JSON-LD, katalog, booking stránky jako microsites
+- Social: Instagram booking, QR kódy, sdílení volných slotů, AI generátor postů
+- Referral: přiveď kamaráda, dárkové poukazy
+- Reaktivace: AI detekce neaktivních, follow-up, narozeniny
+- Smart Slot Filler: last minute, happy hours
+
+### Pro registrace na Clientoro (20-40/měsíc):
+- Soutěže (6x ročně) → 5-10 registrací/soutěž
+- SEO blog + katalog → 3-5/měsíc
+- Word of mouth → 2-5/měsíc
+- Google Ads (later) → 5-10/měsíc
+- Partnerství (dodavatelé, školení) → 2-5/měsíc
