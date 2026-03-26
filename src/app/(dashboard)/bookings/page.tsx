@@ -122,6 +122,14 @@ export default function BookingsPage() {
         toast.success(l.statusChanged)
         setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b))
         setSelectedBooking(prev => prev?.id === id ? { ...prev, status } : prev)
+        // Email notifikace klientovi při změně statusu
+        if (status === 'cancelled' || status === 'completed' || status === 'no_show') {
+          fetch('/api/bookings/webhook', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: status, booking_id: id }),
+          }).catch(err => console.error('[webhook]', err))
+        }
       }
     } catch (err) { console.error(err) }
   }
