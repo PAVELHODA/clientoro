@@ -890,19 +890,6 @@ export default function PublicBookingPage() {
             </a>
 
             {/* Kontakt na salon */}
-            {org?.phone && (
-              <a href={`tel:${org.phone}`}
-                className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 mb-6 hover:bg-gray-50 transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-5 h-5 text-emerald-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">{lang === 'en' ? 'Need to change?' : lang === 'sk' ? 'Potrebujete zmeniť?' : 'Potřebujete změnit?'}</p>
-                  <p className="text-sm text-gray-700 font-medium">{org.phone}</p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-              </a>
-            )}
 
             {/* Další rezervace */}
             <button onClick={resetAll}
@@ -913,7 +900,7 @@ export default function PublicBookingPage() {
 
             <div className="mt-10 flex items-center justify-center gap-2">
               <Waves className="w-3.5 h-3.5 text-gray-300" />
-              <span className="text-gray-300 text-[10px] font-semibold" style={{ letterSpacing: '0.2em' }}>POWERED BY CLIENTORO</span>
+              <span className="text-gray-300 text-[10px] font-semibold" style={{ letterSpacing: '0.2em' }}>POWERED BY CLIENTORORO</span>
             </div>
           </div>
         )}
