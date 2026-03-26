@@ -436,7 +436,7 @@ export default function PublicBookingPage() {
                 ? (lang === 'en' ? 'Choose a specialist' : lang === 'sk' ? 'Vyberte špecialistu' : 'Vyberte specialistu')
                 : entryMode === 'service'
                   ? t('book_choose_service')
-                  : (lang === 'en' ? 'How would you like to book?' : lang === 'sk' ? 'Ako si chcete rezervovať?' : 'Jak si chcete rezervovat?')
+                  : (lang === 'en' ? 'How would you like to book?' : lang === 'sk' ? 'Ako sa chcete rezervovať?' : 'Jak se chcete rezervovat?')
               }
             </h2>
 
