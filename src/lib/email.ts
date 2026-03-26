@@ -135,10 +135,10 @@ export async function sendOwnerNotification({
 
 // ===== 3. ZRUŠENÍ REZERVACE — klientovi =====
 export async function sendBookingCancellation({
-  to, customerName, serviceName, date, time, orgName, orgPhone,
+  to, customerName, serviceName, date, time, orgName, orgPhone, bookingUrl,
 }: {
   to: string; customerName: string; serviceName: string
-  date: string; time: string; orgName: string; orgPhone?: string
+  date: string; time: string; orgName: string; orgPhone?: string; bookingUrl?: string
 }) {
   const items = [
     { label: 'Služba', value: serviceName },
@@ -158,6 +158,7 @@ export async function sendBookingCancellation({
         ${infoBox(items, 'red')}
         <p style="color:#6b7280;font-size:13px;margin:16px 0 0;">
           Pokud chcete nový termín, zarezervujte si prosím znovu.<br/>
+        ${bookingUrl ? `<div style="margin-top:16px;"><a href="${bookingUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Rezervovat nový termín</a></div>` : ''}
           Provozovatel: <strong>${orgName}</strong>${orgPhone ? ` · ${orgPhone}` : ''}
         </p>
       `,

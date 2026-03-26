@@ -84,6 +84,7 @@ export async function PATCH(request: NextRequest) {
           time: timeStr,
           orgName: org?.name || '',
           orgPhone: org?.phone || undefined,
+          bookingUrl: org?.slug ? `${process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'}/book/${org.slug}` : undefined,
         }).catch(err => console.error('[Cancel email to client failed]', err))
       }
 

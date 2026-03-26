@@ -229,7 +229,8 @@ export async function POST(request: NextRequest) {
 
     // Email klientovi — potvrzení
     if (customer_email) {
-      const manageUrl = `https://clientoro.pro/booking/manage?token=${data.manage_token}`
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://clientoro.pro')
+      const manageUrl = `${baseUrl}/booking/manage?token=${data.manage_token}`
       sendBookingConfirmation({
         to: customer_email,
         customerName: customer_name,
