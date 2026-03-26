@@ -352,3 +352,36 @@ console.log('Done - dark mode strategy added')
 - Superadmin schválí do 3 pracovních dnů
 - Přepočet score/billing před schválením
 - Email klientovi po schválení/zamítnutí
+
+
+---
+
+## 🔄 Životní cyklus rezervace — kompletní email flow
+
+### Událost → Email klientovi → Email adminovi → Kalendář
+
+| # | Událost | Email klient | Email admin | Kalendář | Status |
+|---|---------|-------------|-------------|----------|--------|
+| 1 | Nová rezervace | ✅ Potvrzení + manage link + booking ID | ✅ Notifikace | TODO: GCal zápis | ✅ |
+| 2 | Zrušení klientem | ✅ Email o zrušení | ✅ Notifikace | TODO: GCal smazat | ✅ |
+| 3 | Změna termínu | TODO: Email s novým termínem | TODO: Notifikace + potvrdit | TODO: GCal update | ❌ |
+| 4 | Připomínka den předem | TODO: Připomínkový email | — | — | ❌ |
+| 5 | Follow-up den po | TODO: Cviky/doporučení + rebooking | — | — | ❌ |
+| 6 | No-show | TODO: "Škoda že jste nepřišli" | ✅ Označení v kalendáři | — | ❌ |
+| 7 | Dokončeno | — | — | — | ✅ (status change) |
+
+### Admin notifikace:
+| Událost | Email | In-app | Status |
+|---------|-------|--------|--------|
+| Nová rezervace | ✅ | ✅ | ✅ |
+| Zrušení | ✅ | ✅ | ✅ |
+| Změna termínu | TODO | TODO | ❌ |
+| Nový klient registrován | TODO | TODO | ❌ |
+| Požadavek změna měny | TODO (superadmin) | TODO | ❌ Fáze 2 |
+| Požadavek upgrade | TODO (superadmin) | TODO | ❌ Fáze 2 |
+| Přidání firmy | TODO (superadmin) | TODO | ❌ Fáze 2 |
+
+### Superadmin email: admin@clientoro.pro
+- Přijímá: požadavky na změnu měny, upgrade, přidání firmy
+- Systémové notifikace o nových registracích
+- Bezpečnostní alerty
