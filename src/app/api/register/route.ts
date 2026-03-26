@@ -1,6 +1,7 @@
 ﻿﻿// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
+import { sendWelcomeEmail } from '@/lib/email'
 import { z } from 'zod'
 import { validateBody } from '@/lib/validations'
 
@@ -128,6 +129,15 @@ export async function POST(request: NextRequest) {
     } catch (notifErr) {
       console.error('Notification error:', notifErr)
     }
+
+    // Odeslat welcome email s booking linkem
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
+    sendWelcomeEmail({
+      to: email,
+      orgName: businessName || 'Váš salon',
+      bookingUrl: `${baseUrl}/book/${slug}`,
+      dashboardUrl: `${baseUrl}/dashboard`,
+    }).catch(err => console.error('[Welcome email failed]', err))
 
     return NextResponse.json({ success: true, userId })
   } catch (err) {

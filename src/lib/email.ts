@@ -250,3 +250,40 @@ export async function sendTestEmail({ to, orgName }: { to: string; orgName: stri
     }),
   })
 }
+
+
+// ===== WELCOME EMAIL PO REGISTRACI =====
+export async function sendWelcomeEmail({
+  to, orgName, bookingUrl, dashboardUrl,
+}: {
+  to: string; orgName: string; bookingUrl: string; dashboardUrl?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Vítejte v Clientoro — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Vítejte v Clientoro!',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Váš účet <strong>${orgName}</strong> je připraven. Tady je vše co potřebujete pro začátek:
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">Váš booking link:</p>
+          <p style="margin:0;"><a href="${bookingUrl}" style="color:#0f6b7a;font-size:14px;font-weight:600;text-decoration:none;">${bookingUrl}</a></p>
+          <p style="margin:8px 0 0;color:#6b7280;font-size:12px;">Sdílejte tento link klientům — mohou si rovnou rezervovat online.</p>
+        </div>
+        <div style="margin:16px 0;">
+          <p style="color:#374151;font-size:14px;font-weight:600;margin:0 0 8px;">Co udělat jako první:</p>
+          <p style="color:#6b7280;font-size:13px;margin:4px 0;">1. Přidejte služby co nabízíte</p>
+          <p style="color:#6b7280;font-size:13px;margin:4px 0;">2. Nastavte pracovní dobu</p>
+          <p style="color:#6b7280;font-size:13px;margin:4px 0;">3. Sdílejte booking link klientům</p>
+        </div>
+      `,
+      footer: `
+        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
+        <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Máte 14 dní trial zdarma.</p>
+      `,
+    }),
+  })
+}
