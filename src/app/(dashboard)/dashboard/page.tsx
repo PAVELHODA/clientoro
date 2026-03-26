@@ -7,7 +7,7 @@ import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
 import {
   Calendar, TrendingUp, TrendingDown, Users, DollarSign,
-  Clock, AlertTriangle, Star, ArrowRight, Zap,
+  Clock, AlertTriangle, Star, ArrowRight, Zap, Coffee, Sun, Moon, Lamp,
 } from 'lucide-react'
 
 interface DashboardData {
@@ -61,11 +61,39 @@ export default function DashboardPage() {
 
   return (
     <div>
-      {/* Header */}
+            {/* Header s pozdravem */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">{t('dash_title')}</h1>
-        <p className="mt-1 text-gray-500">
-          {t('dash_subtitle')} — {new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+        <div className="flex items-center gap-3 mb-1">
+          {new Date().getHours() >= 6 && new Date().getHours() < 12 && <Coffee className="w-6 h-6 text-amber-500" />}
+          {new Date().getHours() >= 12 && new Date().getHours() < 18 && <Sun className="w-6 h-6 text-yellow-500" />}
+          {new Date().getHours() >= 18 && new Date().getHours() < 23 && <Moon className="w-6 h-6 text-indigo-400" />}
+          {(new Date().getHours() >= 23 || new Date().getHours() < 6) && <Lamp className="w-6 h-6 text-purple-400" />}
+          <h1 className="text-2xl font-bold text-gray-900">
+            {new Date().getHours() >= 6 && new Date().getHours() < 12
+              ? (lang === 'en' ? 'Good morning' : lang === 'sk' ? 'Dobré ráno' : 'Dobré ráno')
+              : new Date().getHours() >= 12 && new Date().getHours() < 18
+                ? (lang === 'en' ? 'Good afternoon' : lang === 'sk' ? 'Dobré popoludnie' : 'Dobré odpoledne')
+                : new Date().getHours() >= 18 && new Date().getHours() < 23
+                  ? (lang === 'en' ? 'Good evening' : lang === 'sk' ? 'Dobrý večer' : 'Dobrý večer')
+                  : (lang === 'en' ? 'Still up?' : lang === 'sk' ? 'Ešte hore?' : 'Ještě vzhůru?')
+            }
+          </h1>
+        </div>
+        <p className="text-gray-500">
+          {new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          {data && data.today.bookings > 0 && (
+            <span className="ml-2 text-blue-600 font-medium">
+              · {lang === 'en' ? 'Today' : 'Dnes'}: {data.today.bookings} {lang === 'en' ? 'bookings' : 'rezervací'}
+              {data.today.upcoming && data.today.upcoming.length > 0 && (
+                <span className="text-gray-400 font-normal">
+                  , {lang === 'en' ? 'first at' : 'první v'} {new Date(data.today.upcoming[0].start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              )}
+            </span>
+          )}
+          {data && data.today.bookings === 0 && (
+            <span className="ml-2 text-gray-400">· {lang === 'en' ? 'No bookings today' : 'Dnes žádné rezervace'}</span>
+          )}
         </p>
       </div>
 
