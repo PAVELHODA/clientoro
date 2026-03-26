@@ -1,4 +1,19 @@
+# Clientoro robots.txt
 User-agent: *
 Allow: /
+Allow: /book/
+Allow: /katalog/
+Disallow: /dashboard
+Disallow: /calendar
+Disallow: /bookings
+Disallow: /clients
+Disallow: /services
+Disallow: /staff
+Disallow: /reports
+Disallow: /settings
+Disallow: /admin
+Disallow: /onboarding
+Disallow: /api/
+Disallow: /booking/manage
 
-Sitemap: https://tvoje-domena.cz/sitemap.xml
+Sitemap: https://clientoro.pro/sitemap.xml

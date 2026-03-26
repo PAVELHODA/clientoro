@@ -425,8 +425,17 @@ export default function PublicBookingPage() {
         </div>
       )}
 
+      {/* ===== ANIMACE ===== */}
+      <style>{`
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeSlideIn 0.3s ease-out; }
+      `}</style>
+
       {/* ===== CONTENT ===== */}
-      <div className="max-w-lg mx-auto px-5 pt-7 pb-24 relative z-10">
+      <div className="max-w-lg mx-auto px-5 pt-7 pb-24 relative z-10 animate-fade-in" key={step}>
 
         {/* KROK 1: SLUŽBY NEBO SPECIALISTA */}
         {step === 'service' && (
