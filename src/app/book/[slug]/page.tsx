@@ -846,6 +846,33 @@ export default function PublicBookingPage() {
         )}
 
         {/* KROK 5: HOTOVO */}
+        {step === 'done' && (() => {
+          // Konfetti efekt
+          if (typeof window !== 'undefined' && !document.getElementById('confetti-style')) {
+            const style = document.createElement('style')
+            style.id = 'confetti-style'
+            style.textContent = `
+              @keyframes confetti-fall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+              .confetti-piece { position: fixed; top: -10px; z-index: 9999; pointer-events: none; animation: confetti-fall 3s ease-in forwards; }
+            `
+            document.head.appendChild(style)
+            const colors = ['#0f6b7a', '#059669', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899']
+            for (let i = 0; i < 40; i++) {
+              const el = document.createElement('div')
+              el.className = 'confetti-piece'
+              el.style.left = Math.random() * 100 + 'vw'
+              el.style.width = (Math.random() * 8 + 4) + 'px'
+              el.style.height = (Math.random() * 8 + 4) + 'px'
+              el.style.background = colors[Math.floor(Math.random() * colors.length)]
+              el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px'
+              el.style.animationDelay = (Math.random() * 2) + 's'
+              el.style.animationDuration = (Math.random() * 2 + 2) + 's'
+              document.body.appendChild(el)
+              setTimeout(() => el.remove(), 5000)
+            }
+          }
+          return null
+        })()}
         {step === 'done' && (
           <div className="pt-6 pb-4">
             {/* Poděkování */}
