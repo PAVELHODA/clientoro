@@ -207,3 +207,32 @@ Vše z Firma + Solo Inspire plus:
 4. Roční platba — platí 10 měsíců, dostane 12 (úspora 17%)
 5. Referral — "Přiveď kamaráda, oba dostanete měsíc zdarma"
 6. Upgrade path — OSVČ → Solo Inspire → Firma → Pro Inspire
+
+
+---
+
+## 🏢 Multi-firemní sleva
+
+### Pravidlo: Každá 5. firma ZDARMA
+- Platíš 4, 5. je gratis
+- Platíš 8, 9. a 10. gratis
+- + sdílený API klíč napříč firmami
+
+### Příklady:
+| Scénář | Bez slevy | S multi-slevou | Úspora/měs |
+|--------|-----------|---------------|------------|
+| 2 × Firma | 1 998 Kč | 1 998 Kč | 0 |
+| 5 × Firma | 4 995 Kč | 3 996 Kč | 999 Kč |
+| 5 × Pro Inspire (náš API) | 8 995 Kč | 7 196 Kč | 1 799 Kč |
+| 5 × Pro Inspire (vlastní API) | 6 495 Kč | 5 196 Kč | 1 299 Kč |
+| 10 × Pro Inspire (vlastní API) | 12 990 Kč | 10 392 Kč | 2 598 Kč |
+
+### Strategická hodnota:
+- 1 akvizice = 5× revenue
+- Churn riziko: velmi nízké (přesunout 5 firem = noční můra)
+- Word of mouth: majitel s 5 firmami zná desítky dalších majitelů
+- Marže i se slevou: 95%+
+
+### Dva nejcennější segmenty:
+1. Multi-firemní majitel (Pro Inspire) — nejvyšší revenue, nejnižší churn
+2. Solo Inspire s naším API — masový trh OSVČ, jednoduchý provoz
