@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
     // Najdi organizaci + email majitele + telefon
     const { data: org } = await supabaseAdmin
       .from('organizations')
-      .select('id, name, email, phone, notification_email, notify_on_booking')
+      .select('id, name, email, phone, notification_email, notify_on_booking, logo_url')
       .eq('slug', slug)
       .single()
 
@@ -241,6 +241,8 @@ export async function POST(request: NextRequest) {
         orgName: org.name,
         orgPhone: org.phone || undefined,
         manageUrl,
+        logoUrl: org.logo_url || undefined,
+        bookingId: 'CLT-' + new Date().getFullYear() + '-' + String(data.id).substring(0, 6).toUpperCase(),
       }).catch(err => console.error('[Email to client failed]', err))
     }
 

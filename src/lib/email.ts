@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 // ===== ŠABLONA =====
-function emailTemplate({ title, body, footer, orgName }: { title: string; body: string; footer?: string; orgName?: string }) {
+function emailTemplate({ title, body, footer, orgName, logoUrl, bookingId }: { title: string; body: string; footer?: string; orgName?: string; logoUrl?: string; bookingId?: string }) {
   return `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -12,8 +12,10 @@ function emailTemplate({ title, body, footer, orgName }: { title: string; body: 
 <div style="max-width:520px;margin:0 auto;padding:24px 16px;">
   <!-- Header -->
   <div style="background:linear-gradient(135deg,#0a1628 0%,#0c2d48 40%,#0e4d64 70%,#0f6b7a 100%);padding:28px 24px;border-radius:16px 16px 0 0;text-align:center;">
+    ${logoUrl ? `<img src="${logoUrl}" alt="${orgName}" width="48" height="48" style="border-radius:12px;margin-bottom:12px;border:2px solid rgba(255,255,255,0.2);" />` : ''}
     <h1 style="color:white;margin:0;font-size:20px;font-weight:600;letter-spacing:0.03em;">${orgName || 'Rezervace'}</h1>
     <p style="color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:11px;letter-spacing:0.1em;">ONLINE REZERVACE</p>
+    ${bookingId ? `<p style="color:rgba(255,255,255,0.3);margin:8px 0 0;font-size:10px;letter-spacing:0.05em;">#${bookingId}</p>` : ''}
   </div>
   <!-- Body -->
   <div style="background:white;padding:28px 24px;border:1px solid #e5e7eb;border-top:none;">
@@ -62,10 +64,10 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
 
 // ===== 1. POTVRZENÍ REZERVACE — klientovi =====
 export async function sendBookingConfirmation({
-  to, customerName, serviceName, staffName, date, time, price, orgName, orgPhone, manageUrl,
+  to, customerName, serviceName, staffName, date, time, price, orgName, orgPhone, manageUrl, logoUrl, bookingId,
 }: {
   to: string; customerName: string; serviceName: string; staffName?: string
-  date: string; time: string; price?: number; orgName: string; orgPhone?: string; manageUrl?: string
+  date: string; time: string; price?: number; orgName: string; orgPhone?: string; manageUrl?: string; logoUrl?: string; bookingId?: string
 }) {
   const items = [
     { label: 'Služba', value: serviceName },
@@ -78,7 +80,7 @@ export async function sendBookingConfirmation({
     to,
     subject: `Potvrzení rezervace — ${orgName}`,
     html: emailTemplate({
-      orgName,
+      orgName, logoUrl, bookingId,
       title: 'Vaše rezervace je potvrzena ✓',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
@@ -89,7 +91,7 @@ export async function sendBookingConfirmation({
           Provozovatel: <strong>${orgName}</strong>${orgPhone ? ` · ${orgPhone}` : ''}
         </p>
       `,
-      footer: `<p style="color:#6b7280;font-size:12px;margin:0;">Těšíme se na Vás! 🙌</p>
+      footer: `<p style="color:#6b7280;font-size:12px;margin:0 0 12px;">Těšíme se na Vás!</p>
         ${manageUrl ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;">
           <a href="${manageUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
           <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Změnit nebo zrušit rezervaci</p>
