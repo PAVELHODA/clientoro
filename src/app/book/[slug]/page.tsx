@@ -62,6 +62,8 @@ export default function PublicBookingPage() {
   const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() } })
   const [weekOffset, setWeekOffset] = useState(0)
   const [showMonthly, setShowMonthly] = useState(false)
+  const [entryMode, setEntryMode] = useState<'service' | 'specialist' | null>(null)
+  const [expandedSpecialist, setExpandedSpecialist] = useState<string | null>(null)
 
   const t = (key: string) => publicTranslations[lang]?.[key] || publicTranslations.cs[key] || key
   const setLang = (l: PublicLang) => { localStorage.setItem('clientoro_book_lang', l); setLangState(l) }
@@ -257,7 +259,7 @@ export default function PublicBookingPage() {
   const getMonthShort = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString(getLocale(), { month: 'short' })
   const isToday = (d: string) => d === new Date().toISOString().split('T')[0]
   const isTomorrow = (d: string) => { const tom = new Date(); tom.setDate(tom.getDate() + 1); return d === tom.toISOString().split('T')[0] }
-  const resetAll = () => { setStep('service'); setSelectedService(null); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setCustomerName(''); setCustomerPhone(''); setCustomerEmail(''); setCustomerNote(''); setSubmitError(''); setGdprConsent(false) }
+  const resetAll = () => { setStep('service'); setEntryMode(null); setExpandedSpecialist(null); setSelectedService(null); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setCustomerName(''); setCustomerPhone(''); setCustomerEmail(''); setCustomerNote(''); setSubmitError(''); setGdprConsent(false) }
 
   const availableDates = getAvailableDates()
   const availableSlots = getAvailableSlots()
@@ -426,59 +428,143 @@ export default function PublicBookingPage() {
       {/* ===== CONTENT ===== */}
       <div className="max-w-lg mx-auto px-5 pt-7 pb-24 relative z-10">
 
-        {/* KROK 1: SLUŽBY */}
+        {/* KROK 1: SLUŽBY NEBO SPECIALISTA */}
         {step === 'service' && (
           <div>
-            <h2 className="font-playfair text-gray-900 mb-6" style={{ fontSize: '24px', fontWeight: 500 }}>{t('book_choose_service')}</h2>
-            <div className="space-y-2.5">
-              {(() => {
-                // Seskupíme služby podle kategorie
-                const categories = new Map<string, typeof services>()
-                services.forEach(svc => {
-                  const cat = svc.category || (lang === 'en' ? 'Other' : 'Ostatní')
-                  if (!categories.has(cat)) categories.set(cat, [])
-                  categories.get(cat)!.push(svc)
-                })
-                const catArray = Array.from(categories.entries())
-                // Pokud je jen jedna kategorie, nezobrazujeme hlavičku
-                const showHeaders = catArray.length > 1
+            <h2 className="font-playfair text-gray-900 mb-5" style={{ fontSize: '24px', fontWeight: 500 }}>
+              {entryMode === 'specialist'
+                ? (lang === 'en' ? 'Choose a specialist' : lang === 'sk' ? 'Vyberte špecialistu' : 'Vyberte specialistu')
+                : entryMode === 'service'
+                  ? t('book_choose_service')
+                  : (lang === 'en' ? 'How would you like to book?' : lang === 'sk' ? 'Ako si chcete rezervovať?' : 'Jak si chcete rezervovat?')
+              }
+            </h2>
 
-                return catArray.map(([cat, catServices]) => (
-                  <div key={cat} className={showHeaders ? 'mb-4' : ''}>
-                    {showHeaders && (
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">{cat}</p>
-                    )}
-                    <div className="space-y-2">
-                      {catServices.map(svc => (
-                        <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
-                          className="w-full bg-white rounded-2xl p-5 text-left transition-all duration-200 group border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/80">
-                          <div className="flex items-center gap-4">
-                            <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ backgroundColor: svc.color || '#0f6b7a' }} />
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-gray-900 text-[15px]">{svc.name}</p>
-                              {svc.description && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{svc.description}</p>}
-                              <span className="text-xs text-gray-500 mt-1.5 inline-flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> {svc.duration} {t('book_min')}
-                              </span>
-                            </div>
-                            <div className="text-right flex-shrink-0">
-                              {svc.price ? (
-                                <div>
-                                  <span className="text-xl font-bold text-gray-900">{svc.price}</span>
-                                  <span className="text-sm font-medium text-gray-500 ml-1">{t('book_currency')}</span>
-                                </div>
-                              ) : (
-                                <span className="text-sm text-gray-400">{lang === 'en' ? 'Free' : 'Zdarma'}</span>
-                              )}
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
+            {/* Výběr vstupu — služba nebo specialista */}
+            {!entryMode && (
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <button onClick={() => setEntryMode('service')}
+                  className="bg-white rounded-2xl p-5 text-center border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                    <Clock className="w-6 h-6 text-white" />
                   </div>
-                ))
-              })()}
-            </div>
+                  <p className="font-semibold text-gray-900 text-sm">
+                    {lang === 'en' ? 'Choose service' : lang === 'sk' ? 'Podľa služby' : 'Podle služby'}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {lang === 'en' ? 'I know what I need' : lang === 'sk' ? 'Viem čo potrebujem' : 'Vím co potřebuji'}
+                  </p>
+                </button>
+                <button onClick={() => setEntryMode('specialist')}
+                  className="bg-white rounded-2xl p-5 text-center border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #059669, #0d9488)' }}>
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">
+                    {lang === 'en' ? 'Choose specialist' : lang === 'sk' ? 'Podľa špecialistu' : 'Podle specialisty'}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {lang === 'en' ? 'I know who I want' : lang === 'sk' ? 'Viem ku komu chcem' : 'Vím ke komu chci'}
+                  </p>
+                </button>
+              </div>
+            )}
+
+            {/* VSTUP A: Podle služby — seskupené podle kategorie */}
+            {entryMode === 'service' && (
+              <div>
+                <button onClick={() => setEntryMode(null)} className="text-sm text-gray-500 flex items-center gap-1.5 hover:text-gray-700 transition-colors mb-5 font-medium">
+                  <ChevronLeft className="w-4 h-4" /> {t('book_back')}
+                </button>
+                <div className="space-y-2.5">
+                  {(() => {
+                    const categories = new Map<string, typeof services>()
+                    services.forEach(svc => {
+                      const cat = svc.category || (lang === 'en' ? 'Other' : 'Ostatní')
+                      if (!categories.has(cat)) categories.set(cat, [])
+                      categories.get(cat)!.push(svc)
+                    })
+                    const catArray = Array.from(categories.entries())
+                    const showHeaders = catArray.length > 1
+                    return catArray.map(([cat, catServices]) => (
+                      <div key={cat} className={showHeaders ? 'mb-4' : ''}>
+                        {showHeaders && <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">{cat}</p>}
+                        <div className="space-y-2">
+                          {catServices.map(svc => (
+                            <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
+                              className="w-full bg-white rounded-2xl p-5 text-left transition-all duration-200 group border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/80">
+                              <div className="flex items-center gap-4">
+                                <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ backgroundColor: svc.color || '#0f6b7a' }} />
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-gray-900 text-[15px]">{svc.name}</p>
+                                  {svc.description && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{svc.description}</p>}
+                                  <span className="text-xs text-gray-500 mt-1.5 inline-flex items-center gap-1"><Clock className="w-3 h-3" /> {svc.duration} {t('book_min')}</span>
+                                </div>
+                                <div className="text-right flex-shrink-0">
+                                  {svc.price ? (<div><span className="text-xl font-bold text-gray-900">{svc.price}</span><span className="text-sm font-medium text-gray-500 ml-1.5">{t('book_currency')}</span></div>) : (<span className="text-sm text-gray-400">{lang === 'en' ? 'Free' : 'Zdarma'}</span>)}
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  })()}
+                </div>
+              </div>
+            )}
+
+            {/* VSTUP B: Podle specialisty */}
+            {entryMode === 'specialist' && (
+              <div>
+                <button onClick={() => { setEntryMode(null); setExpandedSpecialist(null) }} className="text-sm text-gray-500 flex items-center gap-1.5 hover:text-gray-700 transition-colors mb-5 font-medium">
+                  <ChevronLeft className="w-4 h-4" /> {t('book_back')}
+                </button>
+                <div className="space-y-3">
+                  {staffList.filter(s => s.staff_services && s.staff_services.length > 0).map(s => {
+                    const isExpanded = expandedSpecialist === s.id
+                    const staffServices = services.filter(svc => s.staff_services?.some(ss => ss.service_id === svc.id))
+                    return (
+                      <div key={s.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all">
+                        <button onClick={() => setExpandedSpecialist(isExpanded ? null : s.id)}
+                          className="w-full p-5 text-left flex items-center gap-4 hover:bg-gray-50 transition-colors">
+                          {s.avatar_url ? (
+                            <img src={s.avatar_url} alt={s.full_name} className="w-14 h-14 rounded-xl object-cover" />
+                          ) : (
+                            <div className="w-14 h-14 rounded-xl text-white flex items-center justify-center font-medium text-sm" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                              {s.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">{s.full_name}</p>
+                            <p className="text-xs text-gray-400 mt-0.5">{staffServices.length} {lang === 'en' ? 'services' : lang === 'sk' ? 'služieb' : 'služeb'}</p>
+                          </div>
+                          <ChevronDown className={`w-5 h-5 text-gray-300 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        </button>
+                        {isExpanded && (
+                          <div className="px-5 pb-4 space-y-2 border-t border-gray-50 pt-3">
+                            {staffServices.map(svc => (
+                              <button key={svc.id} onClick={() => {
+                                setSelectedService(svc); setSelectedStaff(s); setAnyStaff(false)
+                                setSelectedDate(''); setSelectedTime(''); setStep('datetime')
+                              }}
+                                className="w-full bg-gray-50 rounded-xl p-3 text-left hover:bg-gray-100 transition-colors flex items-center gap-3">
+                                <div className="w-1 h-8 rounded-full" style={{ backgroundColor: svc.color || '#0f6b7a' }} />
+                                <div className="flex-1">
+                                  <p className="font-medium text-gray-800 text-sm">{svc.name}</p>
+                                  <span className="text-xs text-gray-400">{svc.duration} {t('book_min')}</span>
+                                </div>
+                                <span className="font-bold text-gray-900 text-sm">{svc.price ? svc.price + ' ' + t('book_currency') : ''}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
