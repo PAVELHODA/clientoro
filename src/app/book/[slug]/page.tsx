@@ -431,31 +431,53 @@ export default function PublicBookingPage() {
           <div>
             <h2 className="font-playfair text-gray-900 mb-6" style={{ fontSize: '24px', fontWeight: 500 }}>{t('book_choose_service')}</h2>
             <div className="space-y-2.5">
-              {services.map(svc => (
-                <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
-                  className="w-full bg-white rounded-2xl p-5 text-left transition-all duration-200 group border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/80">
-                  <div className="flex items-center gap-4">
-                    <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ backgroundColor: svc.color || '#0f6b7a' }} />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-[15px]">{svc.name}</p>
-                      {svc.description && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{svc.description}</p>}
-                      <span className="text-xs text-gray-500 mt-1.5 inline-flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {svc.duration} {t('book_min')}
-                      </span>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      {svc.price ? (
-                        <div>
-                          <span className="text-xl font-bold text-gray-900">{svc.price}</span>
-                          <span className="text-sm font-medium text-gray-500 ml-1">{t('book_currency')}</span>
-                        </div>
-                      ) : (
-                        <span className="text-sm text-gray-400">{lang === 'en' ? 'Free' : 'Zdarma'}</span>
-                      )}
+              {(() => {
+                // Seskupíme služby podle kategorie
+                const categories = new Map<string, typeof services>()
+                services.forEach(svc => {
+                  const cat = svc.category || (lang === 'en' ? 'Other' : 'Ostatní')
+                  if (!categories.has(cat)) categories.set(cat, [])
+                  categories.get(cat)!.push(svc)
+                })
+                const catArray = Array.from(categories.entries())
+                // Pokud je jen jedna kategorie, nezobrazujeme hlavičku
+                const showHeaders = catArray.length > 1
+
+                return catArray.map(([cat, catServices]) => (
+                  <div key={cat} className={showHeaders ? 'mb-4' : ''}>
+                    {showHeaders && (
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">{cat}</p>
+                    )}
+                    <div className="space-y-2">
+                      {catServices.map(svc => (
+                        <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
+                          className="w-full bg-white rounded-2xl p-5 text-left transition-all duration-200 group border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/80">
+                          <div className="flex items-center gap-4">
+                            <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ backgroundColor: svc.color || '#0f6b7a' }} />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-gray-900 text-[15px]">{svc.name}</p>
+                              {svc.description && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{svc.description}</p>}
+                              <span className="text-xs text-gray-500 mt-1.5 inline-flex items-center gap-1">
+                                <Clock className="w-3 h-3" /> {svc.duration} {t('book_min')}
+                              </span>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              {svc.price ? (
+                                <div>
+                                  <span className="text-xl font-bold text-gray-900">{svc.price}</span>
+                                  <span className="text-sm font-medium text-gray-500 ml-1">{t('book_currency')}</span>
+                                </div>
+                              ) : (
+                                <span className="text-sm text-gray-400">{lang === 'en' ? 'Free' : 'Zdarma'}</span>
+                              )}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
                     </div>
                   </div>
-                </button>
-              ))}
+                ))
+              })()}
             </div>
           </div>
         )}
