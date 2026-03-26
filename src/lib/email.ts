@@ -64,10 +64,10 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
 
 // ===== 1. POTVRZENÍ REZERVACE — klientovi =====
 export async function sendBookingConfirmation({
-  to, customerName, serviceName, staffName, date, time, price, orgName, orgPhone, manageUrl, logoUrl, bookingId,
+  to, customerName, serviceName, staffName, date, time, price, orgName, orgPhone, manageUrl, logoUrl, bookingId, startAt, duration, address,
 }: {
   to: string; customerName: string; serviceName: string; staffName?: string
-  date: string; time: string; price?: number; orgName: string; orgPhone?: string; manageUrl?: string; logoUrl?: string; bookingId?: string
+  date: string; time: string; price?: number; orgName: string; orgPhone?: string; manageUrl?: string; logoUrl?: string; bookingId?: string; startAt?: string; duration?: number; address?: string
 }) {
   const items = [
     { label: 'Služba', value: serviceName },
@@ -92,6 +92,16 @@ export async function sendBookingConfirmation({
         </p>
       `,
       footer: `<p style="color:#6b7280;font-size:12px;margin:0 0 12px;">Těšíme se na Vás!</p>
+        ${startAt ? (() => {
+          const start = new Date(startAt)
+          const end = new Date(start.getTime() + (duration || 60) * 60000)
+          const fmt = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+          const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(serviceName + ' — ' + orgName)}&dates=${fmt(start)}/${fmt(end)}&location=${encodeURIComponent(address || '')}&details=${encodeURIComponent('Rezervace přes Clientoro')}`
+          return `<div style="margin:12px 0;padding:12px 0;border-top:1px solid #e5e7eb;">
+            <p style="color:#9ca3af;font-size:11px;margin:0 0 8px;font-weight:600;">PŘIDAT DO KALENDÁŘE</p>
+            <a href="${gcalUrl}" target="_blank" style="display:inline-block;padding:8px 16px;background:#f3f4f6;color:#374151;text-decoration:none;border-radius:8px;font-size:12px;font-weight:500;margin-right:8px;">📅 Google Calendar</a>
+          </div>`
+        })() : ''}
         ${manageUrl ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;">
           <a href="${manageUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
           <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Změnit nebo zrušit rezervaci</p>
