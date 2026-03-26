@@ -168,8 +168,7 @@ export default function PublicBookingPage() {
   const isDayAvailable = (dateStr: string) => {
     if (dateStr < todayStr) return false
     const d = new Date(dateStr + 'T12:00:00')
-    const jsDay = d.getDay() // 0=Ne, 1=Po...
-    const dbWeekday = jsDay === 0 ? 7 : jsDay // 1=Po...7=Ne
+    const dbWeekday = jsToDbWeekday(d.getDay()) // 0=Po...6=Ne
 
     // Najdi relevantní staff (podle vybrané služby)
     const relevantStaff = selectedStaff
