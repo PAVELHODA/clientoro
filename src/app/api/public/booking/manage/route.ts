@@ -1,7 +1,7 @@
 // PATH: src/app/api/public/booking/manage/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
-import { sendBookingCancellation } from '@/lib/email'
+import { sendBookingCancellation, sendOwnerCancellation } from '@/lib/email'
 
 // GET — detail rezervace podle manage_token
 export async function GET(request: NextRequest) {
@@ -42,7 +42,7 @@ export async function PATCH(request: NextRequest) {
     const { data: booking, error: findErr } = await supabaseAdmin
       .from('bookings')
       .select(`
-        id, start_at, customer_name, customer_email, price, status,
+        id, start_at, customer_name, customer_email, customer_phone, price, status,
         service_id, staff_id, organization_id,
         services:service_id(name),
         staff:staff_id(full_name),
@@ -72,16 +72,34 @@ export async function PATCH(request: NextRequest) {
       const dateStr = startDate.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
       const timeStr = startDate.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
 
-      if (booking.customer_email) {
+      // Email klientovi o zrušení
+      const customerEmail = booking.customer_email
+      console.log('[Manage cancel] customer_email:', customerEmail)
+      if (customerEmail) {
         sendBookingCancellation({
-          to: booking.customer_email,
+          to: customerEmail,
           customerName: booking.customer_name,
           serviceName: (booking.services as any)?.name || '',
           date: dateStr,
           time: timeStr,
           orgName: org?.name || '',
           orgPhone: org?.phone || undefined,
-        }).catch(err => console.error('[Cancel email failed]', err))
+        }).catch(err => console.error('[Cancel email to client failed]', err))
+      }
+
+      // Email majiteli o zrušení
+      const ownerEmail = org?.notification_email || org?.email
+      console.log('[Manage cancel] owner_email:', ownerEmail)
+      if (ownerEmail) {
+        sendOwnerCancellation({
+          to: ownerEmail,
+          customerName: booking.customer_name,
+          customerPhone: booking.customer_phone || '',
+          serviceName: (booking.services as any)?.name || '',
+          date: dateStr,
+          time: timeStr,
+          orgName: org?.name || '',
+        }).catch(err => console.error('[Cancel email to owner failed]', err))
       }
 
       return NextResponse.json({ success: true, status: 'cancelled' })
