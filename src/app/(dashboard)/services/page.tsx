@@ -162,6 +162,23 @@ export default function ServicesPage() {
     finally { setSaving(false) }
   }
 
+  const handleDeleteCategory = async (category: string) => {
+    const catServices = services.filter(s => s.category === category)
+    const msg = lang === 'en' 
+      ? `Delete category "${category}" and all ${catServices.length} services in it?`
+      : lang === 'sk'
+        ? `Zmazať kategóriu "${category}" a všetkých ${catServices.length} služieb v nej?`
+        : `Smazat kategorii "${category}" a všech ${catServices.length} služeb v ní?`
+    if (!confirm(msg)) return
+    let deleted = 0
+    for (const svc of catServices) {
+      const res = await fetch(`/api/services/${svc.id}`, { method: 'DELETE' })
+      if (res.ok) deleted++
+    }
+    setServices(prev => prev.filter(s => s.category !== category))
+    toast.success(lang === 'en' ? `Deleted ${deleted} services` : `Smazáno ${deleted} služeb`)
+  }
+
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(l.confirmDelete(name))) return
     try {

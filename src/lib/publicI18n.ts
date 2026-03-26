@@ -136,6 +136,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_seg_pets_desc: 'Grooming, trénink, hlídání',
     land_seg_edu: 'Vzdělávání & lekce',
     land_seg_edu_desc: 'Doučování, jazyky, hudba, workshopy',
+    land_seg_exp: 'Zážitky & aktivity',
+    land_seg_exp_desc: 'Pro rodiny, školy, neziskovky — farmy, výlety, terapie',
 
     // Landing — features
     land_features_title: 'Vše na jednom místě.',
@@ -411,6 +413,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_seg_pets_desc: 'Grooming, tréning, stráženie',
     land_seg_edu: 'Vzdelávanie & lekcie',
     land_seg_edu_desc: 'Doučovanie, jazyky, hudba, workshopy',
+    land_seg_exp: 'Zážitky & aktivity',
+    land_seg_exp_desc: 'Pre rodiny, školy, neziskovky — farmy, výlety, terapie',
 
     // Landing — features
     land_features_title: 'Všetko na jednom mieste.',
@@ -681,6 +685,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_seg_pets_desc: 'Grooming, training, sitting',
     land_seg_edu: 'Education & lessons',
     land_seg_edu_desc: 'Tutoring, languages, music, workshops',
+    land_seg_exp: 'Experiences & activities',
+    land_seg_exp_desc: 'For families, schools, nonprofits — farms, trips, therapy',
 
     // Landing — features
     land_features_title: 'Everything in one place.',
