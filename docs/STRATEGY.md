@@ -242,11 +242,17 @@ console.log('Done - dark mode strategy added')
 
 ---
 
-## 💰 Podpora CZK
-- Ceník primárně v CZK, sekundárně EUR pro SK
+## 💰 Měny CZK + EUR
+- CZ verze webu: vše v CZK
+- SK verze webu: vše v EUR (pevné ceny, ne přepočet kurzem)
+- EN verze webu: EUR + přepínač na CZK
+- Organizace si nastaví měnu při registraci (auto-detect podle země)
+- Dashboard, reporty, booking stránka = v měně organizace
 - Fakturace v měně organizace
 - DB: currency pole v organizations ('CZK' | 'EUR')
 - Stripe: nativní podpora CZK i EUR
+- Pevné ceny: OSVČ 299 Kč / 12 €, Solo Inspire 799/499 Kč / 32/20 €
+- ŽÁDNÁ kalkulačka s kurzem — matoucí a poruchové
 
 ---
 
@@ -264,3 +270,51 @@ console.log('Done - dark mode strategy added')
 - Word of mouth → 2-5/měsíc
 - Google Ads (later) → 5-10/měsíc
 - Partnerství (dodavatelé, školení) → 2-5/měsíc
+
+
+---
+
+## 🎂 Narozeninová nabídka
+- Automatický email v den narozenin klienta
+- 33% sleva na jakoukoliv službu
+- Platnost: 7 dní od narozenin
+- Unikátní kód: NAROZENINY-[ROK]
+
+---
+
+## 🎁 Dárkové poukazy (4 typy)
+1. **Na konkrétní službu** — "Dávám ti masáž" → výběr služby → platba → PDF poukaz
+2. **Na částku** — 500/1000/2000 Kč nebo vlastní → obdarovaný si vybere sám
+3. **Balíček / zážitek** — majitel vytvoří combo (masáž + peeling) → klient koupí jako dárek
+4. **Předplatné** — X návštěv nebo X měsíců → obdarovaný čerpá
+- Krásný email + PDF ke stažení/vytištění
+- Unikátní kód pro uplatnění
+- Možnost odloženého doručení ("Poslat k datu")
+- Osobní zpráva od dárce
+
+---
+
+## 📧 Follow-up email den po návštěvě
+- Automatický email 24h po dokončené rezervaci
+- Obsah nastavuje MAJITEL per služba v Settings
+- Příklad: cviky po masáži, péče o vlasy po střihu
+- Nabídka balíčku/voucheru se slevou
+- Tlačítko "Rezervovat znovu" (předvyplněná služba + specialista)
+- Zapnout/vypnout v Settings → Notifikace
+
+---
+
+## 💰 Provozní náklady Clientoro
+### Fáze 1 (0-100 klientů): ~3 000 Kč/měs = ~36 000 Kč/rok
+- Supabase Pro, Vercel Pro, Cloudflare Free, Resend Free/Pro, OpenAI
+- Break-even: ~10 platících klientů
+
+### Fáze 2 (100-500 klientů): ~18 000 Kč/měs = ~216 000 Kč/rok
+- + Twilio SMS, Google Ads, vyšší OpenAI usage
+- Revenue při 300 klientech: ~180 000 Kč/měs → zisk ~162 000 Kč/měs
+
+### Fáze 3 EU (500-2000 klientů): ~95 000 Kč/měs = ~1 140 000 Kč/rok
+- Supabase Team, multi-country marketing, právní služby
+- Revenue při 1500 klientech: ~1 050 000 Kč/měs → zisk ~955 000 Kč/měs
+
+### SaaS marže: 85-90%
