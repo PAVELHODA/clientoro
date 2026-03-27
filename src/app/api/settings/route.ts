@@ -51,6 +51,7 @@ export async function PUT(request: NextRequest) {
       'category', 'description', 'city', 'zip', 'logo_url',
       'language', 'ico', 'dic',
       'notification_email', 'notify_on_booking', 'notify_on_cancel',
+      'reminder_enabled', 'followup_enabled', 'weekly_report_enabled',
     ]
 
     const updateData: any = {}
