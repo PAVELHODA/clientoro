@@ -90,82 +90,102 @@ export default function RegisterPage() {
         <div className="absolute top-24 right-24 w-40 h-40 rounded-full blur-2xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%)' }} />
         <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full blur-3xl -translate-y-1/2" style={{ background: 'radial-gradient(circle, rgba(14,77,100,0.3) 0%, transparent 70%)' }} />
 
-        {/* Surfaři na vlnách */}
-        <div className="absolute bottom-0 left-0 right-0" style={{ height: '160px' }}>
-          <svg viewBox="0 0 1200 160" className="w-full h-full" preserveAspectRatio="none" fill="none">
-            {/* Vlna 3 — zadní, nejjemnější */}
-            <path d="M0 110 Q100 80 200 100 Q300 120 400 95 Q500 70 600 90 Q700 110 800 85 Q900 60 1000 80 Q1100 100 1200 75 L1200 160 L0 160 Z" fill="rgba(255,255,255,0.03)" />
-            
+        {/* Tři vlny + zlatí lidé vpravo dole */}
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '140px' }}>
+          <svg viewBox="0 0 1200 140" className="w-full h-full" preserveAspectRatio="none" fill="none">
+            {/* Vlna 3 — zadní */}
+            <path d="M0 80 Q100 55 200 70 Q300 85 400 65 Q500 45 600 60 Q700 75 800 55 Q900 35 1000 50 Q1100 65 1200 45 L1200 140 L0 140 Z" fill="rgba(255,255,255,0.03)" />
             {/* Vlna 2 — střední */}
-            <path d="M0 120 Q150 90 300 115 Q450 140 600 105 Q750 70 900 100 Q1050 130 1200 95 L1200 160 L0 160 Z" fill="rgba(255,255,255,0.05)" />
+            <path d="M0 90 Q150 65 300 85 Q450 105 600 75 Q750 45 900 70 Q1050 95 1200 65 L1200 140 L0 140 Z" fill="rgba(255,255,255,0.05)" />
+            {/* Vlna 1 — přední */}
+            <path d="M0 100 Q120 80 240 95 Q360 110 480 85 Q600 60 720 80 Q840 100 960 75 Q1080 50 1200 70 L1200 140 L0 140 Z" fill="rgba(255,255,255,0.08)" />
             
-            {/* Vlna 1 — přední, nejvýraznější */}
-            <path d="M0 135 Q120 110 240 130 Q360 150 480 120 Q600 90 720 115 Q840 140 960 110 Q1080 80 1200 105 L1200 160 L0 160 Z" fill="rgba(255,255,255,0.08)" />
+            {/* Postavičky — POUZE pravá polovina (X: 600+) */}
             
-            {/* Surfař 1 — na první vlně vlevo, v podřepu na prkně */}
-            <g transform="translate(200, 102)" opacity="0.35">
-              {/* Prkno */}
-              <ellipse cx="0" cy="12" rx="16" ry="3" fill="rgba(245,158,11,0.4)" />
-              {/* Tělo — dynamická póza surfaře */}
-              <circle cx="0" cy="-4" r="4.5" fill="white" />
-              <path d="M0 0.5 Q-2 4 -1 8" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              {/* Ruce roztažené pro balancování */}
-              <path d="M-1 3 Q-8 -2 -12 0" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <path d="M-1 3 Q6 -1 10 1" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              {/* Nohy pokrčené */}
-              <path d="M-1 8 Q-4 11 -6 12" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <path d="M-1 8 Q2 11 4 12" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+            {/* Single */}
+            <g transform="translate(620, 70)" opacity="0.5">
+              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
+              <line x1="0" y1="4" x2="0" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="0" y1="7" x2="-5" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="7" x2="5" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="13" x2="-3" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="13" x2="3" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
             </g>
             
-            {/* Surfař 2 — na střední vlně, stojí vzpřímeně, ruce nahoře (radost!) */}
-            <g transform="translate(580, 72)" opacity="0.4">
-              {/* Prkno */}
-              <ellipse cx="0" cy="18" rx="18" ry="3" fill="rgba(245,158,11,0.35)" />
-              {/* Tělo */}
-              <circle cx="0" cy="-2" r="5" fill="white" />
-              <path d="M0 3 L0 14" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-              {/* Ruce nahoře — oslavuje! */}
-              <path d="M0 6 Q-6 0 -9 -4" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <path d="M0 6 Q6 0 9 -4" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              {/* Nohy */}
-              <path d="M0 14 L-4 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <path d="M0 14 L4 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              {/* Hvězdička nad hlavou */}
-              <path d="M0 -12 L1.5 -9 L5 -9 L2.5 -7 L3.5 -4 L0 -6 L-3.5 -4 L-2.5 -7 L-5 -9 L-1.5 -9 Z" fill="rgba(245,158,11,0.5)" />
+            {/* Pár */}
+            <g transform="translate(720, 80)" opacity="0.45">
+              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
+              <line x1="0" y1="4" x2="0" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="0" y1="7" x2="-4" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="12" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="12" x2="3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="15" cy="-1" r="4" fill="#f59e0b" />
+              <line x1="15" y1="3" x2="15" y2="11" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="15" y1="6" x2="19" y2="9" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="15" y1="11" x2="12" y2="17" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="15" y1="11" x2="18" y2="17" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
             </g>
             
-            {/* Surfař 3 — na pravé vlně, pár surfařů (dva vedle sebe) */}
-            <g transform="translate(920, 82)" opacity="0.3">
-              {/* Velké prkno pro dva */}
-              <ellipse cx="5" cy="18" rx="22" ry="3.5" fill="rgba(245,158,11,0.3)" />
-              {/* Osoba 1 */}
-              <circle cx="-4" cy="0" r="4.5" fill="white" />
-              <path d="M-4 4.5 L-4 14" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <path d="M-4 7 Q-9 3 -11 4" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <path d="M-4 14 L-7 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <path d="M-4 14 L-1 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              {/* Osoba 2 */}
-              <circle cx="14" cy="-1" r="4.5" fill="white" />
-              <path d="M14 3.5 L14 13" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <path d="M14 6 Q19 2 21 3" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <path d="M14 13 L11 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <path d="M14 13 L17 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              {/* Ruka spojující — drží se */}
-              <path d="M-4 7 Q5 5 14 6" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+            {/* Trojice — jeden slaví */}
+            <g transform="translate(850, 60)" opacity="0.55">
+              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
+              <line x1="0" y1="4" x2="0" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="0" y1="7" x2="-5" y2="4" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="12" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="12" x2="3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="16" cy="-2" r="5" fill="#f59e0b" />
+              <line x1="16" y1="3" x2="16" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="16" y1="6" x2="10" y2="1" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="16" y1="6" x2="22" y2="1" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="16" y1="13" x2="13" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="16" y1="13" x2="19" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="32" cy="0" r="4" fill="#f59e0b" />
+              <line x1="32" y1="4" x2="32" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="32" y1="7" x2="37" y2="4" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="32" y1="12" x2="29" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="32" y1="12" x2="35" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
             </g>
             
-            {/* Jemné kapky / spray z vln */}
-            <circle cx="240" cy="95" r="1.5" fill="rgba(255,255,255,0.15)" />
-            <circle cx="260" cy="88" r="1" fill="rgba(255,255,255,0.1)" />
-            <circle cx="620" cy="65" r="2" fill="rgba(255,255,255,0.12)" />
-            <circle cx="640" cy="58" r="1" fill="rgba(255,255,255,0.08)" />
-            <circle cx="960" cy="75" r="1.5" fill="rgba(255,255,255,0.1)" />
-            <circle cx="980" cy="68" r="1" fill="rgba(255,255,255,0.08)" />
+            {/* Rodina */}
+            <g transform="translate(1000, 50)" opacity="0.5">
+              <circle cx="0" cy="0" r="4.5" fill="#f59e0b" />
+              <line x1="0" y1="4.5" x2="0" y2="14" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="0" y1="8" x2="-5" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="14" x2="-3" y2="20" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="14" x2="3" y2="20" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="12" cy="5" r="3" fill="#f59e0b" />
+              <line x1="12" y1="8" x2="12" y2="14" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="12" y1="14" x2="10" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
+              <line x1="12" y1="14" x2="14" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
+              <circle cx="22" cy="4" r="3" fill="#f59e0b" />
+              <line x1="22" y1="7" x2="22" y2="13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="22" y1="13" x2="20" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
+              <line x1="22" y1="13" x2="24" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
+              <circle cx="34" cy="-1" r="4.5" fill="#f59e0b" />
+              <line x1="34" y1="3.5" x2="34" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="34" y1="7" x2="39" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="34" y1="13" x2="31" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="34" y1="13" x2="37" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+            </g>
             
-            {/* Amber odlesky na vlnách */}
-            <circle cx="350" cy="118" r="2" fill="rgba(245,158,11,0.08)" />
-            <circle cx="750" cy="88" r="2.5" fill="rgba(245,158,11,0.06)" />
-            <circle cx="1100" cy="98" r="2" fill="rgba(245,158,11,0.07)" />
+            {/* Dva přátelé */}
+            <g transform="translate(1130, 70)" opacity="0.4">
+              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
+              <line x1="0" y1="4" x2="0" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="0" y1="7" x2="-5" y2="4" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="12" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="0" y1="12" x2="3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="14" cy="1" r="4" fill="#f59e0b" />
+              <line x1="14" y1="5" x2="14" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="14" y1="8" x2="19" y2="5" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="14" y1="13" x2="11" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+              <line x1="14" y1="13" x2="17" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+            </g>
+            
+            {/* Hvězdičky */}
+            <path d="M680 58 L681 61 L684 61 L681.5 63 L682.5 66 L680 64 L677.5 66 L678.5 63 L676 61 L679 61 Z" fill="#f59e0b" opacity="0.3" />
+            <path d="M950 45 L951 48 L954 48 L951.5 50 L952.5 53 L950 51 L947.5 53 L948.5 50 L946 48 L949 48 Z" fill="#f59e0b" opacity="0.25" />
+            <path d="M1100 55 L1101 58 L1104 58 L1101.5 60 L1102.5 63 L1100 61 L1097.5 63 L1098.5 60 L1096 58 L1099 58 Z" fill="#f59e0b" opacity="0.2" />
           </svg>
         </div>
 
