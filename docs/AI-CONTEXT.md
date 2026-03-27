@@ -1,5 +1,5 @@
 # CLIENTORO — AI Context & Knowledge Base
-> Poslední aktualizace: 2026-03-27
+> Poslední aktualizace: 2026-03-27 (evening session)
 > Tento soubor obsahuje VŠE potřebné pro pokračování vývoje v novém chatu.
 
 ---
@@ -124,7 +124,7 @@ NE "další kalendář". Platforma, která firmám pomáhá získávat nové kli
 | staff | id, organization_id, full_name, email, phone, role, color, position, is_active, app_role, permissions (JSONB) |
 | services | id, organization_id, name, duration, price, color, category, is_active |
 | clients | id, organization_id, full_name, phone, email, note, total_visits, total_spent, last_visit_at, tags, birthday, source |
-| bookings | id, organization_id, client_id, service_id, staff_id, start_at, end_at, status, customer_name, customer_phone, customer_email, note, internal_note, source, price, is_backfill, backfill_note, manage_token, reminder_sent, followup_sent, created_by |
+| bookings | id, organization_id, client_id, service_id, staff_id, start_at, end_at, status, customer_name, customer_phone, customer_email, note, internal_note, source, price, is_backfill, backfill_note, manage_token, reminder_sent, followup_sent, gcal_event_id, created_by |
 | staff_working_hours | id, staff_id, weekday, start_time, end_time |
 | staff_time_off | id, staff_id, start_date, end_date, reason |
 | notifications | id, organization_id, type, title, body, read, created_at |
@@ -132,6 +132,7 @@ NE "další kalendář". Platforma, která firmám pomáhá získávat nové kli
 | service_categories | id, name, slug, icon, service_templates[] |
 | waitlist | id, organization_id, client_name, phone, service_id, preferred_date |
 | manager_pins | id, staff_id, pin |
+| google_calendar_tokens | id, organization_id, access_token, refresh_token, token_expires_at, google_email, calendar_id |
 
 **4 role:** superadmin > owner > manager > staff
 
