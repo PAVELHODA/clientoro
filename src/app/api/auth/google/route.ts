@@ -14,7 +14,11 @@ export async function GET(request: NextRequest) {
 
     // State = organizationId (pro callback)
     const state = auth.organizationId
+    console.log('[google-auth] GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'SET' : 'UNDEFINED')
+    console.log('[google-auth] GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI ? 'SET' : 'UNDEFINED')
+    console.log('[google-auth] organizationId:', state)
     const authUrl = getGoogleAuthUrl(state)
+    console.log('[google-auth] Redirecting to:', authUrl.substring(0, 100) + '...')
 
     return NextResponse.redirect(authUrl)
   } catch (err) {

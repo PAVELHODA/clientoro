@@ -1,15 +1,20 @@
 // PATH: src/lib/googleCalendar.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI!
+function getEnv() {
+  return {
+    clientId: process.env.GOOGLE_CLIENT_ID || '',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    redirectUri: process.env.GOOGLE_REDIRECT_URI || '',
+  }
+}
 
 // ===== OAuth URL =====
 export function getGoogleAuthUrl(state: string) {
+  const env = getEnv()
   const params = new URLSearchParams({
-    client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: GOOGLE_REDIRECT_URI,
+    client_id: env.clientId,
+    redirect_uri: env.redirectUri,
     response_type: 'code',
     scope: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.email',
     access_type: 'offline',
@@ -21,14 +26,15 @@ export function getGoogleAuthUrl(state: string) {
 
 // ===== Exchange code for tokens =====
 export async function exchangeCodeForTokens(code: string) {
+  const env = getEnv()
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       code,
-      client_id: GOOGLE_CLIENT_ID,
-      client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: GOOGLE_REDIRECT_URI,
+      client_id: env.clientId,
+      client_secret: env.clientSecret,
+      redirect_uri: env.redirectUri,
       grant_type: 'authorization_code',
     }),
   })
@@ -46,13 +52,14 @@ export async function exchangeCodeForTokens(code: string) {
 
 // ===== Refresh token =====
 async function refreshAccessToken(refreshToken: string): Promise<{ access_token: string; expires_in: number }> {
+  const env = getEnv()
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       refresh_token: refreshToken,
-      client_id: GOOGLE_CLIENT_ID,
-      client_secret: GOOGLE_CLIENT_SECRET,
+      client_id: env.clientId,
+      client_secret: env.clientSecret,
       grant_type: 'refresh_token',
     }),
   })
@@ -73,12 +80,10 @@ async function getAccessToken(organizationId: string): Promise<string | null> {
   const now = new Date()
   const expiresAt = new Date(data.token_expires_at)
 
-  // Token ještě platí (s 5min rezervou)
   if (expiresAt.getTime() - now.getTime() > 5 * 60 * 1000) {
     return data.access_token
   }
 
-  // Token expiroval → refresh
   try {
     const refreshed = await refreshAccessToken(data.refresh_token)
     const newExpiresAt = new Date(Date.now() + refreshed.expires_in * 1000)
@@ -183,7 +188,6 @@ export async function createCalendarEvent(organizationId: string, booking: {
     const data = await res.json()
     console.log('[gcal] Event created:', data.id)
 
-    // Ulož event ID do bookings
     await supabaseAdmin
       .from('bookings')
       .update({ gcal_event_id: data.id })
