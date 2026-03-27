@@ -131,57 +131,30 @@ export default function RegisterPage() {
             <path d="M0 85 Q120 72 240 82 Q360 92 480 75 Q600 58 720 72 Q840 85 960 68 Q1080 52 1200 65 L1200 120 L0 120 Z" fill="rgba(255,255,255,0.08)" />
 
             {/* Řada 1 — horní, jemná */}
-            <g transform="translate(100, 20)" opacity="0.3">
-              <circle cx="0" cy="0" r="3" fill="#f59e0b" /><line x1="0" y1="3" x2="0" y2="10" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="-2.5" y2="15" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="2.5" y2="15" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
-            <g transform="translate(300, 15)" opacity="0.25">
-              <circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="6" x2="-4" y2="3" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
-            </g>
-            <g transform="translate(500, 22)" opacity="0.2">
-              <circle cx="0" cy="0" r="2.5" fill="#f59e0b" /><line x1="0" y1="2.5" x2="0" y2="9" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="9" x2="-2" y2="13" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="9" x2="2" y2="13" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-              <circle cx="10" cy="1" r="2.5" fill="#f59e0b" /><line x1="10" y1="3.5" x2="10" y2="9" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="10" y1="9" x2="8" y2="13" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="10" y1="9" x2="12" y2="13" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
-            <g transform="translate(750, 18)" opacity="0.3">
-              <circle cx="0" cy="0" r="3" fill="#f59e0b" /><line x1="0" y1="3" x2="0" y2="10" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="6" x2="4" y2="3" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="-2.5" y2="15" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="2.5" y2="15" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
-            <g transform="translate(950, 24)" opacity="0.25">
-              <circle cx="0" cy="0" r="2.5" fill="#f59e0b" /><line x1="0" y1="2.5" x2="0" y2="9" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="9" x2="-2" y2="13" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="9" x2="2" y2="13" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
-            <g transform="translate(1100, 20)" opacity="0.2">
-              <circle cx="0" cy="0" r="3" fill="#f59e0b" /><line x1="0" y1="3" x2="0" y2="10" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="-2.5" y2="15" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="2.5" y2="15" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
+            
+            
+            
+            
+            
+            
 
             {/* Řada 2 — hlavní, výrazná */}
-            <g transform="translate(50, 62)" opacity="0.5"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="6" x2="-4" y2="9" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="6" x2="4" y2="8" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
-            <g transform="translate(170, 68)" opacity="0.45"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="10" x2="-2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="-1" r="3.5" fill="#f59e0b" /><line x1="12" y1="2.5" x2="12" y2="9" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="12" y1="9" x2="10" y2="14" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="12" y1="9" x2="14" y2="14" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
-            <g transform="translate(330, 58)" opacity="0.5"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="6" x2="-4" y2="3" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="14" cy="-2" r="4" fill="#f59e0b" /><line x1="14" y1="2" x2="14" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="14" y1="5" x2="8" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="5" x2="20" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="11" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="17" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="28" cy="0" r="3.5" fill="#f59e0b" /><line x1="28" y1="3.5" x2="28" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="28" y1="11" x2="25" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="28" y1="11" x2="31" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
-            <g transform="translate(520, 50)" opacity="0.45"><circle cx="0" cy="0" r="4" fill="#f59e0b" /><line x1="0" y1="4" x2="0" y2="13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="13" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="13" x2="3" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="10" cy="4" r="2.5" fill="#f59e0b" /><line x1="10" y1="6.5" x2="10" y2="12" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="10" y1="12" x2="8" y2="16" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="10" y1="12" x2="12" y2="16" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><circle cx="22" cy="-1" r="4" fill="#f59e0b" /><line x1="22" y1="3" x2="22" y2="12" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="22" y1="12" x2="19" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="22" y1="12" x2="25" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
-            <g transform="translate(700, 64)" opacity="0.5"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="13" cy="1" r="3.5" fill="#f59e0b" /><line x1="13" y1="4.5" x2="13" y2="12" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="13" y1="12" x2="10" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="13" y1="12" x2="16" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
-            <g transform="translate(860, 56)" opacity="0.55"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="6" x2="-4" y2="3" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="14" cy="-2" r="4" fill="#f59e0b" /><line x1="14" y1="2" x2="14" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="14" y1="5" x2="8" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="5" x2="20" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="11" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="17" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="28" cy="0" r="3.5" fill="#f59e0b" /><line x1="28" y1="3.5" x2="28" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="28" y1="11" x2="25" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="28" y1="11" x2="31" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
-            <g transform="translate(1030, 60)" opacity="0.45"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
-            <g transform="translate(1120, 66)" opacity="0.4"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="10" x2="-2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="1" r="3.5" fill="#f59e0b" /><line x1="12" y1="4.5" x2="12" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="12" y1="11" x2="10" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="12" y1="11" x2="14" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            
+            
+            
+            
+            
+            
+            
+            
 
             {/* Řada 3 — dolní, na vlnkách */}
-            <g transform="translate(80, 90)" opacity="0.35">
-              <circle cx="0" cy="0" r="3" fill="#f59e0b" /><line x1="0" y1="3" x2="0" y2="10" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="-2.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="2.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
-            <g transform="translate(250, 85)" opacity="0.3">
-              <circle cx="0" cy="0" r="2.5" fill="#f59e0b" /><line x1="0" y1="2.5" x2="0" y2="8" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="8" x2="-2" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" /><line x1="0" y1="8" x2="2" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" />
-              <circle cx="9" cy="1" r="2.5" fill="#f59e0b" /><line x1="9" y1="3.5" x2="9" y2="8" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="9" y1="8" x2="7" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" /><line x1="9" y1="8" x2="11" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" />
-            </g>
-            <g transform="translate(450, 82)" opacity="0.3">
-              <circle cx="0" cy="0" r="3" fill="#f59e0b" /><line x1="0" y1="3" x2="0" y2="10" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="6" x2="3.5" y2="3" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="-2.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="2.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
-            <g transform="translate(620, 78)" opacity="0.25">
-              <circle cx="0" cy="0" r="2.5" fill="#f59e0b" /><line x1="0" y1="2.5" x2="0" y2="8" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="8" x2="-2" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" /><line x1="0" y1="8" x2="2" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" />
-            </g>
-            <g transform="translate(800, 88)" opacity="0.35">
-              <circle cx="0" cy="0" r="3" fill="#f59e0b" /><line x1="0" y1="3" x2="0" y2="10" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="-2.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="10" x2="2.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-              <circle cx="11" cy="1" r="3" fill="#f59e0b" /><line x1="11" y1="4" x2="11" y2="10" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="11" y1="10" x2="8.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="11" y1="10" x2="13.5" y2="14" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
-            </g>
-            <g transform="translate(1000, 84)" opacity="0.3">
-              <circle cx="0" cy="0" r="2.5" fill="#f59e0b" /><line x1="0" y1="2.5" x2="0" y2="8" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="0" y1="5" x2="-3" y2="2" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" /><line x1="0" y1="8" x2="-2" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" /><line x1="0" y1="8" x2="2" y2="12" stroke="#f59e0b" strokeWidth="1.3" strokeLinecap="round" />
-            </g>
+            
+            
+            
+            
+            
+            
           </svg>
         </div>
       </div>
