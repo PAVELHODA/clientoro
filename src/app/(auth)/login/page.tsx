@@ -51,9 +51,82 @@ export default function LoginPage() {
         <div className="absolute top-24 right-24 w-40 h-40 rounded-full blur-2xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%)' }} />
         <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full blur-3xl -translate-y-1/2" style={{ background: 'radial-gradient(circle, rgba(14,77,100,0.3) 0%, transparent 70%)' }} />
 
-        <div className="absolute bottom-0 left-0 right-0 h-32 opacity-[0.07]">
-          <svg viewBox="0 0 1440 100" className="w-full h-full fill-white">
-            <path d="M0 40 Q180 0 360 40 Q540 80 720 40 Q900 0 1080 40 Q1260 80 1440 40 L1440 100 L0 100 Z" />
+        {/* Surfaři na vlnách */}
+        <div className="absolute bottom-0 left-0 right-0" style={{ height: '160px' }}>
+          <svg viewBox="0 0 1200 160" className="w-full h-full" preserveAspectRatio="none" fill="none">
+            {/* Vlna 3 — zadní, nejjemnější */}
+            <path d="M0 110 Q100 80 200 100 Q300 120 400 95 Q500 70 600 90 Q700 110 800 85 Q900 60 1000 80 Q1100 100 1200 75 L1200 160 L0 160 Z" fill="rgba(255,255,255,0.03)" />
+            
+            {/* Vlna 2 — střední */}
+            <path d="M0 120 Q150 90 300 115 Q450 140 600 105 Q750 70 900 100 Q1050 130 1200 95 L1200 160 L0 160 Z" fill="rgba(255,255,255,0.05)" />
+            
+            {/* Vlna 1 — přední, nejvýraznější */}
+            <path d="M0 135 Q120 110 240 130 Q360 150 480 120 Q600 90 720 115 Q840 140 960 110 Q1080 80 1200 105 L1200 160 L0 160 Z" fill="rgba(255,255,255,0.08)" />
+            
+            {/* Surfař 1 — na první vlně vlevo, v podřepu na prkně */}
+            <g transform="translate(200, 102)" opacity="0.35">
+              {/* Prkno */}
+              <ellipse cx="0" cy="12" rx="16" ry="3" fill="rgba(245,158,11,0.4)" />
+              {/* Tělo — dynamická póza surfaře */}
+              <circle cx="0" cy="-4" r="4.5" fill="white" />
+              <path d="M0 0.5 Q-2 4 -1 8" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              {/* Ruce roztažené pro balancování */}
+              <path d="M-1 3 Q-8 -2 -12 0" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M-1 3 Q6 -1 10 1" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              {/* Nohy pokrčené */}
+              <path d="M-1 8 Q-4 11 -6 12" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M-1 8 Q2 11 4 12" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+            </g>
+            
+            {/* Surfař 2 — na střední vlně, stojí vzpřímeně, ruce nahoře (radost!) */}
+            <g transform="translate(580, 72)" opacity="0.4">
+              {/* Prkno */}
+              <ellipse cx="0" cy="18" rx="18" ry="3" fill="rgba(245,158,11,0.35)" />
+              {/* Tělo */}
+              <circle cx="0" cy="-2" r="5" fill="white" />
+              <path d="M0 3 L0 14" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+              {/* Ruce nahoře — oslavuje! */}
+              <path d="M0 6 Q-6 0 -9 -4" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M0 6 Q6 0 9 -4" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              {/* Nohy */}
+              <path d="M0 14 L-4 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <path d="M0 14 L4 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              {/* Hvězdička nad hlavou */}
+              <path d="M0 -12 L1.5 -9 L5 -9 L2.5 -7 L3.5 -4 L0 -6 L-3.5 -4 L-2.5 -7 L-5 -9 L-1.5 -9 Z" fill="rgba(245,158,11,0.5)" />
+            </g>
+            
+            {/* Surfař 3 — na pravé vlně, pár surfařů (dva vedle sebe) */}
+            <g transform="translate(920, 82)" opacity="0.3">
+              {/* Velké prkno pro dva */}
+              <ellipse cx="5" cy="18" rx="22" ry="3.5" fill="rgba(245,158,11,0.3)" />
+              {/* Osoba 1 */}
+              <circle cx="-4" cy="0" r="4.5" fill="white" />
+              <path d="M-4 4.5 L-4 14" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <path d="M-4 7 Q-9 3 -11 4" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M-4 14 L-7 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <path d="M-4 14 L-1 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              {/* Osoba 2 */}
+              <circle cx="14" cy="-1" r="4.5" fill="white" />
+              <path d="M14 3.5 L14 13" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <path d="M14 6 Q19 2 21 3" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M14 13 L11 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <path d="M14 13 L17 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              {/* Ruka spojující — drží se */}
+              <path d="M-4 7 Q5 5 14 6" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+            </g>
+            
+            {/* Jemné kapky / spray z vln */}
+            <circle cx="240" cy="95" r="1.5" fill="rgba(255,255,255,0.15)" />
+            <circle cx="260" cy="88" r="1" fill="rgba(255,255,255,0.1)" />
+            <circle cx="620" cy="65" r="2" fill="rgba(255,255,255,0.12)" />
+            <circle cx="640" cy="58" r="1" fill="rgba(255,255,255,0.08)" />
+            <circle cx="960" cy="75" r="1.5" fill="rgba(255,255,255,0.1)" />
+            <circle cx="980" cy="68" r="1" fill="rgba(255,255,255,0.08)" />
+            
+            {/* Amber odlesky na vlnách */}
+            <circle cx="350" cy="118" r="2" fill="rgba(245,158,11,0.08)" />
+            <circle cx="750" cy="88" r="2.5" fill="rgba(245,158,11,0.06)" />
+            <circle cx="1100" cy="98" r="2" fill="rgba(245,158,11,0.07)" />
           </svg>
         </div>
 
@@ -80,14 +153,22 @@ export default function LoginPage() {
 
           <div className="space-y-3">
             {[
-              { emoji: '\ud83d\udcc5', key: 'login_feature_1', highlight: false },
-              { emoji: '\ud83e\udd16', key: 'login_feature_2', highlight: false },
-              { emoji: '\ud83d\udcca', key: 'login_feature_3', highlight: false },
-              { emoji: '\ud83c\udfc6', key: 'login_feature_4', highlight: true },
+              { emoji: 'cal', key: 'login_feature_1', highlight: false },
+              { emoji: 'ai', key: 'login_feature_2', highlight: false },
+              { emoji: 'chart', key: 'login_feature_3', highlight: false },
+              { emoji: 'trophy', key: 'login_feature_4', highlight: true },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <span className="text-sm">{item.emoji}</span>
+                  {item.emoji === 'cal' ? (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 10h18M8 2v4M16 2v4" /><circle cx="8" cy="15" r="1" fill="rgba(245,158,11,0.6)" stroke="none" /><circle cx="12" cy="15" r="1" fill="rgba(245,158,11,0.6)" stroke="none" /></svg>
+                    ) : item.emoji === 'ai' ? (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" /><path d="M8 10v1a4 4 0 0 0 8 0v-1" /><path d="M12 14v4" /><path d="M8 22h8" /><circle cx="9" cy="6.5" r="0.8" fill="rgba(245,158,11,0.6)" stroke="none" /><circle cx="15" cy="6.5" r="0.8" fill="rgba(245,158,11,0.6)" stroke="none" /></svg>
+                    ) : item.emoji === 'chart' ? (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round"><path d="M3 20h18" /><path d="M6 16v4" /><path d="M10 12v8" /><path d="M14 8v12" /><path d="M18 4v16" /><path d="M3 16 Q7 8 12 10 Q17 12 21 4" stroke="rgba(245,158,11,0.5)" strokeWidth="1.5" fill="none" /></svg>
+                    ) : (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round"><path d="M6 9h12l-1 10H7L6 9z" /><path d="M9 9V6a3 3 0 0 1 6 0v3" /><path d="M8 5l4-3 4 3" /><circle cx="12" cy="1.5" r="0.8" fill="rgba(245,158,11,0.6)" stroke="none" /></svg>
+                    )}
                 </div>
                 <span className="text-sm" style={{ color: item.highlight ? '#f59e0b' : 'rgba(255,255,255,0.6)' }}>
                   {item.highlight ? <strong>{t(item.key)}</strong> : t(item.key)}
