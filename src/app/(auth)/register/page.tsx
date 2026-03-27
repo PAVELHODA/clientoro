@@ -90,104 +90,7 @@ export default function RegisterPage() {
         <div className="absolute top-24 right-24 w-40 h-40 rounded-full blur-2xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%)' }} />
         <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full blur-3xl -translate-y-1/2" style={{ background: 'radial-gradient(circle, rgba(14,77,100,0.3) 0%, transparent 70%)' }} />
 
-        {/* Tři vlny + zlatí lidé vpravo dole */}
-        <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '140px' }}>
-          <svg viewBox="0 0 1200 140" className="w-full h-full" preserveAspectRatio="none" fill="none">
-            {/* Vlna 3 — zadní */}
-            <path d="M0 80 Q100 55 200 70 Q300 85 400 65 Q500 45 600 60 Q700 75 800 55 Q900 35 1000 50 Q1100 65 1200 45 L1200 140 L0 140 Z" fill="rgba(255,255,255,0.03)" />
-            {/* Vlna 2 — střední */}
-            <path d="M0 90 Q150 65 300 85 Q450 105 600 75 Q750 45 900 70 Q1050 95 1200 65 L1200 140 L0 140 Z" fill="rgba(255,255,255,0.05)" />
-            {/* Vlna 1 — přední */}
-            <path d="M0 100 Q120 80 240 95 Q360 110 480 85 Q600 60 720 80 Q840 100 960 75 Q1080 50 1200 70 L1200 140 L0 140 Z" fill="rgba(255,255,255,0.08)" />
-            
-            {/* Postavičky — POUZE pravá polovina (X: 600+) */}
-            
-            {/* Single */}
-            <g transform="translate(620, 70)" opacity="0.5">
-              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
-              <line x1="0" y1="4" x2="0" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="0" y1="7" x2="-5" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="7" x2="5" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="13" x2="-3" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="13" x2="3" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-            </g>
-            
-            {/* Pár */}
-            <g transform="translate(720, 80)" opacity="0.45">
-              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
-              <line x1="0" y1="4" x2="0" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="0" y1="7" x2="-4" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="12" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="12" x2="3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="15" cy="-1" r="4" fill="#f59e0b" />
-              <line x1="15" y1="3" x2="15" y2="11" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="15" y1="6" x2="19" y2="9" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="15" y1="11" x2="12" y2="17" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="15" y1="11" x2="18" y2="17" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-            </g>
-            
-            {/* Trojice — jeden slaví */}
-            <g transform="translate(850, 60)" opacity="0.55">
-              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
-              <line x1="0" y1="4" x2="0" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="0" y1="7" x2="-5" y2="4" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="12" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="12" x2="3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="16" cy="-2" r="5" fill="#f59e0b" />
-              <line x1="16" y1="3" x2="16" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="16" y1="6" x2="10" y2="1" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="16" y1="6" x2="22" y2="1" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="16" y1="13" x2="13" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="16" y1="13" x2="19" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="32" cy="0" r="4" fill="#f59e0b" />
-              <line x1="32" y1="4" x2="32" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="32" y1="7" x2="37" y2="4" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="32" y1="12" x2="29" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="32" y1="12" x2="35" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-            </g>
-            
-            {/* Rodina */}
-            <g transform="translate(1000, 50)" opacity="0.5">
-              <circle cx="0" cy="0" r="4.5" fill="#f59e0b" />
-              <line x1="0" y1="4.5" x2="0" y2="14" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="0" y1="8" x2="-5" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="14" x2="-3" y2="20" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="14" x2="3" y2="20" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="12" cy="5" r="3" fill="#f59e0b" />
-              <line x1="12" y1="8" x2="12" y2="14" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="12" y1="14" x2="10" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
-              <line x1="12" y1="14" x2="14" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
-              <circle cx="22" cy="4" r="3" fill="#f59e0b" />
-              <line x1="22" y1="7" x2="22" y2="13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="22" y1="13" x2="20" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
-              <line x1="22" y1="13" x2="24" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
-              <circle cx="34" cy="-1" r="4.5" fill="#f59e0b" />
-              <line x1="34" y1="3.5" x2="34" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="34" y1="7" x2="39" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="34" y1="13" x2="31" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="34" y1="13" x2="37" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-            </g>
-            
-            {/* Dva přátelé */}
-            <g transform="translate(1130, 70)" opacity="0.4">
-              <circle cx="0" cy="0" r="4" fill="#f59e0b" />
-              <line x1="0" y1="4" x2="0" y2="12" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="0" y1="7" x2="-5" y2="4" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="12" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="0" y1="12" x2="3" y2="18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="14" cy="1" r="4" fill="#f59e0b" />
-              <line x1="14" y1="5" x2="14" y2="13" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="14" y1="8" x2="19" y2="5" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="14" y1="13" x2="11" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-              <line x1="14" y1="13" x2="17" y2="19" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-            </g>
-            
-            {/* Hvězdičky */}
-            <path d="M680 58 L681 61 L684 61 L681.5 63 L682.5 66 L680 64 L677.5 66 L678.5 63 L676 61 L679 61 Z" fill="#f59e0b" opacity="0.3" />
-            <path d="M950 45 L951 48 L954 48 L951.5 50 L952.5 53 L950 51 L947.5 53 L948.5 50 L946 48 L949 48 Z" fill="#f59e0b" opacity="0.25" />
-            <path d="M1100 55 L1101 58 L1104 58 L1101.5 60 L1102.5 63 L1100 61 L1097.5 63 L1098.5 60 L1096 58 L1099 58 Z" fill="#f59e0b" opacity="0.2" />
-          </svg>
-        </div>
+        
 
         <div className="relative z-10 flex flex-col justify-center px-16">
           <div className="flex items-center gap-3 mb-10">
@@ -220,8 +123,25 @@ export default function RegisterPage() {
             ))}
           </div>
         </div>
+        {/* Vlnky + zlatí lidé po celé šířce */}
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '60px' }}>
+          <svg viewBox="0 0 1200 60" className="w-full h-full" preserveAspectRatio="none" fill="none">
+            <path d="M0 30 Q100 15 200 25 Q300 35 400 20 Q500 5 600 18 Q700 30 800 15 Q900 0 1000 12 Q1100 25 1200 8 L1200 60 L0 60 Z" fill="rgba(255,255,255,0.03)" />
+            <path d="M0 38 Q150 22 300 35 Q450 48 600 28 Q750 10 900 25 Q1050 40 1200 22 L1200 60 L0 60 Z" fill="rgba(255,255,255,0.05)" />
+            <path d="M0 45 Q120 32 240 42 Q360 52 480 35 Q600 18 720 32 Q840 45 960 28 Q1080 12 1200 25 L1200 60 L0 60 Z" fill="rgba(255,255,255,0.08)" />
+            <g transform="translate(50, 22)" opacity="0.5"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="6" x2="-4" y2="9" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="6" x2="4" y2="8" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            <g transform="translate(170, 28)" opacity="0.45"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="10" x2="-2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="-1" r="3.5" fill="#f59e0b" /><line x1="12" y1="2.5" x2="12" y2="9" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="12" y1="9" x2="10" y2="14" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="12" y1="9" x2="14" y2="14" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            <g transform="translate(330, 20)" opacity="0.5"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="6" x2="-4" y2="3" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="14" cy="-2" r="4" fill="#f59e0b" /><line x1="14" y1="2" x2="14" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="14" y1="5" x2="8" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="5" x2="20" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="11" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="17" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="28" cy="0" r="3.5" fill="#f59e0b" /><line x1="28" y1="3.5" x2="28" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="28" y1="11" x2="25" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="28" y1="11" x2="31" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            <g transform="translate(520, 12)" opacity="0.45"><circle cx="0" cy="0" r="4" fill="#f59e0b" /><line x1="0" y1="4" x2="0" y2="13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="13" x2="-3" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="13" x2="3" y2="18" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="10" cy="4" r="2.5" fill="#f59e0b" /><line x1="10" y1="6.5" x2="10" y2="12" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="10" y1="12" x2="8" y2="16" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><line x1="10" y1="12" x2="12" y2="16" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" /><circle cx="22" cy="-1" r="4" fill="#f59e0b" /><line x1="22" y1="3" x2="22" y2="12" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="22" y1="12" x2="19" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="22" y1="12" x2="25" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            <g transform="translate(700, 24)" opacity="0.5"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="13" cy="1" r="3.5" fill="#f59e0b" /><line x1="13" y1="4.5" x2="13" y2="12" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="13" y1="12" x2="10" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="13" y1="12" x2="16" y2="17" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            <g transform="translate(860, 16)" opacity="0.55"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="6" x2="-4" y2="3" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="14" cy="-2" r="4" fill="#f59e0b" /><line x1="14" y1="2" x2="14" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="14" y1="5" x2="8" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="5" x2="20" y2="0" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="11" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="14" y1="11" x2="17" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="28" cy="0" r="3.5" fill="#f59e0b" /><line x1="28" y1="3.5" x2="28" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="28" y1="11" x2="25" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="28" y1="11" x2="31" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            <g transform="translate(1030, 20)" opacity="0.45"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="11" x2="-3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="11" x2="3" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+            <g transform="translate(1120, 26)" opacity="0.4"><circle cx="0" cy="0" r="3.5" fill="#f59e0b" /><line x1="0" y1="3.5" x2="0" y2="10" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="0" y1="10" x2="-2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="0" y1="10" x2="2" y2="15" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="1" r="3.5" fill="#f59e0b" /><line x1="12" y1="4.5" x2="12" y2="11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" /><line x1="12" y1="11" x2="10" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /><line x1="12" y1="11" x2="14" y2="16" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" /></g>
+          </svg>
+        </div>
       </div>
 
+        
       {/* Pravá strana — formulář */}
       <div className="flex-1 flex items-center justify-center px-6 bg-gray-50">
         <div className="w-full max-w-md">
