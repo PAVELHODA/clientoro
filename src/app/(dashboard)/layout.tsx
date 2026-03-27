@@ -12,7 +12,7 @@ import {
   Calendar, ClipboardList, Users, Scissors, UserCircle,
   BarChart3, Settings, LogOut, Waves, Sun, Megaphone, Bot,
   TrendingUp, Crown, Wrench, Star, QrCode, LayoutDashboard,
-  Menu, X, Loader2, Globe, Bell,
+  Menu, X, Loader2, Globe, Bell, ChevronDown, Building2,
 } from 'lucide-react'
 
 // ============================================
@@ -270,7 +270,7 @@ function NotificationBell() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [showPanel, setShowPanel] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
-  const { user } = useAuth()
+  const { user, availableOrgs: notifAvailOrgs } = useAuth()
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
@@ -375,6 +375,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     router.refresh()
   }
 
+  const { availableOrgs, switchOrg } = useAuth()
+  const [orgDropdownOpen, setOrgDropdownOpen] = useState(false)
+  const orgDropdownRef = useRef<HTMLDivElement>(null)
+
+  // Zavři dropdown při kliknutí mimo
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (orgDropdownRef.current && !orgDropdownRef.current.contains(e.target as Node)) {
+        setOrgDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const orgMode = organization?.mode || 'team'
   const orgName = organization?.name || 'Clientoro'
   const theme = MODE_THEMES[orgMode] || MODE_THEMES.team
@@ -421,20 +436,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* clean sidebar - no light effects */}
 
 
-      <div className="p-5 relative z-10">
-        <div className="flex items-center gap-3">
+      <div className="p-5 relative z-10" ref={orgDropdownRef}>
+        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => availableOrgs.length > 1 ? setOrgDropdownOpen(!orgDropdownOpen) : null}>
           <div className="w-10 h-10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg"
             style={{ background: theme.logoBg, border: `1px solid ${theme.logoBorder}` }}>
             <Waves className="w-5 h-5" style={{ color: theme.text }} />
           </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight" style={{ color: theme.text }}>{orgName}</h1>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-lg font-bold tracking-tight truncate" style={{ color: theme.text }}>{orgName}</h1>
+              {availableOrgs.length > 1 && <ChevronDown className={`w-4 h-4 transition-transform ${orgDropdownOpen ? 'rotate-180' : ''}`} style={{ color: theme.textMuted }} />}
+            </div>
             <div className="flex items-center gap-1.5">
               <Sun className="w-3 h-3" style={{ color: theme.sunIcon }} />
               <p className="text-xs font-semibold" style={{ color: theme.textMuted }}>{t(theme.label)}</p>
+              {availableOrgs.length > 1 && <span className="text-xs" style={{ color: theme.textMuted }}>· {availableOrgs.length} org</span>}
             </div>
           </div>
         </div>
+
+        {/* Org switcher dropdown */}
+        {orgDropdownOpen && availableOrgs.length > 1 && (
+          <div className="mt-2 rounded-xl overflow-hidden shadow-xl border" style={{ background: 'rgba(0,0,0,0.85)', borderColor: theme.borderColor }}>
+            {availableOrgs.map((org: any) => {
+              const isActive = org.id === organization?.id
+              const modeLabels: Record<string, string> = { solo: 'OSVČ', team: 'Firma', solo_inspire: 'Solo Inspire', pro_inspire: 'Pro Inspire' }
+              return (
+                <button
+                  key={org.id}
+                  onClick={() => { if (!isActive) { switchOrg(org.id); setOrgDropdownOpen(false) } }}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors ${isActive ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
+                  style={{ background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent' }}
+                >
+                  <Building2 className="w-4 h-4 flex-shrink-0" style={{ color: isActive ? theme.accent : 'rgba(255,255,255,0.5)' }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate" style={{ color: isActive ? '#fff' : 'rgba(255,255,255,0.8)' }}>{org.name}</p>
+                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{modeLabels[org.mode] || org.mode}</p>
+                  </div>
+                  {isActive && <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: theme.accent }} />}
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       <div className="mx-4 h-px relative z-10" style={{ background: theme.borderColor }} />

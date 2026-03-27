@@ -47,6 +47,8 @@ interface AuthContextType {
   isAtLeastManager: boolean
   isAtLeastOwner: boolean
   refreshOrg: () => Promise<void>
+  switchOrg: (orgId: string) => Promise<void>
+  availableOrgs: { id: string; name: string; mode: string; slug: string }[]
 }
 
 const ROLE_HIERARCHY: Record<UserRole, number> = {
@@ -69,6 +71,8 @@ const AuthContext = createContext<AuthContextType>({
   isAtLeastManager: false,
   isAtLeastOwner: false,
   refreshOrg: async () => {},
+  switchOrg: async () => {},
+  availableOrgs: [],
 })
 
 export function useAuth() {
@@ -80,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [organization, setOrganization] = useState<Organization | null>(null)
   const [role, setRole] = useState<UserRole>('staff')
   const [loading, setLoading] = useState(true)
+  const [availableOrgs, setAvailableOrgs] = useState<{ id: string; name: string; mode: string; slug: string }[]>([])
   const didInit = useRef(false)
   const supabase = createClient()
   const router = useRouter()
@@ -90,20 +95,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const init = async () => {
       try {
-        const [meRes, orgRes] = await Promise.all([
-          fetch('/api/auth/me'),
-          fetch('/api/settings')
-        ])
+        const meRes = await fetch('/api/auth/me')
+        if (!meRes.ok) { setLoading(false); return }
 
-        if (meRes.ok) {
-          const meData = await meRes.json()
-          setUser({ id: meData.profileId || '', email: meData.email || '' })
-          setRole(meData.role || 'staff')
+        const meData = await meRes.json()
+        setUser({ id: meData.profileId || '', email: meData.email || '' })
+        setRole(meData.role || 'staff')
+
+        // Načti dostupné organizace
+        const orgsRes = await fetch('/api/auth/organizations')
+        if (orgsRes.ok) {
+          const orgsData = await orgsRes.json()
+          setAvailableOrgs(orgsData)
         }
 
-        if (orgRes.ok) {
-          const orgData = await orgRes.json()
-          setOrganization(orgData)
+        // Zjisti aktivní org — localStorage nebo default
+        const savedOrgId = typeof window !== 'undefined' ? localStorage.getItem('clientoro_active_org') : null
+        const targetOrgId = savedOrgId || meData.organizationId
+
+        if (targetOrgId) {
+          // Přepni na uloženou/default org přes switch-org (ověří přístup)
+          const switchRes = await fetch('/api/auth/switch-org', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ organizationId: targetOrgId }),
+          })
+
+          if (switchRes.ok) {
+            // Načti settings pro tuto org
+            const orgRes = await fetch('/api/settings')
+            if (orgRes.ok) {
+              const orgData = await orgRes.json()
+              setOrganization(orgData)
+            }
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('clientoro_active_org', targetOrgId)
+            }
+          } else if (meData.organizationId) {
+            // Fallback na default
+            const orgRes = await fetch('/api/settings')
+            if (orgRes.ok) setOrganization(await orgRes.json())
+          }
         }
       } catch (err) {
         console.error('Auth init error:', err)
@@ -124,6 +156,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       console.error('Failed to fetch organization:', err)
+    }
+  }
+
+  const switchOrg = async (orgId: string) => {
+    try {
+      const res = await fetch('/api/auth/switch-org', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ organizationId: orgId }),
+      })
+      if (!res.ok) return
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('clientoro_active_org', orgId)
+      }
+
+      // Reload settings pro novou org
+      const orgRes = await fetch('/api/settings')
+      if (orgRes.ok) {
+        const orgData = await orgRes.json()
+        setOrganization(orgData)
+      }
+
+      // Force reload stránky aby se vše přenačetlo
+      window.location.reload()
+    } catch (err) {
+      console.error('Switch org error:', err)
     }
   }
 
@@ -148,6 +207,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAtLeastManager,
       isAtLeastOwner,
       refreshOrg,
+      switchOrg,
+      availableOrgs,
     }}>
       {children}
     </AuthContext.Provider>
