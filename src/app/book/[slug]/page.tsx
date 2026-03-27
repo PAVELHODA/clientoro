@@ -52,6 +52,25 @@ export default function PublicBookingPage() {
   const [selectedTime, setSelectedTime] = useState('')
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
+  const [phoneError, setPhoneError] = useState('')
+
+  const formatPhone = (val: string) => {
+    // Odstraníme vše kromě číslic a +
+    let clean = val.replace(/[^\d+]/g, '')
+    // Automaticky přidáme +420 pokud začíná číslem
+    if (clean && !clean.startsWith('+') && !clean.startsWith('00')) {
+      if (clean.startsWith('420') || clean.startsWith('421')) clean = '+' + clean
+      else if (clean.length <= 9) clean = '+420' + clean
+    }
+    if (clean.startsWith('00')) clean = '+' + clean.substring(2)
+    return clean
+  }
+
+  const validatePhone = (val: string): boolean => {
+    const clean = val.replace(/[^\d+]/g, '')
+    // +420 nebo +421 + 9 číslic
+    return /^\+42[01]\d{9}$/.test(clean) || /^\+\d{10,14}$/.test(clean)
+  }
   const [customerEmail, setCustomerEmail] = useState('')
   const [customerNote, setCustomerNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -227,6 +246,7 @@ export default function PublicBookingPage() {
 
   const handleSubmit = async () => {
     if (!customerName.trim() || !customerPhone.trim()) { setSubmitError(t('book_error_name_phone')); return }
+    if (!validatePhone(customerPhone)) { setSubmitError(lang === 'en' ? 'Please enter a valid phone number (+420...)' : lang === 'sk' ? 'Zadajte platné telefónne číslo (+420...)' : 'Zadejte platné telefonní číslo (+420...)'); return }
     if (!gdprConsent) { setSubmitError(t('book_error_gdpr')); return }
     setSubmitting(true); setSubmitError('')
     const startDate = new Date(`${selectedDate}T${selectedTime}:00`)
@@ -812,7 +832,7 @@ export default function PublicBookingPage() {
             <div className="space-y-3">
               {[
                 { label: t('book_name'), value: customerName, set: setCustomerName, type: 'text', ph: t('book_name_placeholder'), req: true },
-                { label: t('book_phone'), value: customerPhone, set: setCustomerPhone, type: 'tel', ph: '+420 777 123 456', req: true },
+                { label: t('book_phone'), value: customerPhone, set: (v: string) => { setCustomerPhone(formatPhone(v)); setPhoneError('') }, type: 'tel', ph: '+420 777 123 456', req: true },
                 { label: t('book_email'), value: customerEmail, set: setCustomerEmail, type: 'email', ph: t('book_email_placeholder'), req: false },
               ].map((f, i) => (
                 <div key={i}>
