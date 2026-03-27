@@ -127,27 +127,27 @@ export default function AdminPage() {
       {tab === 'dashboard' && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-2"><Building2 className="w-4 h-4 text-blue-500" /><span className="text-xs text-gray-500">Organizace</span></div>
+            <div className="flex items-center gap-2 mb-2 cursor-pointer hover:opacity-80" onClick={() => setTab('organizations')}><Building2 className="w-4 h-4 text-blue-500" /><span className="text-xs text-gray-500">Organizace</span></div>
             <p className="text-2xl font-bold text-gray-900">{stats?.totalOrgs || 0}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-2"><Users className="w-4 h-4 text-emerald-500" /><span className="text-xs text-gray-500">Uživatelé</span></div>
+            <div className="flex items-center gap-2 mb-2 cursor-pointer hover:opacity-80" onClick={() => window.location.href = '/clients'}><Users className="w-4 h-4 text-emerald-500" /><span className="text-xs text-gray-500">Uživatelé</span></div>
             <p className="text-2xl font-bold text-gray-900">{stats?.totalUsers || 0}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-2"><Calendar className="w-4 h-4 text-purple-500" /><span className="text-xs text-gray-500">Rezervace</span></div>
+            <div className="flex items-center gap-2 mb-2 cursor-pointer hover:opacity-80" onClick={() => window.location.href = '/bookings'}><Calendar className="w-4 h-4 text-purple-500" /><span className="text-xs text-gray-500">Rezervace</span></div>
             <p className="text-2xl font-bold text-gray-900">{stats?.totalBookings || 0}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-2"><Bell className="w-4 h-4 text-amber-500" /><span className="text-xs text-gray-500">Notifikace</span></div>
+            <div className="flex items-center gap-2 mb-2 cursor-pointer hover:opacity-80" onClick={() => window.location.href = '/dashboard'}><Bell className="w-4 h-4 text-amber-500" /><span className="text-xs text-gray-500">Notifikace</span></div>
             <p className="text-2xl font-bold text-gray-900">{stats?.totalNotifications || 0}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-2"><Layers className="w-4 h-4 text-indigo-500" /><span className="text-xs text-gray-500">Kategorie</span></div>
+            <div className="flex items-center gap-2 mb-2 cursor-pointer hover:opacity-80" onClick={() => setTab('categories')}><Layers className="w-4 h-4 text-indigo-500" /><span className="text-xs text-gray-500">Kategorie</span></div>
             <p className="text-2xl font-bold text-gray-900">{categories.length}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-2"><Layers className="w-4 h-4 text-cyan-500" /><span className="text-xs text-gray-500">Šablony služeb</span></div>
+            <div className="flex items-center gap-2 mb-2 cursor-pointer hover:opacity-80" onClick={() => setTab('categories')}><Layers className="w-4 h-4 text-cyan-500" /><span className="text-xs text-gray-500">Šablony služeb</span></div>
             <p className="text-2xl font-bold text-gray-900">{categories.reduce((sum, c) => sum + (c.service_templates?.length || 0), 0)}</p>
           </div>
         </div>
