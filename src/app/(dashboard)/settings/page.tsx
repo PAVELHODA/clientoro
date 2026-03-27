@@ -181,6 +181,29 @@ export default function SettingsPage() {
     fetch('/api/settings').then(r => r.json()).then(d => {
       if (d && !d.error) setS({ ...EMPTY, ...d })
     }).finally(() => setLoading(false))
+
+    fetch('/api/auth/google/status').then(r => r.json()).then(d => {
+      if (d.connected) {
+        setGcalConnected(true)
+        setGcalEmail(d.google_email || '')
+      }
+    }).catch(() => {})
+
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const gcalParam = params.get('gcal')
+      if (gcalParam === 'connected') {
+        setGcalConnected(true)
+        toast.success('Google Calendar propojen!')
+        window.history.replaceState({}, '', '/settings')
+      } else if (gcalParam === 'denied') {
+        toast.error('Google Calendar zamítnuto')
+        window.history.replaceState({}, '', '/settings')
+      } else if (gcalParam === 'error') {
+        toast.error('Chyba Google Calendar')
+        window.history.replaceState({}, '', '/settings')
+      }
+    }
   }, [])
 
   const save = async () => {
