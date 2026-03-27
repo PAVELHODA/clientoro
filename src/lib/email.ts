@@ -178,10 +178,10 @@ export async function sendBookingCancellation({
 
 // ===== 4. ZRUŠENÍ — notifikace majiteli =====
 export async function sendOwnerCancellation({
-  to, customerName, customerPhone, serviceName, date, time, orgName,
+  to, customerName, customerPhone, serviceName, date, time, orgName, dashboardUrl,
 }: {
   to: string; customerName: string; customerPhone: string
-  serviceName: string; date: string; time: string; orgName: string
+  serviceName: string; date: string; time: string; orgName: string; dashboardUrl?: string
 }) {
   const items = [
     { label: 'Klient', value: customerName },
@@ -201,6 +201,7 @@ export async function sendOwnerCancellation({
           Klient zrušil rezervaci v <strong>${orgName}</strong>.
         </p>
         ${infoBox(items, 'red')}
+        ${dashboardUrl ? `<div style="margin-top:16px;"><a href="${dashboardUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít kalendář</a></div>` : ''}
       `,
     }),
   })

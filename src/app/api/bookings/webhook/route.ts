@@ -130,6 +130,7 @@ export async function POST(request: NextRequest) {
           date,
           time,
           orgName,
+          dashboardUrl: process.env.NEXT_PUBLIC_APP_URL ? `${process.env.NEXT_PUBLIC_APP_URL}/calendar` : 'https://clientoro.pro/calendar',
         })
       }
 

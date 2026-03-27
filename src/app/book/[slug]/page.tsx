@@ -113,6 +113,25 @@ export default function PublicBookingPage() {
     }
   }, [])
 
+  // Reschedule — předvyplnění z URL parametrů
+  useEffect(() => {
+    if (typeof window === 'undefined' || services.length === 0) return
+    const params = new URLSearchParams(window.location.search)
+    const preService = params.get('service')
+    const preStaff = params.get('staff')
+    if (!preService) return
+    const svc = services.find(s => s.name === decodeURIComponent(preService))
+    if (svc) {
+      setSelectedService(svc)
+      setEntryMode('service')
+      if (preStaff) {
+        const st = staffList.find(s => s.full_name === decodeURIComponent(preStaff))
+        if (st) { setSelectedStaff(st); setAnyStaff(false); setStep('datetime') }
+        else { setStep('staff') }
+      } else { setStep('staff') }
+    }
+  }, [services, staffList])
+
 
   // ===== BUSINESS LOGIC =====
   const availableStaff = selectedService ? staffList.filter(s => s.staff_services?.some(ss => ss.service_id === selectedService.id)) : staffList
