@@ -89,7 +89,6 @@ export default function LandingPage() {
             <a href="#faq" className="hover:text-gray-900">{t('land_nav_faq')}</a>
           </div>
           <div className="flex items-center gap-3">
-            {/* Language switcher */}
             <div className="flex gap-0.5 mr-2">
               {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
                 <button key={l} onClick={() => setLang(l)}
@@ -104,19 +103,20 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO */}
+      {/* HERO — ZMĚNA: text-3xl md:text-5xl místo text-4xl md:text-6xl */}
       <section className="relative pt-32 pb-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0c2d48 20%, #0e4d64 40%, #0f6b7a 55%, #0e5460 70%, #0c3a50 85%, #0a1e30 100%)' }}>
         <div className="absolute top-16 right-16 w-72 h-72 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%)' }} />
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}><Zap className="w-4 h-4" /> {t('land_badge')}</div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">{t('land_hero_1')} <br /> {t('land_hero_2')}<br /><span style={{ color: '#f59e0b' }}>{t('land_hero_3')}</span></h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight mb-6">{t('land_hero_1')} <br /> {t('land_hero_2')}<br /><span style={{ color: '#f59e0b' }}>{t('land_hero_3')}</span></h1>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>{t('land_hero_desc')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <a href="/register" className="px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>{t('land_cta')} <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.15)' }}>{t('land_cta2')}</a>
           </div>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('land_trust')}</p>
-        </div>{/* Vlnky + zlatí lidé */}
+        </div>
+        {/* Vlnky + zlatí lidé */}
         <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '60px' }}>
           <svg viewBox="0 0 1200 60" className="w-full h-full" preserveAspectRatio="none" fill="none">
             <path d="M0 30 Q100 15 200 25 Q300 35 400 20 Q500 5 600 18 Q700 30 800 15 Q900 0 1000 12 Q1100 25 1200 8 L1200 60 L0 60 Z" fill="rgba(255,255,255,0.03)" />
@@ -194,7 +194,6 @@ export default function LandingPage() {
           </div>
           <p className="text-sm mt-6" style={{ color: 'rgba(255,255,255,0.3)' }}><Shield className="w-4 h-4 inline mr-1" /> {t('land_ai_note')}</p>
         </div>
-          
       </section>
 
       {/* ONBOARDING */}
@@ -258,7 +257,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* PRICING */}
+      {/* PRICING — ZMĚNA: podmíněné zobrazení "S AI" */}
       <section id="pricing" className="py-20">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -277,7 +276,9 @@ export default function LandingPage() {
                 <div className="text-center mb-4">
                   <span className="text-3xl font-bold text-gray-900">{p.price}</span>
                   <span className="text-sm text-gray-500"> {t('land_price_per_month')}</span>
-                  <p className="text-xs text-gray-400">{t('land_price_with_ai')} {p.priceAi} {t('land_price_per_month')}</p>
+                  {p.priceAi && (
+                    <p className="text-xs text-gray-400">{t('land_price_with_ai')} {p.priceAi} {t('land_price_per_month')}</p>
+                  )}
                 </div>
                 <ul className="space-y-1.5 mb-4">
                   {[1,2,3,4,5,6].map(i => {
@@ -319,7 +320,6 @@ export default function LandingPage() {
           <p className="text-lg mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('land_final_desc')}</p>
           <a href="/register" className="inline-flex items-center gap-2 px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>{t('land_final_button')} <ArrowRight className="w-5 h-5" /></a>
         </div>
-          
       </section>
 
       {/* FOOTER */}
