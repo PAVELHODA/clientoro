@@ -560,7 +560,12 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
   en: {
     // Login
-        login_submit: 'Sign In',
+    login_title: 'Log In',
+    login_subtitle: 'Welcome back! Log in to your account.',
+    login_email: 'Email',
+    login_password: 'Password',
+    login_password_placeholder: 'Your password',
+    login_submit: 'Log In',
     login_loading: 'Signing in...',
     login_no_account: "Don't have an account?",
     login_register_link: 'Sign up',
