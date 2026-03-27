@@ -94,7 +94,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const addToast = useCallback((type: ToastType, message: string) => {
     const id = ++counterRef.current
     setToasts(prev => [...prev, { id, type, message }])
-    setTimeout(() => removeToast(id), 4000)
+    setTimeout(() => removeToast(id), 6000)
   }, [removeToast])
 
   const contextValue: ToastContextType = {
