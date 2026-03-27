@@ -1,5 +1,6 @@
 ﻿// PATH: src/app/api/bookings/webhook/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
+import { createCalendarEvent, deleteCalendarEvent } from '@/lib/googleCalendar'
 import {
   sendBookingConfirmation, sendOwnerNotification,
   sendBookingCancellation, sendOwnerCancellation, sendTestEmail,
@@ -107,6 +108,21 @@ export async function POST(request: NextRequest) {
           orgPhone,
         })
       }
+
+      // Google Calendar sync
+      try {
+        await createCalendarEvent(organization_id, {
+          id: booking_id,
+          serviceName,
+          staffName,
+          customerName: clientName,
+          customerPhone: clientPhone || undefined,
+          startAt: booking.start_at,
+          endAt: booking.end_at,
+          orgName,
+          address: org?.address || undefined,
+        })
+      } catch (e) { console.error('[webhook-gcal-create]', e) }
     }
 
     // ========== CANCELLED ==========
@@ -145,6 +161,13 @@ export async function POST(request: NextRequest) {
           orgName,
           orgPhone,
         })
+      }
+
+      // Google Calendar — smazat event
+      if (booking.gcal_event_id) {
+        try {
+          await deleteCalendarEvent(organization_id, booking.gcal_event_id)
+        } catch (e) { console.error('[webhook-gcal-delete]', e) }
       }
 
       // Waitlist

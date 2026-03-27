@@ -26,6 +26,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [showDeleteFlow, setShowDeleteFlow] = useState(false)
   const [gcalConnected, setGcalConnected] = useState(false)
+  const [gcalEmail, setGcalEmail] = useState('')
   const [gcalLoading, setGcalLoading] = useState(false)
   const [deleteConfirmName, setDeleteConfirmName] = useState('')
   const [backupDone, setBackupDone] = useState(false)
@@ -514,9 +515,17 @@ export default function SettingsPage() {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium border border-green-200">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                {l.gcalConnected}
+                {l.gcalConnected}{gcalEmail ? ` · ${gcalEmail}` : ''}
               </div>
-              <button onClick={() => { setGcalConnected(false); toast.success('Google Calendar odpojen') }}
+              <button onClick={async () => {
+                setGcalLoading(true)
+                try {
+                  const r = await fetch('/api/auth/google/disconnect', { method: 'POST' })
+                  if (r.ok) { setGcalConnected(false); setGcalEmail(''); toast.success('Google Calendar odpojen') }
+                  else toast.error('Chyba při odpojování')
+                } catch { toast.error('Chyba při odpojování') }
+                finally { setGcalLoading(false) }
+              }}
                 className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
                 {l.gcalDisconnect}
               </button>
