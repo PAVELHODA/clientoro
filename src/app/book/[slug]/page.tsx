@@ -94,6 +94,11 @@ export default function PublicBookingPage() {
         if (!res.ok) { setError('book_not_found'); setLoading(false); return }
         const data = await res.json()
         setOrg(data.organization); setServices(data.services || []); setStaffList(data.staff || [])
+        // Solo mód — přeskočit dual entry
+        if ((data.organization?.mode === 'solo' || data.organization?.mode === 'solo_inspire') && (data.staff || []).length <= 1) {
+          setEntryMode('service')
+          if ((data.staff || []).length === 1) setSelectedStaff(data.staff[0])
+        }
         setWorkingHours(data.working_hours || []); setTimeOffs(data.time_off || []); setExistingBookings(data.bookings || [])
         const stored = localStorage.getItem('clientoro_book_lang') as PublicLang | null
         if (stored && ['cs', 'sk', 'en'].includes(stored)) setLangState(stored)
@@ -117,11 +122,6 @@ export default function PublicBookingPage() {
   useEffect(() => {
     if (typeof window === 'undefined' || services.length === 0) return
     const params = new URLSearchParams(window.location.search)
-    if ((org?.mode === 'solo' || org?.mode === 'solo_inspire') && staffList.length <= 1) {
-      setEntryMode('service')
-      if (staffList.length === 1) setSelectedStaff(staffList[0])
-    }
-
     const preService = params.get('service')
     const preStaff = params.get('staff')
     if (!preService) return
