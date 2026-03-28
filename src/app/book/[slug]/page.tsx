@@ -401,7 +401,7 @@ export default function PublicBookingPage() {
             <div className="flex items-center justify-between">
               {[
                 { key: 'service', label: t('book_step_service') },
-                { key: 'staff', label: t('book_step_who') },
+                ...(!isSolo ? [{ key: 'staff', label: t('book_step_who') }] : []),
                 { key: 'datetime', label: t('book_step_when') },
                 { key: 'contact', label: t('book_step_contact') },
               ].map((s, i) => {
@@ -434,11 +434,15 @@ export default function PublicBookingPage() {
             <div className="absolute left-5 right-5 top-1/2 h-px" style={{ background: 'linear-gradient(90deg, rgba(14,77,100,0.06) 0%, rgba(15,107,122,0.12) 50%, rgba(14,77,100,0.06) 100%)' }} />
             <div className="absolute left-5 top-1/2 h-px transition-all duration-1000 ease-in-out"
               style={{
-                width: step === 'service' ? '12.5%' : step === 'staff' ? '37.5%' : step === 'datetime' ? '62.5%' : '87.5%',
+                width: isSolo
+                  ? (step === 'service' ? '16%' : step === 'datetime' ? '50%' : '83%')
+                  : (step === 'service' ? '12.5%' : step === 'staff' ? '37.5%' : step === 'datetime' ? '62.5%' : '87.5%'),
                 background: 'linear-gradient(90deg, rgba(15,107,122,0.08) 0%, rgba(15,107,122,0.4) 100%)',
               }} />
             <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-1000 ease-in-out"
-              style={{ left: `calc(20px + ${step === 'service' ? 12.5 : step === 'staff' ? 37.5 : step === 'datetime' ? 62.5 : 87.5}%)` }}>
+              style={{ left: `calc(20px + ${isSolo
+                  ? (step === 'service' ? 16 : step === 'datetime' ? 50 : 83)
+                  : (step === 'service' ? 12.5 : step === 'staff' ? 37.5 : step === 'datetime' ? 62.5 : 87.5)}%)` }}>
               <div className="w-2 h-2 rounded-full" style={{
                 background: 'radial-gradient(circle, rgba(15,107,122,0.85) 0%, rgba(14,77,100,0.35) 40%, transparent 70%)',
                 boxShadow: '0 0 10px 4px rgba(15,107,122,0.18), 0 0 30px 12px rgba(14,77,100,0.06)',
@@ -533,9 +537,11 @@ export default function PublicBookingPage() {
             {/* VSTUP A: Podle služby — seskupené podle kategorie */}
             {entryMode === 'service' && (
               <div>
-                <button onClick={() => setEntryMode(null)} className="text-sm text-gray-500 flex items-center gap-1.5 hover:text-gray-700 transition-colors mb-5 font-medium">
-                  <ChevronLeft className="w-4 h-4" /> {t('book_back')}
-                </button>
+                {!isSolo && (
+                  <button onClick={() => setEntryMode(null)} className="text-sm text-gray-500 flex items-center gap-1.5 hover:text-gray-700 transition-colors mb-5 font-medium">
+                    <ChevronLeft className="w-4 h-4" /> {t('book_back')}
+                  </button>
+                )}
                 <div className="space-y-2.5">
                   {(() => {
                     const categories = new Map<string, typeof services>()
