@@ -1109,7 +1109,7 @@ export default function PublicBookingPage() {
 
             <div className="mt-10 flex items-center justify-center gap-2">
               <Waves className="w-3.5 h-3.5 text-gray-300" />
-              <span className="text-gray-300 text-[10px] font-semibold" style={{ letterSpacing: '0.2em' }}>POWERED BY CLIENTORORO</span>
+              <span className="text-gray-300 text-[10px] font-semibold" style={{ letterSpacing: '0.2em' }}>POWERED BY CLIENTORO</span>
             </div>
           </div>
         )}
