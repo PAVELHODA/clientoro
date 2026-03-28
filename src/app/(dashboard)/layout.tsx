@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 
 // ============================================
-// ?? MODE THEMES
+// MODE THEMES
 // ============================================
 const MODE_THEMES: Record<string, {
   label: string; gradient: string; sunGlow: string; text: string; textMuted: string;
@@ -72,7 +72,7 @@ const MODE_THEMES: Record<string, {
 }
 
 // ============================================
-// ?? NAVIGACE
+// NAVIGACE
 // ============================================
 const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any; minRole?: string }[]> = {
   solo: [
@@ -142,7 +142,7 @@ const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any
 }
 
 // ============================================
-// ?? Motivational Tips
+// Motivational Tips
 // ============================================
 const TIPS: Record<string, string[]> = {
   '/dashboard': [
@@ -236,7 +236,7 @@ function MotivationalTip() {
       <div className="mb-4 flex justify-center">
         <button onClick={toggleTips}
           className="px-4 py-1.5 text-xs text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-full border border-gray-200 hover:border-amber-200 transition-all">
-          ?? Zapnout motivační tipy
+          Zapnout motivační tipy
         </button>
       </div>
     )
@@ -245,13 +245,13 @@ function MotivationalTip() {
   return (
     <div className="mb-4 p-4 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">
       <p className={`text-sm text-amber-900 font-bold text-center flex-1 transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}`}>
-        ?? {tips[tipIndex] || ''}
+        {tips[tipIndex] || ''}
       </p>
       <div className="flex items-center gap-1 flex-shrink-0">
         <button onClick={() => setPaused(!paused)}
           className="w-7 h-7 rounded-lg flex items-center justify-center text-amber-400 hover:text-amber-600 hover:bg-amber-100 transition-all"
           title={paused ? 'Pokračovat' : 'Pozastavit'}>
-          <span className="text-xs">{paused ? '?' : '?'}</span>
+          <span className="text-xs">{paused ? '▶' : '⏸'}</span>
         </button>
         <button onClick={toggleTips}
           className="w-7 h-7 rounded-lg flex items-center justify-center text-amber-400 hover:text-amber-600 hover:bg-amber-100 transition-all"
@@ -264,7 +264,7 @@ function MotivationalTip() {
 }
 
 // ============================================
-// ?? Notification Bell — 60s interval, user-dependent
+// Notification Bell — 60s interval, user-dependent
 // ============================================
 function NotificationBell() {
   const [notifications, setNotifications] = useState<any[]>([])
@@ -344,7 +344,7 @@ function NotificationBell() {
 }
 
 // ============================================
-// ??? DASHBOARD LAYOUT
+// DASHBOARD LAYOUT
 // ============================================
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

@@ -107,10 +107,10 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — hero
     land_badge: 'Chytrý rezervační systém s AI pro poskytovatele služeb',
-    land_hero_1: 'Interaktivní kalendář',
+    land_hero_1: 'Interaktivní plánovač',
     land_hero_2: 'zaměřený na získávání klientů.',
     land_hero_3: 'Vy máte přehled o rezervacích, tržbách, týmu.',
-    land_hero_desc: 'Přehledný kalendář pro správu klientů i týmu. Pro růst vašeho podnikání s volbou AI. Férový ceník, žádné skryté poplatky.',
+    land_hero_desc: 'Přehledný systém pro správu klientů i týmu. Pro růst vašeho podnikání s volbou AI. Férový ceník, žádné skryté poplatky.',
     land_cta: 'Vyzkoušet 14 dní zdarma',
     land_cta2: 'Co vám přineseme?',
     land_trust: 'Bez kreditní karty · Zrušení kdykoliv · Vaše data, vaše kontrola',
@@ -384,10 +384,10 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — hero
     land_badge: 'Chytrý rezervačný systém s AI pre poskytovateľov služieb',
-    land_hero_1: 'Interaktívny kalendár',
+    land_hero_1: 'Interaktívny plánovač',
     land_hero_2: 'zameraný na získavanie klientov.',
     land_hero_3: 'Vy máte prehľad o rezerváciách, tržbách, tíme.',
-    land_hero_desc: 'Prehľadný kalendár pre správu klientov i tímu. Pre rast vášho podnikania s voľbou AI. Férový cenník, žiadne skryté poplatky.',
+    land_hero_desc: 'Prehľadný systém pre správu klientov i tímu. Pre rast vášho podnikania s voľbou AI. Férový cenník, žiadne skryté poplatky.',
     land_cta: 'Vyskúšať 14 dní zadarmo',
     land_cta2: 'Čo vám prinesieme?',
     land_trust: 'Bez kreditnej karty · Zrušenie kedykoľvek · Vaše dáta, vaša kontrola',
