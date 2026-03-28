@@ -1,5 +1,5 @@
 # CLIENTORO — AI Context & Knowledge Base
-> Poslední aktualizace: 2026-03-27 (evening session)
+> Poslední aktualizace: 2026-03-28
 > Tento soubor obsahuje VŠE potřebné pro pokračování vývoje v novém chatu.
 
 ---
