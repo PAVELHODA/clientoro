@@ -214,14 +214,14 @@ export default function RegisterPage() {
                       mode === 'solo' ? 'text-white shadow-md' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                     }`}
                     style={mode === 'solo' ? { background: 'linear-gradient(135deg, #0e4d64, #0f6b7a)', borderColor: '#0f6b7a' } : {}}>
-                    <User className="w-4 h-4" /> {t('register_freelancer')}
+                    <User className="w-4 h-4 flex-shrink-0" /> {t('register_freelancer')}
                   </button>
                   <button type="button" onClick={() => setMode('team')}
                     className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
                       mode === 'team' ? 'text-white shadow-md' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                     }`}
                     style={mode === 'team' ? { background: 'linear-gradient(135deg, #0c2d48, #0e4d64)', borderColor: '#0e4d64' } : {}}>
-                    <Building2 className="w-4 h-4" /> {t('register_company')}
+                    <Building2 className="w-4 h-4 flex-shrink-0" /> {t('register_company')}
                   </button>
                 </div>
               </div>
