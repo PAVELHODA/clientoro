@@ -262,9 +262,24 @@ export default function ServicesPage() {
       'Vzdělávání': { bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },
       'Wellness': { bg: 'rgba(20,184,166,0.12)', border: 'rgba(20,184,166,0.25)' },
       'Obecne': { bg: 'rgba(107,114,128,0.12)', border: 'rgba(107,114,128,0.25)' },
+      'Péče o zvířata': { bg: 'rgba(180,83,9,0.12)', border: 'rgba(180,83,9,0.25)' },
+      'Koučink': { bg: 'rgba(234,179,8,0.12)', border: 'rgba(234,179,8,0.25)' },
+      'Právní služby': { bg: 'rgba(30,58,138,0.12)', border: 'rgba(30,58,138,0.25)' },
+      'Finanční poradenství': { bg: 'rgba(4,120,87,0.12)', border: 'rgba(4,120,87,0.25)' },
+      'IT & technologie': { bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.25)' },
+      'Marketing': { bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.25)' },
+      'Nemovitosti': { bg: 'rgba(120,53,15,0.12)', border: 'rgba(120,53,15,0.25)' },
+      'Notáři': { bg: 'rgba(55,65,81,0.12)', border: 'rgba(55,65,81,0.25)' },
     }
     if (!category) return { bg: 'white', border: 'rgb(229,231,235)' }
-    return map[category] || { bg: 'white', border: 'rgb(229,231,235)' }
+    // Fallback pro neznámé kategorie — generuj barvu z názvu
+    if (!map[category]) {
+      let hash = 0
+      for (let i = 0; i < category.length; i++) hash = category.charCodeAt(i) + ((hash << 5) - hash)
+      const hue = Math.abs(hash) % 360
+      return { bg: `hsla(${hue},60%,50%,0.10)`, border: `hsla(${hue},60%,50%,0.22)` }
+    }
+    return map[category]
   }
 
   const ServiceCard = ({ service }: { service: Service }) => {
