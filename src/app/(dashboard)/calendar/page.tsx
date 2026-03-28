@@ -479,26 +479,26 @@ export default function CalendarPage() {
       </div>
 
       {/* Stats bar */}
-      <div className={`grid ${isTeam ? 'grid-cols-4' : 'grid-cols-3'} gap-3 mb-4`}>
+      <div className={`grid ${isTeam ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'} gap-2 sm:gap-3 mb-4`}>
         <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
           <div className="flex items-center justify-center gap-1.5 mb-1"><Calendar className="w-4 h-4 text-blue-600" /></div>
-          <p className="text-2xl font-bold text-gray-900">{currentStats.totalBookings}</p>
+          <p className="text-lg sm:text-2xl font-bold text-gray-900">{currentStats.totalBookings}</p>
           <p className="text-xs text-gray-500">{l.bookings}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
           <div className="flex items-center justify-center gap-1.5 mb-1"><DollarSign className="w-4 h-4 text-emerald-600" /></div>
-          <p className="text-2xl font-bold text-emerald-600">{currentStats.totalRevenue.toLocaleString(locale)} {currency}</p>
+          <p className="text-sm sm:text-2xl font-bold text-emerald-600 truncate">{currentStats.totalRevenue.toLocaleString(locale)} {currency}</p>
           <p className="text-xs text-gray-500">{l.revenue}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
           <div className="flex items-center justify-center gap-1.5 mb-1"><Clock className="w-4 h-4 text-rose-600" /></div>
-          <p className="text-2xl font-bold text-rose-700">{currentStats.freeSlots}</p>
+          <p className="text-lg sm:text-2xl font-bold text-rose-700">{currentStats.freeSlots}</p>
           <p className="text-xs text-gray-500">{l.freeSlots}</p>
         </div>
         {isTeam && (
           <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1"><Users className="w-4 h-4 text-violet-600" /></div>
-            <p className="text-2xl font-bold text-violet-700">{currentStats.workingStaff}</p>
+            <p className="text-lg sm:text-2xl font-bold text-violet-700">{currentStats.workingStaff}</p>
             <p className="text-xs text-gray-500">{l.working}</p>
           </div>
         )}
@@ -565,7 +565,7 @@ export default function CalendarPage() {
             if (booking && !isStart) return null
             return (
               <div key={time} className={`flex ${isHour ? 'border-t-2 border-gray-400' : isHalf ? 'border-t border-gray-300' : 'border-t border-gray-200/60'} ${isPast && !booking ? 'bg-gray-100/70' : ''} ${isNow ? 'bg-blue-50/40' : ''}`}>
-                <div className={`w-16 sm:w-20 flex-shrink-0 py-2 px-2 sm:px-3 text-right border-r-2 border-gray-400 sticky left-0 bg-white z-10 ${isHour ? 'text-sm font-bold text-gray-700' : isHalf ? 'text-xs font-medium text-gray-500' : 'text-[10px] text-gray-300'} ${isPast ? 'opacity-50' : ''}`}>
+                <div className={`w-16 sm:w-20 flex-shrink-0 py-2 px-2 sm:px-3 text-right border-r-2 border-gray-500 sticky left-0 bg-white z-10 ${isHour ? 'text-sm font-bold text-gray-700' : isHalf ? 'text-xs font-medium text-gray-500' : 'text-[10px] text-gray-300'} ${isPast ? 'opacity-50' : ''}`}>
                   {(isHour || isHalf) ? time : ''}
                   {isNow && <div className="w-2 h-2 bg-red-500 rounded-full inline-block ml-1 animate-pulse" />}
                 </div>
@@ -610,12 +610,12 @@ export default function CalendarPage() {
           <table className="w-full" style={{ minWidth: Math.max(600, staffList.length * 180 + 80) + 'px' }}>
             <thead className="sticky top-0 z-20 bg-white shadow-sm">
               <tr className="border-b-2 border-gray-400">
-                <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-400 bg-gray-50"></th>
+                <th className="w-16 sm:w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-500 bg-gray-50 sticky left-0 z-20"></th>
                 {staffList.map(staff => {
                   const staffDayBookings = getBookingsForDate(dateStr).filter(b => b.staff_id === staff.id)
                   const isFiltered = filterStaff === staff.id
                   return (
-                    <th key={staff.id} className="p-2 text-center border-r border-gray-300 last:border-r-0 bg-gray-50">
+                    <th key={staff.id} className="p-2 text-center border-r border-gray-400 last:border-r-0 bg-gray-50">
                       <button onClick={() => setFilterStaff(isFiltered ? 'all' : staff.id)}
                         className={`text-sm font-bold transition-all ${isFiltered ? 'text-blue-600 underline' : 'text-gray-800 hover:text-blue-600'}`}>
                         {staff.full_name}
@@ -644,9 +644,9 @@ export default function CalendarPage() {
                       const booking = slotBookings[0]
                       const isStart = booking ? isBookingStart(dateStr, time, booking) : false
                       const slotCount = booking ? getBookingSlotCount(booking) : 0
-                      if (booking && !isStart) return <td key={staff.id} className="border-r border-gray-300 last:border-r-0" />
+                      if (booking && !isStart) return <td key={staff.id} className="border-r border-gray-400 last:border-r-0" />
                       return (
-                        <td key={staff.id} className={`p-0.5 border-r border-gray-300 last:border-r-0 ${isPast ? 'bg-gray-50/70' : ''}`}>
+                        <td key={staff.id} className={`p-0.5 border-r border-gray-400 last:border-r-0 ${isPast ? 'bg-gray-50/70' : ''}`}>
                           {booking && isStart ? (
                             <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-1 hover:brightness-95 transition-all ${isPast ? 'opacity-75' : ''}`}
                               style={{ minHeight: `${slotCount * 2}rem` }}>
@@ -698,7 +698,7 @@ export default function CalendarPage() {
                   const isWknd = isWeekend(day)
                   const count = getBookingsForDate(ds).length
                   return (
-                    <th key={i} className={`p-2 text-center border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50' : ''} ${isWknd ? 'bg-sky-50/60' : ''} ${isPast && !isWknd && !isT ? 'bg-gray-50' : ''}`}>
+                    <th key={i} className={`p-2 text-center border-r border-gray-400 last:border-r-0 ${isT ? 'bg-blue-50' : ''} ${isWknd ? 'bg-sky-50/60' : ''} ${isPast && !isWknd && !isT ? 'bg-gray-50' : ''}`}>
                       <p className={`text-xs font-medium ${isPast ? 'text-gray-400' : 'text-gray-500'}`}>{dayNames[i]}</p>
                       <p className={`text-lg font-bold ${isT ? 'text-blue-600' : isPast ? 'text-gray-400' : 'text-gray-900'}`}>{day.getDate()}</p>
                       {count > 0 && <span className="inline-block mt-0.5 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">{count}</span>}
@@ -711,8 +711,8 @@ export default function CalendarPage() {
               {timeSlots.filter(t => t.endsWith(':00') || t.endsWith(':30')).map(time => {
                 const isHour = time.endsWith(':00')
                 return (
-                <tr key={time} className={`${isHour ? 'border-t-2 border-gray-300' : 'border-t border-gray-200'}`}>
-                  <td className={`p-1 text-right border-r-2 border-gray-400 bg-gray-50 align-top pt-1.5 ${isHour ? 'text-xs font-bold text-gray-600' : 'text-[10px] text-gray-400'}`}>{isHour ? time : ''}</td>
+                <tr key={time} className={`${isHour ? 'border-t-2 border-gray-400' : 'border-t border-gray-300'}`}>
+                  <td className={`p-1 text-right border-r-2 border-gray-500 bg-gray-50 align-top pt-1.5 sticky left-0 z-10 ${isHour ? 'text-xs font-bold text-gray-600' : 'text-[10px] text-gray-400'}`}>{isHour ? time : ''}</td>
                   {getWeekDays().map((day, i) => {
                     const ds = toDateStr(day)
                     const isT = ds === todayStr
@@ -720,7 +720,7 @@ export default function CalendarPage() {
                     const slotBookings = getBookingsForSlot(ds, time)
                     const isPast = ds < todayStr
                     return (
-                      <td key={i} className={`p-0.5 align-top border-r border-gray-300 last:border-r-0 ${isT ? 'bg-blue-50/30' : ''} ${isWknd ? 'bg-sky-50/40' : ''} ${isPast && !isWknd && !isT ? 'bg-gray-50/60' : ''}`} style={{ minHeight: '2rem' }}>
+                      <td key={i} className={`p-0.5 align-top border-r border-gray-400 last:border-r-0 ${isT ? 'bg-blue-50/30' : ''} ${isWknd ? 'bg-sky-50/40' : ''} ${isPast && !isWknd && !isT ? 'bg-gray-50/60' : ''}`} style={{ minHeight: '2rem' }}>
                         {slotBookings.length > 0 ? (
                           <div className="space-y-0.5">
                             {slotBookings.filter(b => isBookingStart(ds, time, b)).map(b => (
@@ -753,7 +753,7 @@ export default function CalendarPage() {
         <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm">
           <div className="grid grid-cols-7 border-b-2 border-gray-400">
             {dayNames.map((d, i) => (
-              <div key={d} className={`p-2 text-center text-xs font-bold text-gray-600 border-r border-gray-300 last:border-r-0 ${i >= 5 ? 'bg-sky-50/60' : ''}`}>{d}</div>
+              <div key={d} className={`p-2 text-center text-xs font-bold text-gray-600 border-r border-gray-400 last:border-r-0 ${i >= 5 ? 'bg-sky-50/60' : ''}`}>{d}</div>
             ))}
           </div>
           <div className="grid grid-cols-7">
