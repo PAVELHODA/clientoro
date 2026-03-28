@@ -314,7 +314,9 @@ export default function PublicBookingPage() {
 
   const availableDates = getAvailableDates()
   const availableSlots = getAvailableSlots()
-  const stepIndex = ['service', 'staff', 'datetime', 'contact', 'done'].indexOf(step)
+  const soloSteps = ['service', 'datetime', 'contact', 'done']
+  const teamSteps = ['service', 'staff', 'datetime', 'contact', 'done']
+  const stepIndex = (isSolo ? soloSteps : teamSteps).indexOf(step)
   const groupSlots = (slots: string[]) => ({ morning: slots.filter(s => parseInt(s) < 12), afternoon: slots.filter(s => parseInt(s) >= 12 && parseInt(s) < 17), evening: slots.filter(s => parseInt(s) >= 17) })
   const slotGroups = groupSlots(availableSlots)
 
