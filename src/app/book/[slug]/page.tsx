@@ -145,6 +145,7 @@ export default function PublicBookingPage() {
 
   // ===== MODE LOGIC =====
   const isSolo = org?.mode === 'solo' || org?.mode === 'solo_inspire'
+  
 
   // ===== BUSINESS LOGIC =====
   const availableStaff = selectedService ? staffList.filter(s => s.staff_services?.some(ss => ss.service_id === selectedService.id)) : staffList
@@ -314,9 +315,10 @@ export default function PublicBookingPage() {
 
   const availableDates = getAvailableDates()
   const availableSlots = getAvailableSlots()
-  const soloSteps = ['service', 'datetime', 'contact', 'done']
-  const teamSteps = ['service', 'staff', 'datetime', 'contact', 'done']
-  const stepIndex = (isSolo ? soloSteps : teamSteps).indexOf(step)
+  const activeSteps = (org?.mode === 'team' || org?.mode === 'pro_inspire')
+    ? ['service', 'staff', 'datetime', 'contact', 'done']
+    : ['service', 'datetime', 'contact', 'done']
+  const stepIndex = activeSteps.indexOf(step)
   const groupSlots = (slots: string[]) => ({ morning: slots.filter(s => parseInt(s) < 12), afternoon: slots.filter(s => parseInt(s) >= 12 && parseInt(s) < 17), evening: slots.filter(s => parseInt(s) >= 17) })
   const slotGroups = groupSlots(availableSlots)
 
@@ -402,11 +404,11 @@ export default function PublicBookingPage() {
           <div className="bg-white rounded-2xl shadow-lg shadow-gray-200/40 px-5 py-3.5">
             <div className="flex items-center justify-between">
               {[
-                { key: 'service', label: t('book_step_service') },
-                ...(!isSolo ? [{ key: 'staff', label: t('book_step_who') }] : []),
-                { key: 'datetime', label: t('book_step_when') },
-                { key: 'contact', label: t('book_step_contact') },
-              ].map((s, i) => {
+                { key: 'service', label: t('book_step_service'), show: true },
+                { key: 'staff', label: t('book_step_who'), show: org?.mode === 'team' || org?.mode === 'pro_inspire' },
+                { key: 'datetime', label: t('book_step_when'), show: true },
+                { key: 'contact', label: t('book_step_contact'), show: true },
+              ].filter(s => s.show).map((s, i) => {
                 const isActive = s.key === step; const isDone = i < stepIndex; const canClick = isDone
                 return (
                   <div key={s.key} className="flex items-center">
@@ -436,15 +438,19 @@ export default function PublicBookingPage() {
             <div className="absolute left-5 right-5 top-1/2 h-px" style={{ background: 'linear-gradient(90deg, rgba(14,77,100,0.06) 0%, rgba(15,107,122,0.12) 50%, rgba(14,77,100,0.06) 100%)' }} />
             <div className="absolute left-5 top-1/2 h-px transition-all duration-1000 ease-in-out"
               style={{
-                width: isSolo
-                  ? (step === 'service' ? '16%' : step === 'datetime' ? '50%' : '83%')
-                  : (step === 'service' ? '12.5%' : step === 'staff' ? '37.5%' : step === 'datetime' ? '62.5%' : '87.5%'),
+                width: (() => {
+                    const isTeam = org?.mode === 'team' || org?.mode === 'pro_inspire'
+                    if (isTeam) return step === 'service' ? '12.5%' : step === 'staff' ? '37.5%' : step === 'datetime' ? '62.5%' : '87.5%'
+                    return step === 'service' ? '16%' : step === 'datetime' ? '50%' : '83%'
+                  })(),
                 background: 'linear-gradient(90deg, rgba(15,107,122,0.08) 0%, rgba(15,107,122,0.4) 100%)',
               }} />
             <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-1000 ease-in-out"
-              style={{ left: `calc(20px + ${isSolo
-                  ? (step === 'service' ? 16 : step === 'datetime' ? 50 : 83)
-                  : (step === 'service' ? 12.5 : step === 'staff' ? 37.5 : step === 'datetime' ? 62.5 : 87.5)}%)` }}>
+              style={{ left: `calc(20px + ${(() => {
+                    const isTeam = org?.mode === 'team' || org?.mode === 'pro_inspire'
+                    if (isTeam) return step === 'service' ? 12.5 : step === 'staff' ? 37.5 : step === 'datetime' ? 62.5 : 87.5
+                    return step === 'service' ? 16 : step === 'datetime' ? 50 : 83
+                  })()}%)` }}>
               <div className="w-2 h-2 rounded-full" style={{
                 background: 'radial-gradient(circle, rgba(15,107,122,0.85) 0%, rgba(14,77,100,0.35) 40%, transparent 70%)',
                 boxShadow: '0 0 10px 4px rgba(15,107,122,0.18), 0 0 30px 12px rgba(14,77,100,0.06)',
