@@ -117,6 +117,11 @@ export default function PublicBookingPage() {
   useEffect(() => {
     if (typeof window === 'undefined' || services.length === 0) return
     const params = new URLSearchParams(window.location.search)
+    if ((org?.mode === 'solo' || org?.mode === 'solo_inspire') && staffList.length <= 1) {
+      setEntryMode('service')
+      if (staffList.length === 1) setSelectedStaff(staffList[0])
+    }
+
     const preService = params.get('service')
     const preStaff = params.get('staff')
     if (!preService) return
@@ -128,10 +133,18 @@ export default function PublicBookingPage() {
         const st = staffList.find(s => s.full_name === decodeURIComponent(preStaff))
         if (st) { setSelectedStaff(st); setAnyStaff(false); setStep('datetime') }
         else { setStep('staff') }
-      } else { setStep('staff') }
+      } else {
+        if ((org?.mode === 'solo' || org?.mode === 'solo_inspire') && staffList.length <= 1) {
+          if (staffList.length === 1) setSelectedStaff(staffList[0])
+          setStep('datetime')
+        } else { setStep('staff') }
+      }
     }
   }, [services, staffList])
 
+
+  // ===== MODE LOGIC =====
+  const isSolo = org?.mode === 'solo' || org?.mode === 'solo_inspire'
 
   // ===== BUSINESS LOGIC =====
   const availableStaff = selectedService ? staffList.filter(s => s.staff_services?.some(ss => ss.service_id === selectedService.id)) : staffList
@@ -488,7 +501,7 @@ export default function PublicBookingPage() {
             </h2>
 
             {/* Výběr vstupu — služba nebo specialista */}
-            {!entryMode && (
+            {!entryMode && !isSolo && (
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <button onClick={() => setEntryMode('service')}
                   className="bg-white rounded-2xl p-5 text-center border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all">
@@ -538,7 +551,7 @@ export default function PublicBookingPage() {
                         {showHeaders && <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">{cat}</p>}
                         <div className="space-y-2">
                           {catServices.map(svc => (
-                            <button key={svc.id} onClick={() => { setSelectedService(svc); setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff') }}
+                            <button key={svc.id} onClick={() => { setSelectedService(svc); if (isSolo && staffList.length <= 1) { if (staffList.length === 1) setSelectedStaff(staffList[0]); setAnyStaff(staffList.length === 0); setStep('datetime'); } else { setSelectedStaff(null); setAnyStaff(false); setSelectedDate(''); setSelectedTime(''); setStep('staff'); } }}
                               className="w-full bg-white rounded-2xl p-5 text-left transition-all duration-200 group border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/80">
                               <div className="flex items-center gap-4">
                                 <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ backgroundColor: svc.color || '#0f6b7a' }} />

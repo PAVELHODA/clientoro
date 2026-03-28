@@ -141,12 +141,12 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-3">{t('land_segments_title')}</h2>
             <p className="text-gray-500">{t('land_segments_desc')}</p>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {SEGMENT_KEYS.map(s => { const Icon = SEGMENT_ICONS[s.icon]; return (
-              <div key={s.key} className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-amber-200 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 rounded-xl flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)' }}><Icon className="w-6 h-6" style={{ color: '#f59e0b' }} /></div>
-                <h3 className="font-bold text-gray-900 text-sm">{t(`land_seg_${s.key}`)}</h3>
-                <p className="text-xs text-gray-400 mt-1">{t(`land_seg_${s.key}_desc`)}</p>
+              <div key={s.key} className="bg-white rounded-xl border border-gray-200 p-3 sm:p-5 hover:shadow-lg hover:border-amber-200 transition-all text-center group overflow-hidden">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)' }}><Icon className="w-6 h-6" style={{ color: '#f59e0b' }} /></div>
+                <h3 className="font-bold text-gray-900 text-xs sm:text-sm truncate">{t(`land_seg_${s.key}`)}</h3>
+                <p className="text-xs text-gray-400 mt-1 hidden sm:block">{t(`land_seg_${s.key}_desc`)}</p>
               </div>
             )})}
           </div>
