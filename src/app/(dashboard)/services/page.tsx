@@ -6,7 +6,7 @@ import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import { getServiceCategories } from '@/lib/serviceCategories'
-import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check, Search } from 'lucide-react'
+import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check, Search, ChevronDown } from 'lucide-react'
 
 interface Service {
   id: string
@@ -51,11 +51,21 @@ export default function ServicesPage() {
   const [form, setForm] = useState<FormData>(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [search, setSearch] = useState('')
+  const [collapsedCats, setCollapsedCats] = useState<Set<string>>(new Set())
   const [sortBy, setSortBy] = useState<string>('name_asc')
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const { organization } = useAuth()
   const { t, lang, modeGradient } = useLang()
   const toast = useToast()
+
+  const toggleCat = (cat: string) => {
+    setCollapsedCats(prev => {
+      const next = new Set(prev)
+      if (next.has(cat)) next.delete(cat)
+      else next.add(cat)
+      return next
+    })
+  }
 
   const currency = t('currency')
   const CATEGORIES = getServiceCategories(organization?.category, lang)
@@ -241,46 +251,35 @@ export default function ServicesPage() {
   const showHeaders = sections.length > 1 && filterCategory === 'all'
 
   const ServiceCard = ({ service }: { service: Service }) => (
-    <div className={`bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-all ${!service.active ? 'opacity-60' : ''}`}>
-      <div className="h-2" style={{ backgroundColor: service.color || '#3b82f6' }} />
-      <div className="p-5">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 text-lg truncate">{service.name}</h3>
-            {service.category && !showHeaders && <span className="text-xs text-gray-400 font-medium">{service.category}</span>}
-          </div>
-          <div className="flex items-center gap-1.5 ml-2">
-            {service.visibility === 'public' ? (
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-600 rounded-lg text-xs font-medium"><Eye className="w-3 h-3" /> {l.publicLabel}</span>
-            ) : (
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-500 rounded-lg text-xs font-medium"><EyeOff className="w-3 h-3" /> {l.privateLabel}</span>
-            )}
-          </div>
+    <div className={`group flex items-center gap-3 bg-white rounded-xl border border-gray-200 px-4 py-3 hover:shadow-sm hover:border-gray-300 transition-all ${!service.active ? 'opacity-50' : ''}`}>
+      {/* Barva */}
+      <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: service.color || '#3b82f6' }} />
+      
+      {/* Název + popis */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-gray-900 text-sm truncate">{service.name}</h3>
+          {!service.active && <span className="px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded text-[10px] font-medium">{l.inactive}</span>}
+          {service.visibility === 'private' && <EyeOff className="w-3 h-3 text-gray-300 flex-shrink-0" />}
         </div>
-        {service.description && <p className="text-sm text-gray-500 mb-3 line-clamp-2">{service.description}</p>}
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-lg">
-            <Clock className="w-3.5 h-3.5 text-blue-500" /><span className="text-sm font-semibold text-blue-700">{service.duration} {l.minutes}</span>
-          </div>
-          <div className="flex items-center gap-1.5 bg-green-50 px-3 py-1.5 rounded-lg">
-            <DollarSign className="w-3.5 h-3.5 text-green-500" /><span className="text-sm font-semibold text-green-700">{service.price ? `${service.price} ${currency}` : l.free}</span>
-          </div>
-        </div>
-        {(service.buffer_before_minutes > 0 || service.buffer_after_minutes > 0) && (
-          <div className="flex gap-2 mb-4">
-            {service.buffer_before_minutes > 0 && <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">&#9194; {service.buffer_before_minutes} min {l.before}</span>}
-            {service.buffer_after_minutes > 0 && <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">&#9193; {service.buffer_after_minutes} min {l.after}</span>}
-          </div>
-        )}
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium ${service.active ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
-            {service.active ? <><Check className="w-3 h-3" /> {l.active}</> : l.inactive}
-          </span>
-          <div className="flex items-center gap-1">
-            <button onClick={() => handleEdit(service)} className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
-            <button onClick={() => handleDelete(service.id, service.name)} className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
-          </div>
-        </div>
+        {service.description && <p className="text-xs text-gray-400 truncate mt-0.5">{service.description}</p>}
+      </div>
+
+      {/* Čas */}
+      <div className="flex items-center gap-1 text-gray-500 flex-shrink-0">
+        <Clock className="w-3.5 h-3.5" />
+        <span className="text-sm font-medium">{service.duration} {l.minutes}</span>
+      </div>
+
+      {/* Cena */}
+      <div className="flex-shrink-0 min-w-[80px] text-right">
+        <span className="text-sm font-bold text-gray-900">{service.price ? `${service.price.toLocaleString('cs-CZ')} ${currency}` : l.free}</span>
+      </div>
+
+      {/* Akce — viditelné na hover */}
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+        <button onClick={() => handleEdit(service)} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
+        <button onClick={() => handleDelete(service.id, service.name)} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
       </div>
     </div>
   )
@@ -441,17 +440,26 @@ export default function ServicesPage() {
           {sections.map(section => (
             <div key={section.label}>
               {showHeaders && (
-                <div className="flex items-center gap-3 mb-3">
-                  <h2 className="text-lg font-bold text-gray-800">{section.label}</h2>
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full text-xs font-medium">{section.services.length}</span>
-                  <div className="flex-1 h-px bg-gray-200" />
+                <div className="flex items-center gap-3 mb-2 cursor-pointer select-none group/cat" onClick={() => toggleCat(section.label)}>
+                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${collapsedCats.has(section.label) ? '-rotate-90' : ''}`} />
+                  <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wide">{section.label}</h2>
+                  <span className="px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full text-[11px] font-medium">{section.services.length}</span>
+                  <div className="flex-1 h-px bg-gray-100" />
+                  {section.label !== l.uncategorized && (
+                    <button onClick={(e) => { e.stopPropagation(); handleDeleteCategory(section.label) }}
+                      className="opacity-0 group-hover/cat:opacity-100 w-6 h-6 rounded flex items-center justify-center hover:bg-red-50 hover:text-red-500 text-gray-300 transition-all">
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
                 </div>
               )}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {section.services.map(service => (
-                  <ServiceCard key={service.id} service={service} />
-                ))}
-              </div>
+              {!collapsedCats.has(section.label) && (
+                <div className="space-y-1.5">
+                  {section.services.map(service => (
+                    <ServiceCard key={service.id} service={service} />
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
