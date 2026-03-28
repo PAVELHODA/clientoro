@@ -258,6 +258,21 @@ export default function BookingsPage() {
         </button>
       </div>
 
+      {/* Date range pills */}
+      <div className="flex gap-1.5 mb-3">
+        {DATE_OPTIONS.map(o => (
+          <button key={o.value} onClick={() => setDateRange(o.value)}
+            className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              dateRange === o.value
+                ? 'text-white shadow-sm'
+                : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+            }`}
+            style={dateRange === o.value ? { background: modeGradient } : {}}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+
       {/* Extended filters */}
       {showFilters && (
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
