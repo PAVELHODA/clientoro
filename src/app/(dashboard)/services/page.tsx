@@ -251,16 +251,17 @@ export default function ServicesPage() {
 
   const getCategoryBg = (category: string | null) => {
     const map: Record<string, { bg: string; border: string }> = {
-      'Kadeřnictví': { bg: 'rgba(168,85,247,0.06)', border: 'rgba(168,85,247,0.15)' },
-      'Masáže': { bg: 'rgba(16,185,129,0.06)', border: 'rgba(16,185,129,0.15)' },
-      'Nehty': { bg: 'rgba(236,72,153,0.06)', border: 'rgba(236,72,153,0.15)' },
-      'Kosmetika': { bg: 'rgba(244,63,94,0.06)', border: 'rgba(244,63,94,0.15)' },
-      'Fitness': { bg: 'rgba(245,158,11,0.06)', border: 'rgba(245,158,11,0.15)' },
-      'Fyzioterapie': { bg: 'rgba(14,165,233,0.06)', border: 'rgba(14,165,233,0.15)' },
-      'Psychologie': { bg: 'rgba(99,102,241,0.06)', border: 'rgba(99,102,241,0.15)' },
-      'Tetování': { bg: 'rgba(75,85,99,0.06)', border: 'rgba(75,85,99,0.15)' },
-      'Vzdělávání': { bg: 'rgba(34,197,94,0.06)', border: 'rgba(34,197,94,0.15)' },
-      'Wellness': { bg: 'rgba(20,184,166,0.06)', border: 'rgba(20,184,166,0.15)' },
+      'Kadeřnictví': { bg: 'rgba(168,85,247,0.12)', border: 'rgba(168,85,247,0.25)' },
+      'Masáže': { bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.25)' },
+      'Nehty': { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.25)' },
+      'Kosmetika': { bg: 'rgba(244,63,94,0.12)', border: 'rgba(244,63,94,0.25)' },
+      'Fitness': { bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.25)' },
+      'Fyzioterapie': { bg: 'rgba(14,165,233,0.12)', border: 'rgba(14,165,233,0.25)' },
+      'Psychologie': { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.25)' },
+      'Tetování': { bg: 'rgba(75,85,99,0.12)', border: 'rgba(75,85,99,0.25)' },
+      'Vzdělávání': { bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)' },
+      'Wellness': { bg: 'rgba(20,184,166,0.12)', border: 'rgba(20,184,166,0.25)' },
+      'Obecne': { bg: 'rgba(107,114,128,0.12)', border: 'rgba(107,114,128,0.25)' },
     }
     if (!category) return { bg: 'white', border: 'rgb(229,231,235)' }
     return map[category] || { bg: 'white', border: 'rgb(229,231,235)' }
