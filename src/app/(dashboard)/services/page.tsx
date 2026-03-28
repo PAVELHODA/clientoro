@@ -216,8 +216,7 @@ export default function ServicesPage() {
     switch (sortBy) {
       case 'name_asc': return filtered.sort((a, b) => a.name.localeCompare(b.name))
       case 'name_desc': return filtered.sort((a, b) => b.name.localeCompare(a.name))
-      case 'price_asc': return filtered.sort((a, b) => (a.price || 0) - (b.price || 0))
-      case 'price_desc': return filtered.sort((a, b) => (b.price || 0) - (a.price || 0))
+      
       case 'duration_asc': return filtered.sort((a, b) => a.duration - b.duration)
       case 'duration_desc': return filtered.sort((a, b) => b.duration - a.duration)
       case 'newest': return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
@@ -250,8 +249,28 @@ export default function ServicesPage() {
   const sections = getGroupedServices()
   const showHeaders = sections.length > 1 && filterCategory === 'all'
 
-  const ServiceCard = ({ service }: { service: Service }) => (
-    <div className={`group flex items-center gap-3 bg-white rounded-xl border border-gray-200 px-4 py-3 hover:shadow-sm hover:border-gray-300 transition-all ${!service.active ? 'opacity-50' : ''}`}>
+  const getCategoryBg = (category: string | null) => {
+    const map: Record<string, { bg: string; border: string }> = {
+      'Kadeřnictví': { bg: 'rgba(168,85,247,0.06)', border: 'rgba(168,85,247,0.15)' },
+      'Masáže': { bg: 'rgba(16,185,129,0.06)', border: 'rgba(16,185,129,0.15)' },
+      'Nehty': { bg: 'rgba(236,72,153,0.06)', border: 'rgba(236,72,153,0.15)' },
+      'Kosmetika': { bg: 'rgba(244,63,94,0.06)', border: 'rgba(244,63,94,0.15)' },
+      'Fitness': { bg: 'rgba(245,158,11,0.06)', border: 'rgba(245,158,11,0.15)' },
+      'Fyzioterapie': { bg: 'rgba(14,165,233,0.06)', border: 'rgba(14,165,233,0.15)' },
+      'Psychologie': { bg: 'rgba(99,102,241,0.06)', border: 'rgba(99,102,241,0.15)' },
+      'Tetování': { bg: 'rgba(75,85,99,0.06)', border: 'rgba(75,85,99,0.15)' },
+      'Vzdělávání': { bg: 'rgba(34,197,94,0.06)', border: 'rgba(34,197,94,0.15)' },
+      'Wellness': { bg: 'rgba(20,184,166,0.06)', border: 'rgba(20,184,166,0.15)' },
+    }
+    if (!category) return { bg: 'white', border: 'rgb(229,231,235)' }
+    return map[category] || { bg: 'white', border: 'rgb(229,231,235)' }
+  }
+
+  const ServiceCard = ({ service }: { service: Service }) => {
+    const catStyle = getCategoryBg(service.category)
+    return (
+    <div className={`group flex items-center gap-3 rounded-xl border px-4 py-3 hover:shadow-sm transition-all ${!service.active ? 'opacity-50' : ''}`}
+      style={{ backgroundColor: catStyle.bg, borderColor: catStyle.border }}>
       {/* Barva */}
       <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: service.color || '#3b82f6' }} />
       
@@ -282,7 +301,7 @@ export default function ServicesPage() {
         <button onClick={() => handleDelete(service.id, service.name)} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-600 text-gray-400 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
       </div>
     </div>
-  )
+  )}
 
   return (
     <div>
@@ -312,8 +331,7 @@ export default function ServicesPage() {
             className="px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500">
             <option value="name_asc">{lang === 'en' ? 'Name A-Z' : 'Nazev A-Z'}</option>
             <option value="name_desc">{lang === 'en' ? 'Name Z-A' : 'Nazev Z-A'}</option>
-            <option value="price_asc">{lang === 'en' ? 'Cheapest' : 'Nejlevnejsi'}</option>
-            <option value="price_desc">{lang === 'en' ? 'Most expensive' : 'Nejdrazsi'}</option>
+            
             <option value="duration_asc">{lang === 'en' ? 'Shortest' : 'Nejkratsi'}</option>
             <option value="duration_desc">{lang === 'en' ? 'Longest' : 'Nejdelsi'}</option>
             <option value="newest">{lang === 'en' ? 'Newest' : 'Nejnovejsi'}</option>
