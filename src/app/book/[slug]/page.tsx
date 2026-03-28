@@ -419,7 +419,7 @@ export default function PublicBookingPage() {
                         style={isDone ? { background: '#059669', color: '#fff' } : isActive ? { background: '#0c2d48', color: '#fff' } : { background: '#f3f4f6', color: '#9ca3af' }}>
                         {isDone ? '✓' : i + 1}
                       </div>
-                      <span className="text-[11px] font-medium hidden sm:inline" style={{ color: isActive ? '#0c2d48' : isDone ? '#059669' : '#9ca3af' }}>
+                      <span className="text-[9px] sm:text-[11px] font-medium" style={{ color: isActive ? '#0c2d48' : isDone ? '#059669' : '#9ca3af' }}>
                         {s.label}
                       </span>
                     </button>
