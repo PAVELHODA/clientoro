@@ -543,7 +543,7 @@ export default function CalendarPage() {
 
       {/* DAY VIEW - SOLO */}
       {viewMode === 'day' && !isTeam && (
-        <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm relative">
+        <div className="bg-white rounded-2xl border-2 border-gray-300 overflow-hidden shadow-sm relative overflow-x-auto">
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
             <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}%` }}>
               <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
@@ -565,7 +565,7 @@ export default function CalendarPage() {
             if (booking && !isStart) return null
             return (
               <div key={time} className={`flex ${isHour ? 'border-t-2 border-gray-400' : isHalf ? 'border-t border-gray-300' : 'border-t border-gray-200/60'} ${isPast && !booking ? 'bg-gray-100/70' : ''} ${isNow ? 'bg-blue-50/40' : ''}`}>
-                <div className={`w-20 flex-shrink-0 py-2 px-3 text-right border-r-2 border-gray-400 ${isHour ? 'text-sm font-bold text-gray-700' : isHalf ? 'text-xs font-medium text-gray-500' : 'text-[10px] text-gray-300'} ${isPast ? 'opacity-50' : ''}`}>
+                <div className={`w-16 sm:w-20 flex-shrink-0 py-2 px-2 sm:px-3 text-right border-r-2 border-gray-400 sticky left-0 bg-white z-10 ${isHour ? 'text-sm font-bold text-gray-700' : isHalf ? 'text-xs font-medium text-gray-500' : 'text-[10px] text-gray-300'} ${isPast ? 'opacity-50' : ''}`}>
                   {(isHour || isHalf) ? time : ''}
                   {isNow && <div className="w-2 h-2 bg-red-500 rounded-full inline-block ml-1 animate-pulse" />}
                 </div>
@@ -608,7 +608,7 @@ export default function CalendarPage() {
             </div>
           )}
           <table className="w-full" style={{ minWidth: Math.max(600, staffList.length * 180 + 80) + 'px' }}>
-            <thead className="sticky top-0 z-20 bg-white">
+            <thead className="sticky top-0 z-20 bg-white shadow-sm">
               <tr className="border-b-2 border-gray-400">
                 <th className="w-20 p-2 text-xs text-gray-400 border-r-2 border-gray-400 bg-gray-50"></th>
                 {staffList.map(staff => {
