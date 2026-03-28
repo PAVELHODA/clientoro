@@ -611,7 +611,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <div className="hidden md:flex items-center justify-end gap-3 px-6 py-2 bg-white border-b border-gray-100">
           </div>
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto overflow-x-hidden">
             <div className="p-4 md:p-8 max-w-7xl">
               <MotivationalTip />
               {children}

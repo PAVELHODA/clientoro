@@ -61,7 +61,7 @@ export default function LandingPage() {
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen overflow-x-hidden bg-white">
 
       {/* Development banner */}
       <div className="w-full bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200">
