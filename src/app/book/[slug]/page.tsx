@@ -399,7 +399,7 @@ export default function PublicBookingPage() {
       </div>
 
       {/* ===== STEP INDICATOR ===== */}
-      {step !== 'done' && (
+      {step !== 'done' && org && (
         <div className="max-w-lg mx-auto px-5 -mt-5 relative z-10">
           <div className="bg-white rounded-2xl shadow-lg shadow-gray-200/40 px-5 py-3.5">
             <div className="flex items-center justify-between">
