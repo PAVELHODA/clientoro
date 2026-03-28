@@ -9,6 +9,7 @@ import {
   Calendar, TrendingUp, TrendingDown, Users, DollarSign,
   Clock, AlertTriangle, Star, ArrowRight, Zap, Coffee, Sun, Moon, Lamp,
 } from 'lucide-react'
+import { DashboardSkeleton } from '@/components/Skeleton'
 
 interface DashboardData {
   today: {
@@ -53,7 +54,7 @@ export default function DashboardPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="text-center py-12 text-gray-400">{t('dash_loading')}</div>
+  if (loading) return <div ><DashboardSkeleton /></div>
   if (!data) return <div className="text-center py-12 text-red-400">{t('dash_error')}</div>
 
   const formatPrice = (n: number) => n.toLocaleString(locale) + ' ' + currency

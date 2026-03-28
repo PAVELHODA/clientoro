@@ -9,6 +9,7 @@ import {
   CheckCircle, XCircle, Clock, X, Trash2, ChevronRight, Phone,
   Mail, Plus, Filter, ArrowUpDown,
 } from 'lucide-react'
+import { BookingsSkeleton } from '@/components/Skeleton'
 
 interface Booking {
   id: string
@@ -392,7 +393,7 @@ export default function BookingsPage() {
 
       {/* Seznam */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400">{l.loading}</div>
+        <div ><BookingsSkeleton /></div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">

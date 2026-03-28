@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight, Calendar, Clock } from 'lucide-react'
+import { ClientsSkeleton } from '@/components/Skeleton'
 
 interface Client {
   id: string
@@ -476,7 +477,7 @@ export default function ClientsPage() {
 
       {/* Seznam klientů */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400">{l.loading}</div>
+        <div ><ClientsSkeleton /></div>
       ) : sortedClients.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
