@@ -50,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="cs" className={`${poppins.variable} ${playfair.variable}`}>
+    <html style={{ colorScheme: "light" }} lang="cs" className={`${poppins.variable} ${playfair.variable}`}>
       <head>
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
