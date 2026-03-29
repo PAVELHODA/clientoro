@@ -182,10 +182,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {SEGMENT_KEYS.map(s => { const Icon = SEGMENT_ICONS[s.icon]; return (
               <button key={s.key} onClick={() => setOpenSegment(openSegment === s.key ? null : s.key)}
-                className={`bg-white rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${openSegment === s.key ? 'border-amber-400 shadow-lg ring-2 ring-amber-200' : 'border-gray-200 hover:border-amber-200'}`}>
-                <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
-                <h3 className="font-bold text-gray-900 text-xs sm:text-sm leading-tight">{t(`land_seg_${s.key}`)}</h3>
-                <p className="text-xs text-gray-400 mt-1 hidden sm:block leading-tight">{t(`land_seg_${s.key}_desc`)}</p>
+                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${openSegment === s.key ? 'border-amber-400 shadow-lg ring-2 ring-amber-200 bg-white' : 'border-white/20 hover:border-amber-300'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' } : {}}>
+                <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={openSegment === s.key ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' } : { background: 'rgba(255,255,255,0.1)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
+                <h3 className={`font-bold text-xs sm:text-sm leading-tight ${openSegment === s.key ? 'text-gray-900' : 'text-white'}`}>{t(`land_seg_${s.key}`)}</h3>
+                <p className={`text-xs mt-1 hidden sm:block leading-tight ${openSegment === s.key ? 'text-gray-400' : 'text-white/60'}`}>{t(`land_seg_${s.key}_desc`)}</p>
               </button>
             )})}
           </div>

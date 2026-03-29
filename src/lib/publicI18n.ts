@@ -194,7 +194,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — onboarding
     land_onboard_title: 'Připraveni za 5 minut',
-    land_onboard_desc: 'Žádné technické znalosti. Průvodce vás provede krok za krokem.',
+    land_onboard_desc: 'Nemáte žádné technické znalosti? Průvodce vás provede krok za krokem.',
     land_onboard_1: 'Vytvořte účet',
     land_onboard_1_desc: '30 sekund, bez karty',
     land_onboard_2: 'Vyberte obor',
@@ -484,7 +484,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — onboarding
     land_onboard_title: 'Pripravení za 5 minút',
-    land_onboard_desc: 'Žiadne technické znalosti. Sprievodca vás prevedie krok za krokom.',
+    land_onboard_desc: 'Nemáte žiadne technické znalosti? Sprievodca vás prevedie krok za krokom.',
     land_onboard_1: 'Vytvorte účet',
     land_onboard_1_desc: '30 sekúnd, bez karty',
     land_onboard_2: 'Vyberte odbor',
@@ -774,7 +774,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — onboarding
     land_onboard_title: 'Ready in 5 minutes',
-    land_onboard_desc: 'No technical skills needed. Our wizard guides you step by step.',
+    land_onboard_desc: 'No technical skills? Our wizard guides you step by step.',
     land_onboard_1: 'Create account',
     land_onboard_1_desc: '30 seconds, no card',
     land_onboard_2: 'Choose your field',
