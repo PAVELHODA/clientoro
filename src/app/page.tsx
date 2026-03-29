@@ -112,12 +112,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white">
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-2 sm:py-3">
+        <div className="max-w-6xl mx-auto px-4 py-3 sm:py-3">
           {/* Radek 1: Logo + vlajky (mobil) | Logo + menu + vlajky + login + register (desktop) */}
           <div className="flex items-center justify-between">
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
-              <span className="text-lg font-bold text-gray-900">Clientoro</span>
+              <span className="text-xl font-bold text-gray-900">Clientoro</span>
             </button>
             <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
               <a href="#segments" className="hover:text-gray-900">{t('land_nav_segments')}</a>
@@ -150,7 +150,7 @@ export default function LandingPage() {
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
-          <div className="flex flex-col items-start gap-1.5 mb-6 sm:mb-8 max-w-md mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500">{b}</span>))}</div>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />{b.replace(/^\+ /, '')}</span>))}</div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:border-gray-300 text-center">{t('land_hero_cta2')}</a>
@@ -181,8 +181,8 @@ export default function LandingPage() {
             <>
             <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setOpenSegment(null)} />
             <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90vw] max-w-md bg-white rounded-2xl border-2 border-amber-200 shadow-2xl p-5 sm:p-6">
-              <button onClick={() => setOpenSegment(null)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
-                <X className="w-4 h-4" />
+              <button onClick={() => setOpenSegment(null)} className="absolute top-2 right-2 w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
+                <X className="w-4 h-4 text-gray-900 stroke-[3]" />
               </button>
               <h4 className="font-bold text-gray-900 text-sm sm:text-base mb-3">{t(`land_seg_${openSegment}`)} — {lang === 'en' ? 'example services' : lang === 'sk' ? 'príklady služieb' : 'příklady služeb'}:</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
