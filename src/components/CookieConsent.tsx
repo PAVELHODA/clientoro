@@ -54,11 +54,11 @@ export default function CookieConsent() {
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full sm:w-auto">
             <button onClick={declineAll}
-              className="px-4 py-2 text-xs text-red-400 hover:text-red-300 rounded-lg border border-red-800 hover:border-red-600 transition-colors">
+              className="px-4 py-2 text-xs text-amber-400 hover:text-amber-300 rounded-lg border border-amber-700 hover:border-amber-500 transition-colors">
               Odmítnout vše
             </button>
             <button onClick={acceptNecessary}
-              className="px-4 py-2 text-xs text-gray-400 hover:text-white rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
+              className="px-4 py-2 text-xs text-emerald-400 hover:text-emerald-300 rounded-lg border border-emerald-700 hover:border-emerald-500 transition-colors font-medium">
               Pouze nezbytné
             </button>
             <button onClick={acceptAll}

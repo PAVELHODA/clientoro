@@ -74,17 +74,17 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
 }
 
 const FEATURE_KEYS = [
-  { icon: Calendar, color: 'from-emerald-500 to-teal-400', key: 'calendar', prefix: 'cal' },
-  { icon: Users, color: 'from-blue-500 to-cyan-400', key: 'crm', prefix: 'crm' },
-  { icon: Brain, color: 'from-amber-500 to-yellow-400', key: 'ai', prefix: 'ai' },
-  { icon: TrendingUp, color: 'from-rose-500 to-pink-400', key: 'growth', prefix: 'growth' },
+  { icon: Calendar, color: 'from-[#0c2d48] to-[#0f6b7a]', key: 'calendar', prefix: 'cal' },
+  { icon: Users, color: 'from-[#0f6b7a] to-[#0e9aa7]', key: 'crm', prefix: 'crm' },
+  { icon: Brain, color: 'from-amber-500 to-amber-400', key: 'ai', prefix: 'ai' },
+  { icon: TrendingUp, color: 'from-[#0c2d48] to-amber-500', key: 'growth', prefix: 'growth' },
 ]
 
 const PRICING_DATA = [
-  { key: 'solo', icon: '🟢', color: 'border-teal-300 bg-teal-50', price: '49', priceAi: '99', trial: true },
-  { key: 'team', icon: '🔵', color: 'border-blue-300 bg-blue-50', price: '299', priceAi: '499', trial: false, popular: true },
-  { key: 'inspire', icon: '🏖️', color: 'border-amber-300 bg-amber-50', price: '499', priceAi: '799', trial: false },
-  { key: 'pro', icon: '🏖️✨', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 999', trial: false },
+  { key: 'solo', icon: '●', color: 'border-teal-300 bg-teal-50', price: '49', priceAi: '99', trial: true },
+  { key: 'team', icon: '●●', color: 'border-blue-300 bg-blue-50', price: '299', priceAi: '499', trial: false, popular: true },
+  { key: 'inspire', icon: '◆', color: 'border-amber-300 bg-amber-50', price: '499', priceAi: '799', trial: false },
+  { key: 'pro', icon: '◆◆', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 999', trial: false },
 ]
 
 export default function LandingPage() {
@@ -305,7 +305,7 @@ export default function LandingPage() {
       <section className="py-16 sm:py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 grid md:grid-cols-2 gap-4 sm:gap-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 text-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4 mx-auto"><CreditCard className="w-5 h-5 text-blue-600" /></div>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><CreditCard className="w-5 h-5 text-amber-400" /></div>
             <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_deposit_title')}</h3>
             <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_deposit_desc')}</p>
             <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
@@ -313,7 +313,7 @@ export default function LandingPage() {
             </ul>
           </div>
           <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 text-center">
-            <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto"><Banknote className="w-5 h-5 text-green-600" /></div>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #0f6b7a, #0e9aa7)' }}><Banknote className="w-5 h-5 text-amber-400" /></div>
             <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_cash_title')}</h3>
             <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_cash_desc')}</p>
             <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
@@ -335,7 +335,7 @@ export default function LandingPage() {
               <div key={p.key} className={`rounded-2xl border-2 p-4 sm:p-5 relative ${p.color} ${p.popular ? 'ring-2 ring-blue-500 lg:scale-105' : ''}`}>
                 {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full whitespace-nowrap">{t('land_price_popular')}</div>}
                 <div className="text-center mb-3 sm:mb-4">
-                  <span className="text-xl sm:text-2xl">{p.icon}</span>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-5 h-5 text-amber-400" /></div>
                   <h3 className="text-sm sm:text-lg font-bold text-gray-900 mt-1 leading-tight">{t(`land_plan_${p.key}`)}</h3>
                   <p className="text-xs text-gray-500 hidden sm:block">{t(`land_plan_${p.key}_desc`)}</p>
                 </div>
