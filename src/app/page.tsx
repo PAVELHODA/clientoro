@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare, X } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
+import ClientoroLogo from '@/components/ClientoroLogo'
 
 const flags: Record<PublicLang, string> = { cs: '🇨🇿', sk: '🇸🇰', en: '🇬🇧' }
 
@@ -116,7 +117,7 @@ export default function LandingPage() {
           {/* Radek 1: Logo + vlajky (mobil) | Logo + menu + vlajky + login + register (desktop) */}
           <div className="flex items-center justify-between">
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
+              <ClientoroLogo size={32} />
               <span className="text-xl font-bold text-gray-900">Clientoro</span>
             </button>
             <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
@@ -334,7 +335,7 @@ export default function LandingPage() {
               <div key={p.key} className={`rounded-2xl border-2 p-4 sm:p-5 relative ${p.color} ${p.popular ? 'ring-2 ring-blue-500 lg:scale-105' : ''}`}>
                 {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full whitespace-nowrap">{t('land_price_popular')}</div>}
                 <div className="text-center mb-3 sm:mb-4">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-5 h-5 text-amber-400" /></div>
+                  <ClientoroLogo size={40} />
                   <h3 className="text-sm sm:text-lg font-bold text-gray-900 mt-1 leading-tight">{t(`land_plan_${p.key}`)}</h3>
                   <p className="text-xs text-gray-500 hidden sm:block">{t(`land_plan_${p.key}_desc`)}</p>
                 </div>
@@ -390,7 +391,7 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer className="py-10 sm:py-12 bg-gray-900 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
+          <ClientoroLogo size={32} />
           <span className="text-lg font-bold text-white">Clientoro</span>
         </div>
         <p className="text-sm text-gray-500">© 2026 {t('land_footer')}</p>
