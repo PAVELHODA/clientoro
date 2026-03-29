@@ -143,14 +143,28 @@ export default function LandingPage() {
         </div>
       </nav>
 
+      {/* BANNER 2026 */}
+      <div className="pt-[120px] sm:pt-[56px]">
+        <div className="w-full bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200">
+          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
+            <span className="text-amber-600 text-base">🚧</span>
+            <p className="text-xs sm:text-sm text-amber-800 font-medium text-center">
+              {lang === 'en' ? 'Platform is in active development. Full launch in 2026.' : lang === 'sk' ? 'Platforma je v aktívnom vývoji. Plný prevoz spustíme v priebehu roka 2026.' : 'Platforma je v aktivním vývoji. Plný provoz spustíme v průběhu roku 2026.'}
+              <span className="text-amber-600 font-semibold ml-1">{lang === 'en' ? 'Stay tuned!' : lang === 'sk' ? 'Tešíme sa na vás!' : 'Těšíme se na vás!'}</span>
+            </p>
+            <span className="text-amber-600 text-base">🚀</span>
+          </div>
+        </div>
+      </div>
+
       {/* HERO */}
-      <section className="relative pt-40 sm:pt-32 pb-16 sm:pb-20" style={{ background: 'linear-gradient(135deg, #f8fafc, #ecfdf5, #f0f9ff)' }}>
+      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-20" style={{ background: 'linear-gradient(135deg, #f8fafc, #ecfdf5, #f0f9ff)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm sm:text-base font-semibold mb-6">
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />{b.replace(/^\+ /, '')}</span>))}</div>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500 flex items-center gap-1.5"><Check className="w-4 h-4 text-amber-500 flex-shrink-0" />{b.replace(/^\+ /, '')}</span>))}</div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:border-gray-300 text-center">{t('land_hero_cta2')}</a>
@@ -188,7 +202,7 @@ export default function LandingPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                 {(SEGMENT_SERVICES[openSegment][lang] || SEGMENT_SERVICES[openSegment].cs).map((service, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                    <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
                     {service}
                   </div>
                 ))}
