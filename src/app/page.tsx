@@ -112,37 +112,45 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white">
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-2 sm:py-0 sm:h-14 flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-2">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
-            <span className="text-lg font-bold text-gray-900">Clientoro</span>
-          </button>
-          <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-            <a href="#segments" className="hover:text-gray-900">{t('land_nav_segments')}</a>
-            <a href="#features" className="hover:text-gray-900">{t('land_nav_features')}</a>
-            <a href="#pricing" className="hover:text-gray-900">{t('land_nav_pricing')}</a>
-            <a href="#faq" className="hover:text-gray-900">FAQ</a>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 mr-2">
-              {(Object.keys(flags) as PublicLang[]).map(l => (
-                <button key={l} onClick={() => setLang(l)} className={`text-base px-1 py-0.5 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
-              ))}
+        <div className="max-w-6xl mx-auto px-4 py-2 sm:py-3">
+          {/* Radek 1: Logo + vlajky (mobil) | Logo + menu + vlajky + login + register (desktop) */}
+          <div className="flex items-center justify-between">
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
+              <span className="text-lg font-bold text-gray-900">Clientoro</span>
+            </button>
+            <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+              <a href="#segments" className="hover:text-gray-900">{t('land_nav_segments')}</a>
+              <a href="#features" className="hover:text-gray-900">{t('land_nav_features')}</a>
+              <a href="#pricing" className="hover:text-gray-900">{t('land_nav_pricing')}</a>
+              <a href="#faq" className="hover:text-gray-900">FAQ</a>
             </div>
-            <a href="/login" className="text-sm text-gray-600 hover:text-gray-900 font-medium">{t('land_nav_login')}</a>
-            <a href="/register" className="px-4 py-2 text-white rounded-lg text-sm font-medium" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                {(Object.keys(flags) as PublicLang[]).map(l => (
+                  <button key={l} onClick={() => setLang(l)} className={`text-base px-1 py-0.5 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
+                ))}
+              </div>
+              <a href="/login" className="hidden md:inline text-sm text-gray-600 hover:text-gray-900 font-medium ml-2">{t('land_nav_login')}</a>
+              <a href="/register" className="hidden md:inline px-4 py-2 text-white rounded-lg text-sm font-medium" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
+            </div>
+          </div>
+          {/* Radek 2+3: Prihlasit se + Zacit zdarma (jen mobil) */}
+          <div className="flex flex-col gap-2 mt-2 md:hidden">
+            <a href="/login" className="w-full py-2.5 text-center text-sm text-gray-700 font-medium border border-gray-200 rounded-lg hover:bg-gray-50">{t('land_nav_login')}</a>
+            <a href="/register" className="w-full py-2.5 text-center text-white rounded-lg text-sm font-semibold shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="relative pt-28 sm:pt-32 pb-16 sm:pb-20" style={{ background: 'linear-gradient(135deg, #f8fafc, #ecfdf5, #f0f9ff)' }}>
+      <section className="relative pt-40 sm:pt-32 pb-16 sm:pb-20" style={{ background: 'linear-gradient(135deg, #f8fafc, #ecfdf5, #f0f9ff)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium mb-6">
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
-          <div className="flex flex-col items-center gap-2 mb-6 sm:mb-8 max-w-xl mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500">{b}</span>))}</div>
+          <div className="flex flex-col items-start gap-1.5 mb-6 sm:mb-8 max-w-md mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500">{b}</span>))}</div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:border-gray-300 text-center">{t('land_hero_cta2')}</a>
