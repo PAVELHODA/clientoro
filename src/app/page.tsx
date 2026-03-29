@@ -166,7 +166,7 @@ export default function LandingPage() {
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
           <div className="grid grid-cols-2 gap-3 mb-6 sm:mb-8 max-w-lg mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<div key={i} className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-3 text-center"><Check className="w-4 h-4 text-amber-500 mx-auto mb-1" /><span className="text-xs sm:text-sm text-gray-600 font-medium">{b.replace(/^\+ /, '')}</span></div>))}</div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-gray-900 rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
+            <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><span className="text-amber-400">{t('land_hero_cta')}</span> <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-medium text-center shadow-lg" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta2')}</a>
           </div>
         </div>
@@ -251,9 +251,9 @@ export default function LandingPage() {
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">{t('land_ai_title')}</h2>
           <p className="text-sm sm:text-base mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('land_ai_desc')}</p>
-          <div className="grid sm:grid-cols-3 gap-0 divide-x divide-white/10">
+          <div className="grid sm:grid-cols-3 gap-0 divide-x-2 divide-white/30">
             {[1,2,3].map(i => (
-              <div key={i} className="bg-white/5 backdrop-blur-sm p-4 sm:p-5 border-t-2 border-t-white/20 first:rounded-l-xl last:rounded-r-xl">
+              <div key={i} className="bg-white/5 backdrop-blur-sm p-4 sm:p-5 border-t-2 border-t-white/40 first:rounded-l-xl last:rounded-r-xl">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2 mx-auto" style={{ background: 'linear-gradient(135deg, #0f6b7a, #0c2d48)' }}>{[<BrainCircuit key="a" className="w-5 h-5 text-amber-400" />, <TrendingUp key="b" className="w-5 h-5 text-amber-400" />, <Zap key="c" className="w-5 h-5 text-amber-400" />][i-1]}</div>
                 <h3 className="font-bold text-white text-sm sm:text-base mb-1">{t(`land_ai_${i}_title`)}</h3>
                 <p className="text-xs sm:text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t(`land_ai_${i}_desc`)}</p>
