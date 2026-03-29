@@ -210,8 +210,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_calc_clients: 'Klientů denně',
     land_calc_price: 'Průměrná cena služby',
     land_calc_noshow: 'Míra nedorazivších (no-show)',
-    land_calc_result: 'Měsíčně přicházíte o',
-    land_calc_note: 'S Clientoro můžete tuto ztrátu snížit až o 70 %',
+    land_calc_result: 'To je za měsíc',
+    land_calc_note: 'S Clientoro můžete tuto částku snížit až o 70 %',
 
     // Landing — deposits
     land_deposit_title: 'Zálohy a předplatky',
@@ -500,8 +500,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_calc_clients: 'Klientov denne',
     land_calc_price: 'Priemerná cena služby',
     land_calc_noshow: 'Miera nedorazivších (no-show)',
-    land_calc_result: 'Mesačne prichádzate o',
-    land_calc_note: 'S Clientoro môžete túto stratu znížiť až o 70 %',
+    land_calc_result: 'To je za mesiac',
+    land_calc_note: 'S Clientoro môžete túto čiastku znížiť až o 70 %',
 
     // Landing — deposits
     land_deposit_title: 'Zálohy a predplatky',
@@ -790,8 +790,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_calc_clients: 'Clients per day',
     land_calc_price: 'Average service price',
     land_calc_noshow: 'No-show rate',
-    land_calc_result: 'You lose monthly',
-    land_calc_note: 'With Clientoro you can reduce this loss by up to 70%',
+    land_calc_result: 'That is per month',
+    land_calc_note: 'With Clientoro you can reduce this amount by up to 70%',
 
     // Landing — deposits
     land_deposit_title: 'Deposits and prepayments',
