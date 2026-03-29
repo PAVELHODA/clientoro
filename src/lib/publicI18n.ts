@@ -211,7 +211,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_calc_price: 'Průměrná cena služby',
     land_calc_noshow: 'Míra nedorazivších (no-show)',
     land_calc_result: 'To je za měsíc',
-    land_calc_note: 'S Clientoro vám pomůžeme tento výsledek snížit až o 50 %',
+    land_calc_note: 'S Clientoro vám pomůžeme tento výsledek snížit až o 60 %',
 
     // Landing — deposits
     land_deposit_title: 'Zálohy a předplatky',
@@ -501,7 +501,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_calc_price: 'Priemerná cena služby',
     land_calc_noshow: 'Miera nedorazivších (no-show)',
     land_calc_result: 'To je za mesiac',
-    land_calc_note: 'S Clientoro vám pomôžeme tento výsledok znížiť až o 50 %',
+    land_calc_note: 'S Clientoro vám pomôžeme tento výsledok znížiť až o 60 %',
 
     // Landing — deposits
     land_deposit_title: 'Zálohy a predplatky',
@@ -791,7 +791,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_calc_price: 'Average service price',
     land_calc_noshow: 'No-show rate',
     land_calc_result: 'That is per month',
-    land_calc_note: 'With Clientoro we can help you reduce this result by up to 50%',
+    land_calc_note: 'With Clientoro we can help you reduce this result by up to 60%',
 
     // Landing — deposits
     land_deposit_title: 'Deposits and prepayments',
