@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare } from 'lucide-react'
+import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare, X } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 
 const flags: Record<PublicLang, string> = { cs: '🇨🇿', sk: '🇸🇰', en: '🇬🇧' }
@@ -25,6 +25,54 @@ const SEGMENT_KEYS = [
   { icon: 'graduationCap', key: 'edu' },
 ]
 
+const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
+  hair: {
+    cs: ['Dámský střih', 'Pánský střih', 'Barvení', 'Melír', 'Foukaná', 'Styling', 'Keratin', 'Dětský střih'],
+    sk: ['Dámsky strih', 'Pánsky strih', 'Farbenie', 'Melír', 'Fúkaná', 'Styling', 'Keratín', 'Detský strih'],
+    en: ['Women\'s cut', 'Men\'s cut', 'Coloring', 'Highlights', 'Blow-dry', 'Styling', 'Keratin', 'Kids cut'],
+  },
+  massage: {
+    cs: ['Klasická masáž', 'Sportovní masáž', 'Relaxační masáž', 'Lymfatická masáž', 'Reflexní masáž', 'Baňkování', 'Masáž lávovými kameny'],
+    sk: ['Klasická masáž', 'Športová masáž', 'Relaxačná masáž', 'Lymfatická masáž', 'Reflexná masáž', 'Bankovanie', 'Masáž lávovými kameňmi'],
+    en: ['Classic massage', 'Sports massage', 'Relaxation massage', 'Lymphatic massage', 'Reflexology', 'Cupping', 'Hot stone massage'],
+  },
+  beauty: {
+    cs: ['Ošetření pleti', 'Permanentní make-up', 'Manikúra', 'Pedikúra', 'Gelové nehty', 'Řasy', 'Depilace', 'Barvení obočí'],
+    sk: ['Ošetrenie pleti', 'Permanentný make-up', 'Manikúra', 'Pedikúra', 'Gélové nechty', 'Mihalnice', 'Depilácia', 'Farbenie obočia'],
+    en: ['Facial treatment', 'Permanent makeup', 'Manicure', 'Pedicure', 'Gel nails', 'Lashes', 'Waxing', 'Brow tinting'],
+  },
+  physio: {
+    cs: ['Vstupní vyšetření', 'Manuální terapie', 'Rehabilitace', 'Elektroterapie', 'Tejpování', 'Cvičení s terapeutem'],
+    sk: ['Vstupné vyšetrenie', 'Manuálna terapia', 'Rehabilitácia', 'Elektroterapia', 'Tejpovanie', 'Cvičenie s terapeutom'],
+    en: ['Initial examination', 'Manual therapy', 'Rehabilitation', 'Electrotherapy', 'Taping', 'Exercise with therapist'],
+  },
+  fitness: {
+    cs: ['Osobní trénink', 'Skupinový trénink', 'Výživové poradenství', 'Diagnostika', 'Funkční trénink', 'Strečink'],
+    sk: ['Osobný tréning', 'Skupinový tréning', 'Výživové poradenstvo', 'Diagnostika', 'Funkčný tréning', 'Strečing'],
+    en: ['Personal training', 'Group training', 'Nutrition consulting', 'Diagnostics', 'Functional training', 'Stretching'],
+  },
+  psych: {
+    cs: ['Individuální terapie', 'Párová terapie', 'Koučink', 'Krizová intervence', 'Mentoring', 'Diagnostika'],
+    sk: ['Individuálna terapia', 'Párová terapia', 'Koučing', 'Krízová intervencia', 'Mentoring', 'Diagnostika'],
+    en: ['Individual therapy', 'Couples therapy', 'Coaching', 'Crisis intervention', 'Mentoring', 'Diagnostics'],
+  },
+  tattoo: {
+    cs: ['Tetování malé', 'Tetování střední', 'Tetování velké', 'Cover-up', 'Piercing', 'Návrh motivu', 'Konzultace'],
+    sk: ['Tetovanie malé', 'Tetovanie stredné', 'Tetovanie veľké', 'Cover-up', 'Piercing', 'Návrh motívu', 'Konzultácia'],
+    en: ['Small tattoo', 'Medium tattoo', 'Large tattoo', 'Cover-up', 'Piercing', 'Design consultation', 'Consultation'],
+  },
+  pets: {
+    cs: ['Stříhání srsti', 'Koupání', 'Trimování', 'Stříhání drápků', 'Wellness pro psy', 'Canisterapie'],
+    sk: ['Strihanie srsti', 'Kúpanie', 'Trimovanie', 'Strihanie drápkov', 'Wellness pre psov', 'Canisterapia'],
+    en: ['Fur trimming', 'Bathing', 'Grooming', 'Nail clipping', 'Dog wellness', 'Canistherapy'],
+  },
+  edu: {
+    cs: ['Doučování', 'Jazykový kurz', 'Hudební lekce', 'Workshop', 'Příprava na zkoušky', 'Online lekce'],
+    sk: ['Doučovanie', 'Jazykový kurz', 'Hudobná lekcia', 'Workshop', 'Príprava na skúšky', 'Online lekcia'],
+    en: ['Tutoring', 'Language course', 'Music lesson', 'Workshop', 'Exam preparation', 'Online lesson'],
+  },
+}
+
 const FEATURE_KEYS = [
   { icon: Calendar, color: 'from-emerald-500 to-teal-400', key: 'calendar', prefix: 'cal' },
   { icon: Users, color: 'from-blue-500 to-cyan-400', key: 'crm', prefix: 'crm' },
@@ -33,10 +81,10 @@ const FEATURE_KEYS = [
 ]
 
 const PRICING_DATA = [
-  { key: 'solo', icon: '🟢', color: 'border-teal-300 bg-teal-50', price: '199', priceAi: '', trial: true },
-  { key: 'team', icon: '🔵', color: 'border-blue-300 bg-blue-50', price: '999', priceAi: '', trial: false, popular: true },
-  { key: 'inspire', icon: '🏖', color: 'border-amber-300 bg-amber-50', price: '349', priceAi: '499', trial: false },
-  { key: 'pro', icon: '🏖✨', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 799', trial: false },
+  { key: 'solo', icon: '🟢', color: 'border-teal-300 bg-teal-50', price: '49', priceAi: '99', trial: true },
+  { key: 'team', icon: '🔵', color: 'border-blue-300 bg-blue-50', price: '299', priceAi: '499', trial: false, popular: true },
+  { key: 'inspire', icon: '🏖️', color: 'border-amber-300 bg-amber-50', price: '499', priceAi: '799', trial: false },
+  { key: 'pro', icon: '🏖️✨', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 999', trial: false },
 ]
 
 export default function LandingPage() {
@@ -45,6 +93,7 @@ export default function LandingPage() {
   const [calcPrice, setCalcPrice] = useState(800)
   const [calcNoshow, setCalcNoshow] = useState(15)
   const [lang, setLangState] = useState<PublicLang>('cs')
+  const [openSegment, setOpenSegment] = useState<string | null>(null)
 
   useEffect(() => {
     const stored = localStorage.getItem('clientoro_lang') as PublicLang | null
@@ -59,117 +108,108 @@ export default function LandingPage() {
   }
 
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
-
   return (
-    <div className="min-h-screen overflow-x-hidden bg-white">
-
-      {/* Development banner */}
-      <div className="w-full bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-center gap-3">
-          <span className="text-amber-600 text-lg">🚧</span>
-          <p className="text-sm text-amber-800 font-medium text-center">
-            Platforma je v aktivním vývoji. Plný provoz spustíme v průběhu roku 2026.
-            <span className="text-amber-600 font-semibold ml-1">Těšíme se na vás!</span>
-          </p>
-          <span className="text-amber-600 text-lg">🚀</span>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-white">
       {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 py-2 sm:py-0 sm:h-14 flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-2">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-5 h-5 text-white" /></div>
-            <span className="text-xl font-bold text-gray-900">Clientoro</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
+            <span className="text-lg font-bold text-gray-900">Clientoro</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-            <a href="#segments" className="hover:text-gray-900">{t('land_nav_for_who')}</a>
+            <a href="#segments" className="hover:text-gray-900">{t('land_nav_segments')}</a>
             <a href="#features" className="hover:text-gray-900">{t('land_nav_features')}</a>
             <a href="#pricing" className="hover:text-gray-900">{t('land_nav_pricing')}</a>
-            <a href="#faq" className="hover:text-gray-900">{t('land_nav_faq')}</a>
+            <a href="#faq" className="hover:text-gray-900">FAQ</a>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex gap-0.5 mr-2">
-              {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
-                <button key={l} onClick={() => setLang(l)}
-                  className={`px-1.5 py-1 rounded text-xs transition-all ${lang === l ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-600'}`}>
-                  {flags[l]}
-                </button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 mr-2">
+              {(Object.keys(flags) as PublicLang[]).map(l => (
+                <button key={l} onClick={() => setLang(l)} className={`text-base px-1 py-0.5 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
               ))}
             </div>
             <a href="/login" className="text-sm text-gray-600 hover:text-gray-900 font-medium">{t('land_nav_login')}</a>
-            <a href="/register" className="px-4 py-2 text-sm text-white rounded-lg font-semibold shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
+            <a href="/register" className="px-4 py-2 text-white rounded-lg text-sm font-medium" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
           </div>
         </div>
       </nav>
 
-      {/* HERO — ZMĚNA: text-3xl md:text-5xl místo text-4xl md:text-6xl */}
-      <section className="relative pt-32 pb-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0c2d48 20%, #0e4d64 40%, #0f6b7a 55%, #0e5460 70%, #0c3a50 85%, #0a1e30 100%)' }}>
-        <div className="absolute top-16 right-16 w-72 h-72 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%)' }} />
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}><Zap className="w-4 h-4" /> {t('land_badge')}</div>
-          <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight mb-6">{t('land_hero_1')} <br /> {t('land_hero_2')}<br /><span style={{ color: '#f59e0b' }}>{t('land_hero_3')}</span></h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>{t('land_hero_desc')}</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
-            <a href="/register" className="px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>{t('land_cta')} <ArrowRight className="w-5 h-5" /></a>
-            <a href="#features" className="px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.15)' }}>{t('land_cta2')}</a>
+      {/* HERO */}
+      <section className="relative pt-28 sm:pt-32 pb-16 sm:pb-20" style={{ background: 'linear-gradient(135deg, #f8fafc, #ecfdf5, #f0f9ff)' }}>
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium mb-6">
+            <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('land_trust')}</p>
-        </div>
-        {/* Vlnky + zlatí lidé */}
-        <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '60px' }}>
-          <svg viewBox="0 0 1200 60" className="w-full h-full" preserveAspectRatio="none" fill="none">
-            <path d="M0 30 Q100 15 200 25 Q300 35 400 20 Q500 5 600 18 Q700 30 800 15 Q900 0 1000 12 Q1100 25 1200 8 L1200 60 L0 60 Z" fill="rgba(255,255,255,0.03)" />
-            <path d="M0 38 Q150 22 300 35 Q450 48 600 28 Q750 10 900 25 Q1050 40 1200 22 L1200 60 L0 60 Z" fill="rgba(255,255,255,0.05)" />
-            <path d="M0 45 Q120 32 240 42 Q360 52 480 35 Q600 18 720 32 Q840 45 960 28 Q1080 12 1200 25 L1200 60 L0 60 Z" fill="rgba(255,255,255,0.08)" />
-            
-            
-            
-            
-            
-            
-            
-            
-          </svg>
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
+          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-gray-500 max-w-2xl mx-auto px-4">{t('land_hero_desc')}</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
+            <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:border-gray-300 text-center">{t('land_hero_cta2')}</a>
+          </div>
         </div>
       </section>
 
       {/* SEGMENTS */}
-      <section id="segments" className="py-20">
+      <section id="segments" className="py-16 sm:py-20">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">{t('land_segments_title')}</h2>
-            <p className="text-gray-500">{t('land_segments_desc')}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_segments_title')}</h2>
+            <p className="text-gray-500 text-sm sm:text-base">{t('land_segments_desc')}</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {SEGMENT_KEYS.map(s => { const Icon = SEGMENT_ICONS[s.icon]; return (
-              <div key={s.key} className="bg-white rounded-xl border border-gray-200 p-3 sm:p-5 hover:shadow-lg hover:border-amber-200 transition-all text-center group overflow-hidden">
-                <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)' }}><Icon className="w-6 h-6" style={{ color: '#f59e0b' }} /></div>
-                <h3 className="font-bold text-gray-900 text-xs sm:text-sm truncate">{t(`land_seg_${s.key}`)}</h3>
-                <p className="text-xs text-gray-400 mt-1 hidden sm:block">{t(`land_seg_${s.key}_desc`)}</p>
-              </div>
+              <button key={s.key} onClick={() => setOpenSegment(openSegment === s.key ? null : s.key)}
+                className={`bg-white rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${openSegment === s.key ? 'border-amber-400 shadow-lg ring-2 ring-amber-200' : 'border-gray-200 hover:border-amber-200'}`}>
+                <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
+                <h3 className="font-bold text-gray-900 text-xs sm:text-sm leading-tight">{t(`land_seg_${s.key}`)}</h3>
+                <p className="text-xs text-gray-400 mt-1 hidden sm:block leading-tight">{t(`land_seg_${s.key}_desc`)}</p>
+              </button>
             )})}
           </div>
+
+          {/* SEGMENT POPUP */}
+          {openSegment && SEGMENT_SERVICES[openSegment] && (
+            <div className="mt-4 bg-white rounded-xl border-2 border-amber-200 shadow-lg p-4 sm:p-5 relative animate-in fade-in duration-200">
+              <button onClick={() => setOpenSegment(null)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+                <X className="w-4 h-4" />
+              </button>
+              <h4 className="font-bold text-gray-900 text-sm sm:text-base mb-3">{t(`land_seg_${openSegment}`)} — {lang === 'en' ? 'example services' : lang === 'sk' ? 'príklady služieb' : 'příklady služeb'}:</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                {(SEGMENT_SERVICES[openSegment][lang] || SEGMENT_SERVICES[openSegment].cs).map((service, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                    {service}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-3 italic">{lang === 'en' ? '...and any other services you offer' : lang === 'sk' ? '...a akékoľvek ďalšie služby, ktoré ponúkate' : '...a jakékoliv další služby, které nabízíte'}</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* FEATURES */}
-      <section id="features" className="py-20 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">{t('land_features_title')}</h2>
-            <p className="text-gray-500">{t('land_features_desc')}</p>
+      <section id="features" className="py-16 sm:py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_features_title')}</h2>
+            <p className="text-gray-500 text-sm sm:text-base">{t('land_features_desc')}</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {FEATURE_KEYS.map(f => (
-              <div key={f.key} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all text-center">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center`}><f.icon className="w-5 h-5 text-white" /></div>
-                  <h3 className="text-lg font-bold text-gray-900">{t(`land_feat_${f.key}`)}</h3>
+              <div key={f.key} className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 hover:shadow-lg transition-all">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-3 sm:mb-4 shadow-md`}>
+                  <f.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <ul className="space-y-2 inline-block text-left">
-                  {[1,2,3,4,5].map(i => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-gray-600"><Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />{t(`land_feat_${f.prefix}_${i}`)}</li>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t(`land_feat_${f.prefix}_title`)}</h3>
+                <p className="text-xs sm:text-sm text-gray-500 mb-3">{t(`land_feat_${f.prefix}_desc`)}</p>
+                <ul className="space-y-1.5">
+                  {[1,2,3].map(i => (
+                    <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
+                      <Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <span>{t(`land_feat_${f.prefix}_${i}`)}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -179,36 +219,38 @@ export default function LandingPage() {
       </section>
 
       {/* AI SECTION */}
-      <section className="relative py-20" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48)' }}>
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}><Brain className="w-4 h-4" /> {t('land_ai_badge')}</div>
-          <h2 className="text-3xl font-bold text-white mb-4">{t('land_ai_title')}</h2>
-          <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('land_ai_desc')}</p>
-          <div className="grid md:grid-cols-3 gap-4">
+      <section className="relative py-16 sm:py-20" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48)' }}>
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/20 text-amber-300 rounded-full text-xs font-medium mb-6">
+            <Brain className="w-3 h-3" /> {t('land_ai_badge')}
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">{t('land_ai_title')}</h2>
+          <p className="text-sm sm:text-base mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('land_ai_desc')}</p>
+          <div className="grid sm:grid-cols-3 gap-4">
             {[1,2,3].map(i => (
-              <div key={i} className="rounded-xl p-5 text-left" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <h3 className="font-bold text-white mb-2">{t(`land_ai_${i}_title`)}</h3>
-                <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>{t(`land_ai_${i}_desc`)}</p>
+              <div key={i} className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4 sm:p-5">
+                <div className="text-2xl sm:text-3xl mb-2">{['🤖','📊','🎯'][i-1]}</div>
+                <h3 className="font-bold text-white text-sm sm:text-base mb-1">{t(`land_ai_${i}_title`)}</h3>
+                <p className="text-xs sm:text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t(`land_ai_${i}_desc`)}</p>
               </div>
             ))}
           </div>
-          <p className="text-sm mt-6" style={{ color: 'rgba(255,255,255,0.3)' }}><Shield className="w-4 h-4 inline mr-1" /> {t('land_ai_note')}</p>
         </div>
       </section>
 
-      {/* ONBOARDING */}
-      <section className="py-20 bg-gray-50">
+      {/* ONBOARDING STEPS */}
+      <section className="py-16 sm:py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">{t('land_onboard_title')}</h2>
-            <p className="text-gray-500">{t('land_onboard_desc')}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_onboard_title')}</h2>
+            <p className="text-gray-500 text-sm sm:text-base">{t('land_onboard_desc')}</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {[1,2,3,4].map(i => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 text-center">
-                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{i}</div>
-                <h3 className="font-bold text-gray-900">{t(`land_onboard_${i}`)}</h3>
-                <p className="text-xs text-gray-400 mt-1">{t(`land_onboard_${i}_desc`)}</p>
+              <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 text-center">
+                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{i}</div>
+                <h3 className="font-bold text-gray-900 text-xs sm:text-sm">{t(`land_onboard_${i}`)}</h3>
+                <p className="text-xs text-gray-400 mt-1 hidden sm:block">{t(`land_onboard_${i}_desc`)}</p>
               </div>
             ))}
           </div>
@@ -216,79 +258,78 @@ export default function LandingPage() {
       </section>
 
       {/* CALCULATOR */}
-      <section id="calculator" className="py-16">
+      <section id="calculator" className="py-12 sm:py-16">
         <div className="max-w-xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">{t('land_calc_title')}</h2>
-            <p className="text-gray-500">{t('land_calc_desc')}</p>
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_calc_title')}</h2>
+            <p className="text-gray-500 text-sm sm:text-base">{t('land_calc_desc')}</p>
           </div>
-          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-6 space-y-5">
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-5">
             <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">{t('land_calc_clients')}</span><span className="font-bold">{calcSlots}</span></div><input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} className="w-full accent-amber-500" /></div>
             <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">{t('land_calc_price')}</span><span className="font-bold">{calcPrice} Kč</span></div><input type="range" min={200} max={5000} step={100} value={calcPrice} onChange={e => setCalcPrice(Number(e.target.value))} className="w-full accent-amber-500" /></div>
             <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">{t('land_calc_noshow')}</span><span className="font-bold">{calcNoshow}%</span></div><input type="range" min={0} max={40} value={calcNoshow} onChange={e => setCalcNoshow(Number(e.target.value))} className="w-full accent-amber-500" /></div>
             <div className="bg-red-50 rounded-xl p-4 border border-red-200 text-center">
               <p className="text-sm text-red-600 mb-1">{t('land_calc_result')}</p>
-              <p className="text-3xl font-bold text-red-700">{lostRevenue.toLocaleString('cs-CZ')} Kč</p>
+              <p className="text-2xl sm:text-3xl font-bold text-red-700">{lostRevenue.toLocaleString('cs-CZ')} Kč</p>
               <p className="text-xs text-red-400 mt-1">{t('land_calc_note')}</p>
             </div>
           </div>
         </div>
       </section>
-
       {/* DEPOSITS & CASH */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
+      <section className="py-16 sm:py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 grid md:grid-cols-2 gap-4 sm:gap-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 text-center">
             <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4 mx-auto"><CreditCard className="w-5 h-5 text-blue-600" /></div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">{t('land_deposit_title')}</h3>
-            <p className="text-sm text-gray-500 mb-4">{t('land_deposit_desc')}</p>
+            <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_deposit_title')}</h3>
+            <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_deposit_desc')}</p>
             <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
-              {[1,2,3].map(i => (<li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> {t(`land_deposit_${i}`)}</li>))}
+              {[1,2,3].map(i => (<li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> <span className="text-xs sm:text-sm">{t(`land_deposit_${i}`)}</span></li>))}
             </ul>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 text-center">
             <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto"><Banknote className="w-5 h-5 text-green-600" /></div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">{t('land_cash_title')}</h3>
-            <p className="text-sm text-gray-500 mb-4">{t('land_cash_desc')}</p>
+            <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_cash_title')}</h3>
+            <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_cash_desc')}</p>
             <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
-              {[1,2,3].map(i => (<li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> {t(`land_cash_${i}`)}</li>))}
+              {[1,2,3].map(i => (<li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> <span className="text-xs sm:text-sm">{t(`land_cash_${i}`)}</span></li>))}
             </ul>
           </div>
         </div>
       </section>
 
-      {/* PRICING — ZMĚNA: podmíněné zobrazení "S AI" */}
-      <section id="pricing" className="py-20">
+      {/* PRICING */}
+      <section id="pricing" className="py-16 sm:py-20">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">{t('land_pricing_title')}</h2>
-            <p className="text-gray-500">{t('land_pricing_desc')}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_pricing_title')}</h2>
+            <p className="text-gray-500 text-sm sm:text-base">{t('land_pricing_desc')}</p>
           </div>
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {PRICING_DATA.map(p => (
-              <div key={p.key} className={`rounded-2xl border-2 p-5 relative ${p.color} ${p.popular ? 'ring-2 ring-blue-500 scale-105' : ''}`}>
-                {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full">{t('land_price_popular')}</div>}
-                <div className="text-center mb-4">
-                  <span className="text-2xl">{p.icon}</span>
-                  <h3 className="text-lg font-bold text-gray-900 mt-1">{t(`land_plan_${p.key}`)}</h3>
-                  <p className="text-xs text-gray-500">{t(`land_plan_${p.key}_desc`)}</p>
+              <div key={p.key} className={`rounded-2xl border-2 p-4 sm:p-5 relative ${p.color} ${p.popular ? 'ring-2 ring-blue-500 lg:scale-105' : ''}`}>
+                {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full whitespace-nowrap">{t('land_price_popular')}</div>}
+                <div className="text-center mb-3 sm:mb-4">
+                  <span className="text-xl sm:text-2xl">{p.icon}</span>
+                  <h3 className="text-sm sm:text-lg font-bold text-gray-900 mt-1 leading-tight">{t(`land_plan_${p.key}`)}</h3>
+                  <p className="text-xs text-gray-500 hidden sm:block">{t(`land_plan_${p.key}_desc`)}</p>
                 </div>
-                <div className="text-center mb-4">
-                  <span className="text-3xl font-bold text-gray-900">{p.price}</span>
-                  <span className="text-sm text-gray-500"> {t('land_price_per_month')}</span>
+                <div className="text-center mb-3 sm:mb-4">
+                  <span className="text-xl sm:text-3xl font-bold text-gray-900">{p.price}</span>
+                  <span className="text-xs sm:text-sm text-gray-500"> {t('land_price_per_month')}</span>
                   {p.priceAi && (
                     <p className="text-xs text-gray-400">{t('land_price_with_ai')} {p.priceAi} {t('land_price_per_month')}</p>
                   )}
                 </div>
-                <ul className="space-y-1.5 mb-4">
+                <ul className="space-y-1 sm:space-y-1.5 mb-3 sm:mb-4">
                   {[1,2,3,4,5,6].map(i => {
                     const text = t(`land_plan_${p.key}_${i}`)
                     if (text === `land_plan_${p.key}_${i}`) return null
-                    return <li key={i} className="flex items-start gap-1.5 text-xs text-gray-600"><Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />{text}</li>
+                    return <li key={i} className="flex items-start gap-1.5 text-xs text-gray-600"><Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" /><span className="leading-tight">{text}</span></li>
                   })}
                 </ul>
-                {p.trial && <div className="bg-emerald-100 rounded-lg p-2 text-center text-xs text-emerald-700 font-medium mb-3">{t('land_price_trial')}</div>}
-                <a href="/register" className="block w-full py-2.5 text-center text-white rounded-xl font-medium text-sm shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_price_cta')}</a>
+                {p.trial && <div className="bg-emerald-100 rounded-lg p-1.5 sm:p-2 text-center text-xs text-emerald-700 font-medium mb-3">{t('land_price_trial')}</div>}
+                <a href="/register" className="block w-full py-2 sm:py-2.5 text-center text-white rounded-xl font-medium text-xs sm:text-sm shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_price_cta')}</a>
               </div>
             ))}
           </div>
@@ -296,15 +337,15 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-20 bg-gray-50">
+      <section id="faq" className="py-16 sm:py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">{t('land_faq_title')}</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-10">{t('land_faq_title')}</h2>
           <div className="space-y-3">
             {[1,2,3,4,5,6,7].map(i => (
               <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left">
-                  <span className="font-medium text-gray-900 text-sm">{t(`land_faq_${i}_q`)}</span>
-                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${openFaq === i ? 'rotate-180' : ''}`} />
+                  <span className="font-medium text-gray-900 text-sm pr-4">{t(`land_faq_${i}_q`)}</span>
+                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${openFaq === i ? 'rotate-180' : ''}`} />
                 </button>
                 {openFaq === i && <div className="px-4 pb-4 text-sm text-gray-600">{t(`land_faq_${i}_a`)}</div>}
               </div>
@@ -314,22 +355,22 @@ export default function LandingPage() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-20" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48)' }}>
+      <section className="py-16 sm:py-20" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">{t('land_final_cta')}</h2>
-          <p className="text-lg mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('land_final_desc')}</p>
-          <a href="/register" className="inline-flex items-center gap-2 px-8 py-4 text-white rounded-xl font-bold text-lg shadow-xl" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>{t('land_final_button')} <ArrowRight className="w-5 h-5" /></a>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">{t('land_final_cta')}</h2>
+          <p className="text-base sm:text-lg mb-6 sm:mb-8 px-4" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('land_final_desc')}</p>
+          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>{t('land_final_button')} <ArrowRight className="w-5 h-5" /></a>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="py-12 bg-gray-900 text-center">
+      <footer className="py-10 sm:py-12 bg-gray-900 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
           <span className="text-lg font-bold text-white">Clientoro</span>
         </div>
         <p className="text-sm text-gray-500">© 2026 {t('land_footer')}</p>
-        <div className="flex justify-center gap-6 mt-4 text-xs text-gray-600">
+        <div className="flex justify-center gap-4 sm:gap-6 mt-4 text-xs text-gray-600">
           <a href="/privacy" className="hover:text-gray-400">{t('land_footer_privacy')}</a>
           <a href="/terms" className="hover:text-gray-400">{t('land_footer_terms')}</a>
           <a href="#" className="hover:text-gray-400">{t('land_footer_contact')}</a>
