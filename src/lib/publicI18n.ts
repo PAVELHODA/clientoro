@@ -110,7 +110,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_hero_badge: 'Booking · CRM · AI · Růst',
     land_hero_cta: 'Vyzkoušet 14 dní zdarma',
     land_hero_cta2: 'Co vám přineseme?',
-    land_hero_desc: '14 dní zdarma, zrušíte kdykoliv · Žádné skryté poplatky · Férový ceník bez provizí · Váš úspěch = náš úspěch',
+    land_hero_desc: 'Férový ceník bez provizí · Žádné skryté poplatky · 14 dní zdarma · Zrušíte kdykoliv',
     land_nav_segments: 'Pro koho',
     land_feat_cal_title: 'Chytrý kalendář',
     land_feat_cal_desc: 'Online rezervace, přehledy a automatické připomínky.',
@@ -129,7 +129,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_trust: 'Bez kreditní karty · Zrušení kdykoliv · Vaše data, vaše kontrola',
 
     // Landing — segments
-    land_segments_title: 'Vytvořeno pro poskytovatele služeb',
+    land_segments_title: 'Pro koho je Clientoro?',
     land_segments_desc: 'Pracujete s lidmi? Pak je Clientoro pro vás.',
     land_seg_hair: 'Kadeřnictví & barber',
     land_seg_hair_desc: 'Střihy, barvení, melíry, foukaná',
@@ -400,7 +400,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_hero_badge: 'Booking · CRM · AI · Rast',
     land_hero_cta: 'Vyskúšať 14 dní zadarmo',
     land_hero_cta2: 'Čo vám prinesieme?',
-    land_hero_desc: '14 dní zadarmo, zrušíte kedykoľvek · Žiadne skryté poplatky · Férový cenník bez provízií · Váš úspech = náš úspech',
+    land_hero_desc: 'Férový cenník bez provízií · Žiadne skryté poplatky · 14 dní zadarmo · Zrušíte kedykoľvek',
     land_nav_segments: 'Pre koho',
     land_feat_cal_title: 'Chytrý kalendár',
     land_feat_cal_desc: 'Online rezervácie, prehľady a automatické pripomienky.',
@@ -419,7 +419,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_trust: 'Bez kreditnej karty · Zrušenie kedykoľvek · Vaše dáta, vaša kontrola',
 
     // Landing — segments
-    land_segments_title: 'Vytvorené pre poskytovateľov služieb',
+    land_segments_title: 'Pre koho je Clientoro?',
     land_segments_desc: 'Pracujete s ľuďmi? Potom je Clientoro pre vás.',
     land_seg_hair: 'Kaderníctvo & barber',
     land_seg_hair_desc: 'Strihy, farbenie, melíry, fúkaná',
@@ -690,7 +690,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_hero_badge: 'Booking · CRM · AI · Growth',
     land_hero_cta: 'Try 14 days free',
     land_hero_cta2: 'What we bring you?',
-    land_hero_desc: '14 days free, cancel anytime · No hidden fees · Fair pricing, no commissions · Your success = our success',
+    land_hero_desc: 'Fair pricing, no commissions · No hidden fees · 14 days free · Cancel anytime',
     land_nav_segments: 'For who',
     land_feat_cal_title: 'Smart calendar',
     land_feat_cal_desc: 'Online bookings, overviews and automatic reminders.',
@@ -709,7 +709,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_trust: 'No credit card · Cancel anytime · Your data, your control',
 
     // Landing — segments
-    land_segments_title: 'Built for service providers',
+    land_segments_title: 'Who is Clientoro for?',
     land_segments_desc: 'Work with people? Clientoro is for you.',
     land_seg_hair: 'Hair salons & barbers',
     land_seg_hair_desc: 'Cuts, coloring, highlights, blowouts',

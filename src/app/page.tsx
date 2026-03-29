@@ -254,7 +254,7 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-3 gap-4">
             {[1,2,3].map(i => (
               <div key={i} className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4 sm:p-5">
-                <div className="text-2xl sm:text-3xl mb-2">{['🤖','📊','🎯'][i-1]}</div>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2 mx-auto" style={{ background: 'linear-gradient(135deg, #0f6b7a, #0c2d48)' }}>{[<BrainCircuit key="a" className="w-5 h-5 text-amber-400" />, <TrendingUp key="b" className="w-5 h-5 text-amber-400" />, <Zap key="c" className="w-5 h-5 text-amber-400" />][i-1]}</div>
                 <h3 className="font-bold text-white text-sm sm:text-base mb-1">{t(`land_ai_${i}_title`)}</h3>
                 <p className="text-xs sm:text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t(`land_ai_${i}_desc`)}</p>
               </div>
@@ -395,7 +395,7 @@ export default function LandingPage() {
           <span className="text-lg font-bold text-white">Clientoro</span>
         </div>
         <p className="text-sm text-gray-500">© 2026 {t('land_footer')}</p>
-        <div className="flex justify-center gap-4 sm:gap-6 mt-4 text-xs text-gray-600">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-4 text-xs text-gray-600 px-4">
           <a href="/privacy" className="hover:text-gray-400">{t('land_footer_privacy')}</a>
           <a href="/terms" className="hover:text-gray-400">{t('land_footer_terms')}</a>
           <a href="#" className="hover:text-gray-400">{t('land_footer_contact')}</a>
