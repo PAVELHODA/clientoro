@@ -106,7 +106,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Začít zdarma',
 
     // Landing — hero
-        land_hero_title: 'Rezervace. Klienti. Růst. Vše na jednom místě.',
+        land_hero_title: 'Chytrý kalendář, který vám pomůže zaplnit termíny a získat nové klienty.',
     land_hero_badge: 'Booking · CRM · AI · Růst',
     land_hero_cta: 'Vyzkoušet 14 dní zdarma',
     land_hero_cta2: 'Co vám přineseme?',
@@ -182,7 +182,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — AI section
     land_ai_badge: 'AI, které pracuje za vás',
-    land_ai_title: 'Chytřejší rozhodování bez námahy',
+    land_ai_title: 'AI, které pracuje za vás',
     land_ai_desc: 'AI analyzuje vaše data a navrhuje konkrétní kroky. Žádný chatbot — reálné insighty.',
     land_ai_1_title: 'Detekce potenciálních hodin',
     land_ai_1_desc: 'AI najde hodiny kdy nemáte klienty a navrhne jak je zaplnit',
@@ -396,7 +396,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Začať zadarmo',
 
     // Landing — hero
-    land_hero_title: 'Rezervácie. Klienti. Rast. Všetko na jednom mieste.',
+    land_hero_title: 'Chytrý kalendár, ktorý vám pomôže zaplniť termíny a získať nových klientov.',
     land_hero_badge: 'Booking · CRM · AI · Rast',
     land_hero_cta: 'Vyskúšať 14 dní zadarmo',
     land_hero_cta2: 'Čo vám prinesieme?',
@@ -472,7 +472,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — AI section
     land_ai_badge: 'AI, ktoré pracuje za vás',
-    land_ai_title: 'Chytrejšie rozhodovanie bez námahy',
+    land_ai_title: 'AI, ktoré pracuje za vás',
     land_ai_desc: 'AI analyzuje vaše dáta a navrhuje konkrétne kroky. Žiadny chatbot — reálne insighty.',
     land_ai_1_title: 'Detekcia potenciálnych hodín',
     land_ai_1_desc: 'AI nájde hodiny kedy nemáte klientov a navrhne ako ich zaplniť',
@@ -686,7 +686,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Start free',
 
     // Landing — hero
-    land_hero_title: 'Bookings. Clients. Growth. All in one place.',
+    land_hero_title: 'Smart calendar that helps you fill appointments and win new clients.',
     land_hero_badge: 'Booking · CRM · AI · Growth',
     land_hero_cta: 'Try 14 days free',
     land_hero_cta2: 'What we bring you?',
@@ -762,7 +762,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — AI section
     land_ai_badge: 'AI that works for you',
-    land_ai_title: 'Smarter decisions without effort',
+    land_ai_title: 'AI that works for you',
     land_ai_desc: 'AI analyzes your data and suggests concrete steps. No chatbot — real insights.',
     land_ai_1_title: 'Potential hours detection',
     land_ai_1_desc: 'AI finds hours when you have no clients and suggests how to fill them',
