@@ -58,7 +58,7 @@ export default function CookieConsent() {
               Odmítnout vše
             </button>
             <button onClick={acceptNecessary}
-              className="px-4 py-2 text-xs text-emerald-400 hover:text-emerald-300 rounded-lg border border-emerald-700 hover:border-emerald-500 transition-colors font-medium">
+              className="px-4 py-2 text-xs text-green-600 hover:text-green-500 rounded-lg border border-green-800 hover:border-green-600 transition-colors font-medium">
               Pouze nezbytné
             </button>
             <button onClick={acceptAll}
