@@ -109,7 +109,7 @@ export default function LandingPage() {
 
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white max-w-5xl mx-auto shadow-sm">
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 py-3 sm:py-3">
@@ -144,7 +144,7 @@ export default function LandingPage() {
       </nav>
 
       {/* BANNER 2026 */}
-      <div className="pt-[120px] sm:pt-[56px]">
+      <div className="pt-[140px] sm:pt-[64px]">
         <div className="w-full bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200">
           <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
             <span className="text-amber-600 text-base">🚧</span>
@@ -164,7 +164,7 @@ export default function LandingPage() {
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500 flex items-center gap-1.5"><Check className="w-4 h-4 text-amber-500 flex-shrink-0" />{b.replace(/^\+ /, '')}</span>))}</div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6 sm:mb-8 max-w-lg mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500 flex items-center gap-1.5"><Check className="w-4 h-4 text-amber-500 flex-shrink-0" />{b.replace(/^\+ /, '')}</span>))}</div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:border-gray-300 text-center">{t('land_hero_cta2')}</a>

@@ -107,7 +107,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — hero
         land_hero_title: 'Rezervace. Klienti. Růst. Vše na jednom místě.',
-    land_hero_badge: 'Nástroj pro poskytovatele služeb',
+    land_hero_badge: 'Booking · CRM · AI · Růst',
     land_hero_cta: 'Vyzkoušet 14 dní zdarma',
     land_hero_cta2: 'Co vám přineseme?',
     land_hero_desc: '14 dní zdarma, zrušíte kdykoliv · Žádné skryté poplatky · Férový ceník bez provizí · Váš úspěch = náš úspěch',
@@ -397,7 +397,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — hero
     land_hero_title: 'Rezervácie. Klienti. Rast. Všetko na jednom mieste.',
-    land_hero_badge: 'Nástroj pre poskytovateľov služieb',
+    land_hero_badge: 'Booking · CRM · AI · Rast',
     land_hero_cta: 'Vyskúšať 14 dní zadarmo',
     land_hero_cta2: 'Čo vám prinesieme?',
     land_hero_desc: '14 dní zadarmo, zrušíte kedykoľvek · Žiadne skryté poplatky · Férový cenník bez provízií · Váš úspech = náš úspech',
@@ -687,7 +687,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — hero
     land_hero_title: 'Bookings. Clients. Growth. All in one place.',
-    land_hero_badge: 'Tool for service providers',
+    land_hero_badge: 'Booking · CRM · AI · Growth',
     land_hero_cta: 'Try 14 days free',
     land_hero_cta2: 'What we bring you?',
     land_hero_desc: '14 days free, cancel anytime · No hidden fees · Fair pricing, no commissions · Your success = our success',
