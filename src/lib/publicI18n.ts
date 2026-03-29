@@ -106,7 +106,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Začít zdarma',
 
     // Landing — hero
-        land_hero_title: 'Chytrý kalendář, který vám pomůže zaplnit termíny a získat nové klienty.',
+        land_hero_title: 'Chytrý kalendář, který pomáhá zaplnit termíny a získat nové klienty.',
     land_hero_badge: 'Booking · CRM · AI · Růst',
     land_hero_cta: 'Vyzkoušet 14 dní zdarma',
     land_hero_cta2: 'Co vám přineseme?',
@@ -396,7 +396,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Začať zadarmo',
 
     // Landing — hero
-    land_hero_title: 'Chytrý kalendár, ktorý vám pomôže zaplniť termíny a získať nových klientov.',
+    land_hero_title: 'Chytrý kalendár, ktorý pomáha zaplniť termíny a získať nových klientov.',
     land_hero_badge: 'Booking · CRM · AI · Rast',
     land_hero_cta: 'Vyskúšať 14 dní zadarmo',
     land_hero_cta2: 'Čo vám prinesieme?',
@@ -686,7 +686,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Start free',
 
     // Landing — hero
-    land_hero_title: 'Smart calendar that helps you fill appointments and win new clients.',
+    land_hero_title: 'Smart calendar that helps fill appointments and win new clients.',
     land_hero_badge: 'Booking · CRM · AI · Growth',
     land_hero_cta: 'Try 14 days free',
     land_hero_cta2: 'What we bring you?',
