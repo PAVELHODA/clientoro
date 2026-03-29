@@ -113,10 +113,10 @@ export default function LandingPage() {
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 py-2 sm:py-0 sm:h-14 flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-2">
-          <div className="flex items-center gap-2">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-4 h-4 text-white" /></div>
             <span className="text-lg font-bold text-gray-900">Clientoro</span>
-          </div>
+          </button>
           <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
             <a href="#segments" className="hover:text-gray-900">{t('land_nav_segments')}</a>
             <a href="#features" className="hover:text-gray-900">{t('land_nav_features')}</a>
@@ -142,7 +142,7 @@ export default function LandingPage() {
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
-          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-gray-500 max-w-2xl mx-auto px-4">{t('land_hero_desc')}</p>
+          <div className="flex flex-col items-center gap-2 mb-6 sm:mb-8 max-w-xl mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500">{b}</span>))}</div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:border-gray-300 text-center">{t('land_hero_cta2')}</a>
@@ -168,9 +168,11 @@ export default function LandingPage() {
             )})}
           </div>
 
-          {/* SEGMENT POPUP */}
+          {/* SEGMENT POPUP - OVERLAY */}
           {openSegment && SEGMENT_SERVICES[openSegment] && (
-            <div className="mt-4 bg-white rounded-xl border-2 border-amber-200 shadow-lg p-4 sm:p-5 relative animate-in fade-in duration-200">
+            <>
+            <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setOpenSegment(null)} />
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90vw] max-w-md bg-white rounded-2xl border-2 border-amber-200 shadow-2xl p-5 sm:p-6">
               <button onClick={() => setOpenSegment(null)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                 <X className="w-4 h-4" />
               </button>
@@ -183,8 +185,9 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-3 italic">{lang === 'en' ? '...and any other services you offer' : lang === 'sk' ? '...a akékoľvek ďalšie služby, ktoré ponúkate' : '...a jakékoliv další služby, které nabízíte'}</p>
+              <p className="text-xs text-gray-400 mt-3 italic">{lang === 'en' ? '...and any others you create' : lang === 'sk' ? '...a akékoľvek ďalšie, ktoré vytvoríte' : '...a jakékoliv další, které vytvoříte'}</p>
             </div>
+            </>
           )}
         </div>
       </section>

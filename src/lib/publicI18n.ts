@@ -106,11 +106,11 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Začít zdarma',
 
     // Landing — hero
-        land_hero_title: 'Rezervační systém pro poskytovatele služeb',
-    land_hero_badge: 'Chytrý rezervační systém s AI',
+        land_hero_title: 'Rezervace. Klienti. Růst. Vše na jednom místě.',
+    land_hero_badge: 'Nástroj pro poskytovatele služeb',
     land_hero_cta: 'Vyzkoušet 14 dní zdarma',
     land_hero_cta2: 'Co vám přineseme?',
-    land_hero_desc: 'Přehledný systém pro správu rezervací, klientů a růst vašeho podnikání.',
+    land_hero_desc: '+ Férový ceník bez provizí · + Váš úspěch = náš úspěch · + Žádné skryté poplatky · + 14 dní zdarma, zrušíte kdykoliv',
     land_nav_segments: 'Pro koho',
     land_feat_cal_title: 'Chytrý kalendář',
     land_feat_cal_desc: 'Online rezervace, přehledy a automatické připomínky.',
@@ -396,11 +396,11 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Začať zadarmo',
 
     // Landing — hero
-    land_hero_title: 'Rezervačný systém pre poskytovateľov služieb',
-    land_hero_badge: 'Chytrý rezervačný systém s AI',
+    land_hero_title: 'Rezervácie. Klienti. Rast. Všetko na jednom mieste.',
+    land_hero_badge: 'Nástroj pre poskytovateľov služieb',
     land_hero_cta: 'Vyskúšať 14 dní zadarmo',
     land_hero_cta2: 'Čo vám prinesieme?',
-    land_hero_desc: 'Prehľadný systém pre správu rezervácií, klientov a rast vášho podnikania.',
+    land_hero_desc: '+ Férový cenník bez provízií · + Váš úspech = náš úspech · + Žiadne skryté poplatky · + 14 dní zadarmo, zrušíte kedykoľvek',
     land_nav_segments: 'Pre koho',
     land_feat_cal_title: 'Chytrý kalendár',
     land_feat_cal_desc: 'Online rezervácie, prehľady a automatické pripomienky.',
@@ -686,11 +686,11 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_nav_register: 'Start free',
 
     // Landing — hero
-    land_hero_title: 'Booking system for service providers',
-    land_hero_badge: 'Smart booking system with AI',
+    land_hero_title: 'Bookings. Clients. Growth. All in one place.',
+    land_hero_badge: 'Tool for service providers',
     land_hero_cta: 'Try 14 days free',
     land_hero_cta2: 'What we bring you?',
-    land_hero_desc: 'Clear system for managing bookings, clients and growing your business.',
+    land_hero_desc: '+ Fair pricing, no commissions · + Your success = our success · + No hidden fees · + 14 days free, cancel anytime',
     land_nav_segments: 'For who',
     land_feat_cal_title: 'Smart calendar',
     land_feat_cal_desc: 'Online bookings, overviews and automatic reminders.',
