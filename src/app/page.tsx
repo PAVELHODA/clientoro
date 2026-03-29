@@ -138,7 +138,6 @@ export default function LandingPage() {
           {/* Radek 2+3: Prihlasit se + Zacit zdarma (jen mobil) */}
           <div className="flex flex-col gap-2 mt-2 md:hidden">
             <a href="/login" className="w-full py-2.5 text-center text-sm text-gray-700 font-medium border border-gray-200 rounded-lg hover:bg-gray-50">{t('land_nav_login')}</a>
-            <a href="/register" className="w-full py-2.5 text-center text-white rounded-lg text-sm font-semibold shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
           </div>
         </div>
       </nav>
@@ -164,7 +163,7 @@ export default function LandingPage() {
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6 sm:mb-8 max-w-lg mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<span key={i} className="text-sm sm:text-base text-gray-500 flex items-center gap-1.5"><Check className="w-4 h-4 text-amber-500 flex-shrink-0" />{b.replace(/^\+ /, '')}</span>))}</div>
+          <div className="grid grid-cols-2 gap-3 mb-6 sm:mb-8 max-w-lg mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<div key={i} className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-3 text-center"><Check className="w-4 h-4 text-amber-500 mx-auto mb-1" /><span className="text-xs sm:text-sm text-gray-600 font-medium">{b.replace(/^\+ /, '')}</span></div>))}</div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta')} <ArrowRight className="w-5 h-5" /></a>
             <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl font-medium text-gray-700 hover:border-gray-300 text-center">{t('land_hero_cta2')}</a>
