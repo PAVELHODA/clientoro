@@ -2,7 +2,6 @@
 'use client'
 
 import { createClient } from '@/lib/supabase'
-
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
@@ -13,13 +12,25 @@ interface OrgSettings {
   email: string; website: string; work_start: number; work_end: number
   slot_duration: number; booking_link: string; timezone: string
   notification_email: string; notify_on_booking: boolean; notify_on_cancel: boolean
+  work_days: any[]
 }
+
+const DEFAULT_WORK_DAYS = [
+  { day: 0, enabled: true, start: '06:00', end: '22:00' },
+  { day: 1, enabled: true, start: '06:00', end: '22:00' },
+  { day: 2, enabled: true, start: '06:00', end: '22:00' },
+  { day: 3, enabled: true, start: '06:00', end: '22:00' },
+  { day: 4, enabled: true, start: '06:00', end: '22:00' },
+  { day: 5, enabled: false, start: '06:00', end: '22:00' },
+  { day: 6, enabled: false, start: '06:00', end: '22:00' },
+]
 
 const EMPTY: OrgSettings = {
   id: '', name: '', mode: 'solo', address: '', phone: '', email: '',
   website: '', work_start: 8, work_end: 18, slot_duration: 30,
   booking_link: '', timezone: 'Europe/Prague',
   notification_email: '', notify_on_booking: true, notify_on_cancel: true,
+  work_days: DEFAULT_WORK_DAYS,
 }
 
 export default function SettingsPage() {
@@ -46,160 +57,157 @@ export default function SettingsPage() {
 
   const l = {
     title: t('set_title'),
-    subtitle: lang === 'en' ? 'Basic settings of your organization' : lang === 'sk' ? 'Zakladne nastavenia vasej organizacie' : 'Zakladni nastaveni vasi organizace',
+    subtitle: lang === 'en' ? 'Basic settings of your organization' : lang === 'sk' ? 'Základné nastavenia vašej organizácie' : 'Základní nastavení vaší organizace',
     save: t('set_save'),
-    saving: lang === 'en' ? 'Saving...' : lang === 'sk' ? 'Ukladam...' : 'Ukladam...',
-    saved: lang === 'en' ? 'Saved!' : lang === 'sk' ? 'Ulozene!' : 'Ulozeno!',
-    basicInfo: lang === 'en' ? 'Basic information' : lang === 'sk' ? 'Zakladne informacie' : 'Zakladni informace',
-    companyName: lang === 'en' ? 'Company / salon name' : lang === 'sk' ? 'Nazov firmy / salonu' : 'Nazev firmy / salonu',
+    saving: lang === 'en' ? 'Saving...' : lang === 'sk' ? 'Ukladám...' : 'Ukládám...',
+    saved: lang === 'en' ? 'Saved!' : lang === 'sk' ? 'Uložené!' : 'Uloženo!',
+    basicInfo: lang === 'en' ? 'Basic information' : lang === 'sk' ? 'Základné informácie' : 'Základní informace',
+    companyName: lang === 'en' ? 'Company / salon name' : lang === 'sk' ? 'Názov firmy / salónu' : 'Název firmy / salonu',
     address: lang === 'en' ? 'Address' : 'Adresa',
-    contact: lang === 'en' ? 'Contact details' : lang === 'sk' ? 'Kontaktne udaje' : 'Kontaktni udaje',
-    phone: lang === 'en' ? 'Phone' : lang === 'sk' ? 'Telefon' : 'Telefon',
+    contact: lang === 'en' ? 'Contact details' : lang === 'sk' ? 'Kontaktné údaje' : 'Kontaktní údaje',
+    phone: lang === 'en' ? 'Phone' : 'Telefon',
     email: 'Email',
     web: 'Web',
-    notifications: lang === 'en' ? 'Email notifications' : lang === 'sk' ? 'Emailove notifikacie' : 'Emailove notifikace',
-    notifDesc: lang === 'en' ? 'Set up email address for receiving notifications about new bookings and cancellations.' : lang === 'sk' ? 'Nastavte emailovu adresu pre prijimanie notifikacii o novych rezervaciach a zruseniach.' : 'Nastavte emailovou adresu pro prijimani notifikaci o novych rezervacich a zrusenich.',
-    notifEmail: lang === 'en' ? 'Notification email' : lang === 'sk' ? 'Notifikacny email' : 'Notifikacni email',
-    notifEmailPlaceholder: lang === 'en' ? 'owner@salon.cz (where to send notifications)' : lang === 'sk' ? 'majitel@salon.sk (kam posielat notifikacie)' : 'majitel@salon.cz (kam posilat notifikace)',
-    notifOnBooking: lang === 'en' ? 'New booking notification' : lang === 'sk' ? 'Notifikacia o novej rezervacii' : 'Notifikace o nove rezervaci',
-    notifOnCancel: lang === 'en' ? 'Cancellation notification' : lang === 'sk' ? 'Notifikacia o zruseni' : 'Notifikace o zruseni',
-    notifOnBookingDesc: lang === 'en' ? 'Receive email when a client books' : lang === 'sk' ? 'Dostat email ked si klient zarezervuje' : 'Dostat email kdyz si klient zarezervuje',
-    notifOnCancelDesc: lang === 'en' ? 'When a client cancels a booking' : lang === 'sk' ? 'Ked klient zrusi rezervaciu' : 'Kdyz klient zrusi rezervaci',
-    reminderTitle: lang === 'en' ? 'Automated emails to clients' : lang === 'sk' ? 'Automaticke emaily klientom' : 'Automaticke emaily klientum',
-    reminderDesc: lang === 'en' ? 'Set up automatic emails that are sent to your clients.' : lang === 'sk' ? 'Nastavte automaticke emaily, ktore sa posielaju vasim klientom.' : 'Nastavte automaticke emaily, ktere se posilaji vasim klientum.',
-    reminderToggle: lang === 'en' ? 'Reminder day before' : lang === 'sk' ? 'Pripomienka den vopred' : 'Pripominka den predem',
-    reminderToggleDesc: lang === 'en' ? 'Client receives an email reminder the day before the appointment' : lang === 'sk' ? 'Klient dostane emailovu pripomienku den pred navstevou' : 'Klient dostane emailovou pripominku den pred navstevou',
-    followupToggle: lang === 'en' ? 'Follow-up day after' : lang === 'sk' ? 'Follow-up den po navsteve' : 'Follow-up den po navsteve',
-    followupToggleDesc: lang === 'en' ? 'Thank you email with rebooking option sent the day after the visit' : lang === 'sk' ? 'Dakujeme email s moznostou znovu rezervovat den po navsteve' : 'Dekujeme email s moznosti znovu rezervovat den po navsteve',
-    weeklyToggle: lang === 'en' ? 'Weekly report' : lang === 'sk' ? 'Tyzdenny report' : 'Tydenni report',
-    weeklyToggleDesc: lang === 'en' ? 'Summary of bookings, revenue and statistics every Monday' : lang === 'sk' ? 'Suhrn rezervacii, trzby a statistiky kazdy pondelok' : 'Souhrn rezervaci, trzby a statistiky kazde pondeli',
-    notifNotSet: lang === 'en' ? 'Set notification email to enable email alerts' : lang === 'sk' ? 'Nastavte notifikacny email pre aktivaciu upozorneni' : 'Nastavte notifikacni email pro aktivaci upozorneni',
-    testEmail: lang === 'en' ? 'Send test email' : lang === 'sk' ? 'Poslat testovaci email' : 'Poslat testovaci email',
-    testSent: lang === 'en' ? 'Test email sent!' : lang === 'sk' ? 'Testovaci email odoslany!' : 'Testovaci email odeslan!',
-    workingHours: lang === 'en' ? 'Working hours & calendar' : lang === 'sk' ? 'Pracovna doba a kalendar' : 'Pracovni doba a kalendar',
-    start: lang === 'en' ? 'Start' : lang === 'sk' ? 'Zaciatok' : 'Zacatek',
-    end: lang === 'en' ? 'End' : 'Konec',
-    slotDuration: lang === 'en' ? 'Slot duration' : lang === 'sk' ? 'Dlzka slotu' : 'Delka terminu',
+    notifications: lang === 'en' ? 'Email notifications' : lang === 'sk' ? 'Emailové notifikácie' : 'Emailové notifikace',
+    notifDesc: lang === 'en' ? 'Set up email address for receiving notifications about new bookings and cancellations.' : lang === 'sk' ? 'Nastavte emailovú adresu pre prijímanie notifikácií o nových rezerváciách a zrušeniach.' : 'Nastavte emailovou adresu pro přijímání notifikací o nových rezervacích a zrušeních.',
+    notifEmail: lang === 'en' ? 'Notification email' : lang === 'sk' ? 'Notifikačný email' : 'Notifikační email',
+    notifEmailPlaceholder: lang === 'en' ? 'owner@salon.cz (where to send notifications)' : lang === 'sk' ? 'majitel@salon.sk (kam posielať notifikácie)' : 'majitel@salon.cz (kam posílat notifikace)',
+    notifOnBooking: lang === 'en' ? 'New booking notification' : lang === 'sk' ? 'Notifikácia o novej rezervácii' : 'Notifikace o nové rezervaci',
+    notifOnCancel: lang === 'en' ? 'Cancellation notification' : lang === 'sk' ? 'Notifikácia o zrušení' : 'Notifikace o zrušení',
+    notifOnBookingDesc: lang === 'en' ? 'Receive email when a client books' : lang === 'sk' ? 'Dostať email keď si klient zarezervuje' : 'Dostat email když si klient zarezervuje',
+    notifOnCancelDesc: lang === 'en' ? 'When a client cancels a booking' : lang === 'sk' ? 'Keď klient zruší rezerváciu' : 'Když klient zruší rezervaci',
+    reminderTitle: lang === 'en' ? 'Automated emails to clients' : lang === 'sk' ? 'Automatické emaily klientom' : 'Automatické emaily klientům',
+    reminderDesc: lang === 'en' ? 'Set up automatic emails that are sent to your clients.' : lang === 'sk' ? 'Nastavte automatické emaily, ktoré sa posielajú vašim klientom.' : 'Nastavte automatické emaily, které se posílají vašim klientům.',
+    reminderToggle: lang === 'en' ? 'Reminder day before' : lang === 'sk' ? 'Pripomienka deň vopred' : 'Připomínka den předem',
+    reminderToggleDesc: lang === 'en' ? 'Client receives an email reminder the day before the appointment' : lang === 'sk' ? 'Klient dostane emailovú pripomienku deň pred návštevou' : 'Klient dostane emailovou připomínku den před návštěvou',
+    followupToggle: lang === 'en' ? 'Follow-up day after' : lang === 'sk' ? 'Follow-up deň po návšteve' : 'Follow-up den po návštěvě',
+    followupToggleDesc: lang === 'en' ? 'Thank you email with rebooking option sent the day after the visit' : lang === 'sk' ? 'Ďakujeme email s možnosťou znovu rezervovať deň po návšteve' : 'Děkujeme email s možností znovu rezervovat den po návštěvě',
+    weeklyToggle: lang === 'en' ? 'Weekly report' : lang === 'sk' ? 'Týždenný report' : 'Týdenní report',
+    weeklyToggleDesc: lang === 'en' ? 'Summary of bookings, revenue and statistics every Monday' : lang === 'sk' ? 'Súhrn rezervácií, tržby a štatistiky každý pondelok' : 'Souhrn rezervací, tržby a statistiky každé pondělí',
+    notifNotSet: lang === 'en' ? 'Set notification email to enable email alerts' : lang === 'sk' ? 'Nastavte notifikačný email pre aktiváciu upozornení' : 'Nastavte notifikační email pro aktivaci upozornění',
+    testEmail: lang === 'en' ? 'Send test email' : lang === 'sk' ? 'Poslať testovací email' : 'Poslat testovací email',
+    testSent: lang === 'en' ? 'Test email sent!' : lang === 'sk' ? 'Testovací email odoslaný!' : 'Testovací email odeslán!',
+    workingHours: lang === 'en' ? 'Working hours & calendar' : lang === 'sk' ? 'Pracovná doba a kalendár' : 'Pracovní doba a kalendář',
+    slotDuration: lang === 'en' ? 'Slot duration' : lang === 'sk' ? 'Dĺžka slotu' : 'Délka termínu',
     minutes: lang === 'en' ? 'minutes' : 'minut',
-    bookingPage: lang === 'en' ? 'Booking page' : 'Booking stranka',
-    copy: lang === 'en' ? 'Copy' : lang === 'sk' ? 'Kopirovat' : 'Kopirovat',
-    copied: lang === 'en' ? 'Link copied!' : lang === 'sk' ? 'Link skopirovany!' : 'Link zkopirovan!',
-    yourPlan: lang === 'en' ? 'Your plan' : lang === 'sk' ? 'Vas plan' : 'Vas plan',
-    comparePlans: lang === 'en' ? 'Compare plans. Click "Preview" to try.' : lang === 'sk' ? 'Porovnajte plany. Kliknite na "Nahlad" pre preview.' : 'Porovnejte plany. Kliknete na "Nahled" pro preview.',
-    active: lang === 'en' ? 'Active' : lang === 'sk' ? 'Aktivny' : 'Aktivni',
-    preview: lang === 'en' ? 'Preview' : lang === 'sk' ? 'Nahlad' : 'Nahled',
-    upgrade: lang === 'en' ? 'Upgrade to' : lang === 'sk' ? 'Upgrade na' : 'Upgrade na',
-    showFeatures: (n: number) => lang === 'en' ? `Show all features (${n})` : lang === 'sk' ? `Zobrazit vsetky funkcie (${n})` : `Zobrazit vsechny funkce (${n})`,
-    perMonth: lang === 'en' ? '/mo' : '/mes',
-    yearly: lang === 'en' ? 'yearly' : lang === 'sk' ? 'rocne' : 'rocni',
-    save_amount: lang === 'en' ? 'save' : lang === 'sk' ? 'usetrite' : 'usetrite',
-    loading: lang === 'en' ? 'Loading settings...' : lang === 'sk' ? 'Nacitavam nastavenia...' : 'Nacitam nastaveni...',
+    bookingPage: lang === 'en' ? 'Booking page' : 'Booking stránka',
+    copy: lang === 'en' ? 'Copy' : lang === 'sk' ? 'Kopírovať' : 'Kopírovat',
+    copied: lang === 'en' ? 'Link copied!' : lang === 'sk' ? 'Link skopírovaný!' : 'Link zkopírován!',
+    yourPlan: lang === 'en' ? 'Your plan' : lang === 'sk' ? 'Váš plán' : 'Váš plán',
+    comparePlans: lang === 'en' ? 'Compare plans. Click "Preview" to try.' : lang === 'sk' ? 'Porovnajte plány. Kliknite na "Náhľad" pre preview.' : 'Porovnejte plány. Klikněte na "Náhled" pro preview.',
+    active: lang === 'en' ? 'Active' : lang === 'sk' ? 'Aktívny' : 'Aktivní',
+    preview: lang === 'en' ? 'Preview' : lang === 'sk' ? 'Náhľad' : 'Náhled',
+    upgrade: lang === 'en' ? 'Upgrade to' : 'Upgrade na',
+    showFeatures: (n: number) => lang === 'en' ? `Show all features (${n})` : lang === 'sk' ? `Zobraziť všetky funkcie (${n})` : `Zobrazit všechny funkce (${n})`,
+    perMonth: lang === 'en' ? '/mo' : '/měs',
+    yearly: lang === 'en' ? 'yearly' : lang === 'sk' ? 'ročne' : 'roční',
+    save_amount: lang === 'en' ? 'save' : lang === 'sk' ? 'ušetríte' : 'ušetříte',
+    loading: lang === 'en' ? 'Loading settings...' : lang === 'sk' ? 'Načítavam nastavenia...' : 'Načítám nastavení...',
     error: lang === 'en' ? 'Error:' : 'Chyba:',
-    trial: lang === 'en' ? '14 days free - full access, no card' : lang === 'sk' ? '14 dni zadarmo - plny pristup, bez karty' : '14 dni zdarma - plny pristup, bez karty',
-    freeAfter: lang === 'en' ? 'After trial: 20 bookings/mo, 50 clients free' : lang === 'sk' ? 'Po triale: 20 rez/mes, 50 klientov zadarmo' : 'Po trialu: 20 rez/mes, 50 klientu zdarma',
-    namePlaceholder: lang === 'en' ? 'e.g. Beauty Salon' : lang === 'sk' ? 'Napr. Salon Krasa' : 'Napr. Salon Krasa',
-    gcalTitle: lang === 'en' ? 'Google Calendar' : lang === 'sk' ? 'Google Kalendar' : 'Google Kalendar',
-    gcalDesc: lang === 'en' ? 'Connect your Google Calendar to automatically sync bookings. New reservations will appear in your calendar.' : lang === 'sk' ? 'Prepojte Google Kalendar pre automaticku synchronizaciu rezervacii. Nove rezervacie sa automaticky zobrazia vo vasom kalendari.' : 'Propojte Google Kalendar pro automatickou synchronizaci rezervaci. Nove rezervace se automaticky zobrazi ve vasem kalendari.',
-    gcalConnect: lang === 'en' ? 'Connect Google Calendar' : lang === 'sk' ? 'Prepojit Google Kalendar' : 'Propojit Google Kalendar',
-    gcalDisconnect: lang === 'en' ? 'Disconnect' : lang === 'sk' ? 'Odpojit' : 'Odpojit',
-    gcalConnected: lang === 'en' ? 'Connected' : lang === 'sk' ? 'Prepojene' : 'Propojeno',
-    gcalFeatures: lang === 'en' ? ['Auto-sync new bookings', 'Cancellations update calendar', 'Staff sees events in their calendar'] : lang === 'sk' ? ['Auto-sync novych rezervacii', 'Zrusenia aktualizuju kalendar', 'Staff vidi udalosti vo svojom kalendari'] : ['Auto-sync novych rezervaci', 'Zruseni aktualizuji kalendar', 'Staff vidi udalosti ve svem kalendari'],
-    gcalSoon: lang === 'en' ? 'Two-way sync coming soon' : lang === 'sk' ? 'Obojsmerna synchronizacia coskoro' : 'Obousmerna synchronizace brzy',
-    changePassword: lang === 'en' ? 'Change password' : lang === 'sk' ? 'Zmena hesla' : 'Zmena hesla',
-    changePasswordDesc: lang === 'en' ? 'Change your login password. After changing, you will need to log in again.' : lang === 'sk' ? 'Zmente si prihlasovace heslo. Po zmene sa budete musiet znovu prihlasit.' : 'Zmente si prihlasovaci heslo. Po zmene se budete muset znovu prihlasit.',
-    currentPassword: lang === 'en' ? 'Current password' : lang === 'sk' ? 'Sucasne heslo' : 'Soucasne heslo',
-    newPasswordLabel: lang === 'en' ? 'New password' : lang === 'sk' ? 'Nove heslo' : 'Nove heslo',
-    confirmPasswordLabel: lang === 'en' ? 'Confirm new password' : lang === 'sk' ? 'Potvrdit nove heslo' : 'Potvrdit nove heslo',
-    changePasswordBtn: lang === 'en' ? 'Change password' : lang === 'sk' ? 'Zmenit heslo' : 'Zmenit heslo',
-    passwordChanged: lang === 'en' ? 'Password changed! Logging out...' : lang === 'sk' ? 'Heslo zmenene! Odhlasujeme...' : 'Heslo zmeneno! Odhlasujeme...',
-    passwordMismatch: lang === 'en' ? 'Passwords do not match' : lang === 'sk' ? 'Hesla sa nezhoduju' : 'Hesla se neshoduji',
-    passwordTooShort: lang === 'en' ? 'Password must be at least 6 characters' : lang === 'sk' ? 'Heslo musi mat aspon 6 znakov' : 'Heslo musi mit alespon 6 znaku',
-    passwordError: lang === 'en' ? 'Error changing password' : lang === 'sk' ? 'Chyba pri zmene hesla' : 'Chyba pri zmene hesla',
-    showPassword: lang === 'en' ? 'Show' : lang === 'sk' ? 'Zobrazit' : 'Zobrazit',
-    hidePassword: lang === 'en' ? 'Hide' : lang === 'sk' ? 'Skryt' : 'Skryt',
-    dangerZone: lang === 'en' ? 'Danger zone' : lang === 'sk' ? 'Nebezpecna zona' : 'Nebezpecna zona',
-    dangerDesc: lang === 'en' ? 'Permanently delete your account and ALL data (bookings, clients, services, settings). This action is IRREVERSIBLE. Before deletion, you can download a backup.' : lang === 'sk' ? 'Trvalo smazat vas ucet a VSETKY data (rezervacie, klienti, sluzby, nastavenia). Tato akcia je NEVRATNA. Pred smazanim si mozete stiahnut zalohu.' : 'Trvale smazat vas ucet a VSECHNA data (rezervace, klienti, sluzby, nastaveni). Tato akce je NEVRATNA. Pred smazanim si muzete stahnout zalohu.',
-    deleteBtn: lang === 'en' ? 'Delete account and all data' : lang === 'sk' ? 'Smazat ucet a vsetky data' : 'Smazat ucet a vsechna data',
-    backupTitle: lang === 'en' ? '1. Data backup' : lang === 'sk' ? '1. Zalohovanie dat' : '1. Zalohovani dat',
-    backupDesc: lang === 'en' ? 'Before deletion, you can download all your data.' : lang === 'sk' ? 'Pred smazanim si mozete stiahnut vsetky data.' : 'Pred smazanim si muzete stahnout vsechna data.',
-    backupBtn: lang === 'en' ? 'Download backup (CSV)' : lang === 'sk' ? 'Stiahnut zalohu (CSV)' : 'Stahnout zalohu (CSV)',
-    backupDoneLabel: lang === 'en' ? 'Backup downloaded' : lang === 'sk' ? 'Zaloha stiahnutna' : 'Zaloha stazena',
-    confirmTitle: lang === 'en' ? '2. Confirm deletion' : lang === 'sk' ? '2. Potvrdenie smazania' : '2. Potvrzeni smazani',
-    confirmDesc: lang === 'en' ? 'To confirm, type the name of your organization:' : lang === 'sk' ? 'Pre potvrdenie napiste nazov vasej organizacie:' : 'Pro potvrzeni napiste nazev vasi organizace:',
-    confirmPlaceholder: lang === 'en' ? 'Type organization name here' : lang === 'sk' ? 'Sem napiste nazov organizacie' : 'Zde napiste nazev organizace',
-    confirmYes: lang === 'en' ? 'Yes, permanently delete everything' : lang === 'sk' ? 'Ano, trvalo smazat vsetko' : 'Ano, trvale smazat vse',
-    confirmNo: lang === 'en' ? 'No, cancel' : lang === 'sk' ? 'Nie, zrusit' : 'Ne, zrusit',
-    confirmNote: lang === 'en' ? 'Your account will be deleted within 24 hours.' : lang === 'sk' ? 'Vas ucet bude smazany do 24 hodin.' : 'Vas ucet bude smazan do 24 hodin.',
-    deleteSuccess: lang === 'en' ? 'Deletion requested.' : lang === 'sk' ? 'Ziadost o smazanie odoslana.' : 'Zadost o smazani odeslana.',
-    deleteError: lang === 'en' ? 'Error requesting deletion.' : lang === 'sk' ? 'Chyba pri ziadosti o smazanie.' : 'Chyba pri zadosti o smazani.',
+    trial: lang === 'en' ? '14 days free - full access, no card' : lang === 'sk' ? '14 dní zadarmo - plný prístup, bez karty' : '14 dní zdarma - plný přístup, bez karty',
+    freeAfter: lang === 'en' ? 'After trial: 20 bookings/mo, 50 clients free' : lang === 'sk' ? 'Po triale: 20 rez/mes, 50 klientov zadarmo' : 'Po trialu: 20 rez/měs, 50 klientů zdarma',
+    namePlaceholder: lang === 'en' ? 'e.g. Beauty Salon' : lang === 'sk' ? 'Napr. Salón Krása' : 'Např. Salon Krása',
+    gcalTitle: lang === 'en' ? 'Google Calendar' : lang === 'sk' ? 'Google Kalendár' : 'Google Kalendář',
+    gcalDesc: lang === 'en' ? 'Connect your Google Calendar to automatically sync bookings. New reservations will appear in your calendar.' : lang === 'sk' ? 'Prepojte Google Kalendár pre automatickú synchronizáciu rezervácií. Nové rezervácie sa automaticky zobrazia vo vašom kalendári.' : 'Propojte Google Kalendář pro automatickou synchronizaci rezervací. Nové rezervace se automaticky zobrazí ve vašem kalendáři.',
+    gcalConnect: lang === 'en' ? 'Connect Google Calendar' : lang === 'sk' ? 'Prepojiť Google Kalendár' : 'Propojit Google Kalendář',
+    gcalDisconnect: lang === 'en' ? 'Disconnect' : lang === 'sk' ? 'Odpojiť' : 'Odpojit',
+    gcalConnected: lang === 'en' ? 'Connected' : lang === 'sk' ? 'Prepojené' : 'Propojeno',
+    gcalFeatures: lang === 'en' ? ['Auto-sync new bookings', 'Cancellations update calendar', 'Staff sees events in their calendar'] : lang === 'sk' ? ['Auto-sync nových rezervácií', 'Zrušenia aktualizujú kalendár', 'Staff vidí udalosti vo svojom kalendári'] : ['Auto-sync nových rezervací', 'Zrušení aktualizují kalendář', 'Staff vidí události ve svém kalendáři'],
+    gcalSoon: lang === 'en' ? 'Two-way sync coming soon' : lang === 'sk' ? 'Obojsmerná synchronizácia čoskoro' : 'Obousměrná synchronizace brzy',
+    changePassword: lang === 'en' ? 'Change password' : lang === 'sk' ? 'Zmena hesla' : 'Změna hesla',
+    changePasswordDesc: lang === 'en' ? 'Change your login password. After changing, you will need to log in again.' : lang === 'sk' ? 'Zmeňte si prihlasovacie heslo. Po zmene sa budete musieť znovu prihlásiť.' : 'Změňte si přihlašovací heslo. Po změně se budete muset znovu přihlásit.',
+    currentPassword: lang === 'en' ? 'Current password' : lang === 'sk' ? 'Súčasné heslo' : 'Současné heslo',
+    newPasswordLabel: lang === 'en' ? 'New password' : lang === 'sk' ? 'Nové heslo' : 'Nové heslo',
+    confirmPasswordLabel: lang === 'en' ? 'Confirm new password' : lang === 'sk' ? 'Potvrdiť nové heslo' : 'Potvrdit nové heslo',
+    changePasswordBtn: lang === 'en' ? 'Change password' : lang === 'sk' ? 'Zmeniť heslo' : 'Změnit heslo',
+    passwordChanged: lang === 'en' ? 'Password changed! Logging out...' : lang === 'sk' ? 'Heslo zmenené! Odhlasujeme...' : 'Heslo změněno! Odhlašujeme...',
+    passwordMismatch: lang === 'en' ? 'Passwords do not match' : lang === 'sk' ? 'Heslá sa nezhodujú' : 'Hesla se neshodují',
+    passwordTooShort: lang === 'en' ? 'Password must be at least 6 characters' : lang === 'sk' ? 'Heslo musí mať aspoň 6 znakov' : 'Heslo musí mít alespoň 6 znaků',
+    passwordError: lang === 'en' ? 'Error changing password' : lang === 'sk' ? 'Chyba pri zmene hesla' : 'Chyba při změně hesla',
+    showPassword: lang === 'en' ? 'Show' : 'Zobrazit',
+    hidePassword: lang === 'en' ? 'Hide' : 'Skrýt',
+    dangerZone: lang === 'en' ? 'Danger zone' : lang === 'sk' ? 'Nebezpečná zóna' : 'Nebezpečná zóna',
+    dangerDesc: lang === 'en' ? 'Permanently delete your account and ALL data (bookings, clients, services, settings). This action is IRREVERSIBLE. Before deletion, you can download a backup.' : lang === 'sk' ? 'Trvalo zmazať váš účet a VŠETKY dáta (rezervácie, klienti, služby, nastavenia). Táto akcia je NEVRATNÁ. Pred zmazaním si môžete stiahnuť zálohu.' : 'Trvale smazat váš účet a VŠECHNA data (rezervace, klienti, služby, nastavení). Tato akce je NEVRATNÁ. Před smazáním si můžete stáhnout zálohu.',
+    deleteBtn: lang === 'en' ? 'Delete account and all data' : lang === 'sk' ? 'Zmazať účet a všetky dáta' : 'Smazat účet a všechna data',
+    backupTitle: lang === 'en' ? '1. Data backup' : lang === 'sk' ? '1. Zálohovanie dát' : '1. Zálohování dat',
+    backupDesc: lang === 'en' ? 'Before deletion, you can download all your data.' : lang === 'sk' ? 'Pred zmazaním si môžete stiahnuť všetky dáta.' : 'Před smazáním si můžete stáhnout všechna data.',
+    backupBtn: lang === 'en' ? 'Download backup (CSV)' : lang === 'sk' ? 'Stiahnuť zálohu (CSV)' : 'Stáhnout zálohu (CSV)',
+    backupDoneLabel: lang === 'en' ? 'Backup downloaded' : lang === 'sk' ? 'Záloha stiahnutá' : 'Záloha stažena',
+    confirmTitle: lang === 'en' ? '2. Confirm deletion' : lang === 'sk' ? '2. Potvrdenie zmazania' : '2. Potvrzení smazání',
+    confirmDesc: lang === 'en' ? 'To confirm, type the name of your organization:' : lang === 'sk' ? 'Pre potvrdenie napíšte názov vašej organizácie:' : 'Pro potvrzení napište název vaší organizace:',
+    confirmPlaceholder: lang === 'en' ? 'Type organization name here' : lang === 'sk' ? 'Sem napíšte názov organizácie' : 'Zde napište název organizace',
+    confirmYes: lang === 'en' ? 'Yes, permanently delete everything' : lang === 'sk' ? 'Áno, trvalo zmazať všetko' : 'Ano, trvale smazat vše',
+    confirmNo: lang === 'en' ? 'No, cancel' : lang === 'sk' ? 'Nie, zrušiť' : 'Ne, zrušit',
+    confirmNote: lang === 'en' ? 'Your account will be deleted within 24 hours.' : lang === 'sk' ? 'Váš účet bude zmazaný do 24 hodín.' : 'Váš účet bude smazán do 24 hodin.',
+    deleteSuccess: lang === 'en' ? 'Deletion requested.' : lang === 'sk' ? 'Žiadosť o zmazanie odoslaná.' : 'Žádost o smazání odeslána.',
+    deleteError: lang === 'en' ? 'Error requesting deletion.' : lang === 'sk' ? 'Chyba pri žiadosti o zmazanie.' : 'Chyba při žádosti o smazání.',
   }
 
   const MODE_CARDS = [
     {
-      mode: 'solo', label: '🟢 OSVC',
-      desc: lang === 'en' ? 'For solo entrepreneurs (1 person)' : lang === 'sk' ? 'Pre podnikatelov (1 osoba)' : 'Pro podnikatele (1 osoba)',
+      mode: 'solo', label: '🟢 OSVČ',
+      desc: lang === 'en' ? 'For solo entrepreneurs (1 person)' : lang === 'sk' ? 'Pre podnikateľov (1 osoba)' : 'Pro podnikatele (1 osoba)',
       color: 'from-teal-500 to-cyan-400', border: 'border-teal-300', bg: 'bg-teal-50',
       features: lang === 'en'
-        ? ['Calendar + booking link', 'Bookings (max 50/mo)', 'Clients CRM (max 100)', 'Services + basic reports', 'Birthday + No-show SMS (30/mo)', 'Passes (max 3 types)', 'Service bundles (max 2)', 'Discounts + Happy Hours (max 1)', 'First visit + birthday discount', 'Online booking discount', '"Verified profile" badge', 'Data export (GDPR)', 'UTM tracking']
+        ? ['✅ Calendar + online booking page', '✅ Bookings (max 50/mo)', '✅ Clients CRM (max 100)', '✅ Services + categories', '✅ Working hours per day (Mon-Sun)', '✅ Email notifications (new/cancel)', '✅ Dashboard with KPI', '✅ Data export (GDPR)', '✅ Multilingual CZ/SK/EN', '🔜 Basic reports (revenue, bookings)', '🔜 UTM tracking', '📋 Discounts + Happy Hours (max 1)', '📋 SMS notifications (30/mo)']
         : lang === 'sk'
-        ? ['Kalendar + booking link', 'Rezervacie (max 50/mes)', 'Klienti CRM (max 100)', 'Sluzby + basic reporty', 'Narodeniny + No-show SMS (30/mes)', 'Permanentky (max 3 typy)', 'Balicky sluzieb (max 2)', 'Zlavy + Happy Hours (max 1)', 'First visit + narodeniova zlava', 'Online booking zlava', 'Odznak "Overeny profil"', 'Export dat (GDPR)', 'UTM tracking']
-        : ['Kalendar + booking link', 'Rezervace (max 50/mes)', 'Klienti CRM (max 100)', 'Sluzby + basic reporty', 'Narozeniny + No-show SMS (30/mes)', 'Permanentky (max 3 typy)', 'Balicky sluzeb (max 2)', 'Slevy + Happy Hours (max 1)', 'First visit + narozeninova sleva', 'Online booking sleva', 'Odznak "Overeny profil"', 'Export dat (GDPR)', 'UTM tracking'],
+        ? ['✅ Kalendár + online booking stránka', '✅ Rezervácie (max 50/mes)', '✅ Klienti CRM (max 100)', '✅ Služby + kategórie', '✅ Pracovná doba per deň (Po-Ne)', '✅ Email notifikácie (nová/zrušenie)', '✅ Dashboard s KPI', '✅ Export dát (GDPR)', '✅ Multijazyčnosť CZ/SK/EN', '🔜 Základné reporty (tržby, rezervácie)', '🔜 UTM tracking', '📋 Zľavy + Happy Hours (max 1)', '📋 SMS notifikácie (30/mes)']
+        : ['✅ Kalendář + online booking stránka', '✅ Rezervace (max 50/měs)', '✅ Klienti CRM (max 100)', '✅ Služby + kategorie', '✅ Pracovní doba per den (Po-Ne)', '✅ Email notifikace (nová/zrušení)', '✅ Dashboard s KPI', '✅ Export dat (GDPR)', '✅ Multijazyčnost CZ/SK/EN', '🔜 Základní reporty (tržby, rezervace)', '🔜 UTM tracking', '📋 Slevy + Happy Hours (max 1)', '📋 SMS notifikace (30/měs)'],
       tiers: [
         { label: lang === 'en' ? 'Without AI' : 'Bez AI', price: '49', year: '39', rec: false },
-        { label: lang === 'en' ? 'With AI statistics' : lang === 'sk' ? 'S AI statistikami' : 'S AI statistikami', price: '99', year: '79', rec: true },
+        { label: lang === 'en' ? 'With AI statistics' : 'S AI statistikami', price: '99', year: '79', rec: true },
       ],
       trial: l.trial, free: l.freeAfter, up: 'solo_inspire',
     },
     {
       mode: 'team', label: '🔵 FIRMA',
-      desc: lang === 'en' ? 'For businesses (owner + up to 4 staff)' : lang === 'sk' ? 'Pre firmy (majitel + max 4 zamestnanci)' : 'Pro firmy (majitel + max 4 zamestnanci)',
+      desc: lang === 'en' ? 'For businesses (owner + up to 4 staff)' : lang === 'sk' ? 'Pre firmy (majiteľ + max 4 zamestnanci)' : 'Pro firmy (majitel + max 4 zaměstnanci)',
       color: 'from-blue-600 to-sky-400', border: 'border-blue-300', bg: 'bg-blue-50',
       features: lang === 'en'
-        ? ['Everything from Solo (unlimited)', '+ Team management + staff calendar', '+ Shifts and notifications', '+ Reports per staff', '+ Weekly email report', '+ Client mini-portal', '+ GA4 / Sklik / FB Pixel', '+ Google Calendar sync', '+ Time-based passes', '+ Unlimited passes + bundles', '+ Seasonal + combo discounts', '+ Recurring bookings', '+ Online payments / deposits', '+ Pre-visit forms', '+ Multiple locations (max 3)']
+        ? ['✅ Everything from Solo (unlimited)', '✅ Team management + staff calendar', '✅ Google Calendar sync', '🔜 Reports per staff', '🔜 Weekly email report', '📋 Shifts and notifications', '📋 Client mini-portal', '📋 GA4 / Sklik / FB Pixel', '📋 Recurring bookings', '📋 Online payments / deposits', '📋 Pre-visit forms', '📋 Multiple locations (max 3)', '📋 Unlimited passes + bundles', '📋 Seasonal + combo discounts']
         : lang === 'sk'
-        ? ['Vsetko z OSVC (neobmedzene)', '+ Sprava timu + staff kalendar', '+ Smeny a notifikacie', '+ Reporty per staff', '+ Tyzdenny email report', '+ Klientsky mini-portal', '+ GA4 / Sklik / FB Pixel', '+ Google Calendar sync', '+ Permanentky na cas', '+ Neobmedzene permanentky + balicky', '+ Sezonne + combo zlavy', '+ Opakovane rezervacie', '+ Online platby / depozity', '+ Formulare pred navstevou', '+ Viac pobociek (max 3)']
-        : ['Vse z OSVC (neomezene)', '+ Sprava tymu + staff kalendar', '+ Smeny a notifikace', '+ Reporty per staff', '+ Tydenni email report', '+ Klientsky mini-portal', '+ GA4 / Sklik / FB Pixel', '+ Google Calendar sync', '+ Permanentky na cas', '+ Neomezene permanentky + balicky', '+ Sezonni + combo slevy', '+ Opakovane rezervace', '+ Online platby / depozity', '+ Formulare pred navstevou', '+ Vice pobocek (max 3)'],
+        ? ['✅ Všetko z OSVČ (neobmedzene)', '✅ Správa tímu + staff kalendár', '✅ Google Calendar sync', '🔜 Reporty per staff', '🔜 Týždenný email report', '📋 Zmeny a notifikácie', '📋 Klientský mini-portál', '📋 GA4 / Sklik / FB Pixel', '📋 Opakované rezervácie', '📋 Online platby / depozity', '📋 Formuláre pred návštevou', '📋 Viac pobočiek (max 3)', '📋 Neobmedzené permanentky + balíčky', '📋 Sezónne + combo zľavy']
+        : ['✅ Vše z OSVČ (neomezeně)', '✅ Správa týmu + staff kalendář', '✅ Google Calendar sync', '🔜 Reporty per staff', '🔜 Týdenní email report', '📋 Směny a notifikace', '📋 Klientský mini-portál', '📋 GA4 / Sklik / FB Pixel', '📋 Opakované rezervace', '📋 Online platby / depozity', '📋 Formuláře před návštěvou', '📋 Více poboček (max 3)', '📋 Neomezené permanentky + balíčky', '📋 Sezónní + combo slevy'],
       tiers: [
         { label: lang === 'en' ? 'Without AI' : 'Bez AI', price: '299', year: '239', rec: false },
-        { label: lang === 'en' ? 'With AI statistics' : lang === 'sk' ? 'S AI statistikami' : 'S AI statistikami', price: '499', year: '399', rec: true },
+        { label: lang === 'en' ? 'With AI statistics' : 'S AI statistikami', price: '499', year: '399', rec: true },
       ],
       trial: null, free: null, up: 'pro_inspire',
     },
     {
       mode: 'solo_inspire', label: '🏖️ Solo Inspire',
-      desc: lang === 'en' ? 'Solo + AI & growth tools (1 person)' : lang === 'sk' ? 'OSVC + AI a growth nastroje (1 osoba)' : 'OSVC + AI a growth nastroje (1 osoba)',
+      desc: lang === 'en' ? 'Solo + AI & growth tools (1 person)' : lang === 'sk' ? 'OSVČ + AI a growth nástroje (1 osoba)' : 'OSVČ + AI a growth nástroje (1 osoba)',
       color: 'from-amber-500 to-yellow-400', border: 'border-amber-300', bg: 'bg-amber-50',
       features: lang === 'en'
-        ? ['Everything from Solo (unlimited)', '+ Smart AI assistant (unlimited)', '+ AI Business Coach', '+ AI monitors booking trends', '+ AI dead hours detection', '+ AI non-returning clients detection', '+ Campaigns (5/mo)', '+ Google reviews booster', '+ QR codes with tracking', '+ Smart rebooking', '+ Growth reports', '+ Waitlist', '+ Discount codes + loyalty program', '+ Referral program', '+ Rebooking + last minute + review discounts', '+ Subscription / membership', '+ Booking page branding', '+ Gift vouchers']
+        ? ['✅ Everything from Solo (unlimited)', '🔜 AI statistics + insights', '🔜 AI dead hours detection', '🔜 AI non-returning clients detection', '🔜 Growth reports', '🔜 Waitlist', '🔜 QR codes with tracking', '🔜 Booking page branding', '📋 Smart AI assistant (unlimited)', '📋 AI Business Coach', '📋 Campaigns (5/mo)', '📋 Google reviews booster', '📋 Smart rebooking', '📋 Discount codes + loyalty program', '📋 Referral program', '📋 Subscription / membership', '📋 Gift vouchers']
         : lang === 'sk'
-        ? ['Vsetko z OSVC (neobmedzene)', '+ Smart AI asistent (neobmedzene)', '+ AI Business Coach', '+ AI hlida pokles/narast rezervacii', '+ AI detekcia mrtvych hodin', '+ AI detekcia nevracajucich sa klientov', '+ Kampane (5/mes)', '+ Google recenzie booster', '+ QR kody s tracking', '+ Smart rebooking', '+ Growth reporty', '+ Waitlist (cakacia listina)', '+ Zlavove kody + vernostny program', '+ Referral program + prived kamarata', '+ Rebooking + last minute + recenzie zlavy', '+ Predplatne / membership', '+ Brandovanie booking stranky', '+ Darckove poukazy']
-        : ['Vse z OSVC (neomezene)', '+ Smart AI asistent (neomezene)', '+ AI Business Coach', '+ AI hlida pokles/narust rezervaci', '+ AI detekce mrtvych hodin', '+ AI detekce nevracejicich se klientu', '+ Kampane (5/mes)', '+ Google recenze booster', '+ QR kody s tracking', '+ Smart rebooking', '+ Growth reporty', '+ Waitlist (cekaci listina)', '+ Slevove kody + vernostni program', '+ Referral program + prived kamarada', '+ Rebooking + last minute + recenze slevy', '+ Predplatne / membership', '+ Brandovani booking stranky', '+ Darkove poukazy'],
+        ? ['✅ Všetko z OSVČ (neobmedzene)', '🔜 AI štatistiky + insighty', '🔜 AI detekcia mŕtvych hodín', '🔜 AI detekcia nevracajúcich sa klientov', '🔜 Growth reporty', '🔜 Waitlist', '🔜 QR kódy s tracking', '🔜 Brandovanie booking stránky', '📋 Smart AI asistent (neobmedzene)', '📋 AI Business Coach', '📋 Kampane (5/mes)', '📋 Google recenzie booster', '📋 Smart rebooking', '📋 Zľavové kódy + vernostný program', '📋 Referral program', '📋 Predplatné / membership', '📋 Darčekové poukazy']
+        : ['✅ Vše z OSVČ (neomezeně)', '🔜 AI statistiky + insighty', '🔜 AI detekce mrtvých hodin', '🔜 AI detekce nevracejících se klientů', '🔜 Growth reporty', '🔜 Waitlist', '🔜 QR kódy s tracking', '🔜 Brandování booking stránky', '📋 Smart AI asistent (neomezeně)', '📋 AI Business Coach', '📋 Kampaně (5/měs)', '📋 Google recenze booster', '📋 Smart rebooking', '📋 Slevové kódy + věrnostní program', '📋 Referral program', '📋 Předplatné / membership', '📋 Dárkové poukazy'],
       tiers: [
-        { label: lang === 'en' ? 'With our AI' : 'S nasim AI', price: '799', year: '639', rec: false },
-        { label: lang === 'en' ? 'With your own API key' : lang === 'sk' ? 'S vlastnym API klucom' : 'S vlastnim API klicem', price: '499', year: '399', rec: true, save: '300' },
+        { label: lang === 'en' ? 'With our AI' : 'S naším AI', price: '799', year: '639', rec: false },
+        { label: lang === 'en' ? 'With your own API key' : lang === 'sk' ? 'S vlastným API kľúčom' : 'S vlastním API klíčem', price: '499', year: '399', rec: true, save: '300' },
       ],
       trial: null, free: null, up: 'pro_inspire',
     },
     {
       mode: 'pro_inspire', label: '🏖️✨ Pro Inspire',
-      desc: lang === 'en' ? 'Business + AI & growth - max (owner + up to 24 staff)' : lang === 'sk' ? 'Firma + AI a growth - maximum (majitel + max 24 zamestnancov)' : 'Firma + AI a growth - maximum (majitel + max 24 zamestnancu)',
+      desc: lang === 'en' ? 'Business + AI & growth - max (owner + up to 24 staff)' : lang === 'sk' ? 'Firma + AI a growth - maximum (majiteľ + max 24 zamestnancov)' : 'Firma + AI a growth - maximum (majitel + max 24 zaměstnanců)',
       color: 'from-amber-600 to-yellow-300', border: 'border-yellow-400', bg: 'bg-yellow-50',
       features: lang === 'en'
-        ? ['Everything from Team + Solo Inspire', '+ AI Copilot (advanced)', '+ AI Smart Slot Filler', '+ AI Revenue insights', '+ AI weekly report with recommendations', '+ AI reactivation campaigns', '+ AI pass + discount recommendations', '+ Churn prevention AI', '+ Staff leaderboard', '+ JSON-LD SEO (free slots on Google)', '+ Missed call capture', '+ Unlimited campaigns', '+ Marketplace / directory', '+ Unlimited locations']
+        ? ['✅ Everything from Team + Solo Inspire', '🔜 AI statistics + insights', '🔜 Reports per staff', '🔜 Weekly email report', '📋 AI Copilot (advanced)', '📋 AI Smart Slot Filler', '📋 AI Revenue insights', '📋 AI weekly report with recommendations', '📋 AI reactivation campaigns', '📋 Churn prevention AI', '📋 Staff leaderboard', '📋 JSON-LD SEO (free slots on Google)', '📋 Missed call capture', '📋 Unlimited campaigns', '📋 Marketplace / directory', '📋 Unlimited locations']
         : lang === 'sk'
-        ? ['Vsetko z Firmy + Solo Inspire', '+ AI Copilot (pokrocily)', '+ AI Smart Slot Filler', '+ AI Revenue insighty', '+ AI tyzdenny report s odporucaniami', '+ AI reaktivacne kampane', '+ AI odporucania permanentiek + zliav', '+ Churn prevention AI', '+ Staff leaderboard', '+ JSON-LD SEO (volne sloty na Googli)', '+ Missed call capture', '+ Neobmedzene kampane', '+ Marketplace / directory', '+ Neobmedzene pobocky']
-        : ['Vse z Firmy + Solo Inspire', '+ AI Copilot (pokrocily)', '+ AI Smart Slot Filler', '+ AI Revenue insighty', '+ AI tydenni report s doporucenimi', '+ AI reaktivacni kampane', '+ AI doporuceni permanentek + slev', '+ Churn prevention AI', '+ Staff leaderboard', '+ JSON-LD SEO (volne sloty na Googlu)', '+ Missed call capture', '+ Neomezene kampane', '+ Marketplace / directory', '+ Neomezene pobocky'],
+        ? ['✅ Všetko z Firmy + Solo Inspire', '🔜 AI štatistiky + insighty', '🔜 Reporty per staff', '🔜 Týždenný email report', '📋 AI Copilot (pokročilý)', '📋 AI Smart Slot Filler', '📋 AI Revenue insighty', '📋 AI týždenný report s odporúčaniami', '📋 AI reaktivačné kampane', '📋 Churn prevention AI', '📋 Staff leaderboard', '📋 JSON-LD SEO (voľné sloty na Googli)', '📋 Missed call capture', '📋 Neobmedzené kampane', '📋 Marketplace / directory', '📋 Neobmedzené pobočky']
+        : ['✅ Vše z Firmy + Solo Inspire', '🔜 AI statistiky + insighty', '🔜 Reporty per staff', '🔜 Týdenní email report', '📋 AI Copilot (pokročilý)', '📋 AI Smart Slot Filler', '📋 AI Revenue insighty', '📋 AI týdenní report s doporučeními', '📋 AI reaktivační kampaně', '📋 Churn prevention AI', '📋 Staff leaderboard', '📋 JSON-LD SEO (volné sloty na Googlu)', '📋 Missed call capture', '📋 Neomezené kampaně', '📋 Marketplace / directory', '📋 Neomezené pobočky'],
       tiers: [
-        { label: lang === 'en' ? 'With our AI' : 'S nasim AI', price: '1 999', year: '1 599', rec: false },
-        { label: lang === 'en' ? 'With your own API key' : lang === 'sk' ? 'S vlastnym API klucom' : 'S vlastnim API klicem', price: '1 299', year: '1 039', rec: true, save: '700' },
+        { label: lang === 'en' ? 'With our AI' : 'S naším AI', price: '1 999', year: '1 599', rec: false },
+        { label: lang === 'en' ? 'With your own API key' : lang === 'sk' ? 'S vlastným API kľúčom' : 'S vlastním API klíčem', price: '1 299', year: '1 039', rec: true, save: '700' },
       ],
       trial: null, free: null, up: null,
     },
   ]
-
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
-      if (d && !d.error) setS({ ...EMPTY, ...d })
+      if (d && !d.error) setS({ ...EMPTY, ...d, work_days: d.work_days || DEFAULT_WORK_DAYS })
     }).finally(() => setLoading(false))
 
     fetch('/api/auth/google/status').then(r => r.json()).then(d => {
@@ -325,7 +333,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-6">
-        {/* Zakladni informace */}
+        {/* Základní informace */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">{l.basicInfo}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -425,60 +433,104 @@ export default function SettingsPage() {
             {s.notification_email && s.notify_on_booking && (
               <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2">
                 <p className="text-sm text-green-700 flex items-center gap-2">
-                  <Check className="w-4 h-4" /> {lang === 'en' ? 'Notifications active' : lang === 'sk' ? 'Notifikacie aktivne' : 'Notifikace aktivni'} &rarr; {s.notification_email}
+                  <Check className="w-4 h-4" /> {lang === 'en' ? 'Notifications active' : lang === 'sk' ? 'Notifikácie aktívne' : 'Notifikace aktivní'} &rarr; {s.notification_email}
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Pracovni doba */}
+        {/* Pracovní doba */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{l.workingHours}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.start}</label>
-              <select value={s.work_start} onChange={e => setS({ ...s, work_start: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                {Array.from({ length: 14 }, (_, i) => i + 5).map(h => <option key={h} value={h}>{h}:00</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.end}</label>
-              <select value={s.work_end} onChange={e => setS({ ...s, work_end: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                {Array.from({ length: 14 }, (_, i) => i + 10).map(h => <option key={h} value={h}>{h}:00</option>)}
-              </select>
-            </div>
-            <div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">{l.workingHours}</h2>
+          <p className="text-sm text-gray-500 mb-4">{lang === 'en' ? <>Schedule applies to every week. <strong>Each day can be disabled or set to custom hours.</strong> <em>Set up odd/even weeks and vacation periods — coming soon on Clientoro.pro.</em></> : lang === 'sk' ? <>Rozvrh platí pre každý týždeň. <strong>Každý deň možno vypnúť alebo nastaviť vlastné hodiny.</strong> <em>Nastaviť si lichý/sudý týždeň a obdobie voľna — už čoskoro na Clientoro.pro.</em></> : <>Rozvrh platí pro každý týden. <strong>Každý den lze vypnout nebo nastavit vlastní hodiny.</strong> <em>Nastavit si lichý/sudý týden a období volna — již brzy na Clientoro.pro.</em></>}</p>
+          
+          <div className="space-y-2 mb-4">
+            {(lang === 'en' ? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] : lang === 'sk' ? ['Po','Ut','St','Št','Pi','So','Ne'] : ['Po','Út','St','Čt','Pá','So','Ne']).map((dayName, i) => {
+              const wd = (s.work_days || DEFAULT_WORK_DAYS)[i] || DEFAULT_WORK_DAYS[i]
+              const hours: string[] = []
+              for (let h = 5; h <= 23; h++) {
+                hours.push(`${h.toString().padStart(2, '0')}:00`)
+                hours.push(`${h.toString().padStart(2, '0')}:30`)
+              }
+              return (
+                <div key={i} className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl border transition-all ${wd.enabled ? 'border-emerald-200 bg-emerald-50/50' : 'border-gray-200 bg-gray-50'}`}>
+                  <button
+                    onClick={() => {
+                      const newDays = [...(s.work_days || DEFAULT_WORK_DAYS)]
+                      newDays[i] = { ...newDays[i], enabled: !newDays[i].enabled }
+                      setS({ ...s, work_days: newDays })
+                    }}
+                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 ${wd.enabled ? 'bg-emerald-500' : 'bg-gray-300'}`}>
+                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${wd.enabled ? 'left-5' : 'left-1'}`} />
+                  </button>
+                  <span className={`w-8 text-sm font-bold flex-shrink-0 ${wd.enabled ? 'text-gray-900' : 'text-gray-400'}`}>{dayName}</span>
+                  {wd.enabled ? (
+                    <div className="flex items-center gap-1 sm:gap-2 flex-1">
+                      <select value={wd.start} onChange={e => {
+                        const newDays = [...(s.work_days || DEFAULT_WORK_DAYS)]
+                        newDays[i] = { ...newDays[i], start: e.target.value }
+                        setS({ ...s, work_days: newDays })
+                      }} className="px-1.5 sm:px-2 py-1.5 border border-gray-200 rounded-lg text-xs sm:text-sm bg-white">
+                        {hours.map(h => <option key={h} value={h}>{h}</option>)}
+                      </select>
+                      <span className="text-gray-400 text-xs">—</span>
+                      <select value={wd.end} onChange={e => {
+                        const newDays = [...(s.work_days || DEFAULT_WORK_DAYS)]
+                        newDays[i] = { ...newDays[i], end: e.target.value }
+                        setS({ ...s, work_days: newDays })
+                      }} className="px-1.5 sm:px-2 py-1.5 border border-gray-200 rounded-lg text-xs sm:text-sm bg-white">
+                        {hours.map(h => <option key={h} value={h}>{h}</option>)}
+                      </select>
+                      <div className="hidden sm:block flex-1 mx-2">
+                        <div className="h-2 bg-gray-100 rounded-full relative">
+                          <div className="h-2 bg-emerald-300 rounded-full absolute" style={{
+                            left: `${((parseInt(wd.start) - 5) / 18) * 100}%`,
+                            width: `${Math.max(((parseInt(wd.end) - parseInt(wd.start)) / 18) * 100, 5)}%`
+                          }} />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-gray-400 italic">{lang === 'en' ? 'Closed' : lang === 'sk' ? 'Zatvorené' : 'Zavřeno'}</span>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4 border-t border-gray-200">
+            <div className="flex-1 w-full sm:w-auto">
               <label className="block text-sm font-medium text-gray-700 mb-1">{l.slotDuration}</label>
               <select value={s.slot_duration} onChange={e => setS({ ...s, slot_duration: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                 <option value={15}>15 {l.minutes}</option>
                 <option value={30}>30 {l.minutes}</option>
                 <option value={45}>45 {l.minutes}</option>
                 <option value={60}>60 {l.minutes}</option>
               </select>
             </div>
+            <div className="flex-1 bg-amber-50 rounded-xl p-3 border border-amber-200">
+              <p className="text-xs text-amber-700">💡 {lang === 'en' ? 'Odd/even week — coming soon' : lang === 'sk' ? 'Lichý/sudý týždeň — čoskoro' : 'Lichý/sudý týden — brzy'}</p>
+            </div>
           </div>
         </div>
-
-        {/* Booking stranka */}
+        {/* Booking stránka */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">{l.bookingPage}</h2>
           <div className="flex gap-2">
             <div className="flex-1 flex items-center bg-gray-50 border border-gray-300 rounded-lg px-3">
-              <span className="text-gray-400 text-sm">clientoro.pro/book/</span>
+              <a href={`https://clientoro.pro/book/${s.booking_link}`} target="_blank" className="text-gray-400 text-sm hover:text-blue-600 transition-colors">clientoro.pro/book/</a>
               <input type="text" value={s.booking_link}
                 onChange={e => setS({ ...s, booking_link: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
-                className="flex-1 bg-transparent py-2 px-1 focus:outline-none text-sm" placeholder="salon-krasa" />
+                className="flex-1 bg-transparent py-2 px-1 focus:outline-none text-sm" placeholder="vas-salon" />
             </div>
-            <button onClick={() => { navigator.clipboard.writeText(`clientoro.pro/book/${s.booking_link}`); toast.success(l.copied) }}
+            <button onClick={() => { navigator.clipboard.writeText(`https://clientoro.pro/book/${s.booking_link}`); toast.success(l.copied) }}
               className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">{l.copy}</button>
           </div>
         </div>
 
-        {/* Plany */}
+        {/* Plány */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">{l.yourPlan}</h2>
           <p className="text-sm text-gray-500 mb-6">{l.comparePlans}</p>
@@ -506,11 +558,11 @@ export default function SettingsPage() {
                             <span className={`text-sm font-medium ${tier.rec ? 'text-amber-700' : 'text-gray-600'}`}>
                               {tier.rec ? '⭐ ' : ''}{tier.label}
                             </span>
-                            {(tier as any).save && <span className="ml-2 text-xs text-amber-600">({l.save_amount} {(tier as any).save} Kc{l.perMonth})</span>}
+                            {(tier as any).save && <span className="ml-2 text-xs text-amber-600">({l.save_amount} {(tier as any).save} Kč{l.perMonth})</span>}
                           </div>
-                          <span className={`text-lg font-bold ${tier.rec ? 'text-amber-800' : 'text-gray-900'}`}>{tier.price} Kc{l.perMonth}</span>
+                          <span className={`text-lg font-bold ${tier.rec ? 'text-amber-800' : 'text-gray-900'}`}>{tier.price} Kč{l.perMonth}</span>
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5">{tier.year} Kc{l.perMonth} ({l.yearly})</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{tier.year} Kč{l.perMonth} ({l.yearly})</p>
                       </div>
                     ))}
                   </div>
@@ -526,10 +578,15 @@ export default function SettingsPage() {
                     <div className="mt-2 space-y-1">
                       {c.features.map(f => (
                         <div key={f} className="flex items-start gap-2 text-sm">
-                          <span className="text-green-500 flex-shrink-0 mt-0.5">✓</span>
-                          <span className="text-gray-600">{f}</span>
+                          <span className="flex-shrink-0 mt-0.5">{f.startsWith(String.fromCodePoint(0x2705)) ? "" : f.startsWith(String.fromCodePoint(0x1F51C)) ? "" : ""}</span>
+                          <span className={f.startsWith(String.fromCodePoint(0x2705)) ? "text-gray-900" : f.startsWith(String.fromCodePoint(0x1F51C)) ? "text-amber-600" : "text-gray-400"}>{f}</span>
                         </div>
                       ))}
+                      <div className="mt-2 pt-2 border-t border-gray-100 flex flex-wrap gap-3 text-xs text-gray-400">
+                        <span>✅ = {lang === "en" ? "Available" : "Funguje"}</span>
+                        <span>🔜 = {lang === "en" ? "Coming soon" : "Brzy"}</span>
+                        <span>📋 = {lang === "en" ? "Planned" : lang === "sk" ? "Plánované" : "Plánujeme"}</span>
+                      </div>
                     </div>
                   </details>
                   <div className="flex gap-2 pt-3 border-t border-gray-100">
@@ -550,7 +607,6 @@ export default function SettingsPage() {
             })}
           </div>
         </div>
-
 
         {/* Google Calendar */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -617,7 +673,7 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* Zmena hesla */}
+        {/* Změna hesla */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-1">
             <Lock className="w-5 h-5 text-gray-600" />
@@ -631,7 +687,7 @@ export default function SettingsPage() {
                 <input type={showPasswords ? 'text' : 'password'} value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-16"
-                  placeholder="Min. 6 znaku" minLength={6} />
+                  placeholder="Min. 6 znaků" minLength={6} />
                 <button type="button" onClick={() => setShowPasswords(!showPasswords)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1">
                   {showPasswords ? <><EyeOff className="w-3.5 h-3.5" /> {l.hidePassword}</> : <><Eye className="w-3.5 h-3.5" /> {l.showPassword}</>}
@@ -643,7 +699,7 @@ export default function SettingsPage() {
               <input type={showPasswords ? 'text' : 'password'} value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Zopakujte nove heslo" minLength={6} />
+                placeholder="Zopakujte nové heslo" minLength={6} />
             </div>
             {newPassword && confirmPassword && newPassword !== confirmPassword && (
               <p className="text-xs text-red-500">{l.passwordMismatch}</p>
@@ -657,7 +713,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Nebezpecna zona */}
+        {/* Nebezpečná zóna */}
         <div className="bg-red-50 rounded-xl border border-red-200 p-6">
           <h3 className="text-lg font-bold text-red-800 mb-2">⚠️ {l.dangerZone}</h3>
           <p className="text-sm text-red-600 mb-4">{l.dangerDesc}</p>

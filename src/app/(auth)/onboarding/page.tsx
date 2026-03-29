@@ -7,10 +7,10 @@ import { useToast } from '@/components/Toast'
 import { Building2, Scissors, Clock, PartyPopper, ArrowRight, ArrowLeft, Check, Waves, Loader2 } from 'lucide-react'
 
 const STEPS = [
-  { icon: Building2, label: 'Základní info', color: 'bg-blue-500' },
+  { icon: Building2, label: 'Info', color: 'bg-blue-500' },
   { icon: Scissors, label: 'Služby', color: 'bg-emerald-500' },
-  { icon: Clock, label: 'Pracovní doba', color: 'bg-amber-500' },
-  { icon: PartyPopper, label: 'Hotovo!', color: 'bg-purple-500' },
+  { icon: Clock, label: 'Doba', color: 'bg-amber-500' },
+  { icon: PartyPopper, label: 'Hotovo', color: 'bg-purple-500' },
 ]
 
 interface Category { id: string; name: string; slug: string; icon: string; service_templates: Template[] }
@@ -19,18 +19,11 @@ interface Template { id: string; name: string; duration: number; price: number; 
 export default function OnboardingPage() {
   const [step, setStep] = useState(0)
   const [saving, setSaving] = useState(false)
+  const [maxStep, setMaxStep] = useState(0)
   const router = useRouter()
   const toast = useToast()
 
   const [orgName, setOrgName] = useState('')
-  useEffect(() => {
-    fetch('/api/settings').then(r => r.json()).then(d => {
-      if (d?.name) setOrgName(d.name)
-      if (d?.email) setOrgEmail(d.email)
-      if (d?.phone) setOrgPhone(d.phone)
-      if (d?.address) setOrgAddress(d.address)
-    }).catch(() => {})
-  }, [])
   const [orgIco, setOrgIco] = useState('')
   const [orgDic, setOrgDic] = useState('')
   const [icoLoading, setIcoLoading] = useState(false)
@@ -51,6 +44,26 @@ export default function OnboardingPage() {
   const [workStart, setWorkStart] = useState(8)
   const [workEnd, setWorkEnd] = useState(17)
   const [slotDuration, setSlotDuration] = useState(30)
+
+  // Track max step reached (for clickable navigation)
+  useEffect(() => {
+    if (step > maxStep) setMaxStep(step)
+  }, [step])
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => {
+      if (d?.name) setOrgName(d.name)
+      if (d?.email) setOrgEmail(d.email)
+      if (d?.phone) setOrgPhone(d.phone)
+      if (d?.address) setOrgAddress(d.address)
+    }).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/admin/categories').then(r => r.json()).then(data => {
+      if (Array.isArray(data)) setCategories(data)
+    }).catch(() => {})
+  }, [])
 
   const formatPhone = (val: string) => {
     let digits = val.replace(/[^\d+]/g, '')
@@ -93,12 +106,6 @@ export default function OnboardingPage() {
 
   const bookingSlug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'muj-salon'
 
-  useEffect(() => {
-    fetch('/api/admin/categories').then(r => r.json()).then(data => {
-      if (Array.isArray(data)) setCategories(data)
-    }).catch(() => {})
-  }, [])
-
   const selectedCategoryList = categories.filter(c => selectedCategories.has(c.id))
   const currentCategory = selectedCategoryList[0]
 
@@ -113,6 +120,10 @@ export default function OnboardingPage() {
   const selectAllTemplates = () => {
     const allIds = selectedCategoryList.flatMap(c => c.service_templates.map(t => t.id))
     setSelectedTemplates(new Set(allIds))
+  }
+
+  const goToStep = (targetStep: number) => {
+    if (targetStep <= maxStep) setStep(targetStep)
   }
 
   const saveStep1 = async () => {
@@ -160,7 +171,6 @@ export default function OnboardingPage() {
         body: JSON.stringify({ onboarding_completed: true }),
       })
       if (res.ok) {
-        // Hard refresh — AuthProvider se reinicializuje a načte aktuální data
         window.location.href = '/dashboard'
       } else {
         toast.error('Chyba při dokončení nastavení')
@@ -171,44 +181,64 @@ export default function OnboardingPage() {
       setSaving(false)
     }
   }
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 md:py-12 relative overflow-hidden">
       <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #052e16 0%, #065f46 30%, #059669 50%, #0369a1 75%, #1e3a5f 100%)' }} />
       <div className="absolute top-20 right-20 w-96 h-96 bg-amber-300/10 rounded-full blur-3xl" />
 
       <div className="w-full max-w-lg relative z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 shadow-lg mb-3">
-            <Waves className="w-7 h-7 text-white" />
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 shadow-lg mb-2">
+            <Waves className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Clientoro</h1>
-          <p className="text-white/60 mt-1">Nastavte si svůj účet za 2 minuty</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Clientoro</h1>
+          <p className="text-white/60 mt-1 text-sm">Nastavte si svůj účet za 2 minuty</p>
         </div>
 
-        <div className="flex items-center justify-center gap-2 mb-8">
+        {/* KLIKACÍ KROKY */}
+        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-6">
           {STEPS.map((s, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                i < step ? 'bg-emerald-400 text-white' : i === step ? 'bg-white text-gray-900' : 'bg-white/20 text-white/50'
-              }`}>
-                {i < step ? <Check className="w-4 h-4" /> : i + 1}
-              </div>
-              {i < STEPS.length - 1 && <div className={`w-8 h-0.5 ${i < step ? 'bg-emerald-400' : 'bg-white/20'}`} />}
+            <div key={i} className="flex items-center gap-1 sm:gap-2">
+              <button
+                onClick={() => goToStep(i)}
+                disabled={i > maxStep}
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm font-medium ${
+                  i < step
+                    ? 'bg-emerald-400/90 text-white cursor-pointer hover:bg-emerald-500'
+                    : i === step
+                    ? 'bg-white text-gray-900 shadow-lg'
+                    : i <= maxStep
+                    ? 'bg-white/30 text-white/80 cursor-pointer hover:bg-white/40'
+                    : 'bg-white/10 text-white/30 cursor-not-allowed'
+                }`}
+              >
+                <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold ${
+                  i < step ? 'bg-white/30' : i === step ? 'bg-gray-900 text-white' : 'bg-white/20'
+                }`}>
+                  {i < step ? <Check className="w-3 h-3" /> : i + 1}
+                </span>
+                <span className="hidden sm:inline">{s.label}</span>
+              </button>
+              {i < STEPS.length - 1 && (
+                <div className={`w-4 sm:w-6 h-0.5 rounded ${i < step ? 'bg-emerald-400' : 'bg-white/20'}`} />
+              )}
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-5 sm:p-8 max-h-[75vh] overflow-y-auto">
 
+          {/* STEP 0 — Základní info */}
           {step === 0 && (
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Building2 className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Základní info</h2>
-                  <p className="text-sm text-gray-500">Jak se jmenuje váš salon / firma?</p>
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Základní info</h2>
+                  <p className="text-xs sm:text-sm text-gray-500">Jak se jmenuje váš salon / firma?</p>
                 </div>
               </div>
 
@@ -216,63 +246,74 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Název firmy / salonu *</label>
                   <input type="text" value={orgName} onChange={e => setOrgName(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                     placeholder="Např. Salon Krása" autoFocus />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Obor podnikání * <span className="text-xs text-gray-400 font-normal">(vyberte jeden či více)</span></label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2">
                     {categories.map(cat => (
                       <button key={cat.id} onClick={() => { setSelectedCategories(prev => { const next = new Set(prev); if (next.has(cat.id)) next.delete(cat.id); else next.add(cat.id); return next }) }}
-                        className={`p-3 rounded-xl border-2 text-center transition-all ${
+                        className={`p-2 sm:p-3 rounded-xl border-2 text-center transition-all ${
                           selectedCategories.has(cat.id)
-                            ? 'border-blue-500 bg-blue-50 shadow-sm'
+                            ? 'border-blue-500 bg-blue-50 shadow-md ring-2 ring-blue-200'
                             : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                         }`}>
-                        <span className="text-xl block mb-1">{cat.icon}</span>
-                        <span className="text-xs font-medium text-gray-700 leading-tight block">{cat.name}</span>
+                        <span className="text-lg sm:text-xl block mb-0.5">{cat.icon}</span>
+                        <span className="text-[10px] sm:text-xs font-medium text-gray-700 leading-tight block truncate">{cat.name}</span>
                       </button>
                     ))}
                   </div>
+                  {selectedCategories.size > 0 && (
+                    <p className="text-xs text-blue-600 mt-2 font-medium">
+                      ✓ Vybráno: {selectedCategoryList.map(c => c.name).join(', ')}
+                    </p>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">IČO *</label>
                     <div className="relative">
                       <input type="text" value={orgIco} onChange={e => lookupIco(e.target.value.replace(/\D/g, '').slice(0, 8))}
-                        className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className={`w-full px-3 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${icoValid ? 'border-emerald-400 bg-emerald-50' : 'border-gray-200'}`}
                         placeholder="12345678" maxLength={8} />
-                      {icoLoading && <span className="absolute right-3 top-3 text-xs text-blue-500">Ověřuji...</span>}
+                      {icoLoading && <Loader2 className="absolute right-3 top-3 w-4 h-4 animate-spin text-blue-500" />}
+                      {icoValid && <Check className="absolute right-3 top-3 w-4 h-4 text-emerald-500" />}
                     </div>
                     {icoError && <p className="text-xs text-red-500 mt-1">{icoError}</p>}
                   </div>
                   <div>
-                    <label className="flex items-center gap-2 mt-1">
-                      <input type="checkbox" checked={isDphPayer} onChange={e => { setIsDphPayer(e.target.checked); if (!e.target.checked) setOrgDic('') }} className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
-                      <span className="text-sm font-medium text-gray-700">Jste plátce DPH?</span>
+                    <label className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-medium text-gray-700">DPH</span>
                     </label>
-                    {isDphPayer && <input type="text" value={orgDic} onChange={e => setOrgDic(e.target.value)} className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="CZ12345678" />}
+                    <label className="flex items-center gap-2 px-3 py-2.5 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
+                      <input type="checkbox" checked={isDphPayer} onChange={e => { setIsDphPayer(e.target.checked); if (!e.target.checked) setOrgDic('') }} className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
+                      <span className="text-sm text-gray-600">Plátce DPH</span>
+                    </label>
+                    {isDphPayer && <input type="text" value={orgDic} onChange={e => setOrgDic(e.target.value)} className="w-full mt-2 px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="CZ12345678" />}
                   </div>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Adresa</label>
                   <input type="text" value={orgAddress} onChange={e => setOrgAddress(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                     placeholder="Ulice 123, Praha 1" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+
+                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
                     <input type="tel" value={orgPhone} onChange={e => setOrgPhone(formatPhone(e.target.value))}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                       placeholder="+420 777 123 456" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="email" value={orgEmail} onChange={e => setOrgEmail(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                       placeholder="info@salon.cz" />
                   </div>
                 </div>
@@ -285,47 +326,52 @@ export default function OnboardingPage() {
               </div>
 
               <button onClick={saveStep1} disabled={!orgName || selectedCategories.size === 0 || !icoValid || saving}
-                className="w-full mt-6 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
+                className="w-full mt-5 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
                 style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
-                {saving ? 'Ukládám...' : <>Další krok <ArrowRight className="w-4 h-4" /></>}
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
           )}
 
+          {/* STEP 1 — Služby */}
           {step === 1 && (
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Scissors className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Vaše služby</h2>
-                  <p className="text-sm text-gray-500">Vyberte služby které nabízíte — můžete je později upravit</p>
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Vaše služby</h2>
+                  <p className="text-xs sm:text-sm text-gray-500">Vyberte služby — můžete je později upravit</p>
                 </div>
               </div>
 
-              {currentCategory && currentCategory.service_templates.length > 0 && (
-                <div className="space-y-2 mb-6">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-medium text-gray-700">Doporučené pro {currentCategory.icon} {currentCategory.name}</span>
-                    <button onClick={selectAllTemplates} className="text-xs text-blue-600 hover:underline">Vybrat vše</button>
+              {selectedCategoryList.map(cat => (
+                cat.service_templates.length > 0 && (
+                  <div key={cat.id} className="mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">{cat.icon} {cat.name}</span>
+                      <button onClick={selectAllTemplates} className="text-xs text-blue-600 hover:underline">Vybrat vše</button>
+                    </div>
+                    <div className="space-y-1.5">
+                      {cat.service_templates.map(t => (
+                        <label key={t.id} className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                          selectedTemplates.has(t.id) ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-gray-200 hover:border-gray-300'
+                        }`}>
+                          <input type="checkbox" checked={selectedTemplates.has(t.id)} onChange={() => toggleTemplate(t.id)}
+                            className="w-4 h-4 text-emerald-600 rounded flex-shrink-0" />
+                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: t.color }} />
+                          <div className="flex-1 min-w-0">
+                            <span className="text-xs sm:text-sm font-medium text-gray-900 truncate block">{t.name}</span>
+                          </div>
+                          <span className="text-[10px] sm:text-xs text-gray-400 flex-shrink-0">{t.duration}m</span>
+                          <span className="text-xs sm:text-sm font-bold text-gray-900 flex-shrink-0">{t.price} Kč</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                  {currentCategory.service_templates.map(t => (
-                    <label key={t.id} className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                      selectedTemplates.has(t.id) ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'
-                    }`}>
-                      <input type="checkbox" checked={selectedTemplates.has(t.id)} onChange={() => toggleTemplate(t.id)}
-                        className="w-4 h-4 text-emerald-600 rounded" />
-                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: t.color }} />
-                      <div className="flex-1">
-                        <span className="text-sm font-medium text-gray-900">{t.name}</span>
-                        <span className="text-xs text-gray-500 ml-2">{t.duration} min</span>
-                      </div>
-                      <span className="text-sm font-bold text-gray-900">{t.price} Kč</span>
-                    </label>
-                  ))}
-                </div>
-              )}
+                )
+              ))}
 
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-sm font-medium text-gray-700 mb-3">➕ Přidat vlastní službu</p>
@@ -343,12 +389,12 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <div className="flex gap-3 mt-6">
+              <div className="flex gap-3 mt-5">
                 <button onClick={() => setStep(0)} className="px-4 py-3 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50">
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <button onClick={saveStep2} disabled={selectedTemplates.size === 0 && !customServiceName || saving}
-                  className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
+                  className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
                   style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
                 </button>
@@ -356,19 +402,20 @@ export default function OnboardingPage() {
             </div>
           )}
 
+          {/* STEP 2 — Pracovní doba */}
           {step === 2 && (
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Clock className="w-5 h-5 text-amber-600" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Pracovní doba</h2>
-                  <p className="text-sm text-gray-500">Kdy jste k dispozici?</p>
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Pracovní doba</h2>
+                  <p className="text-xs sm:text-sm text-gray-500">Kdy jste k dispozici?</p>
                 </div>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Začátek dne</label>
                   <div className="flex items-center gap-4">
@@ -387,7 +434,7 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Délka slotu</label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                     {[15, 30, 45, 60, 90, 120].map(d => (
                       <button key={d} onClick={() => setSlotDuration(d)}
                         className={`py-2 rounded-xl text-sm font-medium transition-all ${
@@ -398,12 +445,12 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <div className="flex gap-3 mt-6">
+              <div className="flex gap-3 mt-5">
                 <button onClick={() => setStep(1)} className="px-4 py-3 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50">
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <button onClick={saveStep3} disabled={saving}
-                  className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
+                  className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
                   style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
                 </button>
@@ -411,33 +458,34 @@ export default function OnboardingPage() {
             </div>
           )}
 
+          {/* STEP 3 — Hotovo */}
           {step === 3 && (
             <div className="text-center">
-              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <PartyPopper className="w-8 h-8 text-emerald-600" />
+              <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <PartyPopper className="w-7 h-7 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Vše je připraveno! 🎉</h2>
-              <p className="text-gray-500 mb-6">Váš účet je nastaven. Můžete začít přijímat rezervace.</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Vše je připraveno! 🎉</h2>
+              <p className="text-sm text-gray-500 mb-5">Váš účet je nastaven. Můžete začít přijímat rezervace.</p>
 
-              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200 mb-6">
+              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200 mb-5">
                 <p className="text-sm text-emerald-700 mb-1">Váš booking link:</p>
-                <span className="text-lg font-bold text-emerald-800">clientoro.pro/{bookingSlug}</span>
+                <span className="text-base sm:text-lg font-bold text-emerald-800">clientoro.pro/{bookingSlug}</span>
                 <button onClick={() => { navigator.clipboard.writeText(`clientoro.pro/${bookingSlug}`); toast.success('Zkopírováno!') }}
-                  className="ml-2 text-xs text-emerald-600 hover:underline">📋 Kopírovat</button>
+                  className="ml-2 text-xs text-emerald-600 hover:underline">📋</button>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-6 text-left">
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-5 text-left">
                 <p className="text-sm font-medium text-gray-700 mb-2">✅ Co jsme nastavili:</p>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>🏢 {orgName}</li>
-                  {currentCategory && <li>{currentCategory.icon} {currentCategory.name}</li>}
+                  {selectedCategoryList.map(c => <li key={c.id}>{c.icon} {c.name}</li>)}
                   <li>📋 {selectedTemplates.size} služeb{customServiceName ? ' + 1 vlastní' : ''}</li>
                   <li>🕐 {workStart}:00 - {workEnd}:00, termíny po {slotDuration} min</li>
                 </ul>
               </div>
 
               <button onClick={finishOnboarding} disabled={saving}
-                className="w-full py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
+                className="w-full py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
                 style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Přejít do aplikace <ArrowRight className="w-4 h-4" /></>}
               </button>

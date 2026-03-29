@@ -95,47 +95,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const init = async () => {
       try {
-        const meRes = await fetch('/api/auth/me')
-        if (!meRes.ok) { setLoading(false); return }
-
-        const meData = await meRes.json()
-        setUser({ id: meData.profileId || '', email: meData.email || '' })
-        setRole(meData.role || 'staff')
-
-        // Načti dostupné organizace
-        const orgsRes = await fetch('/api/auth/organizations')
-        if (orgsRes.ok) {
-          const orgsData = await orgsRes.json()
-          setAvailableOrgs(orgsData)
+        const res = await fetch('/api/auth/init')
+        if (!res.ok) {
+          setLoading(false)
+          return
         }
 
-        // Zjisti aktivní org — localStorage nebo default
-        const savedOrgId = typeof window !== 'undefined' ? localStorage.getItem('clientoro_active_org') : null
-        const targetOrgId = savedOrgId || meData.organizationId
+        const data = await res.json()
 
-        if (targetOrgId) {
-          // Přepni na uloženou/default org přes switch-org (ověří přístup)
-          const switchRes = await fetch('/api/auth/switch-org', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ organizationId: targetOrgId }),
-          })
+        setUser(data.user ? { id: data.user.id, email: data.user.email } : null)
+        setRole((data.role as UserRole) || 'staff')
+        setOrganization(data.organization || null)
+        setAvailableOrgs(data.availableOrgs || [])
 
-          if (switchRes.ok) {
-            // Načti settings pro tuto org
-            const orgRes = await fetch('/api/settings')
-            if (orgRes.ok) {
-              const orgData = await orgRes.json()
-              setOrganization(orgData)
-            }
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('clientoro_active_org', targetOrgId)
-            }
-          } else if (meData.organizationId) {
-            // Fallback na default
-            const orgRes = await fetch('/api/settings')
-            if (orgRes.ok) setOrganization(await orgRes.json())
-          }
+        // Uložit aktivní org do cookie
+        if (data.activeOrgId && typeof document !== 'undefined') {
+          document.cookie = `clientoro_active_org=${data.activeOrgId};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`
         }
       } catch (err) {
         console.error('Auth init error:', err)
@@ -149,38 +124,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshOrg = async () => {
     try {
-      const res = await fetch('/api/settings')
+      const res = await fetch('/api/auth/init')
       if (res.ok) {
         const data = await res.json()
-        setOrganization(data)
+        setOrganization(data.organization || null)
+        setAvailableOrgs(data.availableOrgs || [])
       }
     } catch (err) {
-      console.error('Failed to fetch organization:', err)
+      console.error('Failed to refresh org:', err)
     }
   }
 
   const switchOrg = async (orgId: string) => {
     try {
-      const res = await fetch('/api/auth/switch-org', {
+      // 1. Nastav cookie PŘED API voláním
+      document.cookie = `clientoro_active_org=${orgId};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`
+
+      // 2. Zavolej API (nastaví i server-side cookie)
+      await fetch('/api/auth/switch-org', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ organizationId: orgId }),
       })
-      if (!res.ok) return
 
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('clientoro_active_org', orgId)
-      }
-
-      // Reload settings pro novou org
-      const orgRes = await fetch('/api/settings')
-      if (orgRes.ok) {
-        const orgData = await orgRes.json()
-        setOrganization(orgData)
-      }
-
-      // Force reload stránky aby se vše přenačetlo
-      window.location.reload()
+      // 3. Hard reload — AuthProvider se reinicializuje s novou cookie
+      window.location.href = '/dashboard'
     } catch (err) {
       console.error('Switch org error:', err)
     }

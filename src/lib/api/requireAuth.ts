@@ -62,37 +62,66 @@ export async function requireAuth(
       return { authorized: false, userId: user.id, profileId: null, organizationId: null, role: 'staff', error: 'No profile found', status: 403 }
     }
 
-    // 3. Urči roli
+    // 3. Přečti aktivní org z cookie (nastavuje switch-org + AuthProvider)
+    const activeOrgCookie = request.cookies.get('clientoro_active_org')?.value || null
+
+    // 4. Urči roli
     let role: ApiRole = 'staff'
     let organizationId: string | null = null
 
     if (profile.is_superadmin) {
       role = 'superadmin'
-      // Superadmin — získej org z membership nebo headeru
-      const headerOrgId = request.headers.get('x-org-id')
-      if (headerOrgId) {
-        organizationId = headerOrgId
-      } else {
-        const { data: membership } = await supabaseAdmin
-          .from('memberships')
-          .select('organization_id')
-          .eq('user_id', profile.id)
-          .limit(1)
+
+      // Superadmin — priorita: cookie > header > první membership
+      if (activeOrgCookie) {
+        // Ověř že org existuje
+        const { data: org } = await supabaseAdmin
+          .from('organizations')
+          .select('id')
+          .eq('id', activeOrgCookie)
           .single()
-        organizationId = membership?.organization_id || null
+
+        organizationId = org ? activeOrgCookie : null
+      }
+
+      if (!organizationId) {
+        const headerOrgId = request.headers.get('x-org-id')
+        if (headerOrgId) {
+          organizationId = headerOrgId
+        } else {
+          const { data: membership } = await supabaseAdmin
+            .from('memberships')
+            .select('organization_id')
+            .eq('user_id', profile.id)
+            .limit(1)
+            .single()
+          organizationId = membership?.organization_id || null
+        }
       }
     } else {
-      // Normální uživatel — získej membership
-      const { data: membership } = await supabaseAdmin
+      // Normální uživatel — načti všechny memberships
+      const { data: memberships } = await supabaseAdmin
         .from('memberships')
         .select('organization_id, role')
         .eq('user_id', profile.id)
-        .limit(1)
-        .single()
+        .order('created_at')
 
-      if (membership) {
-        organizationId = membership.organization_id
-        role = (membership.role as ApiRole) || 'staff'
+      if (memberships && memberships.length > 0) {
+        // Priorita: cookie > první membership
+        if (activeOrgCookie) {
+          const matchedMembership = memberships.find(m => m.organization_id === activeOrgCookie)
+          if (matchedMembership) {
+            organizationId = matchedMembership.organization_id
+            role = (matchedMembership.role as ApiRole) || 'staff'
+          } else {
+            // Cookie ukazuje na org kde nemá přístup — fallback na první
+            organizationId = memberships[0].organization_id
+            role = (memberships[0].role as ApiRole) || 'staff'
+          }
+        } else {
+          organizationId = memberships[0].organization_id
+          role = (memberships[0].role as ApiRole) || 'staff'
+        }
       }
 
       // Zkontroluj staff.app_role pro manager
@@ -111,7 +140,7 @@ export async function requireAuth(
       }
     }
 
-    // 4. Zkontroluj minimální roli
+    // 5. Zkontroluj minimální roli
     if (ROLE_LEVEL[role] < ROLE_LEVEL[minRole]) {
       return { authorized: false, userId: user.id, profileId: profile.id, organizationId, role, error: 'Insufficient permissions', status: 403 }
     }

@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json(data)
+    return NextResponse.json({ ...data, booking_link: data.slug || '' })
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -36,15 +36,13 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json()
 
-    // Zod validace — flexibilní, propustí neznámá pole
     const validation = validateBody(settingsUpdateSchema, body)
     if (!validation.success) {
       console.warn('[Settings PUT] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
       return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
-    // Povolená pole — pouze tato se mohou aktualizovat
-        const allowedFields = [
+    const allowedFields = [
       'name', 'mode', 'address', 'phone', 'email',
       'website', 'work_start', 'work_end', 'slot_duration',
       'booking_link', 'timezone', 'onboarding_completed',
@@ -52,6 +50,7 @@ export async function PUT(request: NextRequest) {
       'language', 'ico', 'dic',
       'notification_email', 'notify_on_booking', 'notify_on_cancel',
       'reminder_enabled', 'followup_enabled', 'weekly_report_enabled',
+      'work_days',
     ]
 
     const updateData: any = {}
@@ -62,7 +61,6 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    // Auto-generování slugu z názvu (pokud se mění název a slug není explicitně zadán)
     if (updateData.name && !updateData.slug) {
       const newSlug = updateData.name
         .toLowerCase()
@@ -85,14 +83,12 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    // Validace: work_end > work_start
     if (updateData.work_start !== undefined && updateData.work_end !== undefined) {
       if (updateData.work_end <= updateData.work_start) {
         return NextResponse.json({ error: 'Konec pracovní doby musí být po začátku' }, { status: 400 })
       }
     }
 
-    // Validace: slug unikátnost (pokud se mění explicitně)
     if (body.booking_link) {
       const explicitSlug = body.booking_link
         .toLowerCase()
@@ -115,7 +111,6 @@ export async function PUT(request: NextRequest) {
       updateData.slug = explicitSlug
     }
 
-    // Validace: změna módu — kontrola limitů
     if (updateData.mode) {
       const soloModes = ['solo', 'solo_inspire']
       if (soloModes.includes(updateData.mode)) {

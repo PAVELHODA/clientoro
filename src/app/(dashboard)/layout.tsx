@@ -15,9 +15,6 @@ import {
   Menu, X, Loader2, Globe, Bell, ChevronDown, Building2,
 } from 'lucide-react'
 
-// ============================================
-// MODE THEMES
-// ============================================
 const MODE_THEMES: Record<string, {
   label: string; gradient: string; sunGlow: string; text: string; textMuted: string;
   textHover: string; accent: string; activeBg: string; activeBorder: string;
@@ -71,9 +68,6 @@ const MODE_THEMES: Record<string, {
   },
 }
 
-// ============================================
-// NAVIGACE
-// ============================================
 const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any; minRole?: string }[]> = {
   solo: [
     { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard, minRole: 'staff' },
@@ -141,9 +135,6 @@ const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any
   ],
 }
 
-// ============================================
-// Motivational Tips
-// ============================================
 const TIPS: Record<string, string[]> = {
   '/dashboard': [
     'Malé kroky, velké výsledky. Dnes je dobrý den pro růst.',
@@ -263,9 +254,6 @@ function MotivationalTip() {
   )
 }
 
-// ============================================
-// Notification Bell — 60s interval, user-dependent
-// ============================================
 function NotificationBell() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [showPanel, setShowPanel] = useState(false)
@@ -275,9 +263,7 @@ function NotificationBell() {
 
   useEffect(() => {
     if (!user) return
-
     let isMounted = true
-
     const fetchNotifications = async () => {
       try {
         const res = await fetch('/api/notifications')
@@ -288,14 +274,9 @@ function NotificationBell() {
         }
       } catch (e) {}
     }
-
     fetchNotifications()
     intervalRef.current = setInterval(fetchNotifications, 60000)
-
-    return () => {
-      isMounted = false
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
+    return () => { isMounted = false; if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [user?.id])
 
   const markAllRead = async () => {
@@ -343,9 +324,6 @@ function NotificationBell() {
   )
 }
 
-// ============================================
-// DASHBOARD LAYOUT
-// ============================================
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
@@ -379,7 +357,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [orgDropdownOpen, setOrgDropdownOpen] = useState(false)
   const orgDropdownRef = useRef<HTMLDivElement>(null)
 
-  // Zavři dropdown při kliknutí mimo
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (orgDropdownRef.current && !orgDropdownRef.current.contains(e.target as Node)) {
@@ -433,41 +410,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const SidebarContent = () => (
     <>
-      {/* clean sidebar - no light effects */}
-
-
-      <div className="p-5 relative z-10" ref={orgDropdownRef}>
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => availableOrgs.length > 1 ? setOrgDropdownOpen(!orgDropdownOpen) : null}>
-          <div className="w-10 h-10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg"
+      <div className="p-3 md:p-5 relative z-10" ref={orgDropdownRef}>
+        <div className="flex items-center gap-2 md:gap-3 cursor-pointer group" onClick={() => availableOrgs.length > 1 ? setOrgDropdownOpen(!orgDropdownOpen) : null}>
+          <div className="w-8 h-8 md:w-10 md:h-10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg"
             style={{ background: theme.logoBg, border: `1px solid ${theme.logoBorder}` }}>
-            <Waves className="w-5 h-5" style={{ color: theme.text }} />
+            <Waves className="w-4 h-4 md:w-5 md:h-5" style={{ color: theme.text }} />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
-              <h1 className="text-lg font-bold tracking-tight truncate" style={{ color: theme.text }}>{orgName}</h1>
-              {availableOrgs.length > 1 && <ChevronDown className={`w-4 h-4 transition-transform ${orgDropdownOpen ? 'rotate-180' : ''}`} style={{ color: theme.textMuted }} />}
+              <h1 className="text-sm md:text-lg font-bold tracking-tight truncate" style={{ color: theme.text }}>{orgName}</h1>
+              {availableOrgs.length > 1 && <ChevronDown className={`w-3 h-3 md:w-4 md:h-4 transition-transform ${orgDropdownOpen ? 'rotate-180' : ''}`} style={{ color: theme.textMuted }} />}
             </div>
             <div className="flex items-center gap-1.5">
               <Sun className="w-3 h-3" style={{ color: theme.sunIcon }} />
-              <p className="text-xs font-semibold" style={{ color: theme.textMuted }}>{t(theme.label)}</p>
-              {availableOrgs.length > 1 && <span className="text-xs" style={{ color: theme.textMuted }}>· {availableOrgs.length} org</span>}
+              <p className="text-[10px] md:text-xs font-semibold" style={{ color: theme.textMuted }}>{t(theme.label)}</p>
+              {availableOrgs.length > 1 && <span className="text-[10px] md:text-xs" style={{ color: theme.textMuted }}>· {availableOrgs.length} org</span>}
             </div>
           </div>
         </div>
 
-        {/* Org switcher dropdown */}
         {orgDropdownOpen && availableOrgs.length > 1 && (
           <div className="mt-2 rounded-xl overflow-hidden shadow-xl border" style={{ background: 'rgba(0,0,0,0.85)', borderColor: theme.borderColor }}>
             {availableOrgs.map((org: any) => {
               const isActive = org.id === organization?.id
               const modeLabels: Record<string, string> = { solo: 'OSVČ', team: 'Firma', solo_inspire: 'Solo Inspire', pro_inspire: 'Pro Inspire' }
               return (
-                <button
-                  key={org.id}
-                  onClick={() => { if (!isActive) { switchOrg(org.id); setOrgDropdownOpen(false) } }}
+                <button key={org.id} onClick={() => { if (!isActive) { switchOrg(org.id); setOrgDropdownOpen(false) } }}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors ${isActive ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
-                  style={{ background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent' }}
-                >
+                  style={{ background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent' }}>
                   <Building2 className="w-4 h-4 flex-shrink-0" style={{ color: isActive ? theme.accent : 'rgba(255,255,255,0.5)' }} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: isActive ? '#fff' : 'rgba(255,255,255,0.8)' }}>{org.name}</p>
@@ -481,15 +451,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
       </div>
 
-      <div className="mx-4 h-px relative z-10" style={{ background: theme.borderColor }} />
+      <div className="mx-3 md:mx-4 h-px relative z-10" style={{ background: theme.borderColor }} />
 
-      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto relative z-10">
+      <nav className="flex-1 px-2 md:px-3 py-2 md:py-3 space-y-0.5 overflow-y-auto relative z-10">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href || pathname?.startsWith(item.href + '/')
           return (
             <Link key={item.href} href={item.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded-xl transition-all duration-200"
               style={isActive ? {
                 background: theme.activeBg,
                 border: `1px solid ${theme.activeBorder}`,
@@ -500,39 +471,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 color: theme.textMuted,
                 border: '1px solid transparent',
               }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = theme.hoverBg
-                  e.currentTarget.style.color = theme.textHover
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = 'transparent'
-                  e.currentTarget.style.color = theme.textMuted
-                }
-              }}
-            >
-              <Icon className="w-[18px] h-[18px] flex-shrink-0"
+              onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.background = theme.hoverBg; e.currentTarget.style.color = theme.textHover } }}
+              onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = theme.textMuted } }}>
+              <Icon className="w-4 h-4 md:w-[18px] md:h-[18px] flex-shrink-0"
                 style={{ color: isActive ? theme.activeIcon : theme.textMuted }} />
-              <span className="text-sm font-semibold">{t(item.labelKey)}</span>
+              <span className="text-xs md:text-sm font-semibold truncate">{t(item.labelKey)}</span>
               {isActive && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full shadow-sm" style={{ background: theme.dotColor }} />
+                <div className="ml-auto w-1.5 h-1.5 rounded-full shadow-sm flex-shrink-0" style={{ background: theme.dotColor }} />
               )}
             </Link>
           )
         })}
         {isSuperadmin && (
           <Link href="/admin"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 mt-2 border-t border-white/10 pt-3"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded-xl transition-all duration-200 mt-2 border-t border-white/10 pt-3"
             style={pathname === '/admin' ? {
               background: 'rgba(251,191,36,0.25)',
               border: '1px solid rgba(251,191,36,0.4)',
               color: '#fef3c7',
-            } : { color: theme.textMuted }}
-          >
-            <Crown className="w-5 h-5 text-amber-400" />
-            <span className="text-sm font-medium">Superadmin</span>
+            } : { color: theme.textMuted }}>
+            <Crown className="w-4 h-4 md:w-5 md:h-5 text-amber-400" />
+            <span className="text-xs md:text-sm font-medium">Superadmin</span>
           </Link>
         )}
       </nav>
@@ -543,13 +503,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </svg>
       </div>
 
-      <div className="p-3 relative z-10 space-y-1" style={{ borderTop: `1px solid ${theme.borderColor}` }}>
+      <div className="p-2 md:p-3 relative z-10 space-y-1" style={{ borderTop: `1px solid ${theme.borderColor}` }}>
         <div className="flex items-center gap-1 px-2 py-1.5">
-          <Globe className="w-4 h-4 flex-shrink-0" style={{ color: theme.textMuted }} />
+          <Globe className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" style={{ color: theme.textMuted }} />
           <div className="flex gap-0.5 ml-1">
             {[{ code: 'cs', label: 'CZ' }, { code: 'sk', label: 'SK' }, { code: 'en', label: 'EN' }].map((l) => (
               <button key={l.code} onClick={() => setLang(l.code)}
-                className="px-2 py-1 rounded-md text-xs font-bold transition-all"
+                className="px-1.5 md:px-2 py-1 rounded-md text-[10px] md:text-xs font-bold transition-all"
                 style={{
                   background: lang === l.code ? theme.activeBg : 'transparent',
                   color: lang === l.code ? theme.activeText : theme.textMuted,
@@ -562,12 +522,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <button onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full transition-colors"
+          className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded-xl w-full transition-colors"
           style={{ color: theme.textMuted }}
           onMouseEnter={(e) => { e.currentTarget.style.background = theme.hoverBg; e.currentTarget.style.color = theme.textHover }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = theme.textMuted }}>
-          <LogOut className="w-[18px] h-[18px]" />
-          <span className="text-sm font-semibold">{t('logout')}</span>
+          <LogOut className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+          <span className="text-xs md:text-sm font-semibold">{t('logout')}</span>
         </button>
       </div>
     </>
@@ -584,12 +544,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {mobileOpen && (
           <div className="fixed inset-0 z-50 md:hidden">
             <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-            <aside className="absolute left-0 top-0 bottom-0 w-72 flex flex-col overflow-hidden"
+            <aside className="absolute left-0 top-0 bottom-0 w-52 flex flex-col overflow-hidden"
               style={{ background: theme.gradient }}>
               <button onClick={() => setMobileOpen(false)}
-                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-lg flex items-center justify-center"
+                className="absolute top-3 right-3 z-20 w-7 h-7 rounded-lg flex items-center justify-center"
                 style={{ background: theme.hoverBg, color: theme.text }}>
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
               <SidebarContent />
             </aside>
