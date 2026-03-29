@@ -27,6 +27,12 @@ export default function CookieConsent() {
     setVisible(false)
   }
 
+  const declineAll = () => {
+    localStorage.setItem('clientoro_cookie_consent', 'declined')
+    localStorage.setItem('clientoro_cookie_consent_date', new Date().toISOString())
+    setVisible(false)
+  }
+
   if (!visible) return null
 
   return (
@@ -46,13 +52,17 @@ export default function CookieConsent() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+            <button onClick={declineAll}
+              className="px-4 py-2 text-xs text-red-400 hover:text-red-300 rounded-lg border border-red-800 hover:border-red-600 transition-colors">
+              Odmítnout vše
+            </button>
             <button onClick={acceptNecessary}
-              className="flex-1 sm:flex-none px-4 py-2 text-xs text-gray-400 hover:text-white rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
+              className="px-4 py-2 text-xs text-gray-400 hover:text-white rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
               Pouze nezbytné
             </button>
             <button onClick={acceptAll}
-              className="flex-1 sm:flex-none px-4 py-2 text-xs text-white font-semibold rounded-lg shadow-md transition-colors"
+              className="px-4 py-2 text-xs text-white font-semibold rounded-lg shadow-md transition-colors"
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               Přijmout vše
             </button>
