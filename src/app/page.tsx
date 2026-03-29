@@ -335,7 +335,7 @@ export default function LandingPage() {
               <div key={p.key} className={`rounded-2xl border-2 p-4 sm:p-5 relative ${p.color} ${p.popular ? 'ring-2 ring-blue-500 lg:scale-105' : ''}`}>
                 {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full whitespace-nowrap">{t('land_price_popular')}</div>}
                 <div className="text-center mb-3 sm:mb-4">
-                  <ClientoroLogo size={40} />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto" style={{ background: p.key === 'solo' ? 'linear-gradient(135deg, #0d9488, #06b6d4)' : p.key === 'team' ? 'linear-gradient(135deg, #2563eb, #0ea5e9)' : p.key === 'inspire' ? 'linear-gradient(135deg, #c2410c, #ea580c)' : 'linear-gradient(135deg, #7c2d12, #9a3412)' }}><Waves className="w-5 h-5 text-white" /></div>
                   <h3 className="text-sm sm:text-lg font-bold text-gray-900 mt-1 leading-tight">{t(`land_plan_${p.key}`)}</h3>
                   <p className="text-xs text-gray-500 hidden sm:block">{t(`land_plan_${p.key}_desc`)}</p>
                 </div>
