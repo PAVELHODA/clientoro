@@ -156,22 +156,6 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-
-      {/* HERO */}
-      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-20" style={{ background: 'linear-gradient(135deg, #f8fafc, #ecfdf5, #f0f9ff)' }}>
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm sm:text-base font-semibold mb-6">
-            <Zap className="w-3 h-3" /> {t('land_hero_badge')}
-          </div>
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
-          <div className="grid grid-cols-2 gap-3 mb-6 sm:mb-8 max-w-lg mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<div key={i} className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-3 text-center"><Check className="w-4 h-4 text-amber-500 mx-auto mb-1" /><span className="text-xs sm:text-sm text-gray-600 font-medium">{b.replace(/^\+ /, '')}</span></div>))}</div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><span className="text-amber-400">{t('land_hero_cta')}</span> <ArrowRight className="w-5 h-5" /></a>
-            <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-medium text-center shadow-lg" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta2')}</a>
-          </div>
-        </div>
-      </section>
-
       {/* SEGMENTS */}
       <section id="segments" className="py-16 sm:py-20">
         <div className="max-w-4xl mx-auto px-4">
@@ -211,6 +195,22 @@ export default function LandingPage() {
             </div>
             </>
           )}
+        </div>
+      </section>
+
+
+      {/* HERO */}
+      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-20" style={{ background: 'linear-gradient(135deg, #f8fafc, #ecfdf5, #f0f9ff)' }}>
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm sm:text-base font-semibold mb-6">
+            <Zap className="w-3 h-3" /> {t('land_hero_badge')}
+          </div>
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 sm:mb-6 px-2">{t('land_hero_title')}</h1>
+          <div className="grid grid-cols-2 gap-3 mb-6 sm:mb-8 max-w-lg mx-auto px-4">{t('land_hero_desc').split(' · ').map((b: string, i: number) => (<div key={i} className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-3 text-center"><Check className="w-4 h-4 text-amber-500 mx-auto mb-1" /><span className="text-xs sm:text-sm text-gray-600 font-medium">{b.replace(/^\+ /, '')}</span></div>))}</div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <a href="/register" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><span className="text-amber-400">{t('land_hero_cta')}</span> <ArrowRight className="w-5 h-5" /></a>
+            <a href="#features" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-white rounded-xl font-medium text-center shadow-lg" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_hero_cta2')}</a>
+          </div>
         </div>
       </section>
 
