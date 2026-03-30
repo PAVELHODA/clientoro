@@ -485,3 +485,23 @@ export async function sendSuperadminCronSummary({
     }),
   })
 }
+
+
+// ===== ADMIN NOTIFIKACE =====
+export async function sendAdminNotification({ subject, body }: { subject: string; body: string }) {
+  try {
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Clientoro <noreply@clientoro.pro>',
+      to: 'clientoro.app@gmail.com',
+      subject: '[Clientoro Admin] ' + subject,
+      html: emailTemplate({
+        title: subject,
+        body: '<p>' + body.replace(/,\s/g, '</p><p>') + '</p>',
+        orgName: 'Clientoro Admin',
+      }),
+    })
+    console.log('[Admin notification sent]', subject)
+  } catch (err) {
+    console.error('[Admin notification failed]', err)
+  }
+}

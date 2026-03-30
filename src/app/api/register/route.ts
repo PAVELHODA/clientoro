@@ -1,7 +1,7 @@
 ﻿﻿// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
-import { sendWelcomeEmail } from '@/lib/email'
+import { sendWelcomeEmail, sendAdminNotification } from '@/lib/email'
 import { z } from 'zod'
 import { validateBody } from '@/lib/validations'
 
@@ -129,6 +129,12 @@ export async function POST(request: NextRequest) {
     } catch (notifErr) {
       console.error('Notification error:', notifErr)
     }
+
+    // Odeslat email superadminovi
+    sendAdminNotification({
+      subject: 'Nová organizace: ' + (businessName || 'Neznámá'),
+      body: 'Email: ' + email + ', Mód: ' + (mode || 'solo') + ', Slug: ' + slug,
+    }).catch(err => console.error('[Admin notification email failed]', err))
 
     // Odeslat welcome email s booking linkem
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
