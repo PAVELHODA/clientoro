@@ -676,7 +676,7 @@ export default function SettingsPage() {
         {/* Změna hesla */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-1">
-            <Lock className="w-5 h-5 text-gray-600" />
+            <Eye className="w-5 h-5 text-gray-600" />
             <h3 className="text-lg font-semibold text-gray-900">{l.changePassword}</h3>
           </div>
           <p className="text-sm text-gray-500 mb-4">{l.changePasswordDesc}</p>
@@ -686,7 +686,7 @@ export default function SettingsPage() {
               <div className="relative">
                 <input type={showPasswords ? 'text' : 'password'} value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-16"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-24"
                   placeholder="Min. 6 znaků" minLength={6} />
                 <button type="button" onClick={() => setShowPasswords(!showPasswords)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1">
