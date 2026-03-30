@@ -184,7 +184,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 md:py-12 relative overflow-hidden">
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #052e16 0%, #065f46 30%, #059669 50%, #0369a1 75%, #1e3a5f 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0c2d48 40%, #0f6b7a 70%, #0e9aa7 100%)' }} />
       <div className="absolute top-20 right-20 w-96 h-96 bg-amber-300/10 rounded-full blur-3xl" />
 
       <div className="w-full max-w-lg relative z-10">

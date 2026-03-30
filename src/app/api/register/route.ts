@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
           organization_id: orgData.id,
           type: 'new_organization',
           channel: 'system',
-          recipient: 'admin@clientoro.pro',
+          recipient: 'clientoro.app@gmail.com',
           subject: 'Nová organizace: ' + businessName,
           body: 'Email: ' + email + ', Mód: ' + (mode || 'solo') + ', Slug: ' + slug,
           status: 'pending',
