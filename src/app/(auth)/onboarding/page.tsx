@@ -389,6 +389,11 @@ export default function OnboardingPage() {
                       {[15,30,45,60,75,90,120,150,180].map(d => <option key={d} value={d}>{d} min</option>)}
                     </select>
                   </div>
+                  {customServiceName && customServicePrice && (
+                    <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700 text-center">
+                      ✓ {customServiceName} — {customServicePrice} Kč / {customServiceDuration} min bude přidána
+                    </div>
+                  )}
                 </div>
               </div>
 
