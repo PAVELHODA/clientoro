@@ -341,7 +341,7 @@ export default function LandingPage() {
       <section className="py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{lang === 'en' ? 'How to get more' : lang === 'sk' ? 'Ako získať viac' : 'Jak získat více'}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{lang === 'en' ? 'How to do it smarter' : lang === 'sk' ? 'Ako na to chytrejšie' : 'Jak na to chytřeji'}</h2>
             <p className="text-gray-500 text-sm sm:text-base">{lang === 'en' ? 'Tools that help you earn more and lose less.' : lang === 'sk' ? 'Nástroje, ktoré vám pomôžu zarobiť viac a stratiť menej.' : 'Nástroje, které vám pomůžou vydělat víc a ztratit míň.'}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
