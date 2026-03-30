@@ -49,9 +49,9 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
     en: ['Initial examination', 'Manual therapy', 'Rehabilitation', 'Electrotherapy', 'Taping', 'Exercise with therapist'],
   },
   fitness: {
-    cs: ['Osobní trénink', 'Skupinový trénink', 'Výživové poradenství', 'Diagnostika', 'Funkční trénink', 'Strečink'],
-    sk: ['Osobný tréning', 'Skupinový tréning', 'Výživové poradenstvo', 'Diagnostika', 'Funkčný tréning', 'Strečing'],
-    en: ['Personal training', 'Group training', 'Nutrition consulting', 'Diagnostics', 'Functional training', 'Stretching'],
+    cs: ['Osobní trénink', 'Skupinový trénink', 'Jóga', 'Pilates', 'Výživové poradenství', 'Funkční trénink', 'Strečink'],
+    sk: ['Osobný tréning', 'Skupinový tréning', 'Jóga', 'Pilates', 'Výživové poradenstvo', 'Funkčný tréning', 'Strečing'],
+    en: ['Personal training', 'Group training', 'Yoga', 'Pilates', 'Nutrition consulting', 'Functional training', 'Stretching'],
   },
   psych: {
     cs: ['Individuální terapie', 'Párová terapie', 'Koučink', 'Krizová intervence', 'Mentoring', 'Diagnostika'],
