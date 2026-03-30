@@ -49,9 +49,9 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
     en: ['Initial examination', 'Manual therapy', 'Rehabilitation', 'Electrotherapy', 'Taping', 'Exercise with therapist'],
   },
   fitness: {
-    cs: ['Osobní trénink', 'Skupinový trénink', 'Jóga', 'Pilates', 'Výživové poradenství', 'Funkční trénink', 'Strečink'],
-    sk: ['Osobný tréning', 'Skupinový tréning', 'Jóga', 'Pilates', 'Výživové poradenstvo', 'Funkčný tréning', 'Strečing'],
-    en: ['Personal training', 'Group training', 'Yoga', 'Pilates', 'Nutrition consulting', 'Functional training', 'Stretching'],
+    cs: ['Osobní trénink', 'Skupinový trénink', 'Jóga', 'Pilates', 'Funkční trénink', 'Strečink', 'Spinning'],
+    sk: ['Osobný tréning', 'Skupinový tréning', 'Jóga', 'Pilates', 'Funkčný tréning', 'Strečing', 'Spinning'],
+    en: ['Personal training', 'Group training', 'Yoga', 'Pilates', 'Functional training', 'Stretching', 'Spinning'],
   },
   psych: {
     cs: ['Individuální terapie', 'Párová terapie', 'Koučink', 'Krizová intervence', 'Mentoring', 'Diagnostika'],
@@ -74,9 +74,9 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
     en: ['Tutoring', 'Language course', 'Music lesson', 'Workshop', 'Exam preparation', 'Online lesson'],
   },
   exp: {
-    cs: ['Rodinný zážitek', 'Školní výlet', 'Teambuilding', 'Farma', 'Výlet do přírody', 'Terapie zvířaty'],
-    sk: ['Rodinný zážitok', 'Školský výlet', 'Teambuilding', 'Farma', 'Výlet do prírody', 'Terapia zvieratami'],
-    en: ['Family experience', 'School trip', 'Team building', 'Farm visit', 'Nature trip', 'Animal therapy'],
+    cs: ['Hipoterapie', 'Oslí stezka', 'Farma zážitky', 'Teambuilding', 'Školní výlet', 'Kreativní workshop', 'Úniková hra', 'Degustace'],
+    sk: ['Hipoterapia', 'Oslí chodník', 'Farma zážitky', 'Teambuilding', 'Školský výlet', 'Kreatívny workshop', 'Úniková hra', 'Degustácia'],
+    en: ['Horse therapy', 'Donkey trail', 'Farm experience', 'Team building', 'School trip', 'Creative workshop', 'Escape room', 'Tasting'],
   },
 }
 
