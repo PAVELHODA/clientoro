@@ -111,11 +111,11 @@ export default function LandingPage() {
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
 
   return (
-    <div className="min-h-screen bg-white max-w-5xl mx-auto shadow-sm">
+    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4">
 
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-2 sm:py-3">
+        <div className="max-w-4xl mx-auto px-4 py-2 sm:py-3">
           {/* Radek 1: Logo + vlajky (mobil) | Logo + menu + vlajky + login + register (desktop) */}
           <div className="flex items-center justify-between">
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer">
@@ -148,7 +148,7 @@ export default function LandingPage() {
       {/* BANNER 2026 */}
       <div className="pt-[140px] sm:pt-[64px]">
         <div className="w-full bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200">
-          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
+          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
             <span className="text-amber-600 text-base">🚧</span>
             <p className="text-xs sm:text-sm text-amber-800 font-medium text-center">
               {lang === 'en' ? 'Platform is in active development. Full launch in 2026.' : lang === 'sk' ? 'Platforma je v aktívnom vývoji. Plný prevoz spustíme v priebehu roka 2026.' : 'Platforma je v aktivním vývoji. Plný provoz spustíme v průběhu roku 2026.'}
@@ -229,7 +229,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* FEATURES */}
-      <section id="features" className="py-12 sm:py-16">
+      <section id="features" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.03), rgba(15,107,122,0.03))' }}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{lang === 'en' ? 'What you get' : lang === 'sk' ? 'Čo dostanete' : 'Co dostanete'}</h2>
@@ -409,7 +409,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* FAQ */}
-      <section id="faq" className="py-12 sm:py-16 bg-gray-50">
+      <section id="faq" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.03), rgba(15,107,122,0.03))' }}>
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-10">{t('land_faq_title')}</h2>
           <div className="space-y-3">
