@@ -120,7 +120,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-between">
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer">
               <ClientoroLogo size={32} />
-              <span className="text-xl font-bold text-gray-900">Clientoro</span>
+              <span className="text-2xl font-bold text-gray-900">Clientoro</span>
             </button>
             <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
               <a href="#segments" className="hover:text-gray-900">{t('land_nav_segments')}</a>
