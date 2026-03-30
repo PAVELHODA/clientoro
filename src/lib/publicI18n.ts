@@ -193,7 +193,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_ai_note: 'Všechny AI funkce mají přepínač ZAP/VYP. Rozhodujete vy.',
 
     // Landing — onboarding
-    land_onboard_title: 'Připraveni za 5 minut',
+    land_onboard_title: 'Připraveno za 5 minut',
     land_onboard_desc: 'Nemáte žádné technické znalosti? Průvodce vás provede krok za krokem.',
     land_onboard_1: 'Vytvořte účet',
     land_onboard_1_desc: '30 sekund, bez karty',
@@ -483,7 +483,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_ai_note: 'Všetky AI funkcie majú prepínač ZAP/VYP. Rozhodujete vy.',
 
     // Landing — onboarding
-    land_onboard_title: 'Pripravení za 5 minút',
+    land_onboard_title: 'Pripravené za 5 minút',
     land_onboard_desc: 'Nemáte žiadne technické znalosti? Sprievodca vás prevedie krok za krokom.',
     land_onboard_1: 'Vytvorte účet',
     land_onboard_1_desc: '30 sekúnd, bez karty',

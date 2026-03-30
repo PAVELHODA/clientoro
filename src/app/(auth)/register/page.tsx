@@ -208,7 +208,7 @@ export default function RegisterPage() {
               {/* Typ podnikání */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_type')}</label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button type="button" onClick={() => setMode('solo')}
                     className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
                       mode === 'solo' ? 'text-white shadow-md' : 'border-gray-200 text-gray-500 hover:border-gray-300'
