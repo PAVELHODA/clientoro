@@ -165,10 +165,10 @@ export default function LandingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-amber-300 rounded-full text-sm sm:text-base font-semibold mb-4">
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl text-white leading-tight mb-4 px-2">
-            <span className="font-bold">{lang === 'en' ? 'Smart calendar' : lang === 'sk' ? 'Chytrý kalendár' : 'Chytrý kalendář'}</span>
+          <h1 className="text-xl sm:text-2xl md:text-3xl text-white/60 leading-tight mb-4 px-2">
+            <span className="font-bold text-white">{lang === 'en' ? 'Smart calendar' : lang === 'sk' ? 'Chytrý kalendár' : 'Chytrý kalendář'}</span>
             {lang === 'en' ? ', which helps ' : lang === 'sk' ? ', ktorý pomáha ' : ', který pomáhá '}
-            <span className="font-bold text-amber-400">{lang === 'en' ? 'fill appointments and win new clients' : lang === 'sk' ? 'zaplniť termíny a získať nových klientov' : 'zaplnit termíny a získat nové klienty'}</span>.
+            <span className="font-bold text-white">{lang === 'en' ? 'fill appointments and win new clients' : lang === 'sk' ? 'zaplniť termíny a získať nových klientov' : 'zaplnit termíny a získat nové klienty'}</span>.
           </h1>
           <div className="grid grid-cols-2 gap-3 mb-6 max-w-md mx-auto px-4">
             {(lang === 'en' ? ['Fair pricing, no commissions', 'No hidden fees', '14 days free', 'Cancel anytime'] : lang === 'sk' ? ['Férový cenník bez provízií', 'Žiadne skryté poplatky', '14 dní zadarmo', 'Zrušíte kedykoľvek'] : ['Férový ceník bez provizí', 'Žádné skryté poplatky', '14 dní zdarma', 'Zrušíte kdykoliv']).map((b, i) => (
