@@ -238,7 +238,7 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {FEATURE_KEYS.map(f => (
               <div key={f.key} className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 hover:shadow-lg transition-all">
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-3 sm:mb-4 shadow-md`}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-3 sm:mb-4 shadow-md mx-auto`}>
                   <f.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t(`land_feat_${f.prefix}_title`)}</h3>
