@@ -6,7 +6,7 @@ import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Ch
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 import ClientoroLogo from '@/components/ClientoroLogo'
 
-const flags: Record<PublicLang, string> = { cs: '🇨🇿', sk: '🇸🇰', en: '🇬🇧' }
+const flags: Record<PublicLang, string> = { cs: '🇨🇿', en: '🇬🇧', sk: '🇸🇰' }
 
 const SEGMENT_ICONS: Record<string, any> = {
   scissors: Scissors, sparkles: Sparkles, gem: Gem, heartPulse: HeartPulse,
