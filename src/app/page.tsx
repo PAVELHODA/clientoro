@@ -184,7 +184,7 @@ export default function LandingPage() {
       {/* DIVIDER */}
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
       {/* SEGMENTS */}
-      <section id="segments" className="py-12 sm:py-16">
+      <section id="segments" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.03), rgba(15,107,122,0.03))' }}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_segments_title')}</h2>
@@ -315,7 +315,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* CALCULATOR */}
-      <section id="calculator" className="py-12 sm:py-16">
+      <section id="calculator" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.03), rgba(15,107,122,0.03))' }}>
         <div className="max-w-xl mx-auto px-4">
           <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_calc_title')}</h2>
@@ -368,7 +368,7 @@ export default function LandingPage() {
       {/* DIVIDER */}
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
       {/* PRICING */}
-      <section id="pricing" className="py-12 sm:py-16">
+      <section id="pricing" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.03), rgba(15,107,122,0.03))' }}>
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_pricing_title')}</h2>
