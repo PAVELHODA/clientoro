@@ -147,6 +147,7 @@ export default function LandingPage() {
           {/* Radek 2+3: Prihlasit se + Zacit zdarma (jen mobil) */}
           <div className="flex flex-col gap-2 mt-2 md:hidden">
             <a href="/login" className="w-full py-2.5 text-center text-sm text-gray-700 font-medium border border-gray-200 rounded-lg hover:bg-gray-50">{t('land_nav_login')}</a>
+            <a href="/register" className="w-full py-2.5 text-center text-sm font-semibold rounded-lg shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#f59e0b' }}>{t('land_nav_register')}</a>
           </div>
         </div>
       </nav>
