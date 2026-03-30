@@ -1,4 +1,4 @@
-﻿// PATH: src/components/CookieConsent.tsx
+// PATH: src/components/CookieConsent.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -53,10 +53,6 @@ export default function CookieConsent() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full sm:w-auto">
-            <button onClick={declineAll}
-              className="px-4 py-2 text-xs text-amber-400 hover:text-amber-300 rounded-lg border border-amber-700 hover:border-amber-500 transition-colors">
-              Odmítnout vše
-            </button>
             <button onClick={acceptNecessary}
               className="px-4 py-2 text-xs text-green-600 hover:text-green-500 rounded-lg border border-green-800 hover:border-green-600 transition-colors font-medium">
               Pouze nezbytné
@@ -65,6 +61,10 @@ export default function CookieConsent() {
               className="px-4 py-2 text-xs text-white font-semibold rounded-lg shadow-md transition-colors"
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               Přijmout vše
+            </button>
+            <button onClick={declineAll}
+              className="px-4 py-2 text-xs text-amber-400 hover:text-amber-300 rounded-lg border border-amber-700 hover:border-amber-500 transition-colors">
+              Odmítnout vše
             </button>
           </div>
         </div>
