@@ -325,9 +325,9 @@ export default function OnboardingPage() {
                 )}
               </div>
 
-              <button onClick={saveStep1} disabled={!orgName || selectedCategories.size === 0 || !icoValid || saving}
+              <button onClick={saveStep1} disabled={!orgName || selectedCategories.size === 0 || (orgIco.length > 0 && !icoValid) || saving}
                 className="w-full mt-5 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
-                style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
+                style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
@@ -395,7 +395,7 @@ export default function OnboardingPage() {
                 </button>
                 <button onClick={saveStep2} disabled={selectedTemplates.size === 0 && !customServiceName || saving}
                   className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
-                  style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
+                  style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
                 </button>
               </div>
@@ -451,7 +451,7 @@ export default function OnboardingPage() {
                 </button>
                 <button onClick={saveStep3} disabled={saving}
                   className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
-                  style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
+                  style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
                 </button>
               </div>
@@ -486,7 +486,7 @@ export default function OnboardingPage() {
 
               <button onClick={finishOnboarding} disabled={saving}
                 className="w-full py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
-                style={{ background: 'linear-gradient(135deg, #052e16, #0369a1)' }}>
+                style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Přejít do aplikace <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
