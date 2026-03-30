@@ -24,6 +24,7 @@ const SEGMENT_KEYS = [
   { icon: 'messageSquare', key: 'tattoo' },
   { icon: 'pawPrint', key: 'pets' },
   { icon: 'graduationCap', key: 'edu' },
+  { icon: 'sparkles', key: 'exp' },
 ]
 
 const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
@@ -71,6 +72,11 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
     cs: ['Doučování', 'Jazykový kurz', 'Hudební lekce', 'Workshop', 'Příprava na zkoušky', 'Online lekce'],
     sk: ['Doučovanie', 'Jazykový kurz', 'Hudobná lekcia', 'Workshop', 'Príprava na skúšky', 'Online lekcia'],
     en: ['Tutoring', 'Language course', 'Music lesson', 'Workshop', 'Exam preparation', 'Online lesson'],
+  },
+  exp: {
+    cs: ['Rodinný zážitek', 'Školní výlet', 'Teambuilding', 'Farma', 'Výlet do přírody', 'Terapie zvířaty'],
+    sk: ['Rodinný zážitok', 'Školský výlet', 'Teambuilding', 'Farma', 'Výlet do prírody', 'Terapia zvieratami'],
+    en: ['Family experience', 'School trip', 'Team building', 'Farm visit', 'Nature trip', 'Animal therapy'],
   },
 }
 
