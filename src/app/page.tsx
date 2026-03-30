@@ -84,8 +84,8 @@ const FEATURE_KEYS = [
 const PRICING_DATA = [
   { key: 'solo', icon: '●', color: 'border-teal-300 bg-teal-50', price: '49', priceAi: '99', trial: true, gradient: 'linear-gradient(135deg, #0d9488, #06b6d4)' },
   { key: 'team', icon: '●●', color: 'border-blue-300 bg-blue-50', price: '299', priceAi: '499', trial: false, popular: true, gradient: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' },
-  { key: 'inspire', icon: '◆', color: 'border-amber-300 bg-amber-50', price: '499', priceAi: '799', trial: false, gradient: 'linear-gradient(135deg, #c2410c, #ea580c)' },
-  { key: 'pro', icon: '◆◆', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 999', trial: false, gradient: 'linear-gradient(135deg, #7c2d12, #9a3412)' },
+  { key: 'inspire', icon: '●', color: 'border-amber-300 bg-amber-50', price: '499', priceAi: '799', trial: false, gradient: 'linear-gradient(135deg, #d97706, #f59e0b)' },
+  { key: 'pro', icon: '●', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 999', trial: false, gradient: 'linear-gradient(135deg, #92400e, #b45309)' },
 ]
 
 export default function LandingPage() {
