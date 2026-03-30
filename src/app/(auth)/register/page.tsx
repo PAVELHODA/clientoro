@@ -241,7 +241,7 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_password')}</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  {showPassword ? <Eye className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" /> : <EyeOff className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />}
                   <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
                     className="w-full pl-10 pr-20 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
                     placeholder={t('register_password_placeholder')} minLength={6} required />
