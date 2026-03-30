@@ -535,7 +535,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <LangContext.Provider value={{ lang, setLang, t, modeGradient: theme.gradient, modeText: theme.text }}>
-      <div className="flex h-screen bg-gray-50 md:bg-gray-50" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.12), rgba(15,107,122,0.08))' }}>
+      <div className="flex h-screen md:bg-gray-50" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48, #0f6b7a)' }}>
         <aside className="hidden md:flex w-64 flex-col relative overflow-hidden flex-shrink-0"
           style={{ background: theme.gradient }}>
           <SidebarContent />

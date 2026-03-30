@@ -386,7 +386,7 @@ export default function OnboardingPage() {
                       className="px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Cena (Kč)" />
                     <select value={customServiceDuration} onChange={e => setCustomServiceDuration(e.target.value)}
                       className="px-3 py-2 border border-gray-200 rounded-xl text-sm">
-                      {[15,30,45,60,75,90,120,150,180].map(d => <option key={d} value={d}>{d} min</option>)}
+                      {[15,30,45,60,75,90,120,150,180,240,300,360,480].map(d => <option key={d} value={d}>{d >= 480 ? (d/60) + ' hod (celý den)' : d >= 240 ? (d/60) + ' hod (půl dne)' : d >= 60 ? (d/60) + ' hod' : d + ' min'}</option>)}
                     </select>
                   </div>
                   {customServiceName && customServicePrice && (
