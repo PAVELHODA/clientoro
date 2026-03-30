@@ -51,6 +51,9 @@ export default function OnboardingPage() {
   }, [step])
 
   useEffect(() => {
+    fetch('/api/auth/me').then(r => r.json()).then(d => {
+      if (d?.email && !orgEmail) setOrgEmail(d.email)
+    }).catch(() => {})
     fetch('/api/settings').then(r => r.json()).then(d => {
       if (d?.name) setOrgName(d.name)
       if (d?.email) setOrgEmail(d.email)
