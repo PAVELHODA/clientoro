@@ -182,7 +182,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — AI section
     land_ai_badge: 'AI, které pracuje za vás',
-    land_ai_title: 'AI, které pracuje za vás',
+    land_ai_title: 'AI, která pracuje za vás',
     land_ai_desc: 'AI analyzuje vaše data a navrhuje konkrétní kroky. Žádný chatbot — reálné insighty.',
     land_ai_1_title: 'Detekce potenciálních hodin',
     land_ai_1_desc: 'AI najde hodiny kdy nemáte klienty a navrhne jak je zaplnit',
@@ -472,7 +472,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
 
     // Landing — AI section
     land_ai_badge: 'AI, ktoré pracuje za vás',
-    land_ai_title: 'AI, ktoré pracuje za vás',
+    land_ai_title: 'AI, ktorá pracuje za vás',
     land_ai_desc: 'AI analyzuje vaše dáta a navrhuje konkrétne kroky. Žiadny chatbot — reálne insighty.',
     land_ai_1_title: 'Detekcia potenciálnych hodín',
     land_ai_1_desc: 'AI nájde hodiny kedy nemáte klientov a navrhne ako ich zaplniť',
