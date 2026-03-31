@@ -339,7 +339,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* DEPOSITS & CASH */}
-      <section className="py-12 sm:py-16">
+      <section className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{lang === 'en' ? 'How to do it smarter' : lang === 'sk' ? 'Ako na to chytrejšie' : 'Jak na to chytřeji'}</h2>
@@ -369,11 +369,11 @@ export default function LandingPage() {
       {/* DIVIDER */}
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
       {/* PRICING */}
-      <section id="pricing" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.03), rgba(15,107,122,0.03))' }}>
+      <section id="pricing" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_pricing_title')}</h2>
-            <p className="text-gray-500 text-sm sm:text-base">{t('land_pricing_desc')}</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">{t('land_pricing_title')}</h2>
+            <p className="text-white/60 text-sm sm:text-base">{t('land_pricing_desc')}</p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {PRICING_DATA.map(p => (
