@@ -535,7 +535,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <LangContext.Provider value={{ lang, setLang, t, modeGradient: theme.gradient, modeText: theme.text }}>
-      <div className="flex h-screen md:bg-gray-50" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48, #0f6b7a)' }}>
+      <div className="flex h-screen md:bg-gray-50 p-1 sm:p-2" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48, #0f6b7a)' }}>
+        <div className="flex flex-1 rounded-xl sm:rounded-2xl overflow-hidden border border-white/20 md:border-[#0f6b7a]/30">
         <aside className="hidden md:flex w-64 flex-col relative overflow-hidden flex-shrink-0"
           style={{ background: theme.gradient }}>
           <SidebarContent />
@@ -577,6 +578,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {children}
             </div>
           </main>
+        </div>
         </div>
       </div>
     </LangContext.Provider>
