@@ -452,7 +452,7 @@ export default function LandingPage() {
         <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-4 text-xs text-gray-600 px-4">
           <a href="/privacy" className="hover:text-gray-400">{t('land_footer_privacy')}</a>
           <a href="/terms" className="hover:text-gray-400">{t('land_footer_terms')}</a>
-          <a href="#" className="hover:text-gray-400">{t('land_footer_contact')}</a>
+          <a href="mailto:clientoro.app@gmail.com" className="hover:text-gray-400">{t('land_footer_contact')}</a>
         </div>
       </footer>
     </div>
