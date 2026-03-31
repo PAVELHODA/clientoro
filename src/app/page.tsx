@@ -449,10 +449,10 @@ export default function LandingPage() {
           <span className="text-lg font-bold text-white">Clientoro</span>
         </div>
         <p className="text-sm text-gray-500">© 2026 {t('land_footer')}</p>
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-4 text-xs text-gray-600 px-4">
-          <a href="/privacy" className="hover:text-gray-400">{t('land_footer_privacy')}</a>
-          <a href="/terms" className="hover:text-gray-400">{t('land_footer_terms')}</a>
-          <a href="mailto:clientoro.app@gmail.com" className="hover:text-gray-400">{t('land_footer_contact')}</a>
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-4 text-xs px-4">
+          <a href="/privacy" className="text-gray-400 hover:text-white px-3 py-1.5 border border-gray-700 rounded-lg hover:border-gray-500 transition-colors">{t('land_footer_privacy')}</a>
+          <a href="/terms" className="text-gray-400 hover:text-white px-3 py-1.5 border border-gray-700 rounded-lg hover:border-gray-500 transition-colors">{t('land_footer_terms')}</a>
+          <a href="/contact" className="text-gray-400 hover:text-white px-3 py-1.5 border border-gray-700 rounded-lg hover:border-gray-500 transition-colors">{t('land_footer_contact')}</a>
         </div>
       </footer>
     </div>
