@@ -120,7 +120,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4">
 
       {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-white/10" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.95), rgba(15,107,122,0.95))' }}>
+      <nav className="fixed top-0 left-0 right-0 z-50"><div className="max-w-4xl mx-auto backdrop-blur-md border-b border-white/10 sm:rounded-b-xl" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.95), rgba(15,107,122,0.95))' }}>
         <div className="max-w-4xl mx-auto px-4 py-2 sm:py-3">
           {/* Radek 1: Logo + vlajky (mobil) | Logo + menu + vlajky + login + register (desktop) */}
           <div className="flex items-center justify-between">
@@ -128,11 +128,11 @@ export default function LandingPage() {
               <ClientoroLogo size={32} />
               <span className="text-2xl font-bold text-white">Clientoro</span>
             </button>
-            <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-              <a href="#segments" className="hover:text-gray-900">{t('land_nav_segments')}</a>
-              <a href="#features" className="hover:text-gray-900">{t('land_nav_features')}</a>
-              <a href="#pricing" className="hover:text-gray-900">{t('land_nav_pricing')}</a>
-              <a href="#faq" className="hover:text-gray-900">FAQ</a>
+            <div className="hidden md:flex items-center gap-6 text-sm text-white/70">
+              <a href="#segments" className="hover:text-white">{t('land_nav_segments')}</a>
+              <a href="#features" className="hover:text-white">{t('land_nav_features')}</a>
+              <a href="#pricing" className="hover:text-white">{t('land_nav_pricing')}</a>
+              <a href="#faq" className="hover:text-white">FAQ</a>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
@@ -140,17 +140,17 @@ export default function LandingPage() {
                   <button key={l} onClick={() => setLang(l)} className={`text-base px-1 py-0.5 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
                 ))}
               </div>
-              <a href="/login" className="hidden md:inline text-sm text-gray-600 hover:text-gray-900 font-medium ml-2">{t('land_nav_login')}</a>
+              <a href="/login" className="hidden md:inline text-sm text-white/70 hover:text-white font-medium ml-2">{t('land_nav_login')}</a>
               <a href="/register" className="hidden md:inline px-4 py-2 text-white rounded-lg text-sm font-medium" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
             </div>
           </div>
           {/* Radek 2+3: Prihlasit se + Zacit zdarma (jen mobil) */}
           <div className="flex flex-col gap-2 mt-2 md:hidden">
-            <a href="/login" className="w-full py-2.5 text-center text-sm text-gray-700 font-medium border border-gray-200 rounded-lg hover:bg-gray-50">{t('land_nav_login')}</a>
+            <a href="/login" className="w-full py-2.5 text-center text-sm text-white font-semibold border border-white/30 rounded-lg hover:bg-white/10">{t('land_nav_login')}</a>
             <a href="/register" className="w-full py-2.5 text-center text-sm font-semibold rounded-lg shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#f59e0b' }}>{t('land_nav_register')}</a>
           </div>
         </div>
-      </nav>
+      </div></nav>
 
       {/* BANNER 2026 */}
       <div className="pt-[140px] sm:pt-[64px]">
