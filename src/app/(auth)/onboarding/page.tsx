@@ -269,9 +269,22 @@ export default function OnboardingPage() {
                     ))}
                   </div>
                   {selectedCategories.size > 0 && (
-                    <p className="text-xs text-blue-600 mt-2 font-medium">
-                      ✓ Vybráno: {selectedCategoryList.map(c => c.name).join(', ')}
-                    </p>
+                    <div className="mt-3 space-y-2">
+                      <p className="text-xs text-blue-600 font-medium">✓ Vybráno: {selectedCategoryList.map(c => c.name).join(', ')}</p>
+                      {selectedCategoryList.map(cat => (
+                        cat.service_templates && cat.service_templates.length > 0 && (
+                          <div key={cat.id} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                            <p className="text-xs font-medium text-gray-700 mb-1.5">{cat.icon} {cat.name} — příklady služeb:</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {cat.service_templates.slice(0, 6).map((t: any) => (
+                                <span key={t.id} className="text-[10px] px-2 py-0.5 bg-white border border-gray-200 rounded-full text-gray-600">{t.name}</span>
+                              ))}
+                              {cat.service_templates.length > 6 && <span className="text-[10px] text-gray-400">+{cat.service_templates.length - 6} dalších</span>}
+                            </div>
+                          </div>
+                        )
+                      ))}
+                    </div>
                   )}
                 </div>
 
