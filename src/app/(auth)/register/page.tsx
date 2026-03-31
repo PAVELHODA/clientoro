@@ -183,7 +183,7 @@ export default function RegisterPage() {
 
 
           <div className="lg:hidden text-center mb-6">
-            <ClientoroLogo size={48} />
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-7 h-7 text-white" /></div>
             <h1 className="text-2xl font-bold text-white mt-2">Clientoro</h1>
           </div>
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">

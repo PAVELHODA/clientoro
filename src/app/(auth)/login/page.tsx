@@ -7,6 +7,8 @@ import { createClient } from '@/lib/supabase'
 import { Waves, Mail, Lock, ArrowRight, Eye, EyeOff, Globe } from 'lucide-react'
 import { publicTranslations, type PublicLang } from '@/lib/publicI18n'
 
+const flags: Record<PublicLang, string> = { cs: '🇨🇿', sk: '🇸🇰', en: '🇬🇧' }
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
