@@ -302,10 +302,10 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {[1,2,3,4].map(i => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 text-center">
+              <div key={i} className="rounded-xl border border-white/20 p-4 sm:p-5 text-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                 <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{i}</div>
-                <h3 className="font-bold text-gray-900 text-xs sm:text-sm">{t(`land_onboard_${i}`)}</h3>
-                <p className="text-xs text-gray-400 mt-1 hidden sm:block">{t(`land_onboard_${i}_desc`)}</p>
+                <h3 className="font-bold text-white text-xs sm:text-sm">{t(`land_onboard_${i}`)}</h3>
+                <p className="text-xs text-white/60 mt-1 hidden sm:block">{t(`land_onboard_${i}_desc`)}</p>
               </div>
             ))}
           </div>
