@@ -11,9 +11,9 @@ export default function ContactPage() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <ClientoroLogo size={40} />
-            <span className="text-2xl font-bold text-white">Clientoro</span>
+            <span className="text-2xl font-bold text-gray-900">Clientoro</span>
           </div>
-          <p className="text-white/60 text-sm">Klienti jsou to zlato.</p>
+          <p className="text-gray-500 text-sm">Klienti jsou to zlato.</p>
         </div>
 
         <div className="rounded-2xl shadow-xl p-6 sm:p-8 border-2 border-amber-400/70" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
