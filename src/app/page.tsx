@@ -117,7 +117,7 @@ export default function LandingPage() {
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
 
   return (
-    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-[3px] sm:border-[#0c2d48]/60">
+    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-[2px] sm:border-[#0c2d48]/50">
 
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50"><div className="max-w-4xl mx-auto backdrop-blur-md border-b border-white/10 sm:rounded-b-xl" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.95), rgba(15,107,122,0.95))' }}>
@@ -137,7 +137,7 @@ export default function LandingPage() {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 border border-white/20 rounded-lg px-1.5 py-0.5 flex-row-reverse md:flex-row">
                 {(Object.keys(flags) as PublicLang[]).map(l => (
-                  <button key={l} onClick={() => setLang(l)} className={`text-base px-1 py-0.5 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
+                  <button key={l} onClick={() => setLang(l)} className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
                 ))}
               </div>
               <a href="/login" className="hidden md:inline text-sm text-white/70 hover:text-white font-medium ml-2 px-3 py-1.5 border border-white/30 rounded-lg hover:border-white/50">{t('land_nav_login')}</a>
@@ -202,7 +202,7 @@ export default function LandingPage() {
                 <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={openSegment === s.key ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' } : { background: 'rgba(255,255,255,0.1)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
                 <h3 className={`font-bold text-xs sm:text-sm leading-tight ${openSegment === s.key ? 'text-gray-900' : 'text-white'}`}>{t(`land_seg_${s.key}`)}</h3>
                 <p className={`text-xs mt-1 hidden sm:block leading-tight ${openSegment === s.key ? 'text-gray-400' : 'text-white/60'}`}>{t(`land_seg_${s.key}_desc`)}</p>
-                <span className={`text-sm sm:text-xs mt-1 block font-bold sm:font-medium ${openSegment === s.key ? 'text-amber-500' : 'text-amber-400/70 sm:text-amber-400/0 sm:group-hover:text-amber-400/80'} transition-all duration-200`}>▼ {openSegment === s.key ? 'zavřít' : 'služby'}</span>
+                <span className={`text-[10px] sm:text-xs mt-1 block font-medium sm:font-medium ${openSegment === s.key ? 'text-amber-500' : 'text-amber-400/70 sm:text-amber-400/0 sm:group-hover:text-amber-400/80'} transition-all duration-200`}>▼ {openSegment === s.key ? 'zavřít' : 'služby'}</span>
               </button>
             )})}
           </div>
