@@ -117,7 +117,7 @@ export default function LandingPage() {
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
 
   return (
-    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-[2px] sm:border-[#0c2d48]/50">
+    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-[1.5px] sm:border-amber-400/40">
 
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50"><div className="max-w-4xl mx-auto backdrop-blur-md border-b border-white/10 sm:rounded-b-xl" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.95), rgba(15,107,122,0.95))' }}>
@@ -347,7 +347,7 @@ export default function LandingPage() {
             <p className="text-gray-500 text-sm sm:text-base">{lang === 'en' ? 'Deposits reduce no-shows. Cash saves on fees.' : lang === 'sk' ? 'Zálohy znižujú nedorazivších. Hotovosť šetrí poplatky.' : 'Zálohy snižují nedorazivší. Hotovost šetří poplatky.'}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="rounded-2xl border border-gray-200 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.05), rgba(15,107,122,0.05))' }}>
+            <div className="rounded-2xl border-2 border-amber-300/50 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.05), rgba(15,107,122,0.05))' }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><CreditCard className="w-5 h-5 text-amber-400" /></div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_deposit_title')}</h3>
               <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_deposit_desc')}</p>
