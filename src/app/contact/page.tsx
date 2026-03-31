@@ -13,7 +13,7 @@ export default function ContactPage() {
             <ClientoroLogo size={40} />
             <span className="text-2xl font-bold text-gray-900">Clientoro</span>
           </div>
-          <p className="text-gray-500 text-sm">Klienti jsou to zlato.</p>
+          <p className="text-sm font-semibold" style={{ color: '#f59e0b' }}>Klienti jsou to zlato.</p>
         </div>
 
         <div className="rounded-2xl shadow-xl p-6 sm:p-8 border-2 border-amber-400/70" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
