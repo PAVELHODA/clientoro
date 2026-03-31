@@ -47,13 +47,16 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="mt-6 flex gap-3">
+          <div className="mt-6 flex flex-col gap-3">
+            <a href="/register" className="w-full py-2.5 text-center text-sm font-semibold rounded-lg shadow-md" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)', color: '#f59e0b' }}>Začít zdarma</a>
+            <div className="flex gap-3">
             <a href="/" className="flex-1 py-2.5 text-center text-sm text-white/70 font-medium border border-white/30 rounded-lg hover:bg-white/10">
               <ArrowLeft className="w-4 h-4 inline mr-1" /> Zpět
             </a>
             <a href="/login" className="flex-1 py-2.5 text-center text-sm text-white font-medium rounded-lg" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               Přihlásit se
             </a>
+            </div>
           </div>
         </div>
       </div>
