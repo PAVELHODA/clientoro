@@ -120,7 +120,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-6 lg:bg-gray-50">
+      <div className="w-full lg:flex-1 flex items-center justify-center px-4 sm:px-6 lg:bg-gray-50">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3"
