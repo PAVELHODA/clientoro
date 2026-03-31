@@ -183,7 +183,7 @@ export default function RegisterPage() {
             <p className="text-gray-400 text-sm">Booking & Growth OS</p>
           </div>
 
-          <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200 border border-gray-200 p-8 shadow-sm">
+          <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('register_title')}</h2>
             <p className="text-sm text-gray-400 mb-6">{t('register_subtitle')}</p>
 
