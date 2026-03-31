@@ -128,7 +128,7 @@ export default function LoginPage() {
             <p className="text-gray-400 text-sm">Booking & Growth OS</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+          <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200 border border-gray-200 p-8 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('login_title')}</h2>
