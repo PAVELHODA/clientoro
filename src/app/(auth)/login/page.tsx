@@ -134,19 +134,9 @@ export default function LoginPage() {
           </div>
 
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('login_title')}</h2>
-                <p className="text-sm text-gray-400">{t('login_subtitle')}</p>
-              </div>
-              <div className="flex justify-center gap-1">
-                {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
-                  <button key={l} onClick={() => setLang(l)}
-                    className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20' : 'opacity-50 hover:opacity-100'}`}>
-                    {flags[l]}
-                  </button>
-                ))}
-              </div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('login_title')}</h2>
+              <p className="text-sm text-gray-400">{t('login_subtitle')}</p>
             </div>
 
             {error && (

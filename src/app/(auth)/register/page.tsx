@@ -175,8 +175,8 @@ export default function RegisterPage() {
           <div className="flex justify-center mb-4 gap-1">
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
               <button key={l} onClick={() => setLang(l)}
-                className={`px-2.5 py-1 rounded-lg text-sm font-medium transition-all ${lang === l ? 'bg-white shadow-sm border border-gray-200 text-gray-900' : 'text-gray-400 hover:text-gray-600'}`}>
-                {flags[l]} {l.toUpperCase()}
+                className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20' : 'opacity-50 hover:opacity-100'}`}>
+                {flags[l]}
               </button>
             ))}
           </div>
