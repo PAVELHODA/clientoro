@@ -124,8 +124,8 @@ export default function LoginPage() {
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Clientoro</h1>
-            <p className="text-gray-400 text-sm">Booking & Growth OS</p>
+            <h1 className="text-2xl font-bold text-white">Clientoro</h1>
+            
           </div>
 
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">

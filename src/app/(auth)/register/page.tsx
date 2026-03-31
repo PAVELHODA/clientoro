@@ -163,6 +163,14 @@ export default function RegisterPage() {
       <div className="flex-1 flex items-center justify-center px-6 lg:bg-gray-50">
         <div className="w-full max-w-md">
 
+          {/* Clientoro nadpis - jen mobil */}
+          <div className="lg:hidden text-center mb-6">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+              <Waves className="w-7 h-7 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">Clientoro</h1>
+          </div>
+
           {/* Language switcher */}
           <div className="flex justify-end mb-4 gap-1">
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
@@ -295,7 +303,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <p className="text-center text-xs text-gray-300 mt-6">🏆 Clientoro — {t('login_feature_4')}</p>
+          
         </div>
       </div>
     </div>
