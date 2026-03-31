@@ -181,8 +181,6 @@ export default function RegisterPage() {
             ))}
           </div>
 
-          {/* Mobile logo */}
-          <div className="lg:hidden text-center mb-8">
 
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('register_title')}</h2>
