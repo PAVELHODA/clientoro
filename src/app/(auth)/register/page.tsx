@@ -160,7 +160,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Pravá strana — formulář */}
-      <div className="flex-1 flex items-center justify-center px-6 bg-gray-50">
+      <div className="flex-1 flex items-center justify-center px-6 lg:bg-gray-50">
         <div className="w-full max-w-md">
 
           {/* Language switcher */}
