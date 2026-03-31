@@ -183,13 +183,6 @@ export default function RegisterPage() {
 
           {/* Mobile logo */}
           <div className="lg:hidden text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3"
-              style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
-              <Waves className="w-7 h-7 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">Clientoro</h1>
-            <p className="text-gray-400 text-sm">Booking & Growth OS</p>
-          </div>
 
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('register_title')}</h2>
@@ -300,6 +293,9 @@ export default function RegisterPage() {
                 {t('register_has_account')}{' '}
                 <a href="/login" className="font-semibold" style={{ color: '#0f6b7a' }}>{t('register_login_link')}</a>
               </p>
+            </div>
+            <div className="mt-4 py-2 px-4 rounded-lg text-center" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.1))' }}>
+              <p className="text-xs font-medium" style={{ color: '#d97706' }}>Clientoro — klienti jsou to zlato</p>
             </div>
           </div>
 
