@@ -339,7 +339,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* DEPOSITS & CASH */}
-      <section className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+      <section className="py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{lang === 'en' ? 'How to do it smarter' : lang === 'sk' ? 'Ako na to chytrejšie' : 'Jak na to chytřeji'}</h2>
