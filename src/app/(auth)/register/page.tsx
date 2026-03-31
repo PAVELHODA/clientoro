@@ -182,6 +182,10 @@ export default function RegisterPage() {
           </div>
 
 
+          <div className="lg:hidden text-center mb-6">
+            <ClientoroLogo size={48} />
+            <h1 className="text-2xl font-bold text-white mt-2">Clientoro</h1>
+          </div>
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('register_title')}</h2>
             <p className="text-sm text-gray-400 mb-6">{t('register_subtitle')}</p>
