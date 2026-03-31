@@ -234,11 +234,11 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* FEATURES */}
-      <section id="features" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.03), rgba(15,107,122,0.03))' }}>
+      <section id="features" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{lang === 'en' ? 'What you get' : lang === 'sk' ? 'Čo dostanete' : 'Co dostanete'}</h2>
-            <p className="text-gray-500 text-sm sm:text-base">{t('land_features_desc')}</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{lang === 'en' ? 'What you get' : lang === 'sk' ? 'Čo dostanete' : 'Co dostanete'}</h2>
+            <p className="text-white/60 text-sm sm:text-base">{t('land_features_desc')}</p>
           </div>
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {FEATURE_KEYS.map(f => (
@@ -342,8 +342,8 @@ export default function LandingPage() {
       <section className="py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{lang === 'en' ? 'How to do it smarter' : lang === 'sk' ? 'Ako na to chytrejšie' : 'Jak na to chytřeji'}</h2>
-            <p className="text-gray-500 text-sm sm:text-base">{lang === 'en' ? 'Deposits reduce no-shows. Cash saves on fees.' : lang === 'sk' ? 'Zálohy znižujú nedorazivších. Hotovosť šetrí poplatky.' : 'Zálohy snižují nedorazivší. Hotovost šetří poplatky.'}</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{lang === 'en' ? 'How to do it smarter' : lang === 'sk' ? 'Ako na to chytrejšie' : 'Jak na to chytřeji'}</h2>
+            <p className="text-white/60 text-sm sm:text-base">{lang === 'en' ? 'Deposits reduce no-shows. Cash saves on fees.' : lang === 'sk' ? 'Zálohy znižujú nedorazivších. Hotovosť šetrí poplatky.' : 'Zálohy snižují nedorazivší. Hotovost šetří poplatky.'}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
             <div className="rounded-2xl border border-gray-200 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.05), rgba(15,107,122,0.05))' }}>
