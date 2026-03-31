@@ -114,6 +114,9 @@ export default function LoginPage() {
             
             
           </svg>
+          <div className="mt-4 py-2 px-4 rounded-lg text-center">
+            <p className="text-xs font-medium" style={{ color: '#f59e0b' }}>Clientoro — klienti jsou to zlato</p>
+          </div>
         </div>
       </div>
 
@@ -189,9 +192,6 @@ export default function LoginPage() {
                 {t('login_no_account')}{' '}
                 <a href="/register" className="font-semibold" style={{ color: '#0f6b7a' }}>{t('login_register_link')}</a>
               </p>
-            </div>
-            <div className="mt-4 py-2 px-4 rounded-lg text-center" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.1))' }}>
-              <p className="text-xs font-medium" style={{ color: '#d97706' }}>Clientoro — klienti jsou to zlato</p>
             </div>
           </div>
           <p className="text-center text-xs text-gray-300 mt-6">{"\ud83c\udfc6"} {t('login_footer')}</p>
