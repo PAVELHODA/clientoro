@@ -135,12 +135,12 @@ export default function LandingPage() {
               <a href="#faq" className="hover:text-white">FAQ</a>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 border border-white/20 rounded-lg px-1.5 py-0.5">
                 {(Object.keys(flags) as PublicLang[]).map(l => (
                   <button key={l} onClick={() => setLang(l)} className={`text-base px-1 py-0.5 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
                 ))}
               </div>
-              <a href="/login" className="hidden md:inline text-sm text-white/70 hover:text-white font-medium ml-2">{t('land_nav_login')}</a>
+              <a href="/login" className="hidden md:inline text-sm text-white/70 hover:text-white font-medium ml-2 px-3 py-1.5 border border-white/30 rounded-lg hover:border-white/50">{t('land_nav_login')}</a>
               <a href="/register" className="hidden md:inline px-4 py-2 text-white rounded-lg text-sm font-medium" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>{t('land_nav_register')}</a>
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {SEGMENT_KEYS.map((s, idx) => { const Icon = SEGMENT_ICONS[s.icon]; const isLast = idx === SEGMENT_KEYS.length - 1 && SEGMENT_KEYS.length % 2 !== 0; return (
               <button key={s.key} onClick={() => setOpenSegment(openSegment === s.key ? null : s.key)}
-                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-amber-400 shadow-lg ring-2 ring-amber-200 bg-white' : 'border-white/20 hover:border-amber-300'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' } : {}}>
+                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-amber-400 shadow-lg ring-2 ring-amber-200 bg-white' : 'border-amber-400/30 hover:border-amber-400 hover:shadow-amber-400/20 hover:shadow-lg'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' } : {}}>
                 <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={openSegment === s.key ? { background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' } : { background: 'rgba(255,255,255,0.1)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
                 <h3 className={`font-bold text-xs sm:text-sm leading-tight ${openSegment === s.key ? 'text-gray-900' : 'text-white'}`}>{t(`land_seg_${s.key}`)}</h3>
                 <p className={`text-xs mt-1 hidden sm:block leading-tight ${openSegment === s.key ? 'text-gray-400' : 'text-white/60'}`}>{t(`land_seg_${s.key}_desc`)}</p>
