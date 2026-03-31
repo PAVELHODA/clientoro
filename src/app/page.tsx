@@ -117,7 +117,7 @@ export default function LandingPage() {
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
 
   return (
-    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4">
+    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-2 sm:border-[#0f6b7a]/40">
 
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50"><div className="max-w-4xl mx-auto backdrop-blur-md border-b border-white/10 sm:rounded-b-xl" style={{ background: 'linear-gradient(135deg, rgba(12,45,72,0.95), rgba(15,107,122,0.95))' }}>
@@ -135,7 +135,7 @@ export default function LandingPage() {
               <a href="#faq" className="hover:text-white">FAQ</a>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 border border-white/20 rounded-lg px-1.5 py-0.5">
+              <div className="flex items-center gap-1 border border-white/20 rounded-lg px-1.5 py-0.5 flex-row-reverse md:flex-row">
                 {(Object.keys(flags) as PublicLang[]).map(l => (
                   <button key={l} onClick={() => setLang(l)} className={`text-base px-1 py-0.5 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
                 ))}
