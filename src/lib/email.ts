@@ -139,6 +139,9 @@ export async function sendOwnerNotification({
         </p>
         ${infoBox(items, 'blue')}
       `,
+      footer: `
+        <a href="https://clientoro.pro/dashboard" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít kalendář</a>
+      `,
     }),
   })
 }
@@ -167,10 +170,13 @@ export async function sendBookingCancellation({
         </p>
         ${infoBox(items, 'red')}
         <p style="color:#6b7280;font-size:13px;margin:16px 0 0;">
-          Pokud chcete nový termín, zarezervujte si prosím znovu.<br/>
-        ${bookingUrl ? `<div style="margin-top:16px;"><a href="${bookingUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Rezervovat nový termín</a></div>` : ''}
           Provozovatel: <strong>${orgName}</strong>${orgPhone ? ` · ${orgPhone}` : ''}
         </p>
+        ${bookingUrl ? `
+        <div style="margin:20px 0;text-align:center;">
+          <p style="color:#6b7280;font-size:13px;margin:0 0 12px;">Chcete nový termín?</p>
+          <a href="${bookingUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Rezervovat nový termín</a>
+        </div>` : ''}
       `,
     }),
   })
@@ -236,7 +242,12 @@ export async function sendBookingReminder({
           ${orgName}${orgPhone ? ` · ${orgPhone}` : ''}
         </p>
       `,
-      footer: `<p style="color:#6b7280;font-size:12px;margin:0;">Těšíme se na Vás! Pokud potřebujete změnit termín, kontaktujte nás.</p>`,
+      footer: `
+        <p style="color:#6b7280;font-size:12px;margin:0 0 12px;">Těšíme se na Vás!</p>
+        <div style="margin:8px 0;padding:8px 0;border-top:1px solid #e5e7eb;">
+          <p style="color:#9ca3af;font-size:11px;margin:0;">Nemůžete dorazit? Kontaktujte nás prosím co nejdříve${orgPhone ? ` na <strong>${orgPhone}</strong>` : ''}.</p>
+        </div>
+      `,
     }),
   })
 }
@@ -344,9 +355,9 @@ export async function sendBookingFollowup({
         ${bookingUrl ? `<div style="margin:20px 0;text-align:center;">
           <a href="${bookingUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:14px;font-weight:600;">Rezervovat znovu</a>
         </div>` : ''}
-        <p style="color:#9ca3af;font-size:12px;margin:16px 0 0;text-align:center;">
-          Byli jste spokojeni? Budeme rádi za Vaše hodnocení.
-        </p>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin:16px 0;text-align:center;">
+          <p style="color:#92400e;font-size:13px;margin:0;">⭐ Byli jste spokojeni? Budeme rádi za <strong>Vaše hodnocení na Google</strong>.</p>
+        </div>
       `,
       footer: `<p style="color:#6b7280;font-size:12px;margin:0;">${orgName}${orgPhone ? ` · ${orgPhone}` : ''}</p>`,
     }),
