@@ -274,27 +274,45 @@ export async function sendWelcomeEmail({
     subject: `Vítejte v Clientoro — ${orgName}`,
     html: emailTemplate({
       orgName,
-      title: 'Vítejte v Clientoro!',
+      title: 'Vítejte v Clientoro! 🎉',
       body: `
-        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
-          Váš účet <strong>${orgName}</strong> je připraven. Tady je vše co potřebujete pro začátek:
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 20px;">
+          Váš účet <strong style="color:#111827;">${orgName}</strong> je připraven. Tady je vše co potřebujete pro začátek.
         </p>
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
-          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">Váš booking link:</p>
-          <p style="margin:0;"><a href="${bookingUrl}" style="color:#0f6b7a;font-size:14px;font-weight:600;text-decoration:none;">${bookingUrl}</a></p>
-          <p style="margin:8px 0 0;color:#6b7280;font-size:12px;">Sdílejte tento link klientům — mohou si rovnou rezervovat online.</p>
-        </div>
-        <div style="margin:16px 0;">
-          <p style="color:#374151;font-size:14px;font-weight:600;margin:0 0 8px;">Co udělat jako první:</p>
-          <p style="color:#6b7280;font-size:13px;margin:4px 0;">1. Přidejte služby co nabízíte</p>
-          <p style="color:#6b7280;font-size:13px;margin:4px 0;">2. Nastavte pracovní dobu</p>
-          <p style="color:#6b7280;font-size:13px;margin:4px 0;">3. Sdílejte booking link klientům</p>
+
+        <!-- Booking link box -->
+        <div style="background:linear-gradient(135deg,#0c2d48,#0f6b7a);border-radius:12px;padding:20px;margin:0 0 20px;text-align:center;">
+          <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">📎 Váš booking link</p>
+          <p style="margin:0 0 8px;"><a href="${bookingUrl}" style="color:#fbbf24;font-size:16px;font-weight:700;text-decoration:none;">${bookingUrl}</a></p>
+          <p style="margin:0;color:rgba(255,255,255,0.6);font-size:12px;">Sdílejte klientům — mohou si rovnou rezervovat online.</p>
         </div>
 
+        <!-- 3 kroky -->
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:0 0 20px;">
+          <p style="color:#111827;font-size:14px;font-weight:700;margin:0 0 12px;">🚀 Co udělat jako první:</p>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr><td style="padding:6px 0;color:#374151;font-size:13px;"><span style="display:inline-block;width:24px;height:24px;background:#10b981;color:white;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px;">1</span> Přidejte služby co nabízíte</td></tr>
+            <tr><td style="padding:6px 0;color:#374151;font-size:13px;"><span style="display:inline-block;width:24px;height:24px;background:#10b981;color:white;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px;">2</span> Nastavte pracovní dobu</td></tr>
+            <tr><td style="padding:6px 0;color:#374151;font-size:13px;"><span style="display:inline-block;width:24px;height:24px;background:#10b981;color:white;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px;">3</span> Sdílejte booking link klientům</td></tr>
+          </table>
+        </div>
+
+        <!-- Průvodce -->
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px;margin:0 0 20px;">
+          <p style="color:#111827;font-size:14px;font-weight:700;margin:0 0 8px;">📖 Rychlý průvodce</p>
+          <p style="color:#6b7280;font-size:13px;margin:0 0 8px;">Nastavte si vše za 5 minut — krok za krokem.</p>
+          <a href="https://clientoro.pro/#features" style="color:#0f6b7a;font-size:13px;font-weight:600;text-decoration:none;">→ Jak začít za 5 minut</a>
+        </div>
+
+        <!-- Tip -->
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin:0 0 8px;">
+          <p style="color:#92400e;font-size:13px;margin:0;">💡 <strong>TIP:</strong> Zapněte připomínky v nastavení — snížíte no-show až o 70 %.</p>
+        </div>
       `,
       footer: `
-        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
-        <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Máte 14 dní trial zdarma.</p>
+        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.02em;">Otevřít dashboard</a>
+        <p style="color:#6b7280;font-size:12px;margin:12px 0 0;">14 dní zdarma · Bez kreditní karty · Zrušíte kdykoliv</p>
+        <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Potřebujete pomoct? Napište nám: <a href="mailto:support@clientoro.pro" style="color:#0f6b7a;text-decoration:none;">support@clientoro.pro</a></p>
       `,
     }),
   })
@@ -491,7 +509,7 @@ export async function sendSuperadminCronSummary({
 export async function sendAdminNotification({ subject, body }: { subject: string; body: string }) {
   try {
     await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Clientoro <noreply@clientoro.pro>',
+      from: 'Clientoro <noreply@clientoro.pro>',
       to: 'clientoro.app@gmail.com',
       subject: '[Clientoro Admin] ' + subject,
       html: emailTemplate({
