@@ -542,7 +542,7 @@ export async function sendAdminNotification({ orgName, email, phone, ico, catego
     subject: `[Nová registrace] ${orgName} — ${mode || 'solo'}`,
     html: emailTemplate({
       orgName: 'Clientoro Admin',
-      title: `🆕 Nová organizace: ${orgName}`,
+      title: `Nová organizace: ${orgName}`,
       body: `
         <p style="color:#6b7280;font-size:14px;margin:0 0 16px;">Dokončen onboarding nové organizace.</p>
 

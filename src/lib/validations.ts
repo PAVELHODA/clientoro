@@ -1,4 +1,4 @@
-// PATH: src/lib/validations.ts
+﻿// PATH: src/lib/validations.ts
 import { z } from 'zod'
 
 // ============================================================
@@ -12,12 +12,7 @@ const phone = z.string()
 const email = z.string()
   .email('Neplatný email')
 
-const optionalEmail = z.string()
-  .email('Neplatný email')
-  .nullable()
-  .optional()
-  .or(z.literal(''))
-
+const optionalEmail = z.string().email('Neplatný email').optional().or(z.literal('')).or(z.null())
 const uuid = z.string().uuid('Neplatné ID')
 
 const optionalUuid = z.string().uuid('Neplatné ID').nullable().optional()
