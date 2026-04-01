@@ -1,7 +1,6 @@
-﻿﻿// PATH: src/app/api/register/route.ts
+﻿// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
-import { sendWelcomeEmail, sendAdminNotification } from '@/lib/email'
 import { z } from 'zod'
 import { validateBody } from '@/lib/validations'
 
@@ -22,7 +21,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Zod validace
     const validation = validateBody(registerSchema, body)
     if (!validation.success || !validation.data) {
       return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
@@ -113,7 +111,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Notifikace pro admina
+    // DB notifikace pro admina (systémová)
     try {
       if (orgData) {
         await supabaseAdmin.from('notifications').insert({
@@ -121,7 +119,7 @@ export async function POST(request: NextRequest) {
           type: 'new_organization',
           channel: 'system',
           recipient: 'clientoro.app@gmail.com',
-          subject: 'Nová organizace: ' + businessName,
+          subject: 'Nová registrace: ' + businessName,
           body: 'Email: ' + email + ', Mód: ' + (mode || 'solo') + ', Slug: ' + slug,
           status: 'pending',
         })
@@ -130,20 +128,8 @@ export async function POST(request: NextRequest) {
       console.error('Notification error:', notifErr)
     }
 
-    // Odeslat email superadminovi
-    sendAdminNotification({
-      subject: 'Nová organizace: ' + (businessName || 'Neznámá'),
-      body: 'Email: ' + email + ', Mód: ' + (mode || 'solo') + ', Slug: ' + slug,
-    }).catch(err => console.error('[Admin notification email failed]', err))
-
-    // Odeslat welcome email s booking linkem
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
-    sendWelcomeEmail({
-      to: email,
-      orgName: businessName || 'Váš salon',
-      bookingUrl: `${baseUrl}/book/${slug}`,
-      dashboardUrl: `${baseUrl}/dashboard`,
-    }).catch(err => console.error('[Welcome email failed]', err))
+    // Welcome email + Admin email notifikace se posílají až po dokončení onboardingu
+    // Viz: src/app/api/settings/route.ts (onboarding_completed: true)
 
     return NextResponse.json({ success: true, userId })
   } catch (err) {

@@ -516,21 +516,54 @@ export async function sendSuperadminCronSummary({
 }
 
 
-// ===== ADMIN NOTIFIKACE =====
-export async function sendAdminNotification({ subject, body }: { subject: string; body: string }) {
-  try {
-    await resend.emails.send({
-      from: 'Clientoro <noreply@clientoro.pro>',
-      to: 'clientoro.app@gmail.com',
-      subject: '[Clientoro Admin] ' + subject,
-      html: emailTemplate({
-        title: subject,
-        body: '<p>' + body.replace(/,\s/g, '</p><p>') + '</p>',
-        orgName: 'Clientoro Admin',
-      }),
-    })
-    console.log('[Admin notification sent]', subject)
-  } catch (err) {
-    console.error('[Admin notification failed]', err)
-  }
+// ===== ADMIN NOTIFIKACE — nová registrace =====
+export async function sendAdminNotification({ orgName, email, phone, ico, category, mode, slug, address }: {
+  orgName: string; email: string; phone?: string; ico?: string; category?: string; mode?: string; slug?: string; address?: string
+}) {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
+  const bookingUrl = slug ? `${baseUrl}/book/${slug}` : ''
+
+  const rows = [
+    { label: 'Email', value: email },
+    { label: 'Telefon', value: phone || '—' },
+    { label: 'IČO', value: ico || '—' },
+    { label: 'Kategorie', value: category || '—' },
+    { label: 'Mód', value: mode || '—' },
+    { label: 'Adresa', value: address || '—' },
+    { label: 'Slug', value: slug || '—' },
+  ]
+
+  const tableRows = rows.map(r =>
+    `<tr><td style="padding:6px 12px;color:#6b7280;font-size:13px;border-bottom:1px solid #f3f4f6;">${r.label}</td><td style="padding:6px 12px;color:#111827;font-size:13px;font-weight:600;border-bottom:1px solid #f3f4f6;">${r.value}</td></tr>`
+  ).join('')
+
+  return sendEmail({
+    to: 'clientoro.app@gmail.com',
+    subject: `[Nová registrace] ${orgName} — ${mode || 'solo'}`,
+    html: emailTemplate({
+      orgName: 'Clientoro Admin',
+      title: `🆕 Nová organizace: ${orgName}`,
+      body: `
+        <p style="color:#6b7280;font-size:14px;margin:0 0 16px;">Dokončen onboarding nové organizace.</p>
+
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:0 0 16px;">
+          <p style="color:#111827;font-size:18px;font-weight:700;margin:0 0 4px;">${orgName}</p>
+          <p style="color:#6b7280;font-size:13px;margin:0;">${category || 'Nezadaná kategorie'} · ${mode || 'solo'}</p>
+        </div>
+
+        <table style="width:100%;border-collapse:collapse;margin:0 0 16px;">
+          ${tableRows}
+        </table>
+
+        ${bookingUrl ? `
+        <div style="background:linear-gradient(135deg,#0c2d48,#0f6b7a);border-radius:12px;padding:16px;margin:0 0 16px;text-align:center;">
+          <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">Booking link</p>
+          <p style="margin:0;"><a href="${bookingUrl}" style="color:#fbbf24;font-size:14px;font-weight:700;text-decoration:none;">${bookingUrl}</a></p>
+        </div>
+        ` : ''}
+
+        <p style="color:#9ca3af;font-size:11px;margin:0;">Registrace: ${new Date().toLocaleString('cs-CZ', { timeZone: 'Europe/Prague' })}</p>
+      `,
+    }),
+  })
 }
