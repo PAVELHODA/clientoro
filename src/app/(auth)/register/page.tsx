@@ -182,10 +182,6 @@ export default function RegisterPage() {
           </div>
 
 
-          <div className="lg:hidden text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}><Waves className="w-7 h-7 text-white" /></div>
-            <h1 className="text-2xl font-bold text-white mt-2">Clientoro</h1>
-          </div>
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('register_title')}</h2>
             <p className="text-sm text-gray-400 mb-6">{t('register_subtitle')}</p>
@@ -297,6 +293,8 @@ export default function RegisterPage() {
               </p>
             </div>
           </div>
+
+          <p className="text-center text-xs text-gray-300 mt-6">{"\uD83C\uDFC6"} Clientoro — {t('login_feature_4')}</p>
 
           
         </div>
