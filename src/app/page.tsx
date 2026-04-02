@@ -6,7 +6,7 @@ import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Ch
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 import ClientoroLogo from '@/components/ClientoroLogo'
 
-const flags: Record<PublicLang, string> = { en: '🇬🇧', sk: '🇸🇰', cs: '🇨🇿' }
+const flags: Record<PublicLang, string> = { en: 'gb', sk: 'sk', cs: 'cz' }
 
 const SEGMENT_ICONS: Record<string, any> = {
   scissors: Scissors, sparkles: Sparkles, gem: Gem, heartPulse: HeartPulse,
@@ -136,7 +136,7 @@ export default function LandingPage() {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 border border-white/30 rounded-lg px-1.5 py-0.5 flex-row-reverse md:flex-row">
                 {(Object.keys(flags) as PublicLang[]).map(l => (
-                  <button key={l} onClick={() => setLang(l)} className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
+                  <button key={l} onClick={() => setLang(l)} className={`px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-110 bg-white/20' : 'opacity-50 hover:opacity-100'}`}><img src={`https://flagcdn.com/24x18/${flags[l]}.png`} alt={l} className="w-6 h-4 object-cover rounded-sm" /></button>
                 ))}
               </div>
               <a href="/login" className="hidden md:inline text-sm text-white/70 hover:text-white font-medium ml-2 px-4 py-2 border border-white/30 rounded-lg hover:border-white/50 transition-colors">{t('land_nav_login')}</a>
@@ -466,6 +466,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
