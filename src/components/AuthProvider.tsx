@@ -137,6 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const switchOrg = async (orgId: string) => {
     try {
+      console.log('[switchOrg] switching to:', orgId)
       // 1. Nastav cookie PŘED API voláním
       document.cookie = `clientoro_active_org=${orgId};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`
 
