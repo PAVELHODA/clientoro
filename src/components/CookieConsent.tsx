@@ -59,7 +59,7 @@ export default function CookieConsent() {
             </button>
             <button onClick={acceptAll}
               className="px-4 py-2 text-xs text-white font-semibold rounded-lg shadow-md transition-colors"
-              style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
+              style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
               Přijmout vše
             </button>
             <button onClick={acceptNecessary}
@@ -72,3 +72,4 @@ export default function CookieConsent() {
     </div>
   )
 }
+

@@ -81,15 +81,15 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
 }
 
 const FEATURE_KEYS = [
-  { icon: Calendar, color: 'from-[#1a6e8a] to-[#2ba0b0]', key: 'calendar', prefix: 'cal' },
-  { icon: Users, color: 'from-[#2ba0b0] to-[#3ec4c4]', key: 'crm', prefix: 'crm' },
-  { icon: Brain, color: 'from-[#1a6e8a] to-[#2ba0b0]', key: 'ai', prefix: 'ai' },
-  { icon: TrendingUp, color: 'from-[#2ba0b0] to-[#3ec4c4]', key: 'growth', prefix: 'growth' },
+  { icon: Calendar, color: 'from-[#134a6a] to-[#1d8898]', key: 'calendar', prefix: 'cal' },
+  { icon: Users, color: 'from-[#1d8898] to-[#2db0b0]', key: 'crm', prefix: 'crm' },
+  { icon: Brain, color: 'from-[#134a6a] to-[#1d8898]', key: 'ai', prefix: 'ai' },
+  { icon: TrendingUp, color: 'from-[#1d8898] to-[#2db0b0]', key: 'growth', prefix: 'growth' },
 ]
 
 const PRICING_DATA = [
   { key: 'solo', icon: '●', color: 'border-teal-300 bg-teal-50', price: '49', priceAi: '99', trial: true, gradient: 'linear-gradient(135deg, #0d9488, #06b6d4)' },
-  { key: 'team', icon: '●●', color: 'border-blue-300 bg-blue-50', price: '299', priceAi: '499', trial: false, popular: true, gradient: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' },
+  { key: 'team', icon: '●●', color: 'border-blue-300 bg-blue-50', price: '299', priceAi: '499', trial: false, popular: true, gradient: 'linear-gradient(135deg, #134a6a, #1d8898)' },
   { key: 'inspire', icon: '●', color: 'border-amber-300 bg-amber-50', price: '499', priceAi: '799', trial: false, gradient: 'linear-gradient(135deg, #d97706, #f59e0b)' },
   { key: 'pro', icon: '●', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 999', trial: false, gradient: 'linear-gradient(135deg, #92400e, #b45309)' },
 ]
@@ -120,7 +120,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-2 sm:border-amber-400/70">
 
       {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50"><div className="max-w-4xl mx-auto backdrop-blur-md border-b border-white/10 sm:rounded-b-xl" style={{ background: 'linear-gradient(135deg, rgba(20,75,105,0.95), rgba(35,140,160,0.95))' }}>
+      <nav className="fixed top-0 left-0 right-0 z-50"><div className="max-w-4xl mx-auto backdrop-blur-md border-b border-white/10 sm:rounded-b-xl" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.95), rgba(25,115,135,0.95))' }}>
         <div className="max-w-4xl mx-auto px-4 py-2.5 sm:py-4">
           <div className="flex items-center justify-between">
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5 cursor-pointer">
@@ -140,7 +140,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <a href="/login" className="hidden md:inline text-sm text-white/70 hover:text-white font-medium ml-2 px-4 py-2 border border-white/30 rounded-lg hover:border-white/50 transition-colors">{t('land_nav_login')}</a>
-              <a href="/register" className="hidden md:inline px-5 py-2.5 text-white rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>{t('land_nav_register')}</a>
+              <a href="/register" className="hidden md:inline px-5 py-2.5 text-white rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>{t('land_nav_register')}</a>
             </div>
           </div>
           {/* Mobil: jen Prihlasit se */}
@@ -152,16 +152,16 @@ export default function LandingPage() {
 
       {/* BANNER 2026 — s Lucide ikonami místo emoji */}
       <div className="pt-[120px] sm:pt-[72px]">
-        <div className="w-full border-b border-amber-200" style={{ background: 'linear-gradient(135deg, rgba(20,75,105,0.08), rgba(35,140,160,0.08))' }}>
+        <div className="w-full border-b border-amber-200" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.08), rgba(25,115,135,0.08))' }}>
           <div className="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-center gap-3">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
               <Wrench className="w-3.5 h-3.5 text-amber-300" />
             </div>
             <p className="text-xs sm:text-sm text-gray-700 font-medium text-center">
               {lang === 'en' ? 'Platform is in active development. Full launch in 2026.' : lang === 'sk' ? 'Platforma je v aktívnom vývoji. Plný prevoz spustíme v priebehu roka 2026.' : 'Platforma je v aktivním vývoji. Plný provoz spustíme v průběhu roku 2026.'}
               <span className="text-amber-600 font-semibold ml-1">{lang === 'en' ? 'Stay tuned!' : lang === 'sk' ? 'Tešíme sa na vás!' : 'Těšíme se na vás!'}</span>
             </p>
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
               <Rocket className="w-3.5 h-3.5 text-amber-300" />
             </div>
           </div>
@@ -169,16 +169,19 @@ export default function LandingPage() {
       </div>
 
       {/* HERO - zesvětlený oceán */}
-      <section className="relative py-10 sm:py-16" style={{ background: 'linear-gradient(135deg, #0e3a5c, #1a6e8a, #2ba0b0)' }}>
+      <section className="relative py-10 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a, #1d8898)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
           {/* CTA tlačítko NAD hero textem */}
-          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl mb-6 hover:scale-105 transition-transform" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
+          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl mb-6 hover:scale-105 transition-transform" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
             <span className="text-amber-400">{t('land_nav_register')}</span> <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
           </a>
 
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-amber-300 rounded-full text-sm sm:text-base font-semibold mb-4">
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
+          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl mt-4 mb-2 hover:scale-105 transition-transform" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
+            <span className="text-amber-400">{t('land_nav_register')}</span> <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+          </a>
           <h1 className="text-xl sm:text-2xl md:text-3xl text-white font-bold leading-tight mb-4 px-2">
             {t('land_hero_title')}
           </h1>
@@ -197,7 +200,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* SEGMENTS */}
-      <section id="segments" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(20,75,105,0.03), rgba(35,140,160,0.03))' }}>
+      <section id="segments" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.03), rgba(25,115,135,0.03))' }}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_segments_title')}</h2>
@@ -206,8 +209,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {SEGMENT_KEYS.map((s, idx) => { const Icon = SEGMENT_ICONS[s.icon]; const isLast = idx === SEGMENT_KEYS.length - 1 && SEGMENT_KEYS.length % 2 !== 0; return (
               <button key={s.key} onClick={() => setOpenSegment(openSegment === s.key ? null : s.key)}
-                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-amber-400 shadow-lg ring-2 ring-amber-200 bg-white' : 'border-amber-400/40 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/30 hover:scale-[1.08] transition-all duration-200 cursor-pointer'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' } : {}}>
-                <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={openSegment === s.key ? { background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' } : { background: 'rgba(255,255,255,0.15)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
+                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-amber-400 shadow-lg ring-2 ring-amber-200 bg-white' : 'border-amber-400/40 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/30 hover:scale-[1.08] transition-all duration-200 cursor-pointer'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : {}}>
+                <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={openSegment === s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : { background: 'rgba(255,255,255,0.15)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
                 <h3 className={`font-bold text-xs sm:text-sm leading-tight ${openSegment === s.key ? 'text-gray-900' : 'text-white'}`}>{t(`land_seg_${s.key}`)}</h3>
                 <p className={`text-xs mt-1 hidden sm:block leading-tight ${openSegment === s.key ? 'text-gray-400' : 'text-white/60'}`}>{t(`land_seg_${s.key}_desc`)}</p>
                 <span className={`text-[10px] sm:text-xs mt-1 block font-medium sm:font-medium ${openSegment === s.key ? 'text-amber-500' : 'text-amber-400/70 sm:text-amber-400/0 sm:group-hover:text-amber-400/80'} transition-all duration-200`}>▼ {openSegment === s.key ? 'zavřít' : 'služby'}</span>
@@ -243,7 +246,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* FEATURES */}
-      <section id="features" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
+      <section id="features" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('land_features_title')}</h2>
@@ -272,7 +275,7 @@ export default function LandingPage() {
       </section>
 
       {/* AI SECTION */}
-      <section className="relative py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0e3a5c, #1a6e8a)' }}>
+      <section className="relative py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/20 text-amber-300 rounded-full text-xs font-medium mb-6">
             <Brain className="w-3 h-3" /> {t('land_ai_badge')}
@@ -282,7 +285,7 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-3 gap-0">
             {[1,2,3].map(i => (
               <div key={i} className={`p-4 sm:p-5 ${i < 3 ? 'border-b sm:border-b-0 sm:border-r border-white/20' : ''}`}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2 mx-auto" style={{ background: 'linear-gradient(135deg, #2ba0b0, #1a6e8a)' }}>{[<BrainCircuit key="a" className="w-5 h-5 text-amber-400" />, <TrendingUp key="b" className="w-5 h-5 text-amber-400" />, <Zap key="c" className="w-5 h-5 text-amber-400" />][i-1]}</div>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2 mx-auto" style={{ background: 'linear-gradient(135deg, #1d8898, #134a6a)' }}>{[<BrainCircuit key="a" className="w-5 h-5 text-amber-400" />, <TrendingUp key="b" className="w-5 h-5 text-amber-400" />, <Zap key="c" className="w-5 h-5 text-amber-400" />][i-1]}</div>
                 <h3 className="font-bold text-white text-sm sm:text-base mb-1">{t(`land_ai_${i}_title`)}</h3>
                 <p className="text-xs sm:text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t(`land_ai_${i}_desc`)}</p>
               </div>
@@ -297,7 +300,7 @@ export default function LandingPage() {
       {/* CTA + ONBOARDING */}
       <div className="py-6">
         <div className="max-w-2xl mx-auto px-4">
-          <a href="/register" className="block w-full py-4 text-center text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
+          <a href="/register" className="block w-full py-4 text-center text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
             <span className="text-amber-400">{t('land_hero_cta')}</span> <ArrowRight className="w-5 h-5 inline ml-2" />
           </a>
         </div>
@@ -312,8 +315,8 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {[1,2,3,4].map(i => (
-              <div key={i} className="rounded-xl border border-white/20 p-4 sm:p-5 text-center" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
-                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-sm border-2 border-white/30" style={{ background: 'linear-gradient(135deg, #0e3a5c, #1a6e8a)' }}>{i}</div>
+              <div key={i} className="rounded-xl border border-white/20 p-4 sm:p-5 text-center" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
+                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-sm border-2 border-white/30" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a)' }}>{i}</div>
                 <h3 className="font-bold text-white text-xs sm:text-sm">{t(`land_onboard_${i}`)}</h3>
                 <p className="text-xs text-white/60 mt-1 hidden sm:block">{t(`land_onboard_${i}_desc`)}</p>
               </div>
@@ -326,7 +329,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* CALCULATOR */}
-      <section id="calculator" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(20,75,105,0.03), rgba(35,140,160,0.03))' }}>
+      <section id="calculator" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.03), rgba(25,115,135,0.03))' }}>
         <div className="max-w-xl mx-auto px-4">
           <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_calc_title')}</h2>
@@ -356,16 +359,16 @@ export default function LandingPage() {
             <p className="text-gray-500 text-sm sm:text-base">{lang === 'en' ? 'Deposits reduce no-shows. Cash saves on fees.' : lang === 'sk' ? 'Zálohy znižujú nedorazivších. Hotovosť šetrí poplatky.' : 'Zálohy snižují nedorazivší. Hotovost šetří poplatky.'}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="rounded-2xl border-2 border-amber-300/50 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(20,75,105,0.05), rgba(35,140,160,0.05))' }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}><CreditCard className="w-5 h-5 text-amber-400" /></div>
+            <div className="rounded-2xl border-2 border-amber-300/50 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.05), rgba(25,115,135,0.05))' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}><CreditCard className="w-5 h-5 text-amber-400" /></div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_deposit_title')}</h3>
               <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_deposit_desc')}</p>
               <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
                 {[1,2,3].map(i => (<li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-amber-500 flex-shrink-0" /> <span className="text-xs sm:text-sm">{t(`land_deposit_${i}`)}</span></li>))}
               </ul>
             </div>
-            <div className="rounded-2xl border border-gray-200 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(35,140,160,0.05), rgba(62,196,196,0.05))' }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #2ba0b0, #3ec4c4)' }}><Banknote className="w-5 h-5 text-amber-400" /></div>
+            <div className="rounded-2xl border border-gray-200 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(25,115,135,0.05), rgba(45,176,176,0.05))' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #1d8898, #2db0b0)' }}><Banknote className="w-5 h-5 text-amber-400" /></div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_cash_title')}</h3>
               <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_cash_desc')}</p>
               <ul className="space-y-2 text-sm text-gray-600 inline-block text-left">
@@ -380,7 +383,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* PRICING */}
-      <section id="pricing" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>
+      <section id="pricing" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">{t('land_pricing_title')}</h2>
@@ -410,7 +413,7 @@ export default function LandingPage() {
                   })}
                 </ul>
                 {p.trial && <div className="bg-emerald-100 rounded-lg p-1.5 sm:p-2 text-center text-xs text-emerald-700 font-medium mb-3">{t('land_price_trial')}</div>}
-                <a href="/register" className="block w-full py-2 sm:py-2.5 text-center text-white rounded-xl font-medium text-xs sm:text-sm shadow-md" style={{ background: 'linear-gradient(135deg, #1a6e8a, #2ba0b0)' }}>{t('land_price_cta')}</a>
+                <a href="/register" className="block w-full py-2 sm:py-2.5 text-center text-white rounded-xl font-medium text-xs sm:text-sm shadow-md" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>{t('land_price_cta')}</a>
               </div>
             ))}
           </div>
@@ -421,7 +424,7 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* FAQ */}
-      <section id="faq" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(20,75,105,0.03), rgba(35,140,160,0.03))' }}>
+      <section id="faq" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.03), rgba(25,115,135,0.03))' }}>
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-10">{t('land_faq_title')}</h2>
           <div className="space-y-3">
@@ -442,11 +445,11 @@ export default function LandingPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
 
       {/* FINAL CTA */}
-      <section className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0e3a5c, #1a6e8a)' }}>
+      <section className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a)' }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">{t('land_final_cta')}</h2>
           <p className="text-base sm:text-lg mb-6 sm:mb-8 px-4" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('land_final_desc')}</p>
-          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all" style={{ background: 'linear-gradient(135deg, #2ba0b0, #3ec4c4)' }}>
+          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all" style={{ background: 'linear-gradient(135deg, #1d8898, #2db0b0)' }}>
             <span className="text-amber-400">{t('land_final_button')}</span> <ArrowRight className="w-5 h-5 text-amber-400" />
           </a>
         </div>
@@ -468,4 +471,5 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
