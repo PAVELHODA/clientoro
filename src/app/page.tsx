@@ -171,19 +171,14 @@ export default function LandingPage() {
       {/* HERO - zesvětlený oceán */}
       <section className="relative py-10 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a, #1d8898)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
-          {/* CTA tlačítko NAD hero textem */}
-          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl mb-6 hover:scale-105 transition-transform" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
-            <span className="text-amber-400">{t('land_nav_register')}</span> <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
-          </a>
-
           <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-amber-300 rounded-full text-sm sm:text-base font-semibold">
-            <Zap className="w-3 h-3" /> {t('land_hero_badge')}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-amber-300 rounded-full text-sm sm:text-base font-semibold">
+              <Zap className="w-3 h-3" /> {t('land_hero_badge')}
+            </div>
+            <a href="/register" className="inline-flex items-center gap-2 px-5 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm shadow-lg hover:scale-105 transition-transform" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
+              <span className="text-amber-400">{t('land_nav_register')}</span> <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+            </a>
           </div>
-          </div>
-          <a href="/register" className="inline-flex items-center gap-2 px-5 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm shadow-lg hover:scale-105 transition-transform" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
-            <span className="text-amber-400">{t('land_nav_register')}</span> <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
-          </a>
           <h1 className="text-xl sm:text-2xl md:text-3xl text-white font-bold leading-tight mb-4 px-2">
             {t('land_hero_title')}
           </h1>
@@ -473,6 +468,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
