@@ -12,7 +12,7 @@ import {
   Calendar, ClipboardList, Users, Scissors, UserCircle,
   BarChart3, Settings, LogOut, Waves, Sun, Megaphone, Bot,
   TrendingUp, Crown, Wrench, Star, QrCode, LayoutDashboard,
-  Menu, X, Loader2, Globe, Bell, ChevronDown, Building2,
+  Menu, X, Loader2, Globe, Bell, ChevronDown, Building2, Moon,
 } from 'lucide-react'
 
 const MODE_THEMES: Record<string, {
@@ -67,6 +67,72 @@ const MODE_THEMES: Record<string, {
     dotColor: '#67e8f9', sunIcon: '#67e8f9',
   },
 }
+
+const CONTENT_THEMES = {
+  light: {
+    key: 'light',
+    bg: '#f8fafc',
+    cardBg: '#ffffff',
+    cardBorder: '1px solid #e2e8f0',
+    cardShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    textPrimary: '#0f172a',
+    textSecondary: '#475569',
+    textMuted: '#94a3b8',
+    headerBg: '#ffffff',
+    headerBorder: '#f1f5f9',
+    mainBorder: '1px solid #e2e8f0',
+    inputBg: '#ffffff',
+    inputBorder: '#e2e8f0',
+    hoverBg: '#f1f5f9',
+    badgeBg: '#f1f5f9',
+    outerBg: '#f1f5f9',
+    outerBorder: '1px solid #e2e8f0',
+    wrapperPadding: false,
+  },
+  dark: {
+    key: 'dark',
+    bg: '#0f172a',
+    cardBg: '#1e293b',
+    cardBorder: '1px solid rgba(255,255,255,0.08)',
+    cardShadow: '0 1px 3px rgba(0,0,0,0.3)',
+    textPrimary: '#f1f5f9',
+    textSecondary: '#94a3b8',
+    textMuted: '#64748b',
+    headerBg: '#1e293b',
+    headerBorder: 'rgba(255,255,255,0.06)',
+    mainBorder: '1px solid rgba(255,255,255,0.06)',
+    inputBg: '#1e293b',
+    inputBorder: 'rgba(255,255,255,0.1)',
+    hoverBg: 'rgba(255,255,255,0.05)',
+    badgeBg: 'rgba(255,255,255,0.06)',
+    outerBg: '#020617',
+    outerBorder: '1px solid rgba(255,255,255,0.06)',
+    wrapperPadding: true,
+  },
+  ocean: {
+    key: 'ocean',
+    bg: '#0c2d48',
+    cardBg: 'rgba(255,255,255,0.06)',
+    cardBorder: '1px solid rgba(255,255,255,0.10)',
+    cardShadow: '0 1px 3px rgba(0,0,0,0.2)',
+    textPrimary: '#e2e8f0',
+    textSecondary: 'rgba(255,255,255,0.6)',
+    textMuted: 'rgba(255,255,255,0.35)',
+    headerBg: 'rgba(255,255,255,0.04)',
+    headerBorder: 'rgba(255,255,255,0.08)',
+    mainBorder: '1px solid rgba(255,255,255,0.08)',
+    inputBg: 'rgba(255,255,255,0.06)',
+    inputBorder: 'rgba(255,255,255,0.12)',
+    hoverBg: 'rgba(255,255,255,0.08)',
+    badgeBg: 'rgba(255,255,255,0.08)',
+    outerBg: 'linear-gradient(135deg, #0a1628, #0c2d48, #0f6b7a)',
+    outerBorder: '1px solid rgba(255,255,255,0.12)',
+    wrapperPadding: true,
+  },
+} as const
+
+type ContentThemeKey = keyof typeof CONTENT_THEMES
+
 
 const MODE_NAV_ITEMS: Record<string, { href: string; labelKey: string; icon: any; minRole?: string }[]> = {
   solo: [
@@ -331,16 +397,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { organization, loading: authLoading, isSuperadmin, role } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [lang, setLangState] = useState('cs')
+  const [contentTheme, setContentThemeState] = useState<ContentThemeKey>('light')
 
   const setLang = (l: string) => {
     setLangState(l)
     if (typeof window !== 'undefined') localStorage.setItem('clientoro_lang', l)
   }
 
+  const setContentTheme = (t: ContentThemeKey) => {
+    setContentThemeState(t)
+    if (typeof window !== 'undefined') localStorage.setItem('clientoro_content_theme', t)
+  }
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('clientoro_lang')
       if (saved) setLangState(saved)
+      const savedTheme = localStorage.getItem('clientoro_content_theme')
+      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'ocean')) setContentThemeState(savedTheme)
     }
   }, [])
 
@@ -371,6 +445,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const orgName = organization?.name || 'Clientoro'
   const theme = MODE_THEMES[orgMode] || MODE_THEMES.team
   const allNavItems = MODE_NAV_ITEMS[orgMode] || MODE_NAV_ITEMS.team
+  const ct = CONTENT_THEMES[contentTheme]
   const ROLE_LEVEL: Record<string, number> = { staff: 10, manager: 20, owner: 30, superadmin: 100 }
   const userLevel = ROLE_LEVEL[role] || 10
   const navItems = allNavItems.filter((item: any) => userLevel >= (ROLE_LEVEL[item.minRole] || 10))
@@ -399,7 +474,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <a href="/onboarding" className="px-6 py-3 text-white rounded-xl font-semibold shadow-lg transition-all hover:shadow-xl" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               Dokončit nastavení
             </a>
-            <button onClick={handleLogout} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
+            <div className="flex items-center gap-1 px-2 py-1.5">
+          <Waves className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" style={{ color: theme.textMuted }} />
+          <div className="flex gap-0.5 ml-1">
+            {([{ code: 'light', icon: Sun, label: 'Light' }, { code: 'dark', icon: Moon, label: 'Dark' }, { code: 'ocean', icon: Waves, label: 'Ocean' }] as const).map((t) => {
+              const Icon = t.icon
+              return (
+                <button key={t.code} onClick={() => setContentTheme(t.code as ContentThemeKey)}
+                  className="px-1.5 md:px-2 py-1 rounded-md transition-all flex items-center gap-1"
+                  style={{
+                    background: contentTheme === t.code ? theme.activeBg : 'transparent',
+                    color: contentTheme === t.code ? theme.activeText : theme.textMuted,
+                    border: contentTheme === t.code ? `1px solid ${theme.activeBorder}` : '1px solid transparent',
+                  }}>
+                  <Icon className="w-3 h-3" />
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <button onClick={handleLogout} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
               Odhlásit se
             </button>
           </div>
@@ -521,6 +616,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
 
+        <div className="flex items-center gap-1 px-2 py-1.5">
+          <Waves className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" style={{ color: theme.textMuted }} />
+          <div className="flex gap-0.5 ml-1">
+            {([{ code: 'light', icon: Sun, label: 'Light' }, { code: 'dark', icon: Moon, label: 'Dark' }, { code: 'ocean', icon: Waves, label: 'Ocean' }] as const).map((t) => {
+              const Icon = t.icon
+              return (
+                <button key={t.code} onClick={() => setContentTheme(t.code as ContentThemeKey)}
+                  className="px-1.5 md:px-2 py-1 rounded-md transition-all flex items-center gap-1"
+                  style={{
+                    background: contentTheme === t.code ? theme.activeBg : 'transparent',
+                    color: contentTheme === t.code ? theme.activeText : theme.textMuted,
+                    border: contentTheme === t.code ? `1px solid ${theme.activeBorder}` : '1px solid transparent',
+                  }}>
+                  <Icon className="w-3 h-3" />
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         <button onClick={handleLogout}
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded-xl w-full transition-colors"
           style={{ color: theme.textMuted }}
@@ -534,9 +649,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   )
 
   return (
-    <LangContext.Provider value={{ lang, setLang, t, modeGradient: theme.gradient, modeText: theme.text }}>
-      <div className="flex h-screen md:bg-gray-50 p-1 sm:p-2" style={{ background: 'linear-gradient(135deg, #0a1628, #0c2d48, #0f6b7a)' }}>
-        <div className="flex flex-1 rounded-xl sm:rounded-2xl overflow-hidden border border-white/20 md:border-[#0f6b7a]/30">
+    <LangContext.Provider value={{ lang, setLang, t, modeGradient: theme.gradient, modeText: theme.text, contentTheme: ct }}>
+      <div className="flex h-screen" style={{ background: ct.wrapperPadding ? (ct.key === 'ocean' ? ct.outerBg : ct.outerBg) : ct.bg, padding: ct.wrapperPadding ? '0.25rem' : '0' }}>
+        <div className="flex flex-1 overflow-hidden" style={{ borderRadius: ct.wrapperPadding ? '0.75rem' : '0', border: ct.wrapperPadding ? ct.outerBorder : 'none' }}>
         <aside className="hidden md:flex w-64 flex-col relative overflow-hidden flex-shrink-0"
           style={{ background: theme.gradient }}>
           <SidebarContent />
@@ -558,7 +673,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
 
         <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200">
+          <header className="md:hidden flex items-center gap-3 px-4 py-3" style={{ background: ct.headerBg, borderBottom: '1px solid ' + ct.headerBorder, color: ct.textPrimary }}>
             <button onClick={() => setMobileOpen(true)}
               className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center">
               <Menu className="w-5 h-5 text-gray-600" />
@@ -570,9 +685,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <NotificationBell />
           </header>
 
-          <div className="hidden md:flex items-center justify-end gap-3 px-6 py-2 bg-white border-b border-gray-100">
+          <div className="hidden md:flex items-center justify-end gap-3 px-6 py-2" style={{ background: ct.headerBg, borderBottom: '1px solid ' + ct.headerBorder }}>
           </div>
-          <main className="flex-1 overflow-auto overflow-x-hidden">
+          <main className="flex-1 overflow-auto overflow-x-hidden" style={{ background: ct.bg }}>
             <div className="p-4 md:p-8 max-w-7xl">
               <MotivationalTip />
               {children}
