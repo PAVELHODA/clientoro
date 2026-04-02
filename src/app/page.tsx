@@ -6,7 +6,7 @@ import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Ch
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 import ClientoroLogo from '@/components/ClientoroLogo'
 
-const flags: Record<PublicLang, string> = { en: 'gb', sk: 'sk', cs: 'cz' }
+const flags: Record<PublicLang, string> = { cs: 'cz', sk: 'sk', en: 'gb' }
 
 const SEGMENT_ICONS: Record<string, any> = {
   scissors: Scissors, sparkles: Sparkles, gem: Gem, heartPulse: HeartPulse,
@@ -171,7 +171,7 @@ export default function LandingPage() {
       {/* HERO - zesvětlený oceán */}
       <section className="relative py-10 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a, #1d8898)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl mb-5 hover:scale-105 transition-transform block mx-auto w-fit" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
+          <a href="/register" className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl mb-4 hover:scale-105 transition-transform mx-auto w-fit" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
             <span className="text-amber-400">{t('land_nav_register')}</span> <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
           </a>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-amber-300 rounded-full text-sm sm:text-base font-semibold mb-4">
@@ -466,6 +466,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
