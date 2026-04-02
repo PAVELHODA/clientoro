@@ -317,7 +317,7 @@ export async function sendWelcomeEmail({
 
         <!-- Tip -->
         <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin:0 0 8px;">
-          <p style="color:#92400e;font-size:13px;margin:0;">💡 <strong>TIP:</strong> Zapněte připomínky v nastavení — snížíte no-show až o 70 %.</p>
+          <p style="color:#92400e;font-size:13px;margin:0;">💡 <strong>TIP:</strong> Zapněte připomínky v nastavení — snížíte počet nedorazivších až o 70 %.</p>
         </div>
       `,
       footer: `

@@ -107,7 +107,7 @@ export default function OnboardingPage() {
     setIcoLoading(false)
   }
 
-  const bookingSlug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'muj-salon'
+  const bookingSlug = orgName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'muj-salon'
 
   const selectedCategoryList = categories.filter(c => selectedCategories.has(c.id))
   const currentCategory = selectedCategoryList[0]
