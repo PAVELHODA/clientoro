@@ -71,62 +71,42 @@ const MODE_THEMES: Record<string, {
 const CONTENT_THEMES = {
   light: {
     key: 'light',
-    bg: '#f8fafc',
-    cardBg: '#ffffff',
-    cardBorder: '1px solid #e2e8f0',
-    cardShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    bg: '#f1f5f9',
+    cardBg: '#dce4ee',
+    cardBorder: '1px solid #c5cfdc',
+    cardShadow: '0 1px 3px rgba(0,0,0,0.08)',
     textPrimary: '#0f172a',
-    textSecondary: '#475569',
-    textMuted: '#94a3b8',
-    headerBg: '#ffffff',
-    headerBorder: '#f1f5f9',
-    mainBorder: '1px solid #e2e8f0',
+    textSecondary: '#334155',
+    textMuted: '#64748b',
+    headerBg: '#dce4ee',
+    headerBorder: '#c5cfdc',
+    mainBorder: '1px solid #c5cfdc',
     inputBg: '#ffffff',
-    inputBorder: '#e2e8f0',
-    hoverBg: '#f1f5f9',
-    badgeBg: '#f1f5f9',
-    outerBg: '#f1f5f9',
-    outerBorder: '1px solid #e2e8f0',
+    inputBorder: '#cbd5e1',
+    hoverBg: '#cdd7e4',
+    badgeBg: '#cdd7e4',
+    outerBg: '#e2e8f0',
+    outerBorder: '1px solid #cbd5e1',
     wrapperPadding: false,
   },
   dark: {
     key: 'dark',
     bg: '#0f172a',
     cardBg: '#1e293b',
-    cardBorder: '1px solid rgba(255,255,255,0.08)',
-    cardShadow: '0 1px 3px rgba(0,0,0,0.3)',
-    textPrimary: '#f1f5f9',
-    textSecondary: '#94a3b8',
-    textMuted: '#64748b',
-    headerBg: '#1e293b',
-    headerBorder: 'rgba(255,255,255,0.06)',
-    mainBorder: '1px solid rgba(255,255,255,0.06)',
-    inputBg: '#1e293b',
-    inputBorder: 'rgba(255,255,255,0.1)',
-    hoverBg: 'rgba(255,255,255,0.05)',
-    badgeBg: 'rgba(255,255,255,0.06)',
-    outerBg: '#020617',
-    outerBorder: '1px solid rgba(255,255,255,0.06)',
-    wrapperPadding: true,
-  },
-  ocean: {
-    key: 'ocean',
-    bg: '#0c2d48',
-    cardBg: 'rgba(255,255,255,0.06)',
     cardBorder: '1px solid rgba(255,255,255,0.10)',
-    cardShadow: '0 1px 3px rgba(0,0,0,0.2)',
-    textPrimary: '#e2e8f0',
-    textSecondary: 'rgba(255,255,255,0.6)',
-    textMuted: 'rgba(255,255,255,0.35)',
-    headerBg: 'rgba(255,255,255,0.04)',
+    cardShadow: '0 2px 4px rgba(0,0,0,0.3)',
+    textPrimary: '#ffffff',
+    textSecondary: '#e2e8f0',
+    textMuted: '#94a3b8',
+    headerBg: '#1e293b',
     headerBorder: 'rgba(255,255,255,0.08)',
     mainBorder: '1px solid rgba(255,255,255,0.08)',
-    inputBg: 'rgba(255,255,255,0.06)',
-    inputBorder: 'rgba(255,255,255,0.12)',
-    hoverBg: 'rgba(255,255,255,0.08)',
+    inputBg: '#0f172a',
+    inputBorder: 'rgba(255,255,255,0.15)',
+    hoverBg: 'rgba(255,255,255,0.06)',
     badgeBg: 'rgba(255,255,255,0.08)',
-    outerBg: 'linear-gradient(135deg, #0a1628, #0c2d48, #0f6b7a)',
-    outerBorder: '1px solid rgba(255,255,255,0.12)',
+    outerBg: '#020617',
+    outerBorder: '1px solid rgba(255,255,255,0.08)',
     wrapperPadding: true,
   },
 } as const
@@ -414,7 +394,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const saved = localStorage.getItem('clientoro_lang')
       if (saved) setLangState(saved)
       const savedTheme = localStorage.getItem('clientoro_content_theme')
-      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'ocean')) setContentThemeState(savedTheme)
+      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) setContentThemeState(savedTheme as ContentThemeKey)
     }
   }, [])
 
@@ -477,7 +457,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-1 px-2 py-1.5">
           <Waves className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" style={{ color: theme.textMuted }} />
           <div className="flex gap-0.5 ml-1">
-            {([{ code: 'light', icon: Sun, label: 'Light' }, { code: 'dark', icon: Moon, label: 'Dark' }, { code: 'ocean', icon: Waves, label: 'Ocean' }] as const).map((t) => {
+            {([{ code: 'light', icon: Sun, label: 'Light' }, { code: 'dark', icon: Moon, label: 'Dark' }] as const).map((t) => {
               const Icon = t.icon
               return (
                 <button key={t.code} onClick={() => setContentTheme(t.code as ContentThemeKey)}
@@ -619,7 +599,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex items-center gap-1 px-2 py-1.5">
           <Waves className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" style={{ color: theme.textMuted }} />
           <div className="flex gap-0.5 ml-1">
-            {([{ code: 'light', icon: Sun, label: 'Light' }, { code: 'dark', icon: Moon, label: 'Dark' }, { code: 'ocean', icon: Waves, label: 'Ocean' }] as const).map((t) => {
+            {([{ code: 'light', icon: Sun, label: 'Light' }, { code: 'dark', icon: Moon, label: 'Dark' }] as const).map((t) => {
               const Icon = t.icon
               return (
                 <button key={t.code} onClick={() => setContentTheme(t.code as ContentThemeKey)}
@@ -650,7 +630,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <LangContext.Provider value={{ lang, setLang, t, modeGradient: theme.gradient, modeText: theme.text, contentTheme: ct }}>
-      <div className="flex h-screen" style={{ background: ct.wrapperPadding ? (ct.key === 'ocean' ? ct.outerBg : ct.outerBg) : ct.bg, padding: ct.wrapperPadding ? '0.25rem' : '0' }}>
+      <div className="flex h-screen" style={{ background: ct.wrapperPadding ? ct.outerBg : ct.bg, padding: ct.wrapperPadding ? '0.25rem' : '0' }}>
         <div className="flex flex-1 overflow-hidden" style={{ borderRadius: ct.wrapperPadding ? '0.75rem' : '0', border: ct.wrapperPadding ? ct.outerBorder : 'none' }}>
         <aside className="hidden md:flex w-64 flex-col relative overflow-hidden flex-shrink-0"
           style={{ background: theme.gradient }}>
