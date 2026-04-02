@@ -124,7 +124,7 @@ export default function LoginPage() {
 
       <div className="w-full lg:flex-1 flex items-center justify-center px-4 sm:px-6 lg:bg-gray-50">
         <div className="w-full max-w-md">
-          <div className="lg:hidden text-center mb-8">
+          <div className="xl:hidden text-center mb-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3"
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
@@ -137,11 +137,11 @@ export default function LoginPage() {
             </div>
             
           </div>
-          <div className="hidden lg:flex justify-center mb-4 gap-1">
+          <div className="hidden xl:flex justify-center mb-4 gap-1">
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
               <button key={l} onClick={() => setLang(l)}
-                className={`text-lg px-2 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-80'}`}>
-                {flags[l]}
+                className={`text-sm font-medium px-2 py-1 rounded transition-all ${lang === l ? 'text-gray-900 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}>
+                {l.toUpperCase()}
               </button>
             ))}
           </div>

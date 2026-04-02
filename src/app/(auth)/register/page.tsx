@@ -164,7 +164,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
 
           {/* Clientoro nadpis - jen mobil */}
-          <div className="lg:hidden text-center mb-6">
+          <div className="xl:hidden text-center mb-6">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
             </div>
@@ -172,7 +172,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Language switcher */}
-          <div className="lg:hidden flex justify-center mb-4 gap-1">
+          <div className="xl:hidden flex justify-center mb-4 gap-1">
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
               <button key={l} onClick={() => setLang(l)}
                 className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20' : 'opacity-50 hover:opacity-100'}`}>
@@ -180,11 +180,11 @@ export default function RegisterPage() {
               </button>
             ))}
           </div>
-          <div className="hidden lg:flex justify-center mb-4 gap-1">
+          <div className="hidden xl:flex justify-center mb-4 gap-1">
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
               <button key={l} onClick={() => setLang(l)}
-                className={`text-lg px-2 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-gray-100' : 'opacity-50 hover:opacity-80'}`}>
-                {flags[l]}
+                className={`text-sm font-medium px-2 py-1 rounded transition-all ${lang === l ? 'text-gray-900 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}>
+                {l.toUpperCase()}
               </button>
             ))}
           </div>

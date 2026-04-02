@@ -44,10 +44,10 @@ export default function CookieConsent() {
               <Shield className="w-5 h-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-sm text-white font-medium mb-1">Ochrana soukromí a cookies</p>
+              <p className="text-sm text-white font-medium mb-1">Ochrana soukrom&#237; a cookies</p>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Používáme pouze technicky nezbytné cookies pro fungování aplikace (přihlášení, jazyk, nastavení).
-                Nepoužíváme žádné reklamní ani sledovací cookies. Vaše data zpracováváme v souladu s{' '}
+                Pou&#382;&#237;v&#225;me pouze technicky nezbytn&#233; cookies pro fungov&#225;n&#237; aplikace (p&#345;ihl&#225;&#353;en&#237;, jazyk, nastaven&#237;).
+                Nepou&#382;&#237;v&#225;me &#382;&#225;dn&#233; reklamn&#237; ani sledovac&#237; cookies. Va&#353;e data zpracov&#225;v&#225;me v souladu s{' '}
                 <a href="/privacy" className="text-amber-400 underline hover:text-amber-300">GDPR</a>.
               </p>
             </div>
@@ -55,16 +55,16 @@ export default function CookieConsent() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full sm:w-auto">
             <button onClick={acceptNecessary}
               className="px-4 py-2 text-xs text-green-600 hover:text-green-500 rounded-lg border border-green-800 hover:border-green-600 transition-colors font-medium">
-              Pouze nezbytné
+              Pouze nezbytn&#233;
             </button>
             <button onClick={acceptAll}
               className="px-4 py-2 text-xs text-white font-semibold rounded-lg shadow-md transition-colors"
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
-              Přijmout vše
+              P&#345;ijmout v&#353;e
             </button>
             <button onClick={declineAll}
               className="px-4 py-2 text-xs text-amber-400 hover:text-amber-300 rounded-lg border border-amber-700 hover:border-amber-500 transition-colors">
-              Odmítnout vše
+              Odm&#237;tnout v&#353;e
             </button>
           </div>
         </div>
