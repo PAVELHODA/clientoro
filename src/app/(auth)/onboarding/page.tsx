@@ -136,8 +136,6 @@ export default function OnboardingPage() {
     setSaving(false); setStep(1)
     if (selectedCategories.size > 0) selectAllTemplates()
   }
-    setSaving(false); setStep(1)
-  }
 
   const saveStep2 = async () => {
     setSaving(true)
