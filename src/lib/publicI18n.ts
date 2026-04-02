@@ -181,7 +181,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_feat_growth_5: 'Dárkové poukazy',
 
     // Landing — AI section
-    land_ai_badge: 'AI, které pracuje za vás',
+    land_ai_badge: 'Poháněno AI',
     land_ai_title: 'AI, která pracuje za vás',
     land_ai_desc: 'AI analyzuje vaše data a navrhuje konkrétní kroky. Žádný chatbot — reálné insighty.',
     land_ai_1_title: 'Detekce potenciálních hodin',
@@ -471,7 +471,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_feat_growth_5: 'Darčekové poukazy',
 
     // Landing — AI section
-    land_ai_badge: 'AI, ktoré pracuje za vás',
+    land_ai_badge: 'Poháňané AI',
     land_ai_title: 'AI, ktorá pracuje za vás',
     land_ai_desc: 'AI analyzuje vaše dáta a navrhuje konkrétne kroky. Žiadny chatbot — reálne insighty.',
     land_ai_1_title: 'Detekcia potenciálnych hodín',
@@ -761,7 +761,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_feat_growth_5: 'Gift vouchers',
 
     // Landing — AI section
-    land_ai_badge: 'AI that works for you',
+    land_ai_badge: 'Powered by AI',
     land_ai_title: 'AI that works for you',
     land_ai_desc: 'AI analyzes your data and suggests concrete steps. No chatbot — real insights.',
     land_ai_1_title: 'Potential hours detection',

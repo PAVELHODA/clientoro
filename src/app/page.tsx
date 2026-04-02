@@ -238,7 +238,7 @@ export default function LandingPage() {
       <section id="features" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{lang === 'en' ? 'What you get' : lang === 'sk' ? 'Čo dostanete' : 'Co dostanete'}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('land_features_title')}</h2>
             <p className="text-white/60 text-sm sm:text-base">{t('land_features_desc')}</p>
           </div>
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
