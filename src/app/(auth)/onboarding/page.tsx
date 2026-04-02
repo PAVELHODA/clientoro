@@ -132,10 +132,10 @@ export default function OnboardingPage() {
   const saveStep1 = async () => {
     setSaving(true)
     const payload = { name: orgName, address: orgAddress, phone: orgPhone, email: orgEmail, ico: orgIco, dic: orgDic, booking_link: bookingSlug, category: selectedCategoryList.map(c => c.slug).join(',') || 'other' }
-    console.log('[Step1] Sending:', JSON.stringify(payload))
-    const res = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-    const data = await res.json(); console.log('[Step1] Response:', res.status, JSON.stringify(data))
-    if (!res.ok) console.error('[Step1] FAILED:', data)
+    await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    setSaving(false); setStep(1)
+    if (selectedCategories.size > 0) selectAllTemplates()
+  }
     setSaving(false); setStep(1)
   }
 
