@@ -203,6 +203,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_onboard_3_desc: 'Klienti rezervují online',
     land_onboard_4: 'Sledujte růst',
     land_onboard_4_desc: 'AI vám pomůže zlepšovat',
+    land_onboard_cta: 'Zažít 14 dní zdarma',
 
     // Landing — calculator
     land_calc_title: 'O kolik měsíčně přicházíte?',
@@ -493,6 +494,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_onboard_3_desc: 'Klienti rezervujú online',
     land_onboard_4: 'Sledujte rast',
     land_onboard_4_desc: 'AI vám pomôže zlepšovať',
+    land_onboard_cta: 'Zažiť 14 dní zadarmo',
 
     // Landing — calculator
     land_calc_title: 'O koľko mesačne prichádzate?',
@@ -783,6 +785,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_onboard_3_desc: 'Clients book online',
     land_onboard_4: 'Track growth',
     land_onboard_4_desc: 'AI helps you improve',
+    land_onboard_cta: 'Experience 14 days free',
 
     // Landing — calculator
     land_calc_title: 'How much do you lose monthly?',
@@ -896,3 +899,4 @@ export function usePublicLang() {
 export function LangSwitcher({ lang, setLang }: { lang: PublicLang, setLang: (l: PublicLang) => void }) {
   return null // Placeholder — implementujeme v komponentách
 }
+
