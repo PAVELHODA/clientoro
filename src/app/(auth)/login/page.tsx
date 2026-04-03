@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase'
 import { Waves, Mail, Lock, ArrowRight, Eye, EyeOff, Globe } from 'lucide-react'
 import { publicTranslations, type PublicLang } from '@/lib/publicI18n'
 
-const flags: Record<PublicLang, string> = { cs: '🇨🇿', sk: '🇸🇰', en: '🇬🇧' }
+const flagUrls: Record<PublicLang, string> = { cs: 'https://flagcdn.com/w40/cz.png', sk: 'https://flagcdn.com/w40/sk.png', en: 'https://flagcdn.com/w40/gb.png' }
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -132,7 +132,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-white lg:text-gray-900">Clientoro</h1>
             <div className="flex justify-center gap-2 mt-3">
               {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
-                <button key={l} onClick={() => setLang(l)} className={`text-2xl px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20 lg:bg-gray-200' : 'opacity-80 hover:opacity-100 hover:bg-gray-100'}`}>{flags[l]}</button>
+                <button key={l} onClick={() => setLang(l)} className={`text-2xl px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20 lg:bg-gray-200' : 'opacity-80 hover:opacity-100 hover:bg-gray-100'}`}><img src={flagUrls[l]} alt={l} className="w-6 h-4 object-cover rounded-sm" /></button>
               ))}
             </div>
             

@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase'
 import { Waves, Mail, Lock, ArrowRight, Building2, User, Eye, EyeOff, RefreshCw } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 
-const flags: Record<PublicLang, string> = { cs: '🇨🇿', sk: '🇸🇰', en: '🇬🇧' }
+const flagUrls: Record<PublicLang, string> = { cs: 'https://flagcdn.com/w40/cz.png', sk: 'https://flagcdn.com/w40/sk.png', en: 'https://flagcdn.com/w40/gb.png' }
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -176,7 +176,7 @@ export default function RegisterPage() {
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
               <button key={l} onClick={() => setLang(l)}
                 className={`text-2xl px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20 lg:bg-gray-200' : 'opacity-80 hover:opacity-100 hover:bg-gray-100'}`}>
-                {flags[l]}
+                <img src={flagUrls[l]} alt={l} className="w-6 h-4 object-cover rounded-sm" />
               </button>
             ))}
           </div>
