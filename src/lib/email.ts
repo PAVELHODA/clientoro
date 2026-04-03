@@ -945,3 +945,134 @@ export async function sendPaymentFailed({
     }),
   })
 }
+// ===== 22. UPGRADE PLÁNU =====
+export async function sendPlanUpgraded({
+  to, orgName, oldPlan, newPlan, amount, features,
+}: {
+  to: string; orgName: string; oldPlan: string; newPlan: string; amount: string; features?: string[]
+}) {
+  return sendEmail({
+    to,
+    subject: `Plán upgradován na ${newPlan} — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: `Upgrade na ${newPlan} ✓`,
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, váš plán pro <strong style="color:#111827;">${orgName}</strong> byl úspěšně upgradován.
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Předchozí:</strong> <span style="text-decoration:line-through;color:#9ca3af;">${oldPlan}</span></p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Nový plán:</strong> <span style="color:#059669;font-weight:700;">${newPlan}</span></p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Měsíční platba:</strong> ${amount}</p>
+        </div>
+        ${features && features.length > 0 ? `<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">🎉 Nově máte přístup k:</p>
+          ${features.map(f => `<p style="margin:4px 0;color:#374151;font-size:13px;">✅ ${f}</p>`).join('')}
+        </div>` : ''}
+        <div style="margin:20px 0;text-align:center;">
+          <a href="https://clientoro.pro/dashboard" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Otevřít dashboard</a>
+        </div>
+      `,
+    }),
+  })
+}
+
+// ===== 23. ZMĚNA HESLA — POTVRZENÍ =====
+export async function sendPasswordChanged({
+  to, orgName, changedAt,
+}: {
+  to: string; orgName: string; changedAt: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Heslo změněno — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Heslo bylo změněno',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, potvrzujeme změnu hesla pro účet <strong style="color:#111827;">${orgName}</strong>.
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0;color:#059669;font-size:14px;font-weight:600;">✓ Heslo úspěšně změněno</p>
+          <p style="margin:4px 0 0;color:#6b7280;font-size:12px;">Změněno: ${changedAt}</p>
+        </div>
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:14px 16px;margin:16px 0;">
+          <p style="margin:0;color:#dc2626;font-size:13px;">⚠️ Pokud jste tuto změnu neprovedli vy, okamžitě si resetujte heslo na <a href="https://clientoro.pro/login" style="color:#dc2626;font-weight:600;">clientoro.pro/login</a> nebo nás kontaktujte.</p>
+        </div>
+      `,
+    }),
+  })
+}
+
+// ===== 24. WAITLIST — UVOLNIL SE TERMÍN =====
+export async function sendWaitlistNotification({
+  to, customerName, serviceName, date, time, orgName, bookingUrl,
+}: {
+  to: string; customerName: string; serviceName: string
+  date: string; time: string; orgName: string; bookingUrl: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Uvolnil se termín! — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Uvolnil se termín! 🎉',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den <strong>${customerName}</strong>, máme pro vás skvělou zprávu!
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 4px;color:#059669;font-size:14px;font-weight:700;">Volný termín</p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Služba:</strong> ${serviceName}</p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Datum:</strong> ${date} v ${time}</p>
+        </div>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:12px 16px;margin:16px 0;">
+          <p style="margin:0;color:#92400e;font-size:13px;">⏰ Termín je dostupný omezeně — rezervujte co nejdříve.</p>
+        </div>
+        <div style="margin:24px 0;text-align:center;">
+          <a href="${bookingUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:15px;font-weight:700;">Rezervovat termín</a>
+        </div>
+      `,
+    }),
+  })
+}
+
+// ===== 25. MĚSÍČNÍ REPORT =====
+export async function sendMonthlyReport({
+  to, orgName, month, totalBookings, totalRevenue, newClients, repeatRate, topService, topStaff, dashboardUrl,
+}: {
+  to: string; orgName: string; month: string
+  totalBookings: number; totalRevenue: number; newClients: number; repeatRate: number
+  topService?: string; topStaff?: string; dashboardUrl?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Měsíční report ${month} — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: `Report za ${month}`,
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Přehled za <strong>${month}</strong> pro <strong style="color:#111827;">${orgName}</strong>.
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:16px 0;text-align:center;">
+          <p style="margin:0;color:#059669;font-size:32px;font-weight:700;">${totalRevenue.toLocaleString('cs-CZ')} Kč</p>
+          <p style="margin:4px 0 0;color:#6b7280;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;">Celkové tržby</p>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:4px 0;color:#374151;font-size:13px;">📅 Rezervací: <strong>${totalBookings}</strong></p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">👤 Nových klientů: <strong>${newClients}</strong></p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">🔄 Návratnost: <strong>${repeatRate}%</strong></p>
+          ${topService ? `<p style="margin:4px 0;color:#374151;font-size:13px;">⭐ Top služba: <strong>${topService}</strong></p>` : ''}
+          ${topStaff ? `<p style="margin:4px 0;color:#374151;font-size:13px;">🏆 Top specialista: <strong>${topStaff}</strong></p>` : ''}
+        </div>
+        <div style="margin:20px 0;text-align:center;">
+          <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Zobrazit detaily</a>
+        </div>
+      `,
+      footer: `<p style="color:#9ca3af;font-size:11px;margin:0;">Tento report můžete vypnout v Nastavení.</p>`,
+    }),
+  })
+}
