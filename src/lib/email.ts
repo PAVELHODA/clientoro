@@ -17,6 +17,8 @@ function emailTemplate({ title, body, footer, orgName, logoUrl, bookingId }: { t
     <p style="color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:11px;letter-spacing:0.1em;">ONLINE REZERVACE</p>
     ${bookingId ? `<p style="color:rgba(255,255,255,0.3);margin:8px 0 0;font-size:10px;letter-spacing:0.05em;">#${bookingId}</p>` : ''}
   </div>
+  <!-- Wave transition -->
+  <div style="height:24px;margin-top:-1px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;background:linear-gradient(180deg,#34b8c0 0%,#7dd3d8 30%,#b8e8ec 60%,#ffffff 100%);"></div>
   <!-- Body -->
   <div style="background:white;padding:28px 24px;border:1px solid #e5e7eb;border-top:none;">
     <h2 style="color:#111827;margin:0 0 16px;font-size:20px;font-weight:600;">${title}</h2>
