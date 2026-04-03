@@ -26,6 +26,26 @@ export const metadata: Metadata = {
   title: 'Clientoro | Booking & Growth OS',
   description: 'AI Booking, CRM & Growth OS pro služby. Získejte více klientů, zvyšte tržby automaticky.',
   manifest: '/manifest.json',
+  metadataBase: new URL('https://clientoro.pro'),
+  openGraph: {
+    title: 'Clientoro | AI Booking & Growth OS',
+    description: 'Chytrý kalendář, který pomáhá zaplnit termíny a získat nové klienty. Online rezervace, CRM, AI insighty.',
+    url: 'https://clientoro.pro',
+    siteName: 'Clientoro',
+    locale: 'cs_CZ',
+    type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Clientoro — AI Booking & Growth OS' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Clientoro | AI Booking & Growth OS',
+    description: 'Chytrý kalendář, který pomáhá zaplnit termíny a získat nové klienty.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
