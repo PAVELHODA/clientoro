@@ -41,7 +41,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const { t, lang, modeGradient } = useLang()
+  const { t, lang, modeGradient, contentTheme: ct } = useLang()
   const { organization } = useAuth()
 
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
@@ -69,7 +69,7 @@ export default function DashboardPage() {
           {new Date().getHours() >= 12 && new Date().getHours() < 18 && <Sun className="w-6 h-6 text-yellow-500" />}
           {new Date().getHours() >= 18 && new Date().getHours() < 23 && <Moon className="w-6 h-6 text-indigo-400" />}
           {(new Date().getHours() >= 23 || new Date().getHours() < 6) && <Lamp className="w-6 h-6 text-purple-400" />}
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>
             {new Date().getHours() >= 6 && new Date().getHours() < 12
               ? (lang === 'en' ? 'Good morning' : lang === 'sk' ? 'Dobré ráno' : 'Dobré ráno')
               : new Date().getHours() >= 12 && new Date().getHours() < 18
@@ -80,7 +80,7 @@ export default function DashboardPage() {
             }
           </h1>
         </div>
-        <p className="text-gray-500">
+        <p className="text-sm" style={{ color: ct?.textMuted || '#64748b' }}>
           {new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
           {data && data.today.bookings > 0 && (
             <span className="ml-2 text-blue-600 font-medium">
@@ -141,31 +141,31 @@ export default function DashboardPage() {
 
       {/* KPI karty — dnes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">{t('dash_today_bookings')}</span>
+            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_today_bookings')}</span>
             <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
               <Calendar className="w-5 h-5 text-blue-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{data.today.bookings}</p>
-          <p className="text-xs text-gray-400 mt-1">{t('dash_this_week')}: {data.week.bookings}</p>
+          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{data.today.bookings}</p>
+          <p className="text-xs mt-1" style={{ color: ct?.textMuted || '#94a3b8' }}>{t('dash_this_week')}: {data.week.bookings}</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">{t('dash_today_revenue')}</span>
+            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_today_revenue')}</span>
             <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-green-600">Kč</span>
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{formatPrice(data.today.revenue)}</p>
-          <p className="text-xs text-gray-400 mt-1">{t('dash_this_week')}: {formatPrice(data.week.revenue)}</p>
+          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{formatPrice(data.today.revenue)}</p>
+          <p className="text-xs mt-1" style={{ color: ct?.textMuted || '#94a3b8' }}>{t('dash_this_week')}: {formatPrice(data.week.revenue)}</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">{t('dash_month_revenue')}</span>
+            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_month_revenue')}</span>
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${data.month.revenueChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
               {data.month.revenueChange >= 0
                 ? <TrendingUp className="w-5 h-5 text-green-600" />
@@ -173,20 +173,20 @@ export default function DashboardPage() {
               }
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{formatPrice(data.month.revenue)}</p>
+          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{formatPrice(data.month.revenue)}</p>
           <p className={`text-xs mt-1 font-medium ${data.month.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {data.month.revenueChange >= 0 ? "\u2191" : "\u2193"} {Math.abs(data.month.revenueChange)}% {t('dash_vs_last_month')}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-500">{t('dash_clients')}</span>
+            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_clients')}</span>
             <div className="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center">
               <Users className="w-5 h-5 text-purple-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{data.totals.clients}</p>
+          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{data.totals.clients}</p>
           <p className="text-xs text-green-600 mt-1 font-medium">+{data.month.newClients} {t('dash_new_this_month')}</p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-// PATH: src/lib/serviceCategories.ts
+﻿// PATH: src/lib/serviceCategories.ts
 
 export type Industry =
   | 'hair_salon'
@@ -30,10 +30,10 @@ const SLUG_MAP: Record<string, Industry> = {
   'masaze': 'massage',
   'massage': 'massage',
   'wellness': 'massage',
-  'fyzioterapie': 'physiotherapy',
-  'fyzioterapia': 'physiotherapy',
+  'Fyzioterapie': 'physiotherapy',
+  'Fyzioterapia': 'physiotherapy',
   'physiotherapy': 'physiotherapy',
-  'rehabilitace': 'physiotherapy',
+  'Rehabilitace': 'physiotherapy',
   'esteticka-klinika': 'aesthetic_clinic',
   'estetika': 'aesthetic_clinic',
   'aesthetic': 'aesthetic_clinic',
@@ -42,54 +42,54 @@ const SLUG_MAP: Record<string, Industry> = {
   'trening': 'fitness',
   'other': 'general',
   'general': 'general',
-  'ostatni': 'general',
-  'ostatne': 'general',
+  'Ostatní': 'general',
+  'Ostatné': 'general',
 }
 
 const CATEGORIES: Record<Industry, Record<Lang, string[]>> = {
   hair_salon: {
-    cs: ['Strihani', 'Barveni', 'Styling', 'Pece o vlasy', 'Ostatni'],
-    sk: ['Strihanie', 'Farbenie', 'Styling', 'Starostlivost o vlasy', 'Ostatne'],
+    cs: ['Stříhání', 'Barvení', 'Styling', 'Péče o vlasy', 'Ostatní'],
+    sk: ['Strihanie', 'Farbenie', 'Styling', 'Starostlivosť o vlasy', 'Ostatné'],
     en: ['Haircut', 'Coloring', 'Styling', 'Hair care', 'Other'],
   },
   barber: {
-    cs: ['Strihani', 'Holeni', 'Vousy', 'Styling', 'Ostatni'],
-    sk: ['Strihanie', 'Holenie', 'Fuzy', 'Styling', 'Ostatne'],
+    cs: ['Stříhání', 'Holení', 'Vousy', 'Styling', 'Ostatní'],
+    sk: ['Strihanie', 'Holenie', 'Fúzy', 'Styling', 'Ostatné'],
     en: ['Haircut', 'Shaving', 'Beard', 'Styling', 'Other'],
   },
   beauty: {
-    cs: ['Plet', 'Liceni', 'Rasy', 'Oboci', 'Depilace', 'Ostatni'],
-    sk: ['Plet', 'Licenie', 'Mihalnice', 'Obicie', 'Depilacia', 'Ostatne'],
+    cs: ['Plet', 'Líčení', 'Rasy', 'Oboci', 'Depilace', 'Ostatní'],
+    sk: ['Plet', 'Líčenie', 'Mihalnice', 'Obočie', 'Depilácia', 'Ostatné'],
     en: ['Skin', 'Makeup', 'Lashes', 'Brows', 'Waxing', 'Other'],
   },
   nails: {
-    cs: ['Manikura', 'Pedikura', 'Gel', 'Akryl', 'Zdobeni', 'Ostatni'],
-    sk: ['Manikura', 'Pedikura', 'Gel', 'Akryl', 'Zdobenie', 'Ostatne'],
+    cs: ['Manikura', 'Pedikura', 'Gel', 'Akryl', 'Zdobení', 'Ostatní'],
+    sk: ['Manikura', 'Pedikura', 'Gel', 'Akryl', 'Zdobenie', 'Ostatné'],
     en: ['Manicure', 'Pedicure', 'Gel', 'Acrylic', 'Nail art', 'Other'],
   },
   massage: {
-    cs: ['Klasicka', 'Sportovni', 'Relaxacni', 'Lymfaticka', 'Reflexni', 'Ostatni'],
-    sk: ['Klasicka', 'Sportova', 'Relaxacna', 'Lymfaticka', 'Reflexna', 'Ostatne'],
+    cs: ['Klasická', 'Sportovní', 'Relaxační', 'Lymfatická', 'Reflexní', 'Ostatní'],
+    sk: ['Klasická', 'Športová', 'Relaxačná', 'Lymfatická', 'Reflexná', 'Ostatné'],
     en: ['Classic', 'Sports', 'Relaxation', 'Lymphatic', 'Reflexology', 'Other'],
   },
   physiotherapy: {
-    cs: ['Vysetreni', 'Manualni terapie', 'Rehabilitace', 'Elektroterapie', 'Prevence', 'Ostatni'],
-    sk: ['Vysetrenie', 'Manualna terapia', 'Rehabilitacia', 'Elektroterapia', 'Prevencia', 'Ostatne'],
+    cs: ['Vyšetření', 'Manuální terapie', 'Rehabilitace', 'Elektroterapie', 'Prevence', 'Ostatní'],
+    sk: ['Vyšetrenie', 'Manuálna terapia', 'Rehabilitácia', 'Elektroterapia', 'Prevencia', 'Ostatné'],
     en: ['Examination', 'Manual therapy', 'Rehabilitation', 'Electrotherapy', 'Prevention', 'Other'],
   },
   aesthetic_clinic: {
-    cs: ['Injekce', 'Laser', 'Peeling', 'Body', 'Konzultace', 'Ostatni'],
-    sk: ['Injekcie', 'Laser', 'Peeling', 'Body', 'Konzultacia', 'Ostatne'],
+    cs: ['Injekce', 'Laser', 'Peeling', 'Body', 'Konzultace', 'Ostatní'],
+    sk: ['Injekcie', 'Laser', 'Peeling', 'Body', 'Konzultácia', 'Ostatné'],
     en: ['Injectables', 'Laser', 'Peeling', 'Body', 'Consultation', 'Other'],
   },
   fitness: {
-    cs: ['Osobni trenink', 'Skupinovy', 'Vyziva', 'Diagnostika', 'Ostatni'],
-    sk: ['Osobny trening', 'Skupinovy', 'Vyziva', 'Diagnostika', 'Ostatne'],
+    cs: ['Osobní trénink', 'Skupinový', 'Výživa', 'Diagnostika', 'Ostatní'],
+    sk: ['Osobný tréning', 'Skupinový', 'Výživa', 'Diagnostika', 'Ostatné'],
     en: ['Personal training', 'Group', 'Nutrition', 'Diagnostics', 'Other'],
   },
   general: {
-    cs: ['Konzultace', 'Sluzba', 'Balicek', 'Ostatni'],
-    sk: ['Konzultacia', 'Sluzba', 'Balicek', 'Ostatne'],
+    cs: ['Konzultace', 'Služba', 'Balíček', 'Ostatní'],
+    sk: ['Konzultácia', 'Služba', 'Balíček', 'Ostatné'],
     en: ['Consultation', 'Service', 'Package', 'Other'],
   },
 }
@@ -110,15 +110,15 @@ export function getServiceCategories(category: string | null | undefined, lang: 
 
 export function getAllIndustries(lang: string): { value: Industry; label: string }[] {
   const labels: Record<Industry, Record<Lang, string>> = {
-    hair_salon: { cs: 'Kadernictvi / Salon', sk: 'Kadernictvo / Salon', en: 'Hair salon' },
+    hair_salon: { cs: 'Kadeřnictví / Salón', sk: 'Kaderníctvo / Salón', en: 'Hair salon' },
     barber: { cs: 'Barber shop', sk: 'Barber shop', en: 'Barber shop' },
     beauty: { cs: 'Kosmetika / Beauty', sk: 'Kozmetika / Beauty', en: 'Beauty / Cosmetics' },
     nails: { cs: 'Nehty / Nails', sk: 'Nechty / Nails', en: 'Nails' },
-    massage: { cs: 'Masaze / Wellness', sk: 'Masaze / Wellness', en: 'Massage / Wellness' },
+    massage: { cs: 'Masáže / Wellness', sk: 'Masáže / Wellness', en: 'Massage / Wellness' },
     physiotherapy: { cs: 'Fyzioterapie', sk: 'Fyzioterapia', en: 'Physiotherapy' },
-    aesthetic_clinic: { cs: 'Esteticka klinika', sk: 'Esteticka klinika', en: 'Aesthetic clinic' },
-    fitness: { cs: 'Fitness / Trenink', sk: 'Fitness / Trening', en: 'Fitness / Training' },
-    general: { cs: 'Obecne sluzby', sk: 'Vseobecne sluzby', en: 'General services' },
+    aesthetic_clinic: { cs: 'Estetická klinika', sk: 'Estetická klinika', en: 'Aesthetic clinic' },
+    fitness: { cs: 'Fitness / Trénink', sk: 'Fitness / Tréning', en: 'Fitness / Training' },
+    general: { cs: 'Obecné služby', sk: 'Všeobecné služby', en: 'General services' },
   }
   const l = (lang === 'sk' ? 'sk' : lang === 'en' ? 'en' : 'cs') as Lang
   return Object.entries(labels).map(([value, lbl]) => ({ value: value as Industry, label: lbl[l] }))
