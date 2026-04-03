@@ -129,10 +129,10 @@ export default function LoginPage() {
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Clientoro</h1>
+            <h1 className="text-2xl font-bold text-white lg:text-gray-900">Clientoro</h1>
             <div className="flex justify-center gap-2 mt-3">
               {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
-                <button key={l} onClick={() => setLang(l)} className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-gray-200' : 'opacity-60 hover:opacity-100'}`}>{flags[l]}</button>
+                <button key={l} onClick={() => setLang(l)} className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20 lg:bg-gray-200' : 'opacity-60 hover:opacity-100'}`}>{flags[l]}</button>
               ))}
             </div>
             

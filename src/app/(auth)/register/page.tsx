@@ -168,14 +168,14 @@ export default function RegisterPage() {
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Clientoro</h1>
+            <h1 className="text-2xl font-bold text-white lg:text-gray-900">Clientoro</h1>
           </div>
 
           {/* Language switcher */}
           <div className="flex justify-center mb-4 gap-1">
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
               <button key={l} onClick={() => setLang(l)}
-                className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-gray-200' : 'opacity-60 hover:opacity-100'}`}>
+                className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20 lg:bg-gray-200' : 'opacity-60 hover:opacity-100'}`}>
                 {flags[l]}
               </button>
             ))}
