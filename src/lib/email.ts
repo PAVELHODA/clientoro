@@ -711,3 +711,237 @@ export async function sendTrialExpired({
     }),
   })
 }
+// ===== 15. ZRUŠENÍ ČLENSTVÍ — POTVRZENÍ =====
+export async function sendSubscriptionCancelled({
+  to, orgName, cancelDate, activeUntil, reason,
+}: {
+  to: string; orgName: string; cancelDate: string; activeUntil: string; reason?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Členství zrušeno — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Členství bylo zrušeno',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, potvrzujeme zrušení vašeho placeného členství pro <strong style="color:#111827;">${orgName}</strong>.
+        </p>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#92400e;font-size:14px;font-weight:700;">Co se stane:</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">📅 Zrušeno: <strong>${cancelDate}</strong></p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">✅ Aktivní do: <strong>${activeUntil}</strong></p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">📦 Data zachována 30 dní po vypršení</p>
+        </div>
+        <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:16px 0;">
+          Do <strong>${activeUntil}</strong> můžete plně využívat všechny funkce. Po tomto datu přejdete na omezený režim.
+        </p>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px;margin:16px 0;">
+          <p style="margin:0;color:#1e40af;font-size:13px;">💡 Rozmysleli jste si to? Členství můžete kdykoliv obnovit v <a href="https://clientoro.pro/settings" style="color:#1e40af;font-weight:600;">Nastavení</a>.</p>
+        </div>
+      `,
+    }),
+  })
+}
+
+// ===== 16. ROZLOUČENÍ PO ZRUŠENÍ + EXPORT DAT =====
+export async function sendFarewellEmail({
+  to, orgName, exportUrl, feedbackEmail,
+}: {
+  to: string; orgName: string; exportUrl?: string; feedbackEmail?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Děkujeme za čas s Clientoro — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Děkujeme a přejeme hodně úspěchů',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, váš účet <strong style="color:#111827;">${orgName}</strong> byl uzavřen a vše je vyrovnáno.
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 4px;color:#059669;font-size:14px;font-weight:700;">✓ Vše vyrovnáno</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">Žádné další platby nebudou strženy.</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">Vaše data byla exportována a jsou připravena ke stažení.</p>
+        </div>
+        ${exportUrl ? `<div style="margin:20px 0;text-align:center;">
+          <a href="${exportUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">📥 Stáhnout moje data</a>
+          <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Link je platný 30 dní.</p>
+        </div>` : ''}
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">Budeme rádi za vaše připomínky</p>
+          <p style="margin:0;color:#6b7280;font-size:13px;line-height:1.6;">
+            Co bychom mohli udělat lépe? Stačí odpovědět na tento email nebo napsat na
+            <a href="mailto:${feedbackEmail || 'support@clientoro.pro'}" style="color:#0e3a5c;font-weight:600;text-decoration:none;">${feedbackEmail || 'support@clientoro.pro'}</a>.
+            Každý podnět nám pomáhá růst.
+          </p>
+        </div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px;margin:16px 0;text-align:center;">
+          <p style="margin:0;color:#1e40af;font-size:13px;">🔄 Pokud se kdykoliv rozhodnete vrátit, rádi vás přivítáme zpět. Stačí se znovu zaregistrovat na <a href="https://clientoro.pro/register" style="color:#1e40af;font-weight:600;text-decoration:none;">clientoro.pro</a>.</p>
+        </div>
+        <p style="color:#9ca3af;font-size:13px;margin:20px 0 0;text-align:center;">
+          Děkujeme za čas strávený s Clientoro. Přejeme vám hodně úspěchů! 🙏
+        </p>
+      `,
+    }),
+  })
+}
+
+// ===== 17. ADMIN NOTIFIKACE — ZRUŠENÍ ÚČTU =====
+export async function sendAdminChurnNotification({
+  orgName, email, plan, reason, totalBookings, totalRevenue, memberSince,
+}: {
+  orgName: string; email: string; plan: string; reason?: string
+  totalBookings?: number; totalRevenue?: number; memberSince?: string
+}) {
+  return sendEmail({
+    to: 'clientoro.app@gmail.com',
+    subject: `[CHURN] ${orgName} zrušil členství — ${plan}`,
+    html: emailTemplate({
+      orgName: 'Clientoro Admin',
+      title: `Churn: ${orgName}`,
+      body: `
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:16px;margin:0 0 16px;">
+          <p style="margin:0;color:#dc2626;font-size:16px;font-weight:700;">🔴 Zákazník odchází</p>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:4px 0;color:#374151;font-size:13px;"><strong>Organizace:</strong> ${orgName}</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;"><strong>Email:</strong> ${email}</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;"><strong>Plán:</strong> ${plan}</p>
+          ${reason ? `<p style="margin:4px 0;color:#374151;font-size:13px;"><strong>Důvod:</strong> ${reason}</p>` : ''}
+          ${memberSince ? `<p style="margin:4px 0;color:#374151;font-size:13px;"><strong>Členem od:</strong> ${memberSince}</p>` : ''}
+          ${totalBookings ? `<p style="margin:4px 0;color:#374151;font-size:13px;"><strong>Celkem rezervací:</strong> ${totalBookings}</p>` : ''}
+          ${totalRevenue ? `<p style="margin:4px 0;color:#374151;font-size:13px;"><strong>Celkové tržby:</strong> ${totalRevenue.toLocaleString('cs-CZ')} Kč</p>` : ''}
+        </div>
+        <p style="color:#9ca3af;font-size:11px;margin:16px 0 0;">Zrušeno: ${new Date().toLocaleString('cs-CZ', { timeZone: 'Europe/Prague' })}</p>
+      `,
+    }),
+  })
+}
+
+// ===== 18. GDPR — POTVRZENÍ SMAZÁNÍ ÚČTU =====
+export async function sendAccountDeleted({
+  to, orgName, deletionDate,
+}: {
+  to: string; orgName: string; deletionDate: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Účet smazán — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Účet byl trvale smazán',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, potvrzujeme trvalé smazání účtu <strong style="color:#111827;">${orgName}</strong> v souladu s GDPR.
+        </p>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">Co bylo smazáno:</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">🗑️ Všechna data organizace</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">🗑️ Klientské záznamy a historie</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">🗑️ Rezervace a kalendáře</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">🗑️ Nastavení a konfigurace</p>
+          <p style="margin:8px 0 0;color:#6b7280;font-size:12px;">Datum smazání: ${deletionDate}</p>
+        </div>
+        <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:16px 0;">
+          Tato akce je nevratná. Pokud budete chtít v budoucnu využívat Clientoro, bude nutné vytvořit nový účet.
+        </p>
+        <p style="color:#9ca3af;font-size:12px;margin:16px 0 0;text-align:center;">
+          Máte otázky? <a href="mailto:support@clientoro.pro" style="color:#0e3a5c;text-decoration:none;">support@clientoro.pro</a>
+        </p>
+      `,
+    }),
+  })
+}
+
+// ===== 19. ŽÁDOST O GOOGLE RECENZI =====
+export async function sendReviewRequest({
+  to, customerName, orgName, staffName, googleReviewUrl, bookingUrl,
+}: {
+  to: string; customerName: string; orgName: string; staffName?: string
+  googleReviewUrl?: string; bookingUrl?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Jak se Vám u nás líbilo? — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Jak jste byli spokojeni?',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den <strong>${customerName}</strong>, děkujeme za návštěvu${staffName ? ` u <strong>${staffName}</strong>` : ''} v <strong>${orgName}</strong>.
+        </p>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:20px;margin:16px 0;text-align:center;">
+          <p style="margin:0 0 8px;font-size:28px;">⭐⭐⭐⭐⭐</p>
+          <p style="margin:0 0 12px;color:#92400e;font-size:14px;font-weight:600;">Vaše hodnocení nám pomáhá růst</p>
+          ${googleReviewUrl ? `<a href="${googleReviewUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Ohodnotit na Google</a>` : ''}
+        </div>
+        <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:16px 0;">
+          Zabere to jen minutku a nám to nesmírně pomůže. Děkujeme! 🙏
+        </p>
+        ${bookingUrl ? `<div style="margin:16px 0;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;">
+          <a href="${bookingUrl}" style="color:#0e3a5c;font-size:13px;font-weight:600;text-decoration:none;">📅 Rezervovat další termín</a>
+        </div>` : ''}
+      `,
+    }),
+  })
+}
+
+// ===== 20. PLATBA PŘIJATA =====
+export async function sendPaymentReceived({
+  to, orgName, amount, plan, nextBillingDate, invoiceUrl,
+}: {
+  to: string; orgName: string; amount: string; plan: string; nextBillingDate: string; invoiceUrl?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Platba přijata — ${amount} · ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Platba přijata ✓',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, potvrzujeme přijetí platby za <strong style="color:#111827;">${orgName}</strong>.
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Částka:</strong> ${amount}</p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Plán:</strong> ${plan}</p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Další platba:</strong> ${nextBillingDate}</p>
+        </div>
+        ${invoiceUrl ? `<div style="margin:16px 0;text-align:center;">
+          <a href="${invoiceUrl}" style="color:#0e3a5c;font-size:13px;font-weight:600;text-decoration:none;">📄 Stáhnout fakturu</a>
+        </div>` : ''}
+      `,
+    }),
+  })
+}
+
+// ===== 21. PLATBA SELHALA =====
+export async function sendPaymentFailed({
+  to, orgName, amount, retryUrl, updateCardUrl,
+}: {
+  to: string; orgName: string; amount: string; retryUrl?: string; updateCardUrl?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Platba selhala — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Platba se nezdařila',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, nepodařilo se stáhnout platbu <strong>${amount}</strong> za <strong style="color:#111827;">${orgName}</strong>.
+        </p>
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#dc2626;font-size:14px;font-weight:700;">⚠️ Akce potřeba</p>
+          <p style="margin:0;color:#374151;font-size:13px;">Zkontrolujte prosím platební údaje. Pokud platba neproběhne do 7 dní, bude účet pozastaven.</p>
+        </div>
+        <div style="margin:24px 0;text-align:center;">
+          ${updateCardUrl ? `<a href="${updateCardUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:15px;font-weight:700;">Aktualizovat platební údaje</a>` : ''}
+          ${retryUrl ? `<p style="margin:12px 0 0;"><a href="${retryUrl}" style="color:#0e3a5c;font-size:13px;font-weight:600;text-decoration:none;">🔄 Zkusit platbu znovu</a></p>` : ''}
+        </div>
+      `,
+    }),
+  })
+}
