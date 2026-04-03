@@ -8,10 +8,10 @@ function emailTemplate({ title, body, footer, orgName, logoUrl, bookingId }: { t
   return `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:linear-gradient(135deg,#0a1628,#0c2d48,#0f6b7a);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<body style="margin:0;padding:0;background:linear-gradient(135deg,#0e3a5c,#1a6e8a,#2ba0b0);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
 <div style="max-width:520px;margin:0 auto;padding:24px 16px;">
   <!-- Header -->
-  <div style="background:linear-gradient(135deg,#0a1628 0%,#0c2d48 40%,#0e4d64 70%,#0f6b7a 100%);padding:28px 24px;border-radius:16px 16px 0 0;text-align:center;">
+  <div style="background:linear-gradient(135deg,#0e3a5c 0%,#1a6e8a 40%,#2ba0b0 70%,#34b8c0 100%);padding:28px 24px;border-radius:16px 16px 0 0;text-align:center;">
     ${logoUrl ? `<img src="${logoUrl}" alt="${orgName}" width="48" height="48" style="border-radius:12px;margin-bottom:12px;border:2px solid rgba(255,255,255,0.2);" />` : ''}
     <h1 style="color:white;margin:0;font-size:20px;font-weight:600;letter-spacing:0.03em;">${orgName || 'Rezervace'}</h1>
     <p style="color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:11px;letter-spacing:0.1em;">ONLINE REZERVACE</p>
@@ -103,7 +103,7 @@ export async function sendBookingConfirmation({
           </div>`
         })() : ''}
         ${manageUrl ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;">
-          <a href="${manageUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
+          <a href="${manageUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
           <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Změnit nebo zrušit rezervaci</p>
         </div>` : ''}`,
     }),
@@ -140,7 +140,7 @@ export async function sendOwnerNotification({
         ${infoBox(items, 'blue')}
       `,
       footer: `
-        <a href="https://clientoro.pro/dashboard" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít kalendář</a>
+        <a href="https://clientoro.pro/dashboard" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít kalendář</a>
       `,
     }),
   })
@@ -175,7 +175,7 @@ export async function sendBookingCancellation({
         ${bookingUrl ? `
         <div style="margin:20px 0;text-align:center;">
           <p style="color:#6b7280;font-size:13px;margin:0 0 12px;">Chcete nový termín?</p>
-          <a href="${bookingUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Rezervovat nový termín</a>
+          <a href="${bookingUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Rezervovat nový termín</a>
         </div>` : ''}
       `,
     }),
@@ -207,7 +207,7 @@ export async function sendOwnerCancellation({
           Klient zrušil rezervaci v <strong>${orgName}</strong>.
         </p>
         ${infoBox(items, 'red')}
-        ${dashboardUrl ? `<div style="margin-top:16px;"><a href="${dashboardUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít kalendář</a></div>` : ''}
+        ${dashboardUrl ? `<div style="margin-top:16px;"><a href="${dashboardUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít kalendář</a></div>` : ''}
       `,
     }),
   })
@@ -292,7 +292,7 @@ export async function sendWelcomeEmail({
         </p>
 
         <!-- Booking link box -->
-        <div style="background:linear-gradient(135deg,#0c2d48,#0f6b7a);border-radius:12px;padding:20px;margin:0 0 20px;text-align:center;">
+        <div style="background:linear-gradient(135deg,#0e3a5c,#2ba0b0);border-radius:12px;padding:20px;margin:0 0 20px;text-align:center;">
           <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">📎 Váš booking link</p>
           <p style="margin:0 0 8px;"><a href="${bookingUrl}" style="color:#fbbf24;font-size:16px;font-weight:700;text-decoration:none;">${bookingUrl}</a></p>
           <p style="margin:0;color:rgba(255,255,255,0.6);font-size:12px;">Sdílejte klientům — mohou si rovnou rezervovat online.</p>
@@ -321,7 +321,7 @@ export async function sendWelcomeEmail({
         </div>
       `,
       footer: `
-        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.02em;">Otevřít dashboard</a>
+        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.02em;">Otevřít dashboard</a>
         <p style="color:#6b7280;font-size:12px;margin:12px 0 0;">14 dní zdarma · Bez kreditní karty · Zrušíte kdykoliv</p>
         <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Potřebujete pomoct? Napište nám: <a href="mailto:support@clientoro.pro" style="color:#0f6b7a;text-decoration:none;">support@clientoro.pro</a></p>
       `,
@@ -353,7 +353,7 @@ export async function sendBookingFollowup({
           Chcete si zarezervovat další termín? Rádi Vás uvidíme znovu.
         </p>
         ${bookingUrl ? `<div style="margin:20px 0;text-align:center;">
-          <a href="${bookingUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:14px;font-weight:600;">Rezervovat znovu</a>
+          <a href="${bookingUrl}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:14px;font-weight:600;">Rezervovat znovu</a>
         </div>` : ''}
         <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin:16px 0;text-align:center;">
           <p style="color:#92400e;font-size:13px;margin:0;">⭐ Byli jste spokojeni? Budeme rádi za <strong>Vaše hodnocení na Google</strong>.</p>
@@ -409,7 +409,7 @@ export async function sendOwnerDailySummary({
         </table>
       `,
       footer: `
-        <a href="https://clientoro.pro/dashboard" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
+        <a href="https://clientoro.pro/dashboard" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
       `,
     }),
   })
@@ -461,7 +461,7 @@ export async function sendWeeklyReport({
         </div>` : ''}
       `,
       footer: `
-        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0c2d48,#0f6b7a);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
+        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
         <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Tento report můžete vypnout v Nastavení.</p>
       `,
     }),
@@ -556,7 +556,7 @@ export async function sendAdminNotification({ orgName, email, phone, ico, catego
         </table>
 
         ${bookingUrl ? `
-        <div style="background:linear-gradient(135deg,#0c2d48,#0f6b7a);border-radius:12px;padding:16px;margin:0 0 16px;text-align:center;">
+        <div style="background:linear-gradient(135deg,#0e3a5c,#2ba0b0);border-radius:12px;padding:16px;margin:0 0 16px;text-align:center;">
           <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">Booking link</p>
           <p style="margin:0;"><a href="${bookingUrl}" style="color:#fbbf24;font-size:14px;font-weight:700;text-decoration:none;">${bookingUrl}</a></p>
         </div>
