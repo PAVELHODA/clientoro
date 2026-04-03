@@ -146,6 +146,7 @@ export default function LandingPage() {
           {/* Mobil: jen Prihlasit se */}
           <div className="flex flex-col gap-2 mt-2.5 md:hidden">
             <a href="/login" className="w-full py-2.5 text-center text-sm text-white font-semibold border border-white/30 rounded-lg hover:bg-white/10 transition-colors">{t('land_nav_login')}</a>
+            <a href="/register" className="w-full py-2.5 text-center text-sm font-semibold text-amber-400 rounded-lg shadow-md" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>{t('land_nav_register')}</a>
           </div>
         </div>
       </div></nav>
@@ -156,7 +157,6 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-center gap-3">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
               <Wrench className="w-3.5 h-3.5 text-amber-300" />
-            <a href="/register" className="w-full py-2.5 text-center text-sm font-semibold text-amber-400 rounded-lg shadow-md" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>{t('land_nav_register')}</a>
             </div>
             <p className="text-xs sm:text-sm text-gray-700 font-medium text-center">
               {lang === 'en' ? 'Platform is in active development. Full launch in 2026.' : lang === 'sk' ? 'Platforma je v aktívnom vývoji. Plný prevoz spustíme v priebehu roka 2026.' : 'Platforma je v aktivním vývoji. Plný provoz spustíme v průběhu roku 2026.'}
