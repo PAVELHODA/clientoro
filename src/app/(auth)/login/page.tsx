@@ -124,49 +124,20 @@ export default function LoginPage() {
 
       <div className="w-full lg:flex-1 flex items-center justify-center px-4 sm:px-6 lg:bg-gray-50">
         <div className="w-full max-w-md">
-          <div className="xl:hidden text-center mb-8">
+          <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3"
               style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Clientoro</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Clientoro</h1>
             <div className="flex justify-center gap-2 mt-3">
               {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
-                <button key={l} onClick={() => setLang(l)} className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20' : 'opacity-50 hover:opacity-100'}`}>{flags[l]}</button>
+                <button key={l} onClick={() => setLang(l)} className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-gray-200' : 'opacity-60 hover:opacity-100'}`}>{flags[l]}</button>
               ))}
             </div>
             
           </div>
-          <div className="hidden xl:flex justify-center mb-4 gap-1">
-            {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
-              <button key={l} onClick={() => setLang(l)}
-                className={`text-sm font-medium px-2 py-1 rounded transition-all ${lang === l ? 'text-gray-900 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}>
-                {l.toUpperCase()}
-              </button>
-            ))}
-          </div>
-          <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('login_title')}</h2>
-              <p className="text-sm text-gray-400">{t('login_subtitle')}</p>
-            </div>
-
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-center gap-2">
-                {"\u26a0\ufe0f"} {error}
-              </div>
-            )}
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('login_email')}</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
-                    placeholder={t('email_placeholder')} required />
-                </div>
-              </div>
+          
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('login_password')}</label>
                 <div className="relative">
@@ -204,3 +175,4 @@ export default function LoginPage() {
     </div>
   )
 }
+
