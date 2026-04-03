@@ -132,7 +132,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-white lg:text-gray-900">Clientoro</h1>
             <div className="flex justify-center gap-2 mt-3">
               {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
-                <button key={l} onClick={() => setLang(l)} className={`text-lg px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20 lg:bg-gray-200' : 'opacity-60 hover:opacity-100'}`}>{flags[l]}</button>
+                <button key={l} onClick={() => setLang(l)} className={`text-2xl px-1.5 py-1 rounded transition-all ${lang === l ? 'scale-125 bg-white/20 lg:bg-gray-200' : 'opacity-80 hover:opacity-100 hover:bg-gray-100'}`}>{flags[l]}</button>
               ))}
             </div>
             
