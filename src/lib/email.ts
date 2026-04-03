@@ -569,3 +569,145 @@ export async function sendAdminNotification({ orgName, email, phone, ico, catego
     }),
   })
 }
+
+// ===== 11. POZVÁNKA DO TÝMU =====
+export async function sendTeamInvite({
+  to, orgName, inviterName, role, acceptUrl, logoUrl,
+}: {
+  to: string; orgName: string; inviterName: string; role: string; acceptUrl: string; logoUrl?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Pozvánka do týmu — ${orgName}`,
+    html: emailTemplate({
+      orgName, logoUrl,
+      title: 'Byli jste pozváni do týmu!',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          <strong>${inviterName}</strong> vás zve do organizace <strong style="color:#111827;">${orgName}</strong> jako <strong>${role}</strong>.
+        </p>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 4px;color:#111827;font-size:14px;font-weight:600;">Co vás čeká:</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">📅 Vlastní kalendář s rezervacemi</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">👥 Přehled vašich klientů</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">🔔 Notifikace o nových rezervacích</p>
+        </div>
+        <div style="margin:24px 0;text-align:center;">
+          <a href="${acceptUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:15px;font-weight:700;">Přijmout pozvánku</a>
+        </div>
+        <p style="color:#9ca3af;font-size:12px;margin:16px 0 0;text-align:center;">Pozvánka je platná 7 dní.</p>
+      `,
+    }),
+  })
+}
+
+// ===== 12. PŘESUNUTÍ REZERVACE =====
+export async function sendBookingRescheduled({
+  to, customerName, serviceName, staffName, oldDate, oldTime, newDate, newTime, orgName, orgPhone, bookingUrl, logoUrl, bookingId,
+}: {
+  to: string; customerName: string; serviceName: string; staffName?: string
+  oldDate: string; oldTime: string; newDate: string; newTime: string
+  orgName: string; orgPhone?: string; bookingUrl?: string; logoUrl?: string; bookingId?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Změna termínu — ${orgName}`,
+    html: emailTemplate({
+      orgName, logoUrl, bookingId,
+      title: 'Termín byl změněn',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den <strong>${customerName}</strong>, vaše rezervace byla přesunuta na nový termín.
+        </p>
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:14px 16px;margin:16px 0;">
+          <p style="margin:0;color:#dc2626;font-size:13px;"><strong>Původní termín:</strong> ${oldDate} v ${oldTime} <span style="color:#9ca3af;">— zrušen</span></p>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:0 0 16px;">
+          <p style="margin:0 0 4px;color:#059669;font-size:14px;font-weight:700;">✓ Nový termín</p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Služba:</strong> ${serviceName}</p>
+          <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Datum:</strong> ${newDate} v ${newTime}</p>
+          ${staffName ? `<p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Specialista:</strong> ${staffName}</p>` : ''}
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:16px 0 0;">
+          ${orgName}${orgPhone ? ` · ${orgPhone}` : ''}
+        </p>
+        ${bookingUrl ? `<div style="margin:20px 0;text-align:center;">
+          <a href="${bookingUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
+        </div>` : ''}
+      `,
+      footer: `<p style="color:#6b7280;font-size:12px;margin:0;">Těšíme se na Vás!</p>`,
+    }),
+  })
+}
+
+// ===== 13. TRIAL KONČÍ ZA 3 DNY =====
+export async function sendTrialEnding({
+  to, orgName, daysLeft, trialEndDate, upgradeUrl,
+}: {
+  to: string; orgName: string; daysLeft: number; trialEndDate: string; upgradeUrl: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Zkušební období končí za ${daysLeft} dny — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: `Zkušební období končí za ${daysLeft} dny`,
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, vaše 14denní zkušební období pro <strong style="color:#111827;">${orgName}</strong> končí <strong>${trialEndDate}</strong>.
+        </p>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#92400e;font-size:14px;font-weight:700;">⏰ Zbývají ${daysLeft} dny</p>
+          <p style="margin:0;color:#92400e;font-size:13px;">Po skončení trialu nebudete moci přijímat nové rezervace. Vaše data zůstanou zachována 30 dní.</p>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">Co získáte s placeným plánem:</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">✅ Neomezené rezervace</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">✅ Email notifikace klientům</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">✅ CRM a historie klientů</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">✅ Reporty a přehledy</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">🔜 AI insighty a doporučení</p>
+        </div>
+        <div style="margin:24px 0;text-align:center;">
+          <a href="${upgradeUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:15px;font-weight:700;">Vybrat plán od 49 Kč/měs</a>
+          <p style="color:#9ca3af;font-size:12px;margin:8px 0 0;">Žádné skryté poplatky · Zrušíte kdykoliv</p>
+        </div>
+      `,
+    }),
+  })
+}
+
+// ===== 14. TRIAL SKONČIL =====
+export async function sendTrialExpired({
+  to, orgName, upgradeUrl, exportUrl,
+}: {
+  to: string; orgName: string; upgradeUrl: string; exportUrl?: string
+}) {
+  return sendEmail({
+    to,
+    subject: `Zkušební období skončilo — ${orgName}`,
+    html: emailTemplate({
+      orgName,
+      title: 'Zkušební období skončilo',
+      body: `
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den, vaše 14denní zkušební období pro <strong style="color:#111827;">${orgName}</strong> skončilo.
+        </p>
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:16px;margin:16px 0;">
+          <p style="margin:0 0 8px;color:#dc2626;font-size:14px;font-weight:700;">Co to znamená:</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">❌ Nové rezervace nelze přijímat</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">❌ Booking stránka je pozastavena</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">✅ Vaše data zůstávají zachována 30 dní</p>
+          <p style="margin:4px 0;color:#374151;font-size:13px;">✅ Dashboard je stále přístupný</p>
+        </div>
+        <div style="margin:24px 0;text-align:center;">
+          <a href="${upgradeUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:15px;font-weight:700;">Aktivovat plán od 49 Kč/měs</a>
+          <p style="color:#9ca3af;font-size:12px;margin:8px 0 0;">Aktivací se okamžitě obnoví vše.</p>
+        </div>
+        ${exportUrl ? `<div style="margin:16px 0;text-align:center;padding-top:16px;border-top:1px solid #e5e7eb;">
+          <a href="${exportUrl}" style="color:#6b7280;font-size:12px;text-decoration:none;">📥 Exportovat moje data</a>
+        </div>` : ''}
+      `,
+    }),
+  })
+}
