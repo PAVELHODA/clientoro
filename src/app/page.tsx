@@ -90,7 +90,7 @@ const FEATURE_KEYS = [
 const PRICING_DATA = [
   { key: 'solo', icon: '●', color: 'border-teal-300 bg-teal-50', price: '49', priceAi: '99', trial: true, gradient: 'linear-gradient(135deg, #0d9488, #06b6d4)' },
   { key: 'team', icon: '●●', color: 'border-blue-300 bg-blue-50', price: '299', priceAi: '499', trial: false, popular: true, gradient: 'linear-gradient(135deg, #134a6a, #1d8898)' },
-  { key: 'inspire', icon: '●', color: 'border-[#0c3350] bg-amber-50', price: '499', priceAi: '799', trial: false, gradient: 'linear-gradient(135deg, #d97706, #f59e0b)' },
+  { key: 'inspire', icon: '●', color: 'border-[#091e30] bg-amber-50', price: '499', priceAi: '799', trial: false, gradient: 'linear-gradient(135deg, #d97706, #f59e0b)' },
   { key: 'pro', icon: '●', color: 'border-yellow-400 bg-yellow-50', price: '1 299', priceAi: '1 999', trial: false, gradient: 'linear-gradient(135deg, #92400e, #b45309)' },
 ]
 
@@ -117,7 +117,7 @@ export default function LandingPage() {
   const lostRevenue = Math.round(calcSlots * calcPrice * (calcNoshow / 100) * 22)
 
   return (
-    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-2 sm:border-[#0c3350]/70">
+    <div className="min-h-screen bg-white max-w-4xl mx-auto shadow-lg rounded-none sm:rounded-2xl sm:my-4 border-0 sm:border-2 sm:border-[#091e30]/70">
 
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50"><div className="max-w-4xl mx-auto backdrop-blur-md border-b border-white/10 sm:rounded-b-xl" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.95), rgba(25,115,135,0.95))' }}>
@@ -192,7 +192,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* SEGMENTS */}
       <section id="segments" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.03), rgba(25,115,135,0.03))' }}>
@@ -204,7 +204,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {SEGMENT_KEYS.map((s, idx) => { const Icon = SEGMENT_ICONS[s.icon]; const isLast = idx === SEGMENT_KEYS.length - 1 && SEGMENT_KEYS.length % 2 !== 0; return (
               <button key={s.key} onClick={() => setOpenSegment(openSegment === s.key ? null : s.key)}
-                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-[#0c3350] shadow-lg ring-2 ring-amber-200 bg-white' : 'border-[#0c3350]/40 hover:border-[#0c3350] hover:shadow-lg hover:shadow-amber-400/30 hover:scale-[1.08] transition-all duration-200 cursor-pointer'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : {}}>
+                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-[#091e30] shadow-lg ring-2 ring-amber-200 bg-white' : 'border-[#091e30]/40 hover:border-[#091e30] hover:shadow-lg hover:shadow-amber-400/30 hover:scale-[1.08] transition-all duration-200 cursor-pointer'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : {}}>
                 <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={openSegment === s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : { background: 'rgba(255,255,255,0.15)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
                 <h3 className={`font-bold text-xs sm:text-sm leading-tight ${openSegment === s.key ? 'text-gray-900' : 'text-white'}`}>{t(`land_seg_${s.key}`)}</h3>
                 <p className={`text-xs mt-1 hidden sm:block leading-tight ${openSegment === s.key ? 'text-gray-400' : 'text-white/60'}`}>{t(`land_seg_${s.key}_desc`)}</p>
@@ -238,7 +238,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* FEATURES */}
       <section id="features" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
@@ -290,7 +290,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* CTA + ONBOARDING */}
       <div className="py-6">
@@ -321,7 +321,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* CALCULATOR */}
       <section id="calculator" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.03), rgba(25,115,135,0.03))' }}>
@@ -344,7 +344,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* DEPOSITS & CASH */}
       <section className="py-12 sm:py-16">
@@ -354,7 +354,7 @@ export default function LandingPage() {
             <p className="text-gray-500 text-sm sm:text-base">{lang === 'en' ? 'Deposits reduce no-shows. Cash saves on fees.' : lang === 'sk' ? 'Zálohy znižujú nedorazivších. Hotovosť šetrí poplatky.' : 'Zálohy snižují nedorazivší. Hotovost šetří poplatky.'}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="rounded-2xl border-2 border-[#0c3350]/50 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.05), rgba(25,115,135,0.05))' }}>
+            <div className="rounded-2xl border border-[#091e30]/50 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.05), rgba(25,115,135,0.05))' }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}><CreditCard className="w-5 h-5 text-amber-400" /></div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_deposit_title')}</h3>
               <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_deposit_desc')}</p>
@@ -375,7 +375,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* PRICING */}
       <section id="pricing" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
@@ -416,7 +416,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* FAQ */}
       <section id="faq" className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.03), rgba(25,115,135,0.03))' }}>
@@ -437,7 +437,7 @@ export default function LandingPage() {
       </section>
 
       {/* DIVIDER */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#0c3350]/60 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
       {/* FINAL CTA */}
       <section className="py-12 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a)' }}>
@@ -466,6 +466,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
