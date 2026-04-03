@@ -152,7 +152,7 @@ export default function LandingPage() {
       </div></nav>
 
       {/* BANNER 2026 — s Lucide ikonami místo emoji */}
-      <div className="pt-[160px] sm:pt-[72px]">
+      <div className="pt-[180px] sm:pt-[72px]">
         <div className="w-full border-b border-amber-200" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.08), rgba(25,115,135,0.08))' }}>
           <div className="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-center gap-3">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
@@ -462,6 +462,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
