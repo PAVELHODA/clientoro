@@ -137,7 +137,28 @@ export default function LoginPage() {
             </div>
             
           </div>
-          
+          <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('login_title')}</h2>
+              <p className="text-sm text-gray-400">{t('login_subtitle')}</p>
+            </div>
+
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-center gap-2">
+                {"\u26a0\ufe0f"} {error}
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('login_email')}</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
+                    placeholder={t('email_placeholder')} required />
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('login_password')}</label>
                 <div className="relative">
@@ -175,4 +196,3 @@ export default function LoginPage() {
     </div>
   )
 }
-

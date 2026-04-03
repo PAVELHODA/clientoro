@@ -96,7 +96,7 @@ export default function RegisterPage() {
               <Waves className="w-6 h-6" style={{ color: '#f59e0b' }} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Clientoro</h1>
+              <h1 className="text-2xl font-bold text-white">Clientoro</h1>
               <p className="text-sm" style={{ color: 'rgba(245,158,11,0.5)' }}>Booking & Growth OS</p>
             </div>
           </div>
@@ -180,7 +180,29 @@ export default function RegisterPage() {
               </button>
             ))}
           </div>
-          
+
+
+          <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('register_title')}</h2>
+            <p className="text-sm text-gray-400 mb-6">{t('register_subtitle')}</p>
+
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-center gap-2">
+                ⚠️ {error}
+              </div>
+            )}
+
+            <form onSubmit={handleRegister} className="space-y-4">
+              {/* Název firmy */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_business_name')}</label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
+                    placeholder={t('register_business_placeholder')} required />
+                </div>
+              </div>
 
               {/* Typ podnikání */}
               <div>
