@@ -290,14 +290,6 @@ export default function LandingPage() {
       {/* DIVIDER */}
       <div className="h-px bg-gradient-to-r from-transparent via-[#091e30]/50 to-transparent" />
 
-      {/* CTA + ONBOARDING */}
-      <div className="py-6">
-        <div className="max-w-2xl mx-auto px-4">
-          <a href="/register" className="block w-full py-4 text-center text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
-            <span className="text-amber-400">{t('land_hero_cta')}</span> <ArrowRight className="w-5 h-5 inline ml-2" />
-          </a>
-        </div>
-      </div>
 
       {/* ONBOARDING STEPS */}
       <section className="py-12 sm:py-16">
