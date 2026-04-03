@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'

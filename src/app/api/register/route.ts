@@ -1,4 +1,6 @@
-﻿// PATH: src/app/api/register/route.ts
+﻿export const dynamic = 'force-dynamic'
+
+// PATH: src/app/api/register/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'

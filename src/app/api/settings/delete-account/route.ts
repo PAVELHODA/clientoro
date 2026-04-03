@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 // PATH: src/app/api/settings/delete-account/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/api/requireAuth'
@@ -63,7 +65,7 @@ export async function DELETE(request: NextRequest) {
       .delete()
       .eq('organization_id', orgId)
 
-    // 7. Smazat služby
+    // 7. Smazat sluĹľby
     await supabaseAdmin
       .from('services')
       .delete()
@@ -87,19 +89,19 @@ export async function DELETE(request: NextRequest) {
       .delete()
       .eq('auth_user_id', userId)
 
-    // 11. Smazat auth uživatele
+    // 11. Smazat auth uĹľivatele
     const { error: authDeleteError } = await supabaseAdmin.auth.admin.deleteUser(userId!)
     if (authDeleteError) {
       console.error('Auth delete error:', authDeleteError)
       return NextResponse.json(
-        { error: 'Data smazána, ale auth účet se nepodařilo odstranit: ' + authDeleteError.message },
+        { error: 'Data smazĂˇna, ale auth ĂşÄŤet se nepodaĹ™ilo odstranit: ' + authDeleteError.message },
         { status: 500 }
       )
     }
 
-    return NextResponse.json({ success: true, message: 'Účet a všechna data byla trvale smazána' })
+    return NextResponse.json({ success: true, message: 'ĂšÄŤet a vĹˇechna data byla trvale smazĂˇna' })
   } catch (err) {
     console.error('Delete account error:', err)
-    return NextResponse.json({ error: 'Chyba při mazání účtu' }, { status: 500 })
+    return NextResponse.json({ error: 'Chyba pĹ™i mazĂˇnĂ­ ĂşÄŤtu' }, { status: 500 })
   }
 }

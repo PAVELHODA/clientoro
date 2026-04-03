@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 // PATH: src/app/api/clients/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
@@ -12,7 +14,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
 
-    // Sanitizace search parametru — max 100 znaků, odstranění nebezpečných znaků
+    // Sanitizace search parametru â€” max 100 znakĹŻ, odstranÄ›nĂ­ nebezpeÄŤnĂ˝ch znakĹŻ
     const sanitizedSearch = search.slice(0, 100).replace(/[%_\\]/g, '')
 
     let query = supabaseAdmin
@@ -36,27 +38,27 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Owner může taky přidávat klienty (ne jen manager)
+    // Owner mĹŻĹľe taky pĹ™idĂˇvat klienty (ne jen manager)
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
-    // Zod validace — BEZ organization_id (přidáme sami)
+    // Zod validace â€” BEZ organization_id (pĹ™idĂˇme sami)
     const validation = validateBody(clientCreateSchema, body)
     if (!validation.success) {
       console.warn('[Clients POST] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
-      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+      return NextResponse.json({ error: validation.error || 'NeplatnĂˇ data' }, { status: 400 })
     }
 
     const validData = validation.data as any
 
-    // Musí mít alespoň jméno nebo telefon
+    // MusĂ­ mĂ­t alespoĹ jmĂ©no nebo telefon
     if (!validData.full_name && !validData.phone) {
-      return NextResponse.json({ error: 'Vyplňte jméno nebo telefon' }, { status: 400 })
+      return NextResponse.json({ error: 'VyplĹte jmĂ©no nebo telefon' }, { status: 400 })
     }
 
-    // Kontrola duplicity telefonu ve stejné organizaci
+    // Kontrola duplicity telefonu ve stejnĂ© organizaci
     if (validData.phone) {
       const { data: existing } = await supabaseAdmin
         .from('clients')
@@ -67,13 +69,13 @@ export async function POST(request: NextRequest) {
 
       if (existing) {
         return NextResponse.json({
-          error: `Klient s tímto telefonem již existuje: ${existing.full_name}`,
+          error: `Klient s tĂ­mto telefonem jiĹľ existuje: ${existing.full_name}`,
           existing_client_id: existing.id,
         }, { status: 409 })
       }
     }
 
-    // Vložení — jen povolená pole
+    // VloĹľenĂ­ â€” jen povolenĂˇ pole
     const insertData: any = {
       organization_id: auth.organizationId,
     }

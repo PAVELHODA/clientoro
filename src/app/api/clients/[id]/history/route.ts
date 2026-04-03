@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 // PATH: src/app/api/clients/[id]/history/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'

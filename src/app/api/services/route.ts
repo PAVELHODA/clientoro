@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 // PATH: src/app/api/services/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
@@ -34,12 +36,12 @@ export async function POST(request: NextRequest) {
     const validation = validateBody(serviceCreateSchema, body)
     if (!validation.success) {
       console.warn('[Services POST] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
-      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+      return NextResponse.json({ error: validation.error || 'NeplatnĂˇ data' }, { status: 400 })
     }
 
     const validData = validation.data as any
 
-    // Kontrola duplicity názvu služby ve stejné organizaci
+    // Kontrola duplicity nĂˇzvu sluĹľby ve stejnĂ© organizaci
     const { data: existing } = await supabaseAdmin
       .from('services')
       .select('id')
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (existing) {
-      return NextResponse.json({ error: `Služba "${validData.name}" již existuje` }, { status: 409 })
+      return NextResponse.json({ error: `SluĹľba "${validData.name}" jiĹľ existuje` }, { status: 409 })
     }
 
     const insertData = {

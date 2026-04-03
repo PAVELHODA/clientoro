@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 // PATH: src/app/api/staff/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
@@ -6,7 +8,7 @@ import { staffCreateSchema, validateBody } from '@/lib/validations'
 import { z } from 'zod'
 
 const staffPostSchema = staffCreateSchema.extend({
-  service_ids: z.array(z.string().uuid('Neplatné ID služby')).optional().default([]),
+  service_ids: z.array(z.string().uuid('NeplatnĂ© ID sluĹľby')).optional().default([]),
 }).passthrough()
 
 export async function GET(request: NextRequest) {
@@ -38,14 +40,14 @@ export async function POST(request: NextRequest) {
     const validation = validateBody(staffPostSchema, body)
     if (!validation.success) {
       console.warn('[Staff POST] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
-      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+      return NextResponse.json({ error: validation.error || 'NeplatnĂˇ data' }, { status: 400 })
     }
 
     const validData = validation.data as any
     const service_ids = validData.service_ids || []
 
-    // Kontrola limitu zaměstnanců dle módu
-    // Majitel se nepočítá — solo = 0 staff, team = 4 staff + majitel, pro = 24 staff + majitel
+    // Kontrola limitu zamÄ›stnancĹŻ dle mĂłdu
+    // Majitel se nepoÄŤĂ­tĂˇ â€” solo = 0 staff, team = 4 staff + majitel, pro = 24 staff + majitel
     const { data: org } = await supabaseAdmin
       .from('organizations')
       .select('mode')
@@ -60,10 +62,10 @@ export async function POST(request: NextRequest) {
         .eq('active', true)
 
       const limits: Record<string, number> = {
-        solo: 0,          // jen majitel, žádní zaměstnanci
-        solo_inspire: 0,  // jen majitel, žádní zaměstnanci
-        team: 4,          // majitel + 4 zaměstnanci = 5 lidí
-        pro_inspire: 24,  // majitel + 24 zaměstnanců = 25 lidí
+        solo: 0,          // jen majitel, ĹľĂˇdnĂ­ zamÄ›stnanci
+        solo_inspire: 0,  // jen majitel, ĹľĂˇdnĂ­ zamÄ›stnanci
+        team: 4,          // majitel + 4 zamÄ›stnanci = 5 lidĂ­
+        pro_inspire: 24,  // majitel + 24 zamÄ›stnancĹŻ = 25 lidĂ­
       }
 
       const maxStaff = limits[org.mode] ?? 4
@@ -71,13 +73,13 @@ export async function POST(request: NextRequest) {
         const planName = org.mode === 'solo' || org.mode === 'solo_inspire' ? 'Solo' : org.mode === 'team' ? 'Firma' : 'Pro Inspire'
         return NextResponse.json({
           error: maxStaff === 0
-            ? `Plán ${planName} je pro jednu osobu — nepodporuje zaměstnance. Upgradujte na Firma nebo Pro Inspire.`
-            : `Dosáhli jste limitu ${maxStaff} zaměstnanců pro plán ${planName}. Upgradujte pro více.`,
+            ? `PlĂˇn ${planName} je pro jednu osobu â€” nepodporuje zamÄ›stnance. Upgradujte na Firma nebo Pro Inspire.`
+            : `DosĂˇhli jste limitu ${maxStaff} zamÄ›stnancĹŻ pro plĂˇn ${planName}. Upgradujte pro vĂ­ce.`,
         }, { status: 403 })
       }
     }
 
-    // Kontrola duplicity emailu ve stejné organizaci
+    // Kontrola duplicity emailu ve stejnĂ© organizaci
     if (validData.email) {
       const { data: existing } = await supabaseAdmin
         .from('staff')
@@ -88,12 +90,12 @@ export async function POST(request: NextRequest) {
 
       if (existing) {
         return NextResponse.json({
-          error: `Zaměstnanec s tímto emailem již existuje: ${existing.full_name}`,
+          error: `ZamÄ›stnanec s tĂ­mto emailem jiĹľ existuje: ${existing.full_name}`,
         }, { status: 409 })
       }
     }
 
-    // Vložení zaměstnance — jen povolená pole (BEZ role!)
+    // VloĹľenĂ­ zamÄ›stnance â€” jen povolenĂˇ pole (BEZ role!)
     const insertData: any = {
       organization_id: auth.organizationId,
       full_name: validData.full_name,
@@ -112,7 +114,7 @@ export async function POST(request: NextRequest) {
 
     if (staffError) return NextResponse.json({ error: staffError.message }, { status: 500 })
 
-    // Přiřazení služeb
+    // PĹ™iĹ™azenĂ­ sluĹľeb
     if (service_ids && service_ids.length > 0) {
       const staffServices = service_ids.map((serviceId: string) => ({
         staff_id: staff.id,

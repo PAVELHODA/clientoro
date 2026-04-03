@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 // PATH: src/app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
@@ -44,7 +46,7 @@ export async function GET(request: NextRequest) {
     if (profile.is_superadmin) {
       role = 'superadmin'
 
-      // Superadmin — get first membership for org context
+      // Superadmin â€” get first membership for org context
       const { data: membership } = await supabaseAdmin
         .from('memberships')
         .select('organization_id, role')

@@ -1,4 +1,6 @@
-﻿// PATH: src/app/api/settings/route.ts
+﻿export const dynamic = 'force-dynamic'
+
+// PATH: src/app/api/settings/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'

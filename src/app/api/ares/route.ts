@@ -1,4 +1,6 @@
-﻿// PATH: src/app/api/ares/route.ts
+﻿export const dynamic = 'force-dynamic'
+
+// PATH: src/app/api/ares/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {

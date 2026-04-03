@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 // PATH: src/app/api/staff/[id]/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
@@ -21,7 +23,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     if (!params.id || !/^[0-9a-f-]{36}$/.test(params.id)) {
-      return NextResponse.json({ error: 'Neplatné ID' }, { status: 400 })
+      return NextResponse.json({ error: 'NeplatnĂ© ID' }, { status: 400 })
     }
 
     const body = await request.json()
@@ -29,7 +31,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const updateData = sanitizeUpdate(rest, ALLOWED_STAFF_FIELDS)
 
     if (Object.keys(updateData).length === 0 && service_ids === undefined) {
-      return NextResponse.json({ error: 'Žádná data k aktualizaci' }, { status: 400 })
+      return NextResponse.json({ error: 'Ĺ˝ĂˇdnĂˇ data k aktualizaci' }, { status: 400 })
     }
 
     let staffData = null
@@ -44,12 +46,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         .single()
 
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-      if (!data) return NextResponse.json({ error: 'Zaměstnanec nenalezen' }, { status: 404 })
+      if (!data) return NextResponse.json({ error: 'ZamÄ›stnanec nenalezen' }, { status: 404 })
       staffData = data
     }
 
     if (service_ids !== undefined) {
-      // Ověř že staff patří do organizace
+      // OvÄ›Ĺ™ Ĺľe staff patĹ™Ă­ do organizace
       if (!staffData) {
         const { data: check } = await supabaseAdmin
           .from('staff')
@@ -57,7 +59,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
           .eq('id', params.id)
           .eq('organization_id', auth.organizationId)
           .single()
-        if (!check) return NextResponse.json({ error: 'Zaměstnanec nenalezen' }, { status: 404 })
+        if (!check) return NextResponse.json({ error: 'ZamÄ›stnanec nenalezen' }, { status: 404 })
       }
 
       await supabaseAdmin
@@ -93,7 +95,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     if (!params.id || !/^[0-9a-f-]{36}$/.test(params.id)) {
-      return NextResponse.json({ error: 'Neplatné ID' }, { status: 400 })
+      return NextResponse.json({ error: 'NeplatnĂ© ID' }, { status: 400 })
     }
 
     const { error } = await supabaseAdmin
