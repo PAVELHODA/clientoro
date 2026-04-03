@@ -140,7 +140,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <a href="/login" className="hidden md:inline text-sm text-white/70 hover:text-white font-medium ml-2 px-4 py-2 border border-white/30 rounded-lg hover:border-white/50 transition-colors">{t('land_nav_login')}</a>
-              <a href="/register" className="hidden md:inline px-5 py-2.5 text-white rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>{t('land_nav_register')}</a>
+              <a href="/register" className="hidden md:inline px-5 py-2.5 text-amber-400 rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>{t('land_nav_register')}</a>
             </div>
           </div>
           {/* Mobil: jen Prihlasit se */}
@@ -171,9 +171,7 @@ export default function LandingPage() {
       {/* HERO - zesvětlený oceán */}
       <section className="relative py-10 sm:py-16" style={{ background: 'linear-gradient(135deg, #0c3350, #134a6a, #1d8898)' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <a href="/register" className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl mb-4 hover:scale-105 transition-transform mx-auto w-fit" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
-            <span className="text-amber-400">{t('land_nav_register')}</span> <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
-          </a>
+          
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-amber-300 rounded-full text-sm sm:text-base font-semibold mb-4">
             <Zap className="w-3 h-3" /> {t('land_hero_badge')}
           </div>
@@ -249,7 +247,7 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {FEATURE_KEYS.map(f => (
-              <div key={f.key} className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 hover:shadow-lg transition-all">
+              <div key={f.key} className="bg-white rounded-2xl border border-amber-300 p-5 sm:p-6 hover:shadow-lg transition-all">
                 <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-3 sm:mb-4 shadow-md mx-auto`}>
                   <f.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
@@ -335,7 +333,7 @@ export default function LandingPage() {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_calc_title')}</h2>
             <p className="text-gray-500 text-sm sm:text-base">{t('land_calc_desc')}</p>
           </div>
-          <div className="bg-gray-50 rounded-2xl border border-gray-200 p-4 sm:p-6 space-y-5">
+          <div className="bg-gray-50 rounded-2xl border border-amber-300 p-4 sm:p-6 space-y-5">
             <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">{t('land_calc_clients')}</span><span className="font-bold">{calcSlots}</span></div><input type="range" min={1} max={20} value={calcSlots} onChange={e => setCalcSlots(Number(e.target.value))} className="w-full accent-amber-500" /></div>
             <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">{t('land_calc_price')}</span><span className="font-bold">{calcPrice} Kč</span></div><input type="range" min={200} max={5000} step={100} value={calcPrice} onChange={e => setCalcPrice(Number(e.target.value))} className="w-full accent-amber-500" /></div>
             <div><div className="flex justify-between text-sm mb-1"><span className="text-gray-600">{t('land_calc_noshow')}</span><span className="font-bold">{calcNoshow}%</span></div><input type="range" min={0} max={40} value={calcNoshow} onChange={e => setCalcNoshow(Number(e.target.value))} className="w-full accent-amber-500" /></div>
@@ -359,7 +357,7 @@ export default function LandingPage() {
             <p className="text-gray-500 text-sm sm:text-base">{lang === 'en' ? 'Deposits reduce no-shows. Cash saves on fees.' : lang === 'sk' ? 'Zálohy znižujú nedorazivších. Hotovosť šetrí poplatky.' : 'Zálohy snižují nedorazivší. Hotovost šetří poplatky.'}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="rounded-2xl border border-[#091e30]/50 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.05), rgba(25,115,135,0.05))' }}>
+            <div className="rounded-2xl border border-amber-300 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(16,62,90,0.05), rgba(25,115,135,0.05))' }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}><CreditCard className="w-5 h-5 text-amber-400" /></div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_deposit_title')}</h3>
               <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_deposit_desc')}</p>
@@ -367,7 +365,7 @@ export default function LandingPage() {
                 {[1,2,3].map(i => (<li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-amber-500 flex-shrink-0" /> <span className="text-xs sm:text-sm">{t(`land_deposit_${i}`)}</span></li>))}
               </ul>
             </div>
-            <div className="rounded-2xl border border-gray-200 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(25,115,135,0.05), rgba(45,176,176,0.05))' }}>
+            <div className="rounded-2xl border border-amber-300 p-5 sm:p-6 text-center" style={{ background: 'linear-gradient(135deg, rgba(25,115,135,0.05), rgba(45,176,176,0.05))' }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #1d8898, #2db0b0)' }}><Banknote className="w-5 h-5 text-amber-400" /></div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{t('land_cash_title')}</h3>
               <p className="text-xs sm:text-sm text-gray-500 mb-4">{t('land_cash_desc')}</p>
@@ -429,7 +427,7 @@ export default function LandingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-10">{t('land_faq_title')}</h2>
           <div className="space-y-3">
             {[1,2,3,4,5,6,7].map(i => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div key={i} className="bg-white rounded-xl border border-amber-300 overflow-hidden">
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left">
                   <span className="font-medium text-gray-900 text-sm pr-4">{t(`land_faq_${i}_q`)}</span>
                   <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${openFaq === i ? 'rotate-180' : ''}`} />
