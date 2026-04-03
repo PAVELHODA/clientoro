@@ -318,7 +318,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-          <div class="text-center mt-8">
+          <div className="text-center mt-8">
             <a href="/register" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all" style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)' }}>
               <span className="text-amber-400">{t('land_onboard_cta')}</span> <ArrowRight className="w-5 h-5 text-amber-400" />
             </a>
@@ -471,6 +471,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
