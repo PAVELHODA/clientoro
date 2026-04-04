@@ -170,7 +170,7 @@ export async function PUT(request: NextRequest) {
           const { data: ownerProfile } = await supabaseAdmin
             .from('profiles')
             .select('id, name, email')
-            .eq('id', auth.userId)
+            .eq('auth_user_id', auth.userId)
             .single()
 
           const staffName = ownerProfile?.name || data.name || 'Majitel'
