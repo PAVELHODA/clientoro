@@ -117,7 +117,7 @@ export default function DashboardPage() {
                 <p className="text-xs text-gray-400">{lang === 'en' ? 'What do you offer?' : lang === 'sk' ? 'Čo ponúkate?' : 'Co nabízíte?'}</p>
               </div>
             </a>
-            <a href="/staff" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
+            {(organization?.mode === 'team' || organization?.mode === 'pro_inspire') && <a href="/staff" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
               <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
                 <span className="text-blue-600 text-sm font-bold">2</span>
               </div>
@@ -125,7 +125,7 @@ export default function DashboardPage() {
                 <p className="text-sm font-semibold text-gray-800">{lang === 'en' ? 'Set up team' : lang === 'sk' ? 'Nastavte tím' : 'Nastavte tým'}</p>
                 <p className="text-xs text-gray-400">{lang === 'en' ? 'Working hours & staff' : lang === 'sk' ? 'Pracovná doba' : 'Pracovní doba'}</p>
               </div>
-            </a>
+            </a>}
             <a href="/settings" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
               <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
                 <span className="text-amber-600 text-sm font-bold">3</span>

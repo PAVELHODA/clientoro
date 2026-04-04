@@ -287,7 +287,7 @@ export async function sendWelcomeEmail({
     subject: `Vítejte v Clientoro — ${orgName}`,
     html: emailTemplate({
       orgName,
-      title: 'Vítejte v Clientoro! 🎉',
+      title: 'Vítejte v Clientoro! 🏆',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 20px;">
           Váš účet <strong style="color:#111827;">${orgName}</strong> je připraven. Tady je vše co potřebujete pro začátek.
@@ -967,7 +967,7 @@ export async function sendPlanUpgraded({
           <p style="margin:4px 0;color:#374151;font-size:14px;"><strong>Měsíční platba:</strong> ${amount}</p>
         </div>
         ${features && features.length > 0 ? `<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px;margin:16px 0;">
-          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">🎉 Nově máte přístup k:</p>
+          <p style="margin:0 0 8px;color:#111827;font-size:14px;font-weight:600;">🏆 Nově máte přístup k:</p>
           ${features.map(f => `<p style="margin:4px 0;color:#374151;font-size:13px;">✅ ${f}</p>`).join('')}
         </div>` : ''}
         <div style="margin:20px 0;text-align:center;">
@@ -1018,7 +1018,7 @@ export async function sendWaitlistNotification({
     subject: `Uvolnil se termín! — ${orgName}`,
     html: emailTemplate({
       orgName,
-      title: 'Uvolnil se termín! 🎉',
+      title: 'Uvolnil se termín! 🏆',
       body: `
         <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
           Dobrý den <strong>${customerName}</strong>, máme pro vás skvělou zprávu!

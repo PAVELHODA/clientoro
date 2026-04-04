@@ -241,14 +241,17 @@ export async function PUT(request: NextRequest) {
     // === EMAILY PO DOKONČENÍ ONBOARDINGU ===
     if (isFinishingOnboarding && orgBeforeUpdate && !orgBeforeUpdate.onboarding_completed) {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.clientoro.pro'
-      const org = data
+      // Načti KOMPLETNÍ org data (update vrací jen změněné sloupce)
+      const { data: fullOrg } = await supabaseAdmin
+        .from('organizations')
+        .select('*')
+        .eq('id', auth.organizationId)
+        .single()
+      const org = fullOrg || data
 
-      // Získej email majitele pro fallback
-      let ownerEmail = org.email || orgBeforeUpdate.email || ''
-      if (!ownerEmail) {
-        const { data: ownerProf } = await supabaseAdmin.from('profiles').select('email').eq('auth_user_id', auth.userId).single()
-        ownerEmail = ownerProf?.email || ''
-      }
+      // Získej email majitele
+      const { data: ownerProf } = await supabaseAdmin.from('profiles').select('email').eq('auth_user_id', auth.userId).single()
+      const ownerEmail = org.email || ownerProf?.email || orgBeforeUpdate?.email || ''
 
       // 1. Welcome email pro zákazníka
       sendWelcomeEmail({
