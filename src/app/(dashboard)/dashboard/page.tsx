@@ -107,7 +107,8 @@ export default function DashboardPage() {
           <p className="text-sm text-gray-500 mb-4">
             {lang === 'en' ? 'Set up your business in a few steps:' : lang === 'sk' ? 'Nastavte si podnikanie v pár krokoch:' : 'Nastavte si podnikání v pár krocích:'}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Krok 1: Služby — vždy */}
             <a href="/services" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
               <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
                 <span className="text-emerald-600 text-sm font-bold">1</span>
@@ -117,18 +118,47 @@ export default function DashboardPage() {
                 <p className="text-xs text-gray-400">{lang === 'en' ? 'What do you offer?' : lang === 'sk' ? 'Čo ponúkate?' : 'Co nabízíte?'}</p>
               </div>
             </a>
-            {(organization?.mode === 'team' || organization?.mode === 'pro_inspire') && <a href="/staff" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
-              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <span className="text-blue-600 text-sm font-bold">2</span>
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-800">{lang === 'en' ? 'Set up team' : lang === 'sk' ? 'Nastavte tím' : 'Nastavte tým'}</p>
-                <p className="text-xs text-gray-400">{lang === 'en' ? 'Working hours & staff' : lang === 'sk' ? 'Pracovná doba' : 'Pracovní doba'}</p>
-              </div>
-            </a>}
-            <a href="/settings" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
+
+            {/* Krok 2: Tým (team/pro_inspire) NEBO Pracovní doba (solo/solo_inspire) */}
+            {(organization?.mode === 'team' || organization?.mode === 'pro_inspire') ? (
+              <a href="/staff" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
+                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-blue-600 text-sm font-bold">2</span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">{lang === 'en' ? 'Set up team' : lang === 'sk' ? 'Nastavte tím' : 'Nastavte tým'}</p>
+                  <p className="text-xs text-gray-400">{lang === 'en' ? 'Working hours & staff' : lang === 'sk' ? 'Pracovná doba a tím' : 'Pracovní doba a tým'}</p>
+                </div>
+              </a>
+            ) : (
+              <a href="/settings" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
+                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-blue-600 text-sm font-bold">2</span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">{lang === 'en' ? 'Set working hours' : lang === 'sk' ? 'Nastavte pracovnú dobu' : 'Nastavte pracovní dobu'}</p>
+                  <p className="text-xs text-gray-400">{lang === 'en' ? 'When are you available?' : lang === 'sk' ? 'Kedy ste k dispozícii?' : 'Kdy jste k dispozici?'}</p>
+                </div>
+              </a>
+            )}
+
+            {/* Krok 3: AI insighty (solo_inspire/pro_inspire) */}
+            {(organization?.mode === 'solo_inspire' || organization?.mode === 'pro_inspire') && (
+              <a href="/settings" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-purple-200 hover:shadow-sm transition-all">
+                <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-purple-600 text-sm font-bold">3</span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">{lang === 'en' ? 'Explore AI insights' : lang === 'sk' ? 'Preskúmajte AI insighty' : 'Prozkoumejte AI insighty'}</p>
+                  <p className="text-xs text-gray-400">{lang === 'en' ? 'Smart recommendations' : lang === 'sk' ? 'Chytré odporúčania' : 'Chytrá doporučení'}</p>
+                </div>
+              </a>
+            )}
+
+            {/* Poslední krok: Sdílet link — vždy */}
+            <a href="/settings" className="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100 hover:border-amber-200 hover:shadow-sm transition-all">
               <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-                <span className="text-amber-600 text-sm font-bold">3</span>
+                <span className="text-amber-600 text-sm font-bold">{(organization?.mode === 'solo_inspire' || organization?.mode === 'pro_inspire') ? 4 : 3}</span>
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-800">{lang === 'en' ? 'Share booking link' : lang === 'sk' ? 'Zdieľajte link' : 'Sdílejte booking link'}</p>
