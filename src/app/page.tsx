@@ -85,6 +85,36 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
     sk: ['Hipoterapia', 'Oslí chodník', 'Farma zážitky', 'Teambuilding', 'Školský výlet', 'Kreatívny workshop', 'Úniková hra', 'Degustácia'],
     en: ['Horse therapy', 'Donkey trail', 'Farm experience', 'Team building', 'School trip', 'Creative workshop', 'Escape room', 'Tasting'],
   },
+  tours: {
+    cs: ['Historická prohlídka', 'Food tour', 'Ghost tour', 'Architektonická procházka', 'Pivní degustace', 'Vinná degustace'],
+    sk: ['Historická prehliadka', 'Food tour', 'Ghost tour', 'Architektonická prechádzka', 'Pivná degustácia', 'Vínna degustácia'],
+    en: ['Historical tour', 'Food tour', 'Ghost tour', 'Architecture walk', 'Beer tasting', 'Wine tasting'],
+  },
+  wellnessExp: {
+    cs: ['Terapie tmou', 'Včelí maringotka', 'Flotační tank', 'Kryokomora', 'Saunové rituály', 'Zvuková terapie'],
+    sk: ['Terapia tmou', 'Včelia maringotka', 'Flotačný tank', 'Kryokomora', 'Saunové rituály', 'Zvuková terapia'],
+    en: ['Dark therapy', 'Bee hive cabin', 'Float tank', 'Cryotherapy', 'Sauna rituals', 'Sound therapy'],
+  },
+  events: {
+    cs: ['Narozeninová oslava', 'Firemní akce', 'Dětská párty', 'Rozlučka se svobodou', 'Výročí', 'Čajový obřad'],
+    sk: ['Narodeninová oslava', 'Firemná akcia', 'Detská párty', 'Rozlúčka so slobodou', 'Výročie', 'Čajový obrad'],
+    en: ['Birthday party', 'Corporate event', 'Kids party', 'Bachelor/ette party', 'Anniversary', 'Tea ceremony'],
+  },
+  weddings: {
+    cs: ['Koordinace svatby', 'Obřadní místo', 'Svatební výzdoba', 'Moderování obřadu', 'Svatební den', 'Konzultace'],
+    sk: ['Koordinácia svadby', 'Obradné miesto', 'Svadobná výzdoba', 'Moderovanie obradu', 'Svadobný deň', 'Konzultácia'],
+    en: ['Wedding coordination', 'Ceremony venue', 'Wedding decoration', 'MC / Hosting', 'Wedding day', 'Consultation'],
+  },
+  photo: {
+    cs: ['Portrétní focení', 'Svatební foto', 'Produktové foto', 'Video natáčení', 'Editace a postprodukce', 'Rodinné focení'],
+    sk: ['Portrétne fotenie', 'Svadobné foto', 'Produktové foto', 'Video natáčanie', 'Editácia a postprodukcia', 'Rodinné fotenie'],
+    en: ['Portrait photography', 'Wedding photo', 'Product photo', 'Video production', 'Editing & post-production', 'Family photo'],
+  },
+  consulting: {
+    cs: ['Právní poradenství', 'Finanční poradenství', 'Daňové poradenství', 'IT konzultace', 'Business koučink', 'Marketingová strategie'],
+    sk: ['Právne poradenstvo', 'Finančné poradenstvo', 'Daňové poradenstvo', 'IT konzultácia', 'Business koučing', 'Marketingová stratégia'],
+    en: ['Legal consulting', 'Financial consulting', 'Tax consulting', 'IT consulting', 'Business coaching', 'Marketing strategy'],
+  },
 }
 
 const FEATURE_KEYS = [
