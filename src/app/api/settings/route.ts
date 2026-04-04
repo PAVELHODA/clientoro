@@ -56,6 +56,7 @@ export async function PUT(request: NextRequest) {
       'work_days',
     ]
 
+    console.log('[Settings PUT] body:', JSON.stringify(body))
     const updateData: any = {}
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
@@ -259,6 +260,7 @@ export async function PUT(request: NextRequest) {
         orgName: org.name || 'Váš salon',
         bookingUrl: `${baseUrl}/book/${org.slug}`,
         dashboardUrl: `${baseUrl}/dashboard`,
+        mode: org.mode || 'solo',
       }).catch(err => console.error('[Welcome email failed]', err))
 
       // 2. Admin notifikace pro superadmina

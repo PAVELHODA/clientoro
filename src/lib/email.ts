@@ -277,10 +277,20 @@ export async function sendTestEmail({ to, orgName }: { to: string; orgName: stri
 
 
 // ===== WELCOME EMAIL PO REGISTRACI =====
+function getWelcomeSteps(mode: string): string {
+  const s = (n: number, t: string) => `<tr><td style="padding:6px 0;color:#374151;font-size:13px;"><span style="display:inline-block;width:24px;height:24px;background:#10b981;color:white;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px;">${n}</span> ${t}</td></tr>`;
+  const r: string[] = [];
+  r.push(s(1, "Zkontrolujte sluzby a cenik"));
+  if (mode === "team" || mode === "pro_inspire") { r.push(s(2, "Nastavte tym a pracovni dobu")); }
+  else { r.push(s(2, "Nastavte pracovni dobu")); }
+  if (mode === "solo_inspire" || mode === "pro_inspire") { r.push(s(r.length + 1, "Zapnete AI insighty v nastaveni")); }
+  r.push(s(r.length + 1, "Sdilejte booking link klientum"));
+  return r.join("\n");
+}
 export async function sendWelcomeEmail({
-  to, orgName, bookingUrl, dashboardUrl,
+  to, orgName, bookingUrl, dashboardUrl, mode = 'solo',
 }: {
-  to: string; orgName: string; bookingUrl: string; dashboardUrl?: string
+  to: string; orgName: string; bookingUrl: string; dashboardUrl?: string; mode?: string
 }) {
   return sendEmail({
     to,
@@ -303,9 +313,9 @@ export async function sendWelcomeEmail({
         <!-- 3 kroky -->
         <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:0 0 20px;">
           <p style="color:#111827;font-size:14px;font-weight:700;margin:0 0 12px;">🚀 Co udělat jako první:</p>
-          <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;color:#374151;font-size:13px;"><span style="display:inline-block;width:24px;height:24px;background:#10b981;color:white;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px;">1</span> Přidejte služby co nabízíte</td></tr>
-            <tr><td style="padding:6px 0;color:#374151;font-size:13px;"><span style="display:inline-block;width:24px;height:24px;background:#10b981;color:white;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px;">2</span> Nastavte pracovní dobu</td></tr>
+            ${getWelcomeSteps(mode)}
+
+
             <tr><td style="padding:6px 0;color:#374151;font-size:13px;"><span style="display:inline-block;width:24px;height:24px;background:#10b981;color:white;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px;">3</span> Sdílejte booking link klientům</td></tr>
           </table>
         </div>

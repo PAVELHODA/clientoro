@@ -85,7 +85,7 @@ export default function OnboardingPage() {
   }, [])
 
   const formatPhone = (val: string) => {
-    let digits = val.replace(/[^\d+]/g, '')
+    let digits = val.replace(/[^\d+]/g, '').slice(0, 16)
     if (digits.startsWith('00420')) digits = '+420' + digits.slice(5)
     else if (digits.startsWith('00421')) digits = '+421' + digits.slice(5)
     else if (digits.startsWith('420') && !digits.startsWith('+')) digits = '+420' + digits.slice(3)
@@ -178,7 +178,8 @@ export default function OnboardingPage() {
   const saveStep1 = async () => {
     setSaving(true)
     const payload = { name: orgName, address: orgAddress, phone: orgPhone, email: orgEmail, ico: orgIco, dic: orgDic, booking_link: bookingSlug, category: selectedCategoryList.map(c => c.slug).join(',') || 'other' }
-    await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    const res = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    if (!res.ok) { const err = await res.json().catch(() => ({})); toast.error(err.error || 'Chyba při ukládání'); setSaving(false); return }
     setSaving(false); setStep(1)
     if (selectedCategories.size > 0) selectAllTemplates()
     if (selectedCategoryList.length > 0 && !customServiceCategory) {
@@ -191,10 +192,11 @@ export default function OnboardingPage() {
     const templates = selectedCategoryList.flatMap(c => c.service_templates).filter(t => selectedTemplates.has(t.id))
     for (const t of templates) {
       const cat = getCategoryForTemplate(t.id)
-      await fetch('/api/services', {
+      const svcRes = await fetch('/api/services', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: t.name, price: t.price, duration: t.duration, category: cat?.name || 'Obecné', color: t.color, visibility: 'public', active: true }),
       })
+      if (svcRes.status === 409) continue // duplikát — skip
     }
     for (const cs of customServices) {
       await fetch('/api/services', {
