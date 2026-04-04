@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare, X, Eye, Rocket, Wrench } from 'lucide-react'
+import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare, X, Eye, Rocket, Wrench, MapPin, Leaf, PartyPopper, Heart, Camera, Scale } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 import ClientoroLogo from '@/components/ClientoroLogo'
 
