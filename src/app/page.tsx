@@ -11,7 +11,8 @@ const flags: Record<PublicLang, string> = { cs: 'cz', sk: 'sk', en: 'gb' }
 const SEGMENT_ICONS: Record<string, any> = {
   scissors: Scissors, sparkles: Sparkles, gem: Gem, heartPulse: HeartPulse,
   dumbbell: Dumbbell, brainCircuit: BrainCircuit, messageSquare: MessageSquare,
-  pawPrint: PawPrint, graduationCap: GraduationCap,
+  pawPrint: PawPrint, graduationCap: GraduationCap, mapPin: MapPin,
+  leaf: Leaf, partyPopper: PartyPopper, heart: Heart, camera: Camera, scale: Scale,
 }
 
 const SEGMENT_KEYS = [
@@ -24,7 +25,13 @@ const SEGMENT_KEYS = [
   { icon: 'messageSquare', key: 'tattoo' },
   { icon: 'pawPrint', key: 'pets' },
   { icon: 'graduationCap', key: 'edu' },
+  { icon: 'mapPin', key: 'tours' },
+  { icon: 'leaf', key: 'wellnessExp' },
   { icon: 'sparkles', key: 'exp' },
+  { icon: 'partyPopper', key: 'events' },
+  { icon: 'heart', key: 'weddings' },
+  { icon: 'camera', key: 'photo' },
+  { icon: 'scale', key: 'consulting' },
 ]
 
 const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {

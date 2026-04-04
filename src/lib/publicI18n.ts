@@ -129,8 +129,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_trust: 'Bez kreditní karty · Zrušení kdykoliv · Vaše data, vaše kontrola',
 
     // Landing — segments
-    land_segments_title: 'Pro koho je Clientoro?',
-    land_segments_desc: 'Pracujete s lidmi? Pak je Clientoro pro vás.',
+    land_segments_title: 'Pro poskytovatele služeb a nevšedních zážitků',
+    land_segments_desc: 'Kadeřnictví, wellness, svatby, prohlídky, focení — pokud pracujete s klienty, Clientoro je pro vás.',
     land_seg_hair: 'Kadeřnictví & barber',
     land_seg_hair_desc: 'Střihy, barvení, melíry, foukaná',
     land_seg_massage: 'Masáže & wellness',
@@ -432,7 +432,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_trust: 'Bez kreditnej karty · Zrušenie kedykoľvek · Vaše dáta, vaša kontrola',
 
     // Landing — segments
-    land_segments_title: 'Pre koho je Clientoro?',
+    land_segments_title: 'Pre poskytovateľov služieb a nevšedných zážitkov',
     land_segments_desc: 'Pracujete s ľuďmi? Potom je Clientoro pre vás.',
     land_seg_hair: 'Kaderníctvo & barber',
     land_seg_hair_desc: 'Strihy, farbenie, melíry, fúkaná',
@@ -735,8 +735,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_trust: 'No credit card · Cancel anytime · Your data, your control',
 
     // Landing — segments
-    land_segments_title: 'Who is Clientoro for?',
-    land_segments_desc: 'Work with people? Clientoro is for you.',
+    land_segments_title: 'For service providers and unique experiences',
+    land_segments_desc: 'Hair salons, wellness, weddings, tours, photography — if you work with clients, Clientoro is for you.',
     land_seg_hair: 'Hair salons & barbers',
     land_seg_hair_desc: 'Cuts, coloring, highlights, blowouts',
     land_seg_massage: 'Massage & wellness',
