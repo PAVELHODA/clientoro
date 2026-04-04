@@ -438,7 +438,7 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Začátek dne</label>
                   <div className="flex items-center gap-4">
-                    <input type="range" min={5} max={12} value={workStart} onChange={e => setWorkStart(Number(e.target.value))}
+                    <input type="range" min={6} max={14} value={workStart} onChange={e => setWorkStart(Number(e.target.value))}
                       className="flex-1 accent-amber-500" />
                     <span className="text-lg font-bold text-gray-900 w-16 text-center">{workStart}:00</span>
                   </div>
@@ -446,7 +446,7 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Konec dne</label>
                   <div className="flex items-center gap-4">
-                    <input type="range" min={14} max={23} value={workEnd} onChange={e => setWorkEnd(Number(e.target.value))}
+                    <input type="range" min={12} max={22} value={workEnd} onChange={e => setWorkEnd(Number(e.target.value))}
                       className="flex-1 accent-amber-500" />
                     <span className="text-lg font-bold text-gray-900 w-16 text-center">{workEnd}:00</span>
                   </div>

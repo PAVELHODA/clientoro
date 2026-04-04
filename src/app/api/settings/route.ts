@@ -156,6 +156,89 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    // === AUTO-CREATE STAFF (majitel) při dokončení onboardingu ===
+    if (isFinishingOnboarding && orgBeforeUpdate && !orgBeforeUpdate.onboarding_completed) {
+      try {
+        // Zkontroluj jestli už staff existuje
+        const { count: existingStaff } = await supabaseAdmin
+          .from('staff')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', auth.organizationId)
+
+        if (!existingStaff || existingStaff === 0) {
+          // Získej profil majitele
+          const { data: ownerProfile } = await supabaseAdmin
+            .from('profiles')
+            .select('id, name, email')
+            .eq('id', auth.userId)
+            .single()
+
+          const staffName = ownerProfile?.name || data.name || 'Majitel'
+          const staffEmail = ownerProfile?.email || data.email || ''
+
+          // 1. Vytvoř staff záznam
+          const { data: newStaff, error: staffError } = await supabaseAdmin
+            .from('staff')
+            .insert({
+              organization_id: auth.organizationId,
+              full_name: staffName,
+              email: staffEmail,
+              app_role: 'owner',
+              active: true,
+            })
+            .select()
+            .single()
+
+          if (staffError) {
+            console.error('[Auto-create staff] Error:', staffError)
+          } else if (newStaff) {
+            console.log('[Auto-create staff] Created:', newStaff.id, staffName)
+
+            // 2. Vytvoř working hours (Po-Pá dle org.work_start/work_end)
+            const workStart = data.work_start || orgBeforeUpdate.work_start || 8
+            const workEnd = data.work_end || orgBeforeUpdate.work_end || 17
+            const whRows = []
+            for (let day = 0; day < 5; day++) {
+              whRows.push({
+                staff_id: newStaff.id,
+                weekday: day,
+                start_time: `${String(workStart).padStart(2, '0')}:00`,
+                end_time: `${String(workEnd).padStart(2, '0')}:00`,
+              })
+            }
+            const { error: whError } = await supabaseAdmin
+              .from('staff_working_hours')
+              .insert(whRows)
+            if (whError) console.error('[Auto-create WH] Error:', whError)
+            else console.log('[Auto-create WH] Created', whRows.length, 'working hour rows')
+
+            // 3. Přiřaď všechny služby organizace tomuto staff
+            const { data: orgServices } = await supabaseAdmin
+              .from('services')
+              .select('id')
+              .eq('organization_id', auth.organizationId)
+              .eq('active', true)
+
+            if (orgServices && orgServices.length > 0) {
+              const ssRows = orgServices.map((svc: any) => ({
+                staff_id: newStaff.id,
+                service_id: svc.id,
+              }))
+              const { error: ssError } = await supabaseAdmin
+                .from('staff_services')
+                .insert(ssRows)
+              if (ssError) console.error('[Auto-create SS] Error:', ssError)
+              else console.log('[Auto-create SS] Linked', ssRows.length, 'services')
+            }
+          }
+        } else {
+          console.log('[Auto-create staff] Staff already exists, count:', existingStaff)
+        }
+      } catch (staffErr) {
+        console.error('[Auto-create staff] Unexpected error:', staffErr)
+      }
+    }
+
     // === EMAILY PO DOKONČENÍ ONBOARDINGU ===
     if (isFinishingOnboarding && orgBeforeUpdate && !orgBeforeUpdate.onboarding_completed) {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
