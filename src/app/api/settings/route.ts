@@ -183,8 +183,7 @@ export async function PUT(request: NextRequest) {
               organization_id: auth.organizationId,
               full_name: staffName,
               email: staffEmail,
-              app_role: 'owner',
-              active: true,
+                            active: true,
             })
             .select()
             .single()
