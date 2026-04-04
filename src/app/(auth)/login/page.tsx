@@ -171,6 +171,7 @@ export default function LoginPage() {
                   </button>
                 </div>
               </div>
+              <div className="text-right mt-1"><a href="/forgot-password" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">{t('login_forgot')}</a></div>
               <button type="submit" disabled={loading}
                 className="w-full py-3 text-white rounded-xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 transition-all hover:shadow-xl"
                 style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
