@@ -100,10 +100,11 @@ export default function NotesDrawer({ targetType, targetId, targetDate, label }:
 
   return (
     <>
+      {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
         className="relative p-1.5 rounded-lg hover:bg-white/10 transition-colors group"
-        title={label || t('notes') || 'Poznamky'}
+        title={label || t('notes') || 'Poznámky'}
       >
         <NotebookPen className={`w-4 h-4 ${hasNotes ? 'text-teal-400' : 'text-gray-400 group-hover:text-gray-200'}`} />
         {hasNotes && (
@@ -111,41 +112,43 @@ export default function NotesDrawer({ targetType, targetId, targetDate, label }:
         )}
       </button>
 
+      {/* Drawer */}
       {open && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
-          <div className="relative w-full max-w-md bg-[#0a1929] border-l border-white/10 h-full flex flex-col shadow-2xl">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div className="relative w-full max-w-md h-full flex flex-col shadow-2xl bg-gradient-to-b from-[#0a1628] via-[#0d1f3c] to-[#0a1628] border-l border-cyan-500/10">
+
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
+            <div className="flex items-center justify-between p-4 border-b border-cyan-500/10">
               <div className="flex items-center gap-2">
-                <NotebookPen className="w-5 h-5 text-teal-400" />
-                <h2 className="text-white font-semibold">{label || t('notes') || 'Poznamky'}</h2>
-                <span className="text-xs text-gray-500">({notes.length})</span>
+                <NotebookPen className="w-5 h-5 text-cyan-400" />
+                <h2 className="text-white font-semibold">{label || t('notes') || 'Poznámky'}</h2>
+                <span className="text-xs text-cyan-300/40">({notes.length})</span>
               </div>
-              <button onClick={() => setOpen(false)} className="p-1 rounded hover:bg-white/10">
-                <X className="w-5 h-5 text-gray-400" />
+              <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-white/10 transition-colors">
+                <X className="w-5 h-5 text-gray-400 hover:text-white" />
               </button>
             </div>
 
-            {/* Add new */}
-            <div className="p-4 border-b border-white/10">
+            {/* Add new note */}
+            <div className="p-4 border-b border-cyan-500/10">
               <textarea
                 value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
-                placeholder={t('notes_placeholder') || 'Napiste poznamku...'}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white placeholder-gray-500 resize-none focus:outline-none focus:border-teal-500/50"
+                placeholder={t('notes_placeholder') || 'Napište poznámku...'}
+                className="w-full bg-white/5 border border-cyan-500/20 rounded-xl p-3 text-sm text-white placeholder-cyan-300/30 resize-none focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all"
                 rows={3}
                 onKeyDown={(e) => { if (e.key === 'Enter' && e.ctrlKey) handleAdd() }}
               />
               <div className="flex justify-between items-center mt-2">
-                <span className="text-xs text-gray-500">Ctrl+Enter</span>
+                <span className="text-xs text-cyan-300/30">Ctrl+Enter</span>
                 <button
                   onClick={handleAdd}
                   disabled={!newContent.trim() || saving}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-40 text-white text-sm rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/30 disabled:opacity-30 text-cyan-300 text-sm rounded-xl transition-all"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  {t('notes_add') || 'Pridat'}
+                  {t('notes_add') || 'Přidat'}
                 </button>
               </div>
             </div>
@@ -153,18 +156,21 @@ export default function NotesDrawer({ targetType, targetId, targetDate, label }:
             {/* Notes list */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {loading ? (
-                <div className="text-center text-gray-500 text-sm py-8">{t('loading') || 'Nacitam...'}</div>
+                <div className="text-center text-cyan-300/30 py-8">...</div>
               ) : notes.length === 0 ? (
-                <div className="text-center text-gray-500 text-sm py-8">{t('notes_empty') || 'Zadne poznamky'}</div>
+                <div className="text-center py-12">
+                  <NotebookPen className="w-8 h-8 text-cyan-500/20 mx-auto mb-3" />
+                  <p className="text-cyan-300/30 text-sm">{t('notes_empty') || 'Zatím žádné poznámky'}</p>
+                </div>
               ) : (
                 notes.map((note) => (
-                  <div key={note.id} className="bg-white/5 border border-white/10 rounded-lg p-3 group">
+                  <div key={note.id} className="group bg-white/5 border border-cyan-500/10 rounded-xl p-3 hover:border-cyan-500/20 transition-all">
                     {editId === note.id ? (
                       <div>
                         <textarea
                           value={editContent}
                           onChange={(e) => setEditContent(e.target.value)}
-                          className="w-full bg-white/5 border border-white/10 rounded p-2 text-sm text-white resize-none focus:outline-none focus:border-teal-500/50"
+                          className="w-full bg-white/5 border border-cyan-500/20 rounded-lg p-2 text-sm text-white resize-none focus:outline-none focus:border-cyan-400/50"
                           rows={3}
                           autoFocus
                         />
@@ -172,38 +178,39 @@ export default function NotesDrawer({ targetType, targetId, targetDate, label }:
                           <button
                             onClick={() => handleUpdate(note.id)}
                             disabled={saving}
-                            className="flex items-center gap-1 px-2 py-1 bg-teal-600 hover:bg-teal-500 text-white text-xs rounded transition-colors"
+                            className="flex items-center gap-1 px-3 py-1 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs rounded-lg transition-all"
                           >
-                            <Save className="w-3 h-3" /> {t('save') || 'Ulozit'}
+                            <Save className="w-3 h-3" />
+                            {t('notes_save') || 'Uložit'}
                           </button>
                           <button
                             onClick={() => { setEditId(null); setEditContent('') }}
-                            className="px-2 py-1 text-gray-400 hover:text-white text-xs rounded transition-colors"
+                            className="px-3 py-1 text-gray-400 hover:text-white text-xs rounded-lg hover:bg-white/5 transition-all"
                           >
-                            {t('cancel') || 'Zrusit'}
+                            {t('cancel') || 'Zrušit'}
                           </button>
                         </div>
                       </div>
                     ) : (
                       <div>
-                        <p className="text-sm text-gray-200 whitespace-pre-wrap">{note.content}</p>
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="text-xs text-gray-500">
+                        <p className="text-sm text-cyan-50/90 whitespace-pre-wrap leading-relaxed">{note.content}</p>
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-cyan-500/5">
+                          <span className="text-xs text-cyan-300/25">
                             {new Date(note.created_at).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           </span>
                           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {note.is_admin_only && <Lock className="w-3 h-3 text-amber-400" />}
+                            {note.is_admin_only && <Lock className="w-3 h-3 text-amber-400/60" />}
                             <button
                               onClick={() => { setEditId(note.id); setEditContent(note.content) }}
-                              className="p-1 rounded hover:bg-white/10"
+                              className="p-1 rounded-lg hover:bg-white/10 transition-colors"
                             >
-                              <Edit3 className="w-3.5 h-3.5 text-gray-400 hover:text-white" />
+                              <Edit3 className="w-3.5 h-3.5 text-cyan-300/40 hover:text-cyan-300" />
                             </button>
                             <button
                               onClick={() => handleDelete(note.id)}
-                              className="p-1 rounded hover:bg-red-500/20"
+                              className="p-1 rounded-lg hover:bg-red-500/20 transition-colors"
                             >
-                              <Trash2 className="w-3.5 h-3.5 text-gray-400 hover:text-red-400" />
+                              <Trash2 className="w-3.5 h-3.5 text-cyan-300/40 hover:text-red-400" />
                             </button>
                           </div>
                         </div>
