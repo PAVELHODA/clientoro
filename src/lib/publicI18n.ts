@@ -293,7 +293,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_faq_6_q: 'Jsou moje data v bezpečí?',
     land_faq_6_a: 'Ano. Používáme Supabase (PostgreSQL) s row-level security a GDPR-kompatibilním zpracováním dat.',
     land_faq_7_q: 'Potřebuji technické znalosti?',
-    land_faq_7_a: 'Vůbec ne. Náš průvodce krok za krokem vás provede nastavením za 5 minut.',
+    land_faq_7_a: 'Vůbec ne. Náš průvodce krok za krokem vás provede nastavením za 5 minut. Uvnitř aplikace najdete interaktivní návody, které vám ukážou jak s Clientoro pracovat — od první rezervace po správu klientů.',
 
     // Landing — final CTA
     land_final_cta: 'Připraveni na plný kalendář?',
@@ -596,7 +596,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_faq_6_q: 'Sú moje dáta v bezpečí?',
     land_faq_6_a: 'Áno. Používame Supabase (PostgreSQL) s row-level security a GDPR-kompatibilným spracovaním dát.',
     land_faq_7_q: 'Potrebujem technické znalosti?',
-    land_faq_7_a: 'Vôbec nie. Náš sprievodca krok za krokom vás prevedie nastavením za 5 minút.',
+    land_faq_7_a: 'Vôbec nie. Náš sprievodca krok za krokom vás prevedie nastavením za 5 minút. V aplikácii nájdete interaktívne návody, ktoré vám ukážu ako s Clientoro pracovať — od prvej rezervácie po správu klientov.',
 
     // Landing — final CTA
     land_final_cta: 'Pripravení na plný kalendár?',
@@ -899,7 +899,7 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_faq_6_q: 'Is my data safe?',
     land_faq_6_a: 'Yes. We use Supabase (PostgreSQL) with row-level security and GDPR-compliant data processing.',
     land_faq_7_q: 'Do I need technical skills?',
-    land_faq_7_a: 'Not at all. Our step-by-step wizard guides you through setup in 5 minutes.',
+    land_faq_7_a: 'Not at all. Our step-by-step wizard guides you through setup in 5 minutes. Inside the app you will find interactive guides that show you how to use Clientoro — from your first booking to client management.',
 
     // Landing — final CTA
     land_final_cta: 'Ready for a full calendar?',
