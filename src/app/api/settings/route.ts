@@ -240,7 +240,7 @@ export async function PUT(request: NextRequest) {
 
     // === EMAILY PO DOKONČENÍ ONBOARDINGU ===
     if (isFinishingOnboarding && orgBeforeUpdate && !orgBeforeUpdate.onboarding_completed) {
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.clientoro.pro'
       const org = data
 
       // Získej email majitele pro fallback

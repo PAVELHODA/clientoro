@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/Toast'
-import { Building2, Scissors, Clock, Sparkles, ArrowRight, ArrowLeft, Check, Waves, Loader2 } from 'lucide-react'
+import { Building2, Scissors, Clock, Sparkles, ArrowRight, ArrowLeft, Check, Waves, Loader2, Plus, X } from 'lucide-react'
 
 const STEPS = [
   { icon: Building2, label: 'Info', color: 'bg-blue-500' },
@@ -13,8 +13,23 @@ const STEPS = [
   { icon: Sparkles, label: 'Hotovo', color: 'bg-purple-500' },
 ]
 
+const SLOT_OPTIONS = [
+  { value: 15, label: '15 min' },
+  { value: 20, label: '20 min' },
+  { value: 30, label: '30 min' },
+  { value: 45, label: '45 min' },
+  { value: 60, label: '1 hod' },
+  { value: 90, label: '1.5 hod' },
+  { value: 120, label: '2 hod' },
+  { value: 150, label: '2.5 hod' },
+  { value: 180, label: '3 hod' },
+  { value: 240, label: '4 hod' },
+  { value: 480, label: 'Celý den' },
+]
+
 interface Category { id: string; name: string; slug: string; icon: string; service_templates: Template[] }
 interface Template { id: string; name: string; duration: number; price: number; color: string; category_id?: string }
+interface CustomService { name: string; price: string; duration: string; category: string }
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(0)
@@ -41,7 +56,7 @@ export default function OnboardingPage() {
   const [customServicePrice, setCustomServicePrice] = useState('')
   const [customServiceDuration, setCustomServiceDuration] = useState('60')
   const [customServiceCategory, setCustomServiceCategory] = useState('')
-  const [customServices, setCustomServices] = useState<Array<{name: string; price: string; duration: string; category: string}>>([])
+  const [customServices, setCustomServices] = useState<CustomService[]>([])
 
   const [workStart, setWorkStart] = useState(8)
   const [workEnd, setWorkEnd] = useState(17)
@@ -132,6 +147,30 @@ export default function OnboardingPage() {
     setSelectedTemplates(new Set(allIds))
   }
 
+  const addCustomService = () => {
+    if (!customServiceName || !customServicePrice) return
+    setCustomServices(prev => [...prev, {
+      name: customServiceName,
+      price: customServicePrice,
+      duration: customServiceDuration,
+      category: customServiceCategory || selectedCategoryList[0]?.name || 'Obecné'
+    }])
+    setCustomServiceName('')
+    setCustomServicePrice('')
+    setCustomServiceDuration('60')
+  }
+
+  const removeCustomService = (idx: number) => {
+    setCustomServices(prev => prev.filter((_, i) => i !== idx))
+  }
+
+  const formatDuration = (d: number) => {
+    if (d >= 480) return (d / 60) + ' hod (celý den)'
+    if (d >= 240) return (d / 60) + ' hod (půl dne)'
+    if (d >= 60) return (d / 60) + ' hod'
+    return d + ' min'
+  }
+
   const goToStep = (targetStep: number) => {
     if (targetStep <= maxStep) setStep(targetStep)
   }
@@ -157,10 +196,10 @@ export default function OnboardingPage() {
         body: JSON.stringify({ name: t.name, price: t.price, duration: t.duration, category: cat?.name || 'Obecné', color: t.color, visibility: 'public', active: true }),
       })
     }
-    if (customServiceName && customServicePrice) {
+    for (const cs of customServices) {
       await fetch('/api/services', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: customServiceName, price: parseFloat(customServicePrice), duration: parseInt(customServiceDuration), category: customServiceCategory || selectedCategoryList[0]?.name || 'Obecné', color: '#3b82f6', visibility: 'public', active: true }),
+        body: JSON.stringify({ name: cs.name, price: parseFloat(cs.price), duration: parseInt(cs.duration), category: cs.category || 'Obecné', color: '#3b82f6', visibility: 'public', active: true }),
       })
     }
     setSaving(false); setStep(2)
@@ -194,10 +233,13 @@ export default function OnboardingPage() {
     }
   }
 
+  const totalServices = selectedTemplates.size + customServices.length
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 md:py-12 relative overflow-hidden">
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0e3a5c 0%, #1a6e8a 40%, #2ba0b0 70%, #3ec4c4 100%)' }} />
-      <div className="absolute top-20 right-20 w-96 h-96 bg-amber-300/10 rounded-full blur-3xl" />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #1a5276 0%, #2980b9 35%, #48b1bf 65%, #6dd5c8 100%)' }} />
+      <div className="absolute top-20 right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-10 left-10 w-64 h-64 bg-amber-300/8 rounded-full blur-3xl" />
 
       <div className="w-full max-w-lg relative z-10">
         <div className="text-center mb-6">
@@ -205,7 +247,7 @@ export default function OnboardingPage() {
             <Waves className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-white">Clientoro</h1>
-          <p className="text-white/60 mt-1 text-sm">Nastavte si svůj účet za 2 minuty</p>
+          <p className="text-white/70 mt-1 text-sm">Nastavte si svůj účet za 2 minuty</p>
         </div>
 
         {/* KLIKACÍ KROKY */}
@@ -352,7 +394,7 @@ export default function OnboardingPage() {
 
               <button onClick={saveStep1} disabled={!orgName || selectedCategories.size === 0 || (orgIco.length > 0 && orgIco.length === 8 && !icoValid) || saving}
                 className="w-full mt-5 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
-                style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                style={{ background: 'linear-gradient(135deg, #1a5276, #48b1bf)' }}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
@@ -398,36 +440,56 @@ export default function OnboardingPage() {
                 )
               ))}
 
+              {/* PŘIDÁNÍ VLASTNÍCH SLUŽEB */}
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-sm font-medium text-gray-700 mb-3">➕ Přidat vlastní službu</p>
-                <div className="space-y-2">
+
+                {/* Seznam již přidaných */}
+                {customServices.length > 0 && (
+                  <div className="mb-3 space-y-1.5">
+                    {customServices.map((cs, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <span className="text-sm text-gray-800 font-medium truncate">{cs.name}</span>
+                          <span className="text-xs text-gray-500">{cs.price} Kč / {formatDuration(parseInt(cs.duration))}</span>
+                          {selectedCategoryList.length > 1 && <span className="text-[10px] text-gray-400">→ {cs.category}</span>}
+                        </div>
+                        <button onClick={() => removeCustomService(idx)} className="p-1 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Formulář pro novou službu */}
+                <div className="space-y-2 bg-gray-50 rounded-xl p-3 border border-gray-200">
                   <input type="text" value={customServiceName} onChange={e => setCustomServiceName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Název služby" />
+                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white" placeholder="Název služby" />
                   <div className="grid grid-cols-2 gap-2">
                     <input type="number" value={customServicePrice} onChange={e => setCustomServicePrice(e.target.value)}
-                      className="px-3 py-2 border border-gray-200 rounded-xl text-sm" placeholder="Cena (Kč)" />
+                      className="px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white" placeholder="Cena (Kč)" />
                     <select value={customServiceDuration} onChange={e => setCustomServiceDuration(e.target.value)}
-                      className="px-3 py-2 border border-gray-200 rounded-xl text-sm">
-                      {[15,30,45,60,75,90,120,150,180,240,300,360,480].map(d => <option key={d} value={d}>{d >= 480 ? (d/60) + ' hod (celý den)' : d >= 240 ? (d/60) + ' hod (půl dne)' : d >= 60 ? (d/60) + ' hod' : d + ' min'}</option>)}
+                      className="px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white">
+                      {[15,30,45,60,75,90,120,150,180,240,300,360,480].map(d => (
+                        <option key={d} value={d}>{formatDuration(d)}</option>
+                      ))}
                     </select>
                   </div>
                   {selectedCategoryList.length > 1 && (
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Zařadit do kategorie:</label>
-                      <select value={customServiceCategory} onChange={e => setCustomServiceCategory(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
-                        {selectedCategoryList.map(c => (
-                          <option key={c.id} value={c.name}>{c.icon} {c.name}</option>
-                        ))}
-                      </select>
-                    </div>
+                    <select value={customServiceCategory} onChange={e => setCustomServiceCategory(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white">
+                      {selectedCategoryList.map(c => (
+                        <option key={c.id} value={c.name}>{c.icon} {c.name}</option>
+                      ))}
+                    </select>
                   )}
-                  {customServiceName && customServicePrice && (
-                    <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700 text-center">
-                      ✓ {customServiceName} — {customServicePrice} Kč / {customServiceDuration} min
-                      {selectedCategoryList.length > 1 && <span> → {customServiceCategory}</span>}
-                    </div>
-                  )}
+                  <button type="button" onClick={addCustomService}
+                    disabled={!customServiceName || !customServicePrice}
+                    className="w-full py-2 bg-emerald-500 text-white rounded-xl text-sm font-medium hover:bg-emerald-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5">
+                    <Plus className="w-4 h-4" /> Přidat službu
+                  </button>
                 </div>
               </div>
 
@@ -435,9 +497,9 @@ export default function OnboardingPage() {
                 <button onClick={() => setStep(0)} className="px-4 py-3 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50">
                   <ArrowLeft className="w-4 h-4" />
                 </button>
-                <button onClick={saveStep2} disabled={(selectedTemplates.size === 0 && !customServiceName) || saving}
+                <button onClick={saveStep2} disabled={(selectedTemplates.size === 0 && customServices.length === 0) || saving}
                   className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
-                  style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                  style={{ background: 'linear-gradient(135deg, #1a5276, #48b1bf)' }}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
                 </button>
               </div>
@@ -475,13 +537,14 @@ export default function OnboardingPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Délka slotu</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Délka slotu v kalendáři</label>
+                  <p className="text-xs text-gray-400 mb-3">Jak jemně chcete dělit kalendář? Služby mohou trvat libovolně dlouho.</p>
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                    {[15, 20, 30, 45, 60, 90, 120, 150, 180, 240, 480].map(d => (
-                      <button key={d} onClick={() => setSlotDuration(d)}
+                    {SLOT_OPTIONS.map(opt => (
+                      <button key={opt.value} onClick={() => setSlotDuration(opt.value)}
                         className={`py-2 rounded-xl text-sm font-medium transition-all ${
-                          slotDuration === d ? 'bg-amber-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}>{d >= 480 ? 'Celý den' : d >= 60 ? (d/60) + ' hod' : d + ' min'}</button>
+                          slotDuration === opt.value ? 'bg-amber-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}>{opt.label}</button>
                     ))}
                   </div>
                 </div>
@@ -493,7 +556,7 @@ export default function OnboardingPage() {
                 </button>
                 <button onClick={saveStep3} disabled={saving}
                   className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
-                  style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                  style={{ background: 'linear-gradient(135deg, #1a5276, #48b1bf)' }}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
                 </button>
               </div>
@@ -503,14 +566,13 @@ export default function OnboardingPage() {
           {/* STEP 3 — Hotovo */}
           {step === 3 && (
             <div className="text-center">
-              <div className="mb-6">
-                <div className="relative inline-block">
-                  <Sparkles className="w-12 h-12 text-amber-500 mx-auto" />
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full animate-pulse" />
-                </div>
+              <div className="mb-5">
+                <div className="text-5xl mb-2">🏆</div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>
+                  Výborně, vše je připraveno!
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">Váš účet je nastaven. Můžete začít přijímat rezervace.</p>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Výborně, vše je připraveno</h2>
-              <p className="text-sm text-gray-500 mb-6">Váš účet je nastaven. Můžete začít přijímat rezervace.</p>
 
               <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-200 mb-5">
                 <p className="text-xs text-emerald-600 mb-1">Váš booking link</p>
@@ -522,18 +584,32 @@ export default function OnboardingPage() {
               </div>
 
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-6 text-left">
-                <p className="text-sm font-medium text-gray-700 mb-2">Co jsme nastavili:</p>
-                <ul className="text-sm text-gray-600 space-y-1.5">
-                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-blue-600" /></span> {orgName}</li>
-                  {selectedCategoryList.map(c => <li key={c.id} className="flex items-center gap-2"><span className="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span> {c.icon} {c.name}</li>)}
-                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-purple-600" /></span> {selectedTemplates.size + customServices.length} služeb</li>
-                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-amber-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-amber-600" /></span> {workStart}:00 – {workEnd}:00, kalendář po {slotDuration} min</li>
+                <p className="text-sm font-medium text-gray-700 mb-3">Co jsme nastavili:</p>
+                <ul className="text-sm text-gray-600 space-y-2">
+                  <li className="flex items-center gap-2">
+                    <span className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-blue-600" /></span>
+                    {orgName}
+                  </li>
+                  {selectedCategoryList.map(c => (
+                    <li key={c.id} className="flex items-center gap-2">
+                      <span className="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span>
+                      {c.icon} {c.name}
+                    </li>
+                  ))}
+                  <li className="flex items-center gap-2">
+                    <span className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-purple-600" /></span>
+                    {totalServices} služeb{customServices.length > 0 ? ` (z toho ${customServices.length} vlastních)` : ''}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-5 h-5 bg-amber-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-amber-600" /></span>
+                    Otevírací doba {workStart}:00 – {workEnd}:00
+                  </li>
                 </ul>
               </div>
 
               <button onClick={finishOnboarding} disabled={saving}
                 className="w-full py-3.5 text-white rounded-xl font-semibold disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm transition-all hover:shadow-xl"
-                style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
+                style={{ background: 'linear-gradient(135deg, #1a5276, #48b1bf)' }}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Přejít do aplikace <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>

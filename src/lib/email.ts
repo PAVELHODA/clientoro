@@ -323,7 +323,7 @@ export async function sendWelcomeEmail({
         </div>
       `,
       footer: `
-        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.02em;">Otevřít dashboard</a>
+        <a href="${dashboardUrl || 'https://www.clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.02em;">Otevřít dashboard</a>
         <p style="color:#6b7280;font-size:12px;margin:12px 0 0;">14 dní zdarma · Bez kreditní karty · Zrušíte kdykoliv</p>
         <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Potřebujete pomoct? Napište nám: <a href="mailto:support@clientoro.pro" style="color:#0f6b7a;text-decoration:none;">support@clientoro.pro</a></p>
       `,
@@ -463,7 +463,7 @@ export async function sendWeeklyReport({
         </div>` : ''}
       `,
       footer: `
-        <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
+        <a href="${dashboardUrl || 'https://www.clientoro.pro/dashboard'}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Otevřít dashboard</a>
         <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Tento report můžete vypnout v Nastavení.</p>
       `,
     }),
@@ -522,7 +522,7 @@ export async function sendSuperadminCronSummary({
 export async function sendAdminNotification({ orgName, email, phone, ico, category, mode, slug, address }: {
   orgName: string; email: string; phone?: string; ico?: string; category?: string; mode?: string; slug?: string; address?: string
 }) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.clientoro.pro'
   const bookingUrl = slug ? `${baseUrl}/book/${slug}` : ''
 
   const rows = [
@@ -1069,7 +1069,7 @@ export async function sendMonthlyReport({
           ${topStaff ? `<p style="margin:4px 0;color:#374151;font-size:13px;">🏆 Top specialista: <strong>${topStaff}</strong></p>` : ''}
         </div>
         <div style="margin:20px 0;text-align:center;">
-          <a href="${dashboardUrl || 'https://clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Zobrazit detaily</a>
+          <a href="${dashboardUrl || 'https://www.clientoro.pro/dashboard'}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:12px;font-size:14px;font-weight:600;">Zobrazit detaily</a>
         </div>
       `,
       footer: `<p style="color:#9ca3af;font-size:11px;margin:0;">Tento report můžete vypnout v Nastavení.</p>`,
