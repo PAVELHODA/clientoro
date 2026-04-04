@@ -1,10 +1,8 @@
-﻿// PATH: src/lib/serviceCategories.ts
+// PATH: src/lib/serviceCategories.ts
 
 export type Industry =
   | 'hair_salon'
-  | 'barber'
   | 'beauty'
-  | 'nails'
   | 'massage'
   | 'physiotherapy'
   | 'aesthetic_clinic'
@@ -25,76 +23,95 @@ export type Industry =
 type Lang = 'cs' | 'sk' | 'en'
 
 const SLUG_MAP: Record<string, Industry> = {
+  // Hair & Barber
   'kadernictvi': 'hair_salon',
   'kadernictvo': 'hair_salon',
   'hair-salon': 'hair_salon',
   'hair_salon': 'hair_salon',
-  'barber': 'barber',
-  'barber-shop': 'barber',
+  'barber': 'hair_salon',
+  'barber-shop': 'hair_salon',
+  // Beauty & Nails
   'kosmetika': 'beauty',
   'kozmetika': 'beauty',
   'beauty': 'beauty',
-  'nehty': 'nails',
-  'nechty': 'nails',
-  'nails': 'nails',
+  'nehty': 'beauty',
+  'nechty': 'beauty',
+  'nails': 'beauty',
+  // Massage
   'masaze': 'massage',
   'massage': 'massage',
   'wellness': 'massage',
+  // Physiotherapy
   'fyzioterapie': 'physiotherapy',
   'fyzioterapia': 'physiotherapy',
   'physiotherapy': 'physiotherapy',
   'rehabilitace': 'physiotherapy',
+  // Aesthetic clinic
   'esteticka-klinika': 'aesthetic_clinic',
   'estetika': 'aesthetic_clinic',
   'aesthetic': 'aesthetic_clinic',
+  'aesthetic_clinic': 'aesthetic_clinic',
+  // Fitness
   'fitness': 'fitness',
   'trenink': 'fitness',
   'trening': 'fitness',
+  // Psychology
   'psychologie': 'psychology',
   'psychologia': 'psychology',
   'psychology': 'psychology',
   'koucink': 'psychology',
   'koucing': 'psychology',
   'coaching': 'psychology',
+  // Tattoo
   'tetovani': 'tattoo',
   'tetovanie': 'tattoo',
   'tattoo': 'tattoo',
   'piercing': 'tattoo',
+  // Pets
   'pece-o-zvirata': 'pets',
   'starostlivost-o-zvierata': 'pets',
   'pets': 'pets',
   'grooming': 'pets',
+  // Education
   'vzdelavani': 'education',
   'vzdelavanie': 'education',
   'education': 'education',
   'lekce': 'education',
   'lekcie': 'education',
+  // Tours
   'prohlidky': 'tours',
   'prehliadky': 'tours',
   'tours': 'tours',
   'pruvodce': 'tours',
   'sprievodca': 'tours',
+  // Wellness experiences
   'wellness-zazitky': 'wellness_experiences',
   'wellness-experiences': 'wellness_experiences',
   'terapie-tmou': 'wellness_experiences',
+  // Experiences
   'zazitky': 'experiences',
   'experiences': 'experiences',
   'aktivity': 'experiences',
+  // Events
   'oslavy': 'events',
   'events': 'events',
   'party': 'events',
+  // Weddings
   'svatby': 'weddings',
   'svadby': 'weddings',
   'weddings': 'weddings',
+  // Photo
   'foto': 'photo',
   'photo': 'photo',
   'video': 'photo',
   'foceni': 'photo',
   'fotenie': 'photo',
+  // Consulting
   'poradenstvi': 'consulting',
   'poradenstvo': 'consulting',
   'consulting': 'consulting',
   'konzultace': 'consulting',
+  // General (fallback)
   'other': 'general',
   'general': 'general',
   'ostatni': 'general',
@@ -103,103 +120,93 @@ const SLUG_MAP: Record<string, Industry> = {
 
 const CATEGORIES: Record<Industry, Record<Lang, string[]>> = {
   hair_salon: {
-    cs: ['Stříhání', 'Barvení', 'Styling', 'Péče o vlasy', 'Ostatní'],
-    sk: ['Strihanie', 'Farbenie', 'Styling', 'Starostlivosť o vlasy', 'Ostatné'],
-    en: ['Haircut', 'Coloring', 'Styling', 'Hair care', 'Other'],
-  },
-  barber: {
-    cs: ['Stříhání', 'Holení', 'Vousy', 'Styling', 'Ostatní'],
-    sk: ['Strihanie', 'Holenie', 'Fúzy', 'Styling', 'Ostatné'],
-    en: ['Haircut', 'Shaving', 'Beard', 'Styling', 'Other'],
+    cs: ['Strihani', 'Barveni', 'Styling', 'Pece o vlasy', 'Holeni', 'Vousy', 'Uprava brady', 'Ostatni'],
+    sk: ['Strihanie', 'Farbenie', 'Styling', 'Starostlivost o vlasy', 'Holenie', 'Fuzy', 'Uprava brady', 'Ostatne'],
+    en: ['Haircut', 'Coloring', 'Styling', 'Hair care', 'Shaving', 'Beard', 'Beard trim', 'Other'],
   },
   beauty: {
-    cs: ['Pleť', 'Líčení', 'Řasy', 'Obočí', 'Depilace', 'Ostatní'],
-    sk: ['Pleť', 'Líčenie', 'Mihalnice', 'Obočie', 'Depilácia', 'Ostatné'],
-    en: ['Skin', 'Makeup', 'Lashes', 'Brows', 'Waxing', 'Other'],
-  },
-  nails: {
-    cs: ['Manikúra', 'Pedikúra', 'Gel', 'Akryl', 'Zdobení', 'Ostatní'],
-    sk: ['Manikúra', 'Pedikúra', 'Gel', 'Akryl', 'Zdobenie', 'Ostatné'],
-    en: ['Manicure', 'Pedicure', 'Gel', 'Acrylic', 'Nail art', 'Other'],
+    cs: ['Plet', 'Liceni', 'Rasy', 'Oboci', 'Depilace', 'Manikura', 'Pedikura', 'Gel', 'Akryl', 'Zdobeni', 'Ostatni'],
+    sk: ['Plet', 'Licenie', 'Mihalnice', 'Obocie', 'Depilacia', 'Manikura', 'Pedikura', 'Gel', 'Akryl', 'Zdobenie', 'Ostatne'],
+    en: ['Skin', 'Makeup', 'Lashes', 'Brows', 'Waxing', 'Manicure', 'Pedicure', 'Gel', 'Acrylic', 'Nail art', 'Other'],
   },
   massage: {
-    cs: ['Klasická', 'Sportovní', 'Relaxační', 'Lymfatická', 'Reflexní', 'Ostatní'],
-    sk: ['Klasická', 'Športová', 'Relaxačná', 'Lymfatická', 'Reflexná', 'Ostatné'],
+    cs: ['Klasicka', 'Sportovni', 'Relaxacni', 'Lymfaticka', 'Reflexni', 'Ostatni'],
+    sk: ['Klasicka', 'Sportova', 'Relaxacna', 'Lymfaticka', 'Reflexna', 'Ostatne'],
     en: ['Classic', 'Sports', 'Relaxation', 'Lymphatic', 'Reflexology', 'Other'],
   },
   physiotherapy: {
-    cs: ['Vyšetření', 'Manuální terapie', 'Rehabilitace', 'Elektroterapie', 'Prevence', 'Ostatní'],
-    sk: ['Vyšetrenie', 'Manuálna terapia', 'Rehabilitácia', 'Elektroterapia', 'Prevencia', 'Ostatné'],
+    cs: ['Vysetreni', 'Manualni terapie', 'Rehabilitace', 'Elektroterapie', 'Prevence', 'Ostatni'],
+    sk: ['Vysetrenie', 'Manualna terapia', 'Rehabilitacia', 'Elektroterapia', 'Prevencia', 'Ostatne'],
     en: ['Examination', 'Manual therapy', 'Rehabilitation', 'Electrotherapy', 'Prevention', 'Other'],
   },
   aesthetic_clinic: {
-    cs: ['Injekce', 'Laser', 'Peeling', 'Body', 'Konzultace', 'Ostatní'],
-    sk: ['Injekcie', 'Laser', 'Peeling', 'Body', 'Konzultácia', 'Ostatné'],
+    cs: ['Injekce', 'Laser', 'Peeling', 'Body', 'Konzultace', 'Ostatni'],
+    sk: ['Injekcie', 'Laser', 'Peeling', 'Body', 'Konzultacia', 'Ostatne'],
     en: ['Injectables', 'Laser', 'Peeling', 'Body', 'Consultation', 'Other'],
   },
   fitness: {
-    cs: ['Osobní trénink', 'Skupinový', 'Výživa', 'Diagnostika', 'Ostatní'],
-    sk: ['Osobný tréning', 'Skupinový', 'Výživa', 'Diagnostika', 'Ostatné'],
+    cs: ['Osobni trenink', 'Skupinovy', 'Vyziva', 'Diagnostika', 'Ostatni'],
+    sk: ['Osobny trening', 'Skupinovy', 'Vyziva', 'Diagnostika', 'Ostatne'],
     en: ['Personal training', 'Group', 'Nutrition', 'Diagnostics', 'Other'],
   },
   psychology: {
-    cs: ['Individuální terapie', 'Párová terapie', 'Koučink', 'Mentoring', 'Diagnostika', 'Ostatní'],
-    sk: ['Individuálna terapia', 'Párová terapia', 'Koučing', 'Mentoring', 'Diagnostika', 'Ostatné'],
+    cs: ['Individualni terapie', 'Parova terapie', 'Koucink', 'Mentoring', 'Diagnostika', 'Ostatni'],
+    sk: ['Individualna terapia', 'Parova terapia', 'Koucing', 'Mentoring', 'Diagnostika', 'Ostatne'],
     en: ['Individual therapy', 'Couples therapy', 'Coaching', 'Mentoring', 'Diagnostics', 'Other'],
   },
   tattoo: {
-    cs: ['Tetování malé', 'Tetování střední', 'Tetování velké', 'Cover-up', 'Piercing', 'Konzultace', 'Ostatní'],
-    sk: ['Tetovanie malé', 'Tetovanie stredné', 'Tetovanie veľké', 'Cover-up', 'Piercing', 'Konzultácia', 'Ostatné'],
+    cs: ['Tetovani male', 'Tetovani stredni', 'Tetovani velke', 'Cover-up', 'Piercing', 'Konzultace', 'Ostatni'],
+    sk: ['Tetovanie male', 'Tetovanie stredne', 'Tetovanie velke', 'Cover-up', 'Piercing', 'Konzultacia', 'Ostatne'],
     en: ['Small tattoo', 'Medium tattoo', 'Large tattoo', 'Cover-up', 'Piercing', 'Consultation', 'Other'],
   },
   pets: {
-    cs: ['Stříhání', 'Koupání', 'Trimování', 'Drápky', 'Trénink', 'Ostatní'],
-    sk: ['Strihanie', 'Kúpanie', 'Trimovanie', 'Drápky', 'Tréning', 'Ostatné'],
+    cs: ['Strihani', 'Koupani', 'Trimovani', 'Drapky', 'Trenink', 'Ostatni'],
+    sk: ['Strihanie', 'Kupanie', 'Trimovanie', 'Drapky', 'Trening', 'Ostatne'],
     en: ['Grooming', 'Bathing', 'Trimming', 'Nail clipping', 'Training', 'Other'],
   },
   education: {
-    cs: ['Doučování', 'Jazykový kurz', 'Hudební lekce', 'Workshop', 'Online lekce', 'Ostatní'],
-    sk: ['Doučovanie', 'Jazykový kurz', 'Hudobná lekcia', 'Workshop', 'Online lekcia', 'Ostatné'],
+    cs: ['Doucovani', 'Jazykovy kurz', 'Hudebni lekce', 'Workshop', 'Online lekce', 'Ostatni'],
+    sk: ['Doucovanie', 'Jazykovy kurz', 'Hudobna lekcia', 'Workshop', 'Online lekcia', 'Ostatne'],
     en: ['Tutoring', 'Language course', 'Music lesson', 'Workshop', 'Online lesson', 'Other'],
   },
   tours: {
-    cs: ['Historická prohlídka', 'Food tour', 'Ghost tour', 'Architektura', 'Degustace', 'Ostatní'],
-    sk: ['Historická prehliadka', 'Food tour', 'Ghost tour', 'Architektúra', 'Degustácia', 'Ostatné'],
+    cs: ['Historicka prohlidka', 'Food tour', 'Ghost tour', 'Architektura', 'Degustace', 'Ostatni'],
+    sk: ['Historicka prehliadka', 'Food tour', 'Ghost tour', 'Architektura', 'Degustacia', 'Ostatne'],
     en: ['Historical tour', 'Food tour', 'Ghost tour', 'Architecture', 'Tasting', 'Other'],
   },
   wellness_experiences: {
-    cs: ['Terapie tmou', 'Včelí maringotka', 'Flotační tank', 'Kryokomora', 'Saunové rituály', 'Zvuková terapie', 'Ostatní'],
-    sk: ['Terapia tmou', 'Včelia maringotka', 'Flotačný tank', 'Kryokomora', 'Saunové rituály', 'Zvuková terapia', 'Ostatné'],
+    cs: ['Terapie tmou', 'Vceli maringotka', 'Flotacni tank', 'Kryokomora', 'Saunove ritualy', 'Zvukova terapie', 'Ostatni'],
+    sk: ['Terapia tmou', 'Vcelia maringotka', 'Flotacny tank', 'Kryokomora', 'Saunove ritualy', 'Zvukova terapia', 'Ostatne'],
     en: ['Dark therapy', 'Bee hive cabin', 'Float tank', 'Cryotherapy', 'Sauna rituals', 'Sound therapy', 'Other'],
   },
   experiences: {
-    cs: ['Úniková hra', 'Kreativní dílna', 'Teambuilding', 'Farma zážitky', 'Školní výlet', 'Ostatní'],
-    sk: ['Úniková hra', 'Kreatívna dielňa', 'Teambuilding', 'Farma zážitky', 'Školský výlet', 'Ostatné'],
+    cs: ['Unikova hra', 'Kreativni dilna', 'Teambuilding', 'Farma zazitky', 'Skolni vylet', 'Ostatni'],
+    sk: ['Unikova hra', 'Kreativna dielna', 'Teambuilding', 'Farma zazitky', 'Skolsky vylet', 'Ostatne'],
     en: ['Escape room', 'Creative workshop', 'Team building', 'Farm experience', 'School trip', 'Other'],
   },
   events: {
-    cs: ['Narozeninová oslava', 'Firemní akce', 'Dětská párty', 'Rozlučka', 'Výročí', 'Ostatní'],
-    sk: ['Narodeninová oslava', 'Firemná akcia', 'Detská párty', 'Rozlúčka', 'Výročie', 'Ostatné'],
+    cs: ['Narozeninova oslava', 'Firemni akce', 'Detska party', 'Rozlucka', 'Vyroci', 'Ostatni'],
+    sk: ['Narodeninova oslava', 'Firemna akcia', 'Detska party', 'Rozlucka', 'Vyrocie', 'Ostatne'],
     en: ['Birthday party', 'Corporate event', 'Kids party', 'Farewell', 'Anniversary', 'Other'],
   },
   weddings: {
-    cs: ['Koordinace svatby', 'Obřadní místo', 'Čajový obřad', 'Svatební výzdoba', 'Moderování', 'Ostatní'],
-    sk: ['Koordinácia svadby', 'Obradné miesto', 'Čajový obrad', 'Svadobná výzdoba', 'Moderovanie', 'Ostatné'],
+    cs: ['Koordinace svatby', 'Obradni misto', 'Cajovy obrad', 'Svatebni vyzdoba', 'Moderovani', 'Ostatni'],
+    sk: ['Koordinacia svadby', 'Obradne miesto', 'Cajovy obrad', 'Svadobna vyzdoba', 'Moderovanie', 'Ostatne'],
     en: ['Wedding coordination', 'Ceremony venue', 'Tea ceremony', 'Wedding decoration', 'MC / Hosting', 'Other'],
   },
   photo: {
-    cs: ['Portrétní focení', 'Svatební foto', 'Produktové foto', 'Video natáčení', 'Editace', 'Ostatní'],
-    sk: ['Portrétne fotenie', 'Svadobné foto', 'Produktové foto', 'Video natáčanie', 'Editácia', 'Ostatné'],
+    cs: ['Portretni foceni', 'Svatebni foto', 'Produktove foto', 'Video nataceni', 'Editace', 'Ostatni'],
+    sk: ['Portretne fotenie', 'Svadobne foto', 'Produktove foto', 'Video natacanie', 'Editacia', 'Ostatne'],
     en: ['Portrait photography', 'Wedding photo', 'Product photo', 'Video production', 'Editing', 'Other'],
   },
   consulting: {
-    cs: ['Právní poradenství', 'Finanční poradenství', 'Daňové poradenství', 'IT konzultace', 'Ostatní'],
-    sk: ['Právne poradenstvo', 'Finančné poradenstvo', 'Daňové poradenstvo', 'IT konzultácia', 'Ostatné'],
+    cs: ['Pravni poradenstvi', 'Financni poradenstvi', 'Danove poradenstvi', 'IT konzultace', 'Ostatni'],
+    sk: ['Pravne poradenstvo', 'Financne poradenstvo', 'Danove poradenstvo', 'IT konzultacia', 'Ostatne'],
     en: ['Legal consulting', 'Financial consulting', 'Tax consulting', 'IT consulting', 'Other'],
   },
   general: {
-    cs: ['Konzultace', 'Služba', 'Balíček', 'Ostatní'],
-    sk: ['Konzultácia', 'Služba', 'Balíček', 'Ostatné'],
+    cs: ['Konzultace', 'Sluzba', 'Balicek', 'Ostatni'],
+    sk: ['Konzultacia', 'Sluzba', 'Balicek', 'Ostatne'],
     en: ['Consultation', 'Service', 'Package', 'Other'],
   },
 }
@@ -218,26 +225,24 @@ export function getServiceCategories(category: string | null | undefined, lang: 
 
 export function getAllIndustries(lang: string): { value: Industry; label: string }[] {
   const labels: Record<Industry, Record<Lang, string>> = {
-    hair_salon: { cs: 'Kadeřnictví / Salón', sk: 'Kaderníctvo / Salón', en: 'Hair salon' },
-    barber: { cs: 'Barber shop', sk: 'Barber shop', en: 'Barber shop' },
-    beauty: { cs: 'Kosmetika / Beauty', sk: 'Kozmetika / Beauty', en: 'Beauty / Cosmetics' },
-    nails: { cs: 'Nehty / Nails', sk: 'Nechty / Nails', en: 'Nails' },
-    massage: { cs: 'Masáže / Wellness', sk: 'Masáže / Wellness', en: 'Massage / Wellness' },
-    physiotherapy: { cs: 'Fyzioterapie', sk: 'Fyzioterapia', en: 'Physiotherapy' },
-    aesthetic_clinic: { cs: 'Estetická klinika', sk: 'Estetická klinika', en: 'Aesthetic clinic' },
-    fitness: { cs: 'Fitness / Trénink', sk: 'Fitness / Tréning', en: 'Fitness / Training' },
-    psychology: { cs: 'Psychologie / Koučink', sk: 'Psychológia / Koučing', en: 'Psychology / Coaching' },
-    tattoo: { cs: 'Tetování / Piercing', sk: 'Tetovanie / Piercing', en: 'Tattoo / Piercing' },
-    pets: { cs: 'Péče o zvířata', sk: 'Starostlivosť o zvieratá', en: 'Pet care' },
-    education: { cs: 'Vzdělávání / Lekce', sk: 'Vzdelávanie / Lekcie', en: 'Education / Lessons' },
-    tours: { cs: 'Prohlídky / Průvodci', sk: 'Prehliadky / Sprievodcovia', en: 'Tours / Guides' },
-    wellness_experiences: { cs: 'Wellness zážitky', sk: 'Wellness zážitky', en: 'Wellness experiences' },
-    experiences: { cs: 'Zážitky / Aktivity', sk: 'Zážitky / Aktivity', en: 'Experiences / Activities' },
-    events: { cs: 'Oslavy / Události', sk: 'Oslavy / Udalosti', en: 'Events / Parties' },
-    weddings: { cs: 'Svatby / Obřady', sk: 'Svadby / Obrady', en: 'Weddings / Ceremonies' },
-    photo: { cs: 'Foto / Video', sk: 'Foto / Video', en: 'Photo / Video' },
-    consulting: { cs: 'Poradenství / Konzultace', sk: 'Poradenstvo / Konzultácie', en: 'Consulting' },
-    general: { cs: 'Obecné služby', sk: 'Všeobecné služby', en: 'General services' },
+    hair_salon: { cs: 'Kadernictvi & Barber', sk: 'Kadernictvo & Barber', en: 'Hair salon & Barber' },
+    beauty: { cs: 'Kosmetika & Nehty', sk: 'Kozmetika & Nechty', en: 'Beauty & Nails' },
+    massage: { cs: 'Masaze & Wellness', sk: 'Masaze & Wellness', en: 'Massage & Wellness' },
+    physiotherapy: { cs: 'Fyzioterapie & Zdravi', sk: 'Fyzioterapia & Zdravie', en: 'Physiotherapy & Health' },
+    aesthetic_clinic: { cs: 'Esteticka klinika', sk: 'Esteticka klinika', en: 'Aesthetic clinic' },
+    fitness: { cs: 'Fitness & Trenink', sk: 'Fitness & Trening', en: 'Fitness & Training' },
+    psychology: { cs: 'Psychologie & Koucink', sk: 'Psychologia & Koucing', en: 'Psychology & Coaching' },
+    tattoo: { cs: 'Tetovani & Piercing', sk: 'Tetovanie & Piercing', en: 'Tattoo & Piercing' },
+    pets: { cs: 'Pece o zvirata', sk: 'Starostlivost o zvierata', en: 'Pet care' },
+    education: { cs: 'Vzdelavani & Lekce', sk: 'Vzdelavanie & Lekcie', en: 'Education & Lessons' },
+    tours: { cs: 'Prohlidky & Pruvodci', sk: 'Prehliadky & Sprievodcovia', en: 'Tours & Guides' },
+    wellness_experiences: { cs: 'Wellness zazitky', sk: 'Wellness zazitky', en: 'Wellness experiences' },
+    experiences: { cs: 'Zazitky & Aktivity', sk: 'Zazitky & Aktivity', en: 'Experiences & Activities' },
+    events: { cs: 'Oslavy & Udalosti', sk: 'Oslavy & Udalosti', en: 'Events & Parties' },
+    weddings: { cs: 'Svatby & Obrady', sk: 'Svadby & Obrady', en: 'Weddings & Ceremonies' },
+    photo: { cs: 'Foto & Video', sk: 'Foto & Video', en: 'Photo & Video' },
+    consulting: { cs: 'Poradenstvi & Konzultace', sk: 'Poradenstvo & Konzultacie', en: 'Consulting' },
+    general: { cs: 'Dalsi sluzby', sk: 'Dalsie sluzby', en: 'Other services' },
   }
   const l = (lang === 'sk' ? 'sk' : lang === 'en' ? 'en' : 'cs') as Lang
   return Object.entries(labels).map(([value, lbl]) => ({ value: value as Industry, label: lbl[l] }))

@@ -1,8 +1,8 @@
-﻿﻿// PATH: src/app/page.tsx
+﻿// PATH: src/app/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare, X, Eye, Rocket, Wrench, MapPin, Leaf, PartyPopper, Heart, Camera, Scale } from 'lucide-react'
+import { Waves, Calendar, Users, Brain, TrendingUp, ChevronDown, Shield, Zap, Check, ArrowRight, CreditCard, Banknote, Scissors, Sparkles, Gem, HeartPulse, Dumbbell, BrainCircuit, PawPrint, GraduationCap, MessageSquare, X, Eye, Rocket, Wrench, MapPin, Leaf, PartyPopper, Heart, Camera, Scale, Syringe } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 import ClientoroLogo from '@/components/ClientoroLogo'
 
@@ -12,7 +12,7 @@ const SEGMENT_ICONS: Record<string, any> = {
   scissors: Scissors, sparkles: Sparkles, gem: Gem, heartPulse: HeartPulse,
   dumbbell: Dumbbell, brainCircuit: BrainCircuit, messageSquare: MessageSquare,
   pawPrint: PawPrint, graduationCap: GraduationCap, mapPin: MapPin,
-  leaf: Leaf, partyPopper: PartyPopper, heart: Heart, camera: Camera, scale: Scale,
+  leaf: Leaf, partyPopper: PartyPopper, heart: Heart, camera: Camera, scale: Scale, syringe: Syringe,
 }
 
 const SEGMENT_KEYS = [
@@ -20,6 +20,7 @@ const SEGMENT_KEYS = [
   { icon: 'sparkles', key: 'massage' },
   { icon: 'gem', key: 'beauty' },
   { icon: 'heartPulse', key: 'physio' },
+  { icon: 'syringe', key: 'aesthetic' },
   { icon: 'dumbbell', key: 'fitness' },
   { icon: 'brainCircuit', key: 'psych' },
   { icon: 'messageSquare', key: 'tattoo' },
@@ -36,9 +37,9 @@ const SEGMENT_KEYS = [
 
 const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
   hair: {
-    cs: ['Dámský střih', 'Pánský střih', 'Barvení', 'Melír', 'Foukaná', 'Styling', 'Keratin', 'Dětský střih'],
-    sk: ['Dámsky strih', 'Pánsky strih', 'Farbenie', 'Melír', 'Fúkaná', 'Styling', 'Keratín', 'Detský strih'],
-    en: ['Women\'s cut', 'Men\'s cut', 'Coloring', 'Highlights', 'Blow-dry', 'Styling', 'Keratin', 'Kids cut'],
+    cs: ['Dámský střih', 'Pánský střih', 'Barvení', 'Melír', 'Foukaná', 'Styling', 'Holení', 'Úprava vousů'],
+    sk: ['Dámsky strih', 'Pánsky strih', 'Farbenie', 'Melír', 'Fúkaná', 'Styling', 'Holenie', 'Úprava fúzov'],
+    en: ['Women\'s cut', 'Men\'s cut', 'Coloring', 'Highlights', 'Blow-dry', 'Styling', 'Shaving', 'Beard trim'],
   },
   massage: {
     cs: ['Klasická masáž', 'Sportovní masáž', 'Relaxační masáž', 'Lymfatická masáž', 'Reflexní masáž', 'Baňkování', 'Masáž lávovými kameny'],
@@ -49,6 +50,11 @@ const SEGMENT_SERVICES: Record<string, Record<string, string[]>> = {
     cs: ['Ošetření pleti', 'Permanentní make-up', 'Manikúra', 'Pedikúra', 'Gelové nehty', 'Řasy', 'Depilace', 'Barvení obočí'],
     sk: ['Ošetrenie pleti', 'Permanentný make-up', 'Manikúra', 'Pedikúra', 'Gélové nechty', 'Mihalnice', 'Depilácia', 'Farbenie obočia'],
     en: ['Facial treatment', 'Permanent makeup', 'Manicure', 'Pedicure', 'Gel nails', 'Lashes', 'Waxing', 'Brow tinting'],
+  },
+  aesthetic: {
+    cs: ['Výplně a botox', 'Laserové ošetření', 'Chemický peeling', 'Mezoterapie', 'Body konturování', 'Konzultace'],
+    sk: ['Výplne a botox', 'Laserové ošetrenie', 'Chemický peeling', 'Mezoterapia', 'Body kontúrovanie', 'Konzultácia'],
+    en: ['Fillers & botox', 'Laser treatment', 'Chemical peeling', 'Mesotherapy', 'Body contouring', 'Consultation'],
   },
   physio: {
     cs: ['Vstupní vyšetření', 'Manuální terapie', 'Rehabilitace', 'Elektroterapie', 'Tejpování', 'Cvičení s terapeutem'],

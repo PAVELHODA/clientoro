@@ -1,4 +1,4 @@
-﻿// PATH: src/lib/publicI18n.ts
+// PATH: src/lib/publicI18n.ts
 // Překlady pro veřejné stránky (landing, login, register, booking)
 
 export type PublicLang = 'cs' | 'sk' | 'en'
@@ -137,6 +137,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_seg_massage_desc: 'Klasické, sportovní, relaxační masáže',
     land_seg_beauty: 'Kosmetika & estetika',
     land_seg_beauty_desc: 'Ošetření pleti, nehty, permanentní make-up',
+    land_seg_aesthetic: 'Estetická klinika',
+    land_seg_aesthetic_desc: 'Výplně, botox, laser, mezoterapie, peelingy',
     land_seg_physio: 'Fyzioterapie & zdraví',
     land_seg_physio_desc: 'Rehabilitace, terapie, logopedie',
     land_seg_fitness: 'Fitness & cvičení',
@@ -440,6 +442,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_seg_massage_desc: 'Klasické, športové, relaxačné masáže',
     land_seg_beauty: 'Kozmetika & estetika',
     land_seg_beauty_desc: 'Ošetrenie pleti, nechty, permanentný make-up',
+    land_seg_aesthetic: 'Estetická klinika',
+    land_seg_aesthetic_desc: 'Výplne, botox, laser, mezoterapia, peelingy',
     land_seg_physio: 'Fyzioterapia & zdravie',
     land_seg_physio_desc: 'Rehabilitácia, terapia, logopédia',
     land_seg_fitness: 'Fitness & cvičení',
@@ -743,6 +747,8 @@ export const publicTranslations: Record<PublicLang, Record<string, string>> = {
     land_seg_massage_desc: 'Classic, sports, relaxation massages',
     land_seg_beauty: 'Beauty & aesthetics',
     land_seg_beauty_desc: 'Skin care, nails, permanent makeup',
+    land_seg_aesthetic: 'Aesthetic clinic',
+    land_seg_aesthetic_desc: 'Fillers, botox, laser, mesotherapy, peels',
     land_seg_physio: 'Physiotherapy & health',
     land_seg_physio_desc: 'Rehabilitation, therapy, speech therapy',
     land_seg_fitness: 'Fitness & nutrition',
