@@ -237,10 +237,10 @@ export default function LandingPage() {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{t('land_segments_title')}</h2>
             <p className="text-gray-500 text-sm sm:text-base">{t('land_segments_desc')}</p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             {SEGMENT_KEYS.map((s, idx) => { const Icon = SEGMENT_ICONS[s.icon]; const isLast = idx === SEGMENT_KEYS.length - 1 && SEGMENT_KEYS.length % 2 !== 0; return (
               <button key={s.key} onClick={() => setOpenSegment(openSegment === s.key ? null : s.key)}
-                className={`rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-[#091e30] shadow-lg ring-2 ring-amber-200 bg-white' : 'border-[#091e30]/40 hover:border-[#091e30] hover:shadow-lg hover:shadow-amber-400/30 hover:scale-[1.08] transition-all duration-200 cursor-pointer'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : {}}>
+                className={`w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] rounded-xl border p-3 sm:p-5 hover:shadow-lg transition-all text-center group overflow-hidden cursor-pointer ${isLast ? 'col-span-2 sm:col-span-1 max-w-[50%] sm:max-w-none mx-auto sm:mx-0' : ''} ${openSegment === s.key ? 'border-[#091e30] shadow-lg ring-2 ring-amber-200 bg-white' : 'border-[#091e30]/40 hover:border-[#091e30] hover:shadow-lg hover:shadow-amber-400/30 hover:scale-[1.08] transition-all duration-200 cursor-pointer'}`} style={openSegment !== s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : {}}>
                 <div className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl flex items-center justify-center shadow-md" style={openSegment === s.key ? { background: 'linear-gradient(135deg, #134a6a, #1d8898)' } : { background: 'rgba(255,255,255,0.15)' }}><Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#f59e0b' }} /></div>
                 <h3 className={`font-bold text-xs sm:text-sm leading-tight ${openSegment === s.key ? 'text-gray-900' : 'text-white'}`}>{t(`land_seg_${s.key}`)}</h3>
                 <p className={`text-xs mt-1 hidden sm:block leading-tight ${openSegment === s.key ? 'text-gray-400' : 'text-white/60'}`}>{t(`land_seg_${s.key}_desc`)}</p>
