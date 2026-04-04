@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import { Bell, Mail, Check, Lock, Eye, EyeOff } from 'lucide-react'
+import SubscriptionSettings from '@/components/SubscriptionSettings'
 
 interface OrgSettings {
   id: string; name: string; mode: string; address: string; phone: string
@@ -530,82 +531,11 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Plány */}
+
+        {/* Předplatné */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">{l.yourPlan}</h2>
-          <p className="text-sm text-gray-500 mb-6">{l.comparePlans}</p>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {MODE_CARDS.map(c => {
-              const cur = s.mode === c.mode
-              const isUp = c.mode === MODE_CARDS.find(x => x.mode === s.mode)?.up
-              return (
-                <div key={c.mode} className={`rounded-xl border-2 p-5 relative overflow-hidden transition-all ${cur ? c.border + ' ' + c.bg : 'border-gray-200 hover:border-gray-300'}`}>
-                  {cur && <div className="absolute top-3 right-3 px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">{l.active}</div>}
-                  <div className={`w-full h-2 rounded-full bg-gradient-to-r ${c.color} mb-4`} />
-                  <h3 className="text-lg font-bold text-gray-900">{c.label}</h3>
-                  <p className="text-sm text-gray-500 mt-1 mb-4">{c.desc}</p>
-                  {c.trial && (
-                    <div className="bg-green-50 rounded-lg px-3 py-2 mb-3 border border-green-200">
-                      <p className="text-xs text-green-700 font-medium">🎁 {c.trial}</p>
-                    </div>
-                  )}
-                  <div className="space-y-2 mb-4">
-                    {c.tiers.map((tier, i) => (
-                      <div key={i} className={`rounded-lg p-3 ${tier.rec ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50 border border-gray-200'}`}>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className={`text-sm font-medium ${tier.rec ? 'text-amber-700' : 'text-gray-600'}`}>
-                              {tier.rec ? '⭐ ' : ''}{tier.label}
-                            </span>
-                            {(tier as any).save && <span className="ml-2 text-xs text-amber-600">({l.save_amount} {(tier as any).save} Kč{l.perMonth})</span>}
-                          </div>
-                          <span className={`text-lg font-bold ${tier.rec ? 'text-amber-800' : 'text-gray-900'}`}>{tier.price} Kč{l.perMonth}</span>
-                        </div>
-                        <p className="text-xs text-gray-400 mt-0.5">{tier.year} Kč{l.perMonth} ({l.yearly})</p>
-                      </div>
-                    ))}
-                  </div>
-                  {c.free && (
-                    <div className="bg-blue-50 rounded-lg px-3 py-2 mb-4 border border-blue-200">
-                      <p className="text-xs text-blue-700">{c.free}</p>
-                    </div>
-                  )}
-                  <details className="mb-4">
-                    <summary className="text-sm text-blue-600 cursor-pointer hover:text-blue-800 font-medium">
-                      {l.showFeatures(c.features.length)}
-                    </summary>
-                    <div className="mt-2 space-y-1">
-                      {c.features.map(f => (
-                        <div key={f} className="flex items-start gap-2 text-sm">
-                          <span className="flex-shrink-0 mt-0.5">{f.startsWith(String.fromCodePoint(0x2705)) ? "" : f.startsWith(String.fromCodePoint(0x1F51C)) ? "" : ""}</span>
-                          <span className={f.startsWith(String.fromCodePoint(0x2705)) ? "text-gray-900" : f.startsWith(String.fromCodePoint(0x1F51C)) ? "text-amber-600" : "text-gray-400"}>{f}</span>
-                        </div>
-                      ))}
-                      <div className="mt-2 pt-2 border-t border-gray-100 flex flex-wrap gap-3 text-xs text-gray-400">
-                        <span>✅ = {lang === "en" ? "Available" : "Funguje"}</span>
-                        <span>🔜 = {lang === "en" ? "Coming soon" : "Brzy"}</span>
-                        <span>📋 = {lang === "en" ? "Planned" : lang === "sk" ? "Plánované" : "Plánujeme"}</span>
-                      </div>
-                    </div>
-                  </details>
-                  <div className="flex gap-2 pt-3 border-t border-gray-100">
-                    {!cur && (
-                      <button onClick={() => preview(c.mode)}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">
-                        {l.preview}
-                      </button>
-                    )}
-                    {isUp && (
-                      <button className="flex-1 px-3 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 text-white rounded-lg text-sm font-bold hover:from-amber-600 hover:to-yellow-500 shadow-sm">
-                        {l.upgrade} {c.label}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          <SubscriptionSettings />
         </div>
 
         {/* Google Calendar */}
@@ -766,3 +696,4 @@ export default function SettingsPage() {
     </div>
   )
 }
+

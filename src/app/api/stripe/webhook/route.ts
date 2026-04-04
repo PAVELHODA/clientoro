@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { stripe } from '@/lib/stripe';
 import Stripe from 'stripe';
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
               subscription_status: subscription.status,
               plan_slug: planSlug,
               plan_with_ai: withAI,
-              current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+              current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
             })
             .eq('id', orgId);
         }
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
               subscription_status: subscription.status,
               plan_slug: subscription.metadata.plan_slug,
               plan_with_ai: subscription.metadata.with_ai === 'true',
-              current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+              current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
             })
             .eq('id', orgId);
         }
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
             .from('organizations')
             .update({
               subscription_status: 'canceled',
-              current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+              current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
             })
             .eq('id', orgId);
         }
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice;
-        const subscriptionId = invoice.subscription as string;
+        const subscriptionId = (invoice as any).subscription as string;
         
         if (subscriptionId) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -112,5 +112,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Disable body parsing — Stripe needs raw body
+// Disable body parsing â€” Stripe needs raw body
 export const runtime = 'nodejs';
+
+
