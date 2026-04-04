@@ -11,6 +11,7 @@ import {
   Users, Clock, DollarSign,
 } from 'lucide-react'
 
+import NotesDrawer from '@/components/NotesDrawer'
 
 interface Booking {
   id: string
@@ -275,6 +276,15 @@ export default function CalendarPage() {
     setCurrentDate(d)
   }
 
+  const getNotesTarget = () => {
+    if (viewMode === 'day') return { type: 'day' as const, date: toDateStr(currentDate) }
+    if (viewMode === 'week') {
+      const monday = getMonday(currentDate)
+      return { type: 'week' as const, date: toDateStr(monday) }
+    }
+    return { type: 'month' as const, date: toDateStr(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)) }
+  }
+
   const formatHeader = () => {
     if (viewMode === 'day') return currentDate.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
     if (viewMode === 'week') {
@@ -531,6 +541,7 @@ export default function CalendarPage() {
             <ChevronRight className="w-4 h-4" />
           </button>
           <h2 className="text-sm sm:text-lg font-semibold text-gray-900 ml-2 capitalize">{formatHeader()}</h2>
+          <NotesDrawer targetType={getNotesTarget().type} targetDate={getNotesTarget().date} label={formatHeader()} />
         </div>
         <div className="flex items-center gap-2">
           <div className="flex bg-gray-100 rounded-lg p-0.5">

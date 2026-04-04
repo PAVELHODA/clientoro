@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿// PATH: src/lib/i18n.ts
+﻿﻿﻿﻿﻿﻿// PATH: src/lib/i18n.ts
 // Centrální překlady pro celou aplikaci
 
 export type Lang = 'cs' | 'sk' | 'en'
