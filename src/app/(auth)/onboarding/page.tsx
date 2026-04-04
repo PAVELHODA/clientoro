@@ -1,20 +1,20 @@
-﻿﻿// PATH: src/app/(auth)/onboarding/page.tsx
+﻿// PATH: src/app/(auth)/onboarding/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/Toast'
-import { Building2, Scissors, Clock, PartyPopper, ArrowRight, ArrowLeft, Check, Waves, Loader2 } from 'lucide-react'
+import { Building2, Scissors, Clock, Sparkles, ArrowRight, ArrowLeft, Check, Waves, Loader2 } from 'lucide-react'
 
 const STEPS = [
   { icon: Building2, label: 'Info', color: 'bg-blue-500' },
   { icon: Scissors, label: 'Služby', color: 'bg-emerald-500' },
   { icon: Clock, label: 'Doba', color: 'bg-amber-500' },
-  { icon: PartyPopper, label: 'Hotovo', color: 'bg-purple-500' },
+  { icon: Sparkles, label: 'Hotovo', color: 'bg-purple-500' },
 ]
 
 interface Category { id: string; name: string; slug: string; icon: string; service_templates: Template[] }
-interface Template { id: string; name: string; duration: number; price: number; color: string }
+interface Template { id: string; name: string; duration: number; price: number; color: string; category_id?: string }
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(0)
@@ -40,12 +40,12 @@ export default function OnboardingPage() {
   const [customServiceName, setCustomServiceName] = useState('')
   const [customServicePrice, setCustomServicePrice] = useState('')
   const [customServiceDuration, setCustomServiceDuration] = useState('60')
+  const [customServiceCategory, setCustomServiceCategory] = useState('')
 
   const [workStart, setWorkStart] = useState(8)
   const [workEnd, setWorkEnd] = useState(17)
   const [slotDuration, setSlotDuration] = useState(30)
 
-  // Track max step reached (for clickable navigation)
   useEffect(() => {
     if (step > maxStep) setMaxStep(step)
   }, [step])
@@ -110,7 +110,13 @@ export default function OnboardingPage() {
   const bookingSlug = orgName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'muj-salon'
 
   const selectedCategoryList = categories.filter(c => selectedCategories.has(c.id))
-  const currentCategory = selectedCategoryList[0]
+
+  const getCategoryForTemplate = (templateId: string) => {
+    for (const cat of selectedCategoryList) {
+      if (cat.service_templates.some(t => t.id === templateId)) return cat
+    }
+    return selectedCategoryList[0]
+  }
 
   const toggleTemplate = (id: string) => {
     setSelectedTemplates(prev => {
@@ -135,21 +141,25 @@ export default function OnboardingPage() {
     await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
     setSaving(false); setStep(1)
     if (selectedCategories.size > 0) selectAllTemplates()
+    if (selectedCategoryList.length > 0 && !customServiceCategory) {
+      setCustomServiceCategory(selectedCategoryList[0].name)
+    }
   }
 
   const saveStep2 = async () => {
     setSaving(true)
     const templates = selectedCategoryList.flatMap(c => c.service_templates).filter(t => selectedTemplates.has(t.id))
     for (const t of templates) {
+      const cat = getCategoryForTemplate(t.id)
       await fetch('/api/services', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: t.name, price: t.price, duration: t.duration, category: currentCategory?.name || 'Obecné', color: t.color, visibility: 'public', active: true }),
+        body: JSON.stringify({ name: t.name, price: t.price, duration: t.duration, category: cat?.name || 'Obecné', color: t.color, visibility: 'public', active: true }),
       })
     }
     if (customServiceName && customServicePrice) {
       await fetch('/api/services', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: customServiceName, price: parseFloat(customServicePrice), duration: parseInt(customServiceDuration), category: currentCategory?.name || 'Obecné', color: '#3b82f6', visibility: 'public', active: true }),
+        body: JSON.stringify({ name: customServiceName, price: parseFloat(customServicePrice), duration: parseInt(customServiceDuration), category: customServiceCategory || selectedCategoryList[0]?.name || 'Obecné', color: '#3b82f6', visibility: 'public', active: true }),
       })
     }
     setSaving(false); setStep(2)
@@ -288,7 +298,7 @@ export default function OnboardingPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">IČO *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">IČO</label>
                     <div className="relative">
                       <input type="text" value={orgIco} onChange={e => lookupIco(e.target.value.replace(/\D/g, '').slice(0, 8))}
                         className={`w-full px-3 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${icoValid ? 'border-emerald-400 bg-emerald-50' : 'border-gray-200'}`}
@@ -339,7 +349,7 @@ export default function OnboardingPage() {
                 )}
               </div>
 
-              <button onClick={saveStep1} disabled={!orgName || selectedCategories.size === 0 || (orgIco.length > 0 && !icoValid) || saving}
+              <button onClick={saveStep1} disabled={!orgName || selectedCategories.size === 0 || (orgIco.length > 0 && orgIco.length === 8 && !icoValid) || saving}
                 className="w-full mt-5 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
                 style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
@@ -400,9 +410,21 @@ export default function OnboardingPage() {
                       {[15,30,45,60,75,90,120,150,180,240,300,360,480].map(d => <option key={d} value={d}>{d >= 480 ? (d/60) + ' hod (celý den)' : d >= 240 ? (d/60) + ' hod (půl dne)' : d >= 60 ? (d/60) + ' hod' : d + ' min'}</option>)}
                     </select>
                   </div>
+                  {selectedCategoryList.length > 1 && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Zařadit do kategorie:</label>
+                      <select value={customServiceCategory} onChange={e => setCustomServiceCategory(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm">
+                        {selectedCategoryList.map(c => (
+                          <option key={c.id} value={c.name}>{c.icon} {c.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   {customServiceName && customServicePrice && (
                     <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700 text-center">
-                      ✓ {customServiceName} — {customServicePrice} Kč / {customServiceDuration} min bude přidána
+                      ✓ {customServiceName} — {customServicePrice} Kč / {customServiceDuration} min
+                      {selectedCategoryList.length > 1 && <span> → {customServiceCategory}</span>}
                     </div>
                   )}
                 </div>
@@ -412,7 +434,7 @@ export default function OnboardingPage() {
                 <button onClick={() => setStep(0)} className="px-4 py-3 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50">
                   <ArrowLeft className="w-4 h-4" />
                 </button>
-                <button onClick={saveStep2} disabled={selectedTemplates.size === 0 && !customServiceName || saving}
+                <button onClick={saveStep2} disabled={(selectedTemplates.size === 0 && !customServiceName) || saving}
                   className="flex-1 py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
                   style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Další krok <ArrowRight className="w-4 h-4" /></>}
@@ -453,8 +475,8 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Délka slotu</label>
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    {[15, 30, 45, 60, 90, 120].map(d => (
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                    {[15, 20, 30, 45, 60, 90, 120].map(d => (
                       <button key={d} onClick={() => setSlotDuration(d)}
                         className={`py-2 rounded-xl text-sm font-medium transition-all ${
                           slotDuration === d ? 'bg-amber-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -480,31 +502,36 @@ export default function OnboardingPage() {
           {/* STEP 3 — Hotovo */}
           {step === 3 && (
             <div className="text-center">
-              <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <PartyPopper className="w-7 h-7 text-emerald-600" />
+              <div className="mb-6">
+                <div className="relative inline-block">
+                  <Sparkles className="w-12 h-12 text-amber-500 mx-auto" />
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full animate-pulse" />
+                </div>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Vše je připraveno! 🎉</h2>
-              <p className="text-sm text-gray-500 mb-5">Váš účet je nastaven. Můžete začít přijímat rezervace.</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Výborně, vše je připraveno</h2>
+              <p className="text-sm text-gray-500 mb-6">Váš účet je nastaven. Můžete začít přijímat rezervace.</p>
 
-              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200 mb-5">
-                <p className="text-sm text-emerald-700 mb-1">Váš booking link:</p>
-                <span className="text-base sm:text-lg font-bold text-emerald-800">clientoro.pro/{bookingSlug}</span>
-                <button onClick={() => { navigator.clipboard.writeText(`clientoro.pro/${bookingSlug}`); toast.success('Zkopírováno!') }}
-                  className="ml-2 text-xs text-emerald-600 hover:underline">📋</button>
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-200 mb-5">
+                <p className="text-xs text-emerald-600 mb-1">Váš booking link</p>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-base sm:text-lg font-bold text-emerald-800">clientoro.pro/{bookingSlug}</span>
+                  <button onClick={() => { navigator.clipboard.writeText(`https://www.clientoro.pro/book/${bookingSlug}`); toast.success('Zkopírováno!') }}
+                    className="text-xs text-emerald-600 hover:text-emerald-800 bg-white px-2 py-1 rounded-lg border border-emerald-200 transition-colors">Kopírovat</button>
+                </div>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-5 text-left">
-                <p className="text-sm font-medium text-gray-700 mb-2">✅ Co jsme nastavili:</p>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>🏢 {orgName}</li>
-                  {selectedCategoryList.map(c => <li key={c.id}>{c.icon} {c.name}</li>)}
-                  <li>📋 {selectedTemplates.size} služeb{customServiceName ? ' + 1 vlastní' : ''}</li>
-                  <li>🕐 {workStart}:00 - {workEnd}:00, termíny po {slotDuration} min</li>
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-6 text-left">
+                <p className="text-sm font-medium text-gray-700 mb-2">Co jsme nastavili:</p>
+                <ul className="text-sm text-gray-600 space-y-1.5">
+                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-blue-600" /></span> {orgName}</li>
+                  {selectedCategoryList.map(c => <li key={c.id} className="flex items-center gap-2"><span className="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span> {c.icon} {c.name}</li>)}
+                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-purple-600" /></span> {selectedTemplates.size} služeb{customServiceName ? ' + 1 vlastní' : ''}</li>
+                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-amber-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-amber-600" /></span> {workStart}:00 – {workEnd}:00, termíny po {slotDuration} min</li>
                 </ul>
               </div>
 
               <button onClick={finishOnboarding} disabled={saving}
-                className="w-full py-3 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm"
+                className="w-full py-3.5 text-white rounded-xl font-semibold disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg text-sm transition-all hover:shadow-xl"
                 style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Přejít do aplikace <ArrowRight className="w-4 h-4" /></>}
               </button>
