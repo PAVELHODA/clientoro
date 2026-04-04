@@ -5,6 +5,33 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/Toast'
 import { Building2, Scissors, Clock, Sparkles, ArrowRight, ArrowLeft, Check, Waves, Loader2, Plus, X } from 'lucide-react'
+import { getAllIndustries, getServiceCategories } from '@/lib/serviceCategories'
+
+const INDUSTRY_COLORS = ['#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#3b82f6','#8b5cf6','#ec4899','#06b6d4','#84cc16','#f59e0b','#6366f1','#d946ef','#0ea5e9','#10b981','#f43f5e','#a855f7','#0891b2','#65a30d','#737373']
+
+function buildLocalCategories(): Category[] {
+  const industries = getAllIndustries('cs')
+  return industries
+    .filter(ind => ind.value !== 'general')
+    .map((ind, idx) => {
+      const services = getServiceCategories(ind.value, 'cs')
+      return {
+        id: ind.value,
+        name: ind.label,
+        slug: ind.value,
+        icon: ind.label.split(' ')[0].charAt(0).toUpperCase(),
+        service_templates: services
+          .filter((s: string) => s !== 'Ostatn' + String.fromCharCode(237))
+          .map((s: string, si: number) => ({
+            id: ind.value + '_' + si,
+            name: s,
+            duration: ['consulting','psychology'].includes(ind.value) ? 60 : ['tattoo'].includes(ind.value) ? 120 : ['weddings'].includes(ind.value) ? 480 : ['photo'].includes(ind.value) ? 90 : 60,
+            price: ['consulting'].includes(ind.value) ? 1500 : ['tattoo'].includes(ind.value) ? 2000 : ['weddings'].includes(ind.value) ? 5000 : ['photo'].includes(ind.value) ? 2000 : ['physiotherapy'].includes(ind.value) ? 800 : ['aesthetic_clinic'].includes(ind.value) ? 3000 : ['psychology'].includes(ind.value) ? 1200 : 500,
+            color: INDUSTRY_COLORS[idx % INDUSTRY_COLORS.length],
+          })),
+      }
+    })
+}
 
 const STEPS = [
   { icon: Building2, label: 'Info', color: 'bg-blue-500' },
@@ -49,7 +76,7 @@ export default function OnboardingPage() {
   const [orgPhone, setOrgPhone] = useState('')
   const [orgEmail, setOrgEmail] = useState('')
 
-  const [categories, setCategories] = useState<Category[]>([])
+  const [categories] = useState<Category[]>(() => buildLocalCategories())
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set())
   const [selectedTemplates, setSelectedTemplates] = useState<Set<string>>(new Set())
   const [customServiceName, setCustomServiceName] = useState('')
@@ -78,11 +105,7 @@ export default function OnboardingPage() {
     }).catch(() => {})
   }, [])
 
-  useEffect(() => {
-    fetch('/api/admin/categories').then(r => r.json()).then(data => {
-      if (Array.isArray(data)) setCategories(data)
-    }).catch(() => {})
-  }, [])
+  // Kategorie jsou lokální z serviceCategories.ts
 
   const formatPhone = (val: string) => {
     let digits = val.replace(/[^\d+]/g, '').slice(0, 16)
