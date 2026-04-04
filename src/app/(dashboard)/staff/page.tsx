@@ -9,6 +9,7 @@ import {
   UserCircle, Plus, Phone, Mail, Edit2, Trash2, X, Check,
   Clock, Palmtree, AlertTriangle,
 } from 'lucide-react'
+import NotesDrawer from '@/components/NotesDrawer'
 
 interface StaffMember {
   id: string; full_name: string; email: string | null; phone: string | null
@@ -380,6 +381,7 @@ export default function StaffPage() {
                       title={l.workingHours}>
                       <Clock className="w-4 h-4" />
                     </button>
+                    <NotesDrawer targetType="staff" targetId={member.id} label={member.full_name} />
                     <button onClick={() => handleEdit(member)} className="w-9 h-9 bg-gray-50 rounded-lg flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors" title={l.edit}>
                       <Edit2 className="w-4 h-4" />
                     </button>

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import { Users, Search, Plus, Phone, Mail, Edit2, Trash2, X, ChevronRight, Calendar, Clock } from 'lucide-react'
+import NotesDrawer from '@/components/NotesDrawer'
 import { ClientsSkeleton } from '@/components/Skeleton'
 
 interface Client {
@@ -463,6 +464,7 @@ export default function ClientsPage() {
 
           {/* Actions */}
           <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+            <NotesDrawer targetType="client" targetId={selectedClient.id} label={selectedClient.full_name || 'Klient'} />
             <button onClick={() => handleEdit(selectedClient)}
               className="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-sm font-medium hover:bg-blue-100">
               <Edit2 className="w-3.5 h-3.5 inline mr-1" /> {l.edit}
