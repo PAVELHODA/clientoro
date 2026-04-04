@@ -243,9 +243,16 @@ export async function PUT(request: NextRequest) {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://clientoro.pro'
       const org = data
 
+      // Získej email majitele pro fallback
+      let ownerEmail = org.email || orgBeforeUpdate.email || ''
+      if (!ownerEmail) {
+        const { data: ownerProf } = await supabaseAdmin.from('profiles').select('email').eq('auth_user_id', auth.userId).single()
+        ownerEmail = ownerProf?.email || ''
+      }
+
       // 1. Welcome email pro zákazníka
       sendWelcomeEmail({
-        to: org.email || orgBeforeUpdate.email || '',
+        to: ownerEmail,
         orgName: org.name || 'Váš salon',
         bookingUrl: `${baseUrl}/book/${org.slug}`,
         dashboardUrl: `${baseUrl}/dashboard`,

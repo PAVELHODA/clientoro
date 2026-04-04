@@ -41,6 +41,7 @@ export default function OnboardingPage() {
   const [customServicePrice, setCustomServicePrice] = useState('')
   const [customServiceDuration, setCustomServiceDuration] = useState('60')
   const [customServiceCategory, setCustomServiceCategory] = useState('')
+  const [customServices, setCustomServices] = useState<Array<{name: string; price: string; duration: string; category: string}>>([])
 
   const [workStart, setWorkStart] = useState(8)
   const [workEnd, setWorkEnd] = useState(17)
@@ -195,7 +196,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 md:py-12 relative overflow-hidden">
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0c2d48 40%, #0f6b7a 70%, #0e9aa7 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0e3a5c 0%, #1a6e8a 40%, #2ba0b0 70%, #3ec4c4 100%)' }} />
       <div className="absolute top-20 right-20 w-96 h-96 bg-amber-300/10 rounded-full blur-3xl" />
 
       <div className="w-full max-w-lg relative z-10">
@@ -525,8 +526,8 @@ export default function OnboardingPage() {
                 <ul className="text-sm text-gray-600 space-y-1.5">
                   <li className="flex items-center gap-2"><span className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-blue-600" /></span> {orgName}</li>
                   {selectedCategoryList.map(c => <li key={c.id} className="flex items-center gap-2"><span className="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-emerald-600" /></span> {c.icon} {c.name}</li>)}
-                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-purple-600" /></span> {selectedTemplates.size} služeb{customServiceName ? ' + 1 vlastní' : ''}</li>
-                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-amber-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-amber-600" /></span> {workStart}:00 – {workEnd}:00, termíny po {slotDuration} min</li>
+                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-purple-600" /></span> {selectedTemplates.size + customServices.length} služeb</li>
+                  <li className="flex items-center gap-2"><span className="w-5 h-5 bg-amber-100 rounded flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-amber-600" /></span> {workStart}:00 – {workEnd}:00, kalendář po {slotDuration} min</li>
                 </ul>
               </div>
 
