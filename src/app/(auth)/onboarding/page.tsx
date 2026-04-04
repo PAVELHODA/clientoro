@@ -476,12 +476,12 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Délka slotu</label>
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                    {[15, 20, 30, 45, 60, 90, 120].map(d => (
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                    {[15, 20, 30, 45, 60, 90, 120, 150, 180, 240, 480].map(d => (
                       <button key={d} onClick={() => setSlotDuration(d)}
                         className={`py-2 rounded-xl text-sm font-medium transition-all ${
                           slotDuration === d ? 'bg-amber-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}>{d} min</button>
+                        }`}>{d >= 480 ? 'Celý den' : d >= 60 ? (d/60) + ' hod' : d + ' min'}</button>
                     ))}
                   </div>
                 </div>
