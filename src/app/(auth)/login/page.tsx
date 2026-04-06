@@ -39,7 +39,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         setError(error.message === 'Invalid login credentials' ? t('login_error_credentials') : error.message)
-      } else { router.push('/dashboard'); router.refresh() }
+      } else { window.location.href = '/dashboard' }
     } catch (err) { setError(t('login_error_unexpected')) }
     finally { setLoading(false) }
   }
@@ -197,3 +197,4 @@ export default function LoginPage() {
     </div>
   )
 }
+
