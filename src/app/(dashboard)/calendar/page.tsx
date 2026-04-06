@@ -188,7 +188,7 @@ export default function CalendarPage() {
     status: lang === 'en' ? 'Status' : 'Stav',
     close: lang === 'en' ? 'Close' : 'Zavrit',
     unknown: lang === 'en' ? 'Unknown' : 'NeznĂˇmĂ˝',
-    rez: lang === 'en' ? 'book.' : 'rez.',
+    rez: lang === 'en' ? 'bookings' : 'rezervací',
     at: lang === 'en' ? 'at' : 'v',
     slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'RezervĂˇcie v tomto termĂ­ne' : 'Rezervace v tomto termĂ­nu',
     noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Ĺ˝iadne rezervĂˇcie' : 'Ĺ˝ĂˇdnĂ© rezervace',
