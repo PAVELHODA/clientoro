@@ -98,9 +98,8 @@ export async function GET(request: NextRequest) {
             totalAvailableMinutes += (eh * 60 + em) - (sh * 60 + sm)
           }
         } else {
-          const ws = org.work_start || 8
-          const we = org.work_end || 18
-          totalAvailableMinutes = (we - ws) * 60
+          // No staff_working_hours set - assume 8h working day with 30min lunch
+          totalAvailableMinutes = 450
         }
 
         const dayBookings = (upcomingBookings || []).filter((b: any) =>
