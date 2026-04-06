@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
           priority: emptyDays.length >= 3 ? 'high' : 'medium',
           icon: 'calendar',
           title: `${emptyDays.length} ${emptyDays.length === 1 ? 'den' : emptyDays.length < 5 ? 'dny' : 'dní'} s volnými termíny`,
-          description: JSON.stringify(emptyDays.map(d => `${d.dayLabel} — ${d.freeSlots} z ${d.totalSlots} volných`)),
+          description: emptyDays.map(d => `${d.dayLabel} — ${d.freeSlots} z ${d.totalSlots} volných`).join("\n"),
           action: '/calendar',
           actionLabel: 'Zobrazit kalendář',
           data: { emptyDays, slotDuration },

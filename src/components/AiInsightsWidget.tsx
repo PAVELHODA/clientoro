@@ -148,7 +148,7 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
                   </div>
                                    
                                     {(() => {
-                    const listItems = insight.type === 'empty_slots' ? parseListDescription(insight.description) : null
+                    const listItems = insight.type === 'empty_slots' && insight.description.includes('\n') ? insight.description.split('\n') : null
                     if (listItems) {
                       return (
                         <ul className="mt-1 space-y-0.5">
@@ -195,5 +195,4 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
     </div>
   )
 }
-
 
