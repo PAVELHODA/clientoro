@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
           priority: emptyDays.length >= 3 ? 'high' : 'medium',
           icon: 'calendar',
           title: `${emptyDays.length} ${emptyDays.length === 1 ? 'den' : emptyDays.length < 5 ? 'dny' : 'dní'} s volnými termíny`,
-          description: `${worst.dayName.charAt(0).toUpperCase() + worst.dayName.slice(1)} (${worst.date.split('-').reverse().join('.')}) má ${worst.freeHours}h volných z ${totalSlots}h.`,
+          description: emptyDays.map(d => `${d.dayName.charAt(0).toUpperCase() + d.dayName.slice(1)} ${d.date.split("-").reverse().join(".")} (${d.freeHours}h volných)`).join(" · "),
           action: '/calendar',
           actionLabel: 'Zobrazit kalendář',
           data: { emptyDays },
@@ -291,4 +291,3 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to generate insights' }, { status: 500 })
   }
 }
-
