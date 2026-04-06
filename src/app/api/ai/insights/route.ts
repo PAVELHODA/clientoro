@@ -17,6 +17,11 @@ interface Insight {
   data?: Record<string, any>
 }
 
+// Convert JS getDay() (0=Sun) to ISO weekday used in work_days (0=Mon)
+function jsToIsoWeekday(jsDay: number): number {
+  return jsDay === 0 ? 6 : jsDay - 1
+}
+
 export async function GET(request: NextRequest) {
   const auth = await requireAuth(request)
   if (!auth.authorized || !auth.organizationId) {
@@ -49,47 +54,52 @@ export async function GET(request: NextRequest) {
       .select('id, full_name, email, phone, last_visit_at')
       .eq('organization_id', orgId)
 
-    // Fetch upcoming bookings (7 days)
+    // Fetch upcoming bookings (7 days) — FIXED: start_at/end_at, not start_time/end_time
     const weekFromNow = new Date(now)
     weekFromNow.setDate(weekFromNow.getDate() + 7)
     const weekEnd = weekFromNow.toISOString().split('T')[0]
 
     const { data: upcomingBookings } = await supabaseAdmin
       .from('bookings')
-      .select('start_time, end_time, staff_id')
+      .select('start_at, end_at, staff_id')
       .eq('organization_id', orgId)
-      .gte('start_time', today)
-      .lte('start_time', weekEnd)
+      .gte('start_at', today)
+      .lte('start_at', weekEnd)
       .in('status', ['confirmed', 'pending'])
 
     console.log('[AI Debug] orgId:', orgId)
     console.log('[AI Debug] staff:', staffList?.length, 'clients:', allClients?.length, 'bookings:', upcomingBookings?.length)
 
-        // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
+    // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
     if (org && staffList && staffList.length > 0) {
       const workDays = (org.work_days as any[]) || []
-      
+
       // Fetch staff working hours for realistic capacity
       const { data: staffWH } = await supabaseAdmin
         .from('staff_working_hours')
-        .select('weekday, start_time, end_time')
-        .eq('organization_id', orgId)
+        .select('staff_id, weekday, start_time, end_time')
+        .in('staff_id', staffList.map(s => s.id))
 
       const slotDuration = org?.slot_duration || 30
 
-      const emptyDays: { date: string; dayLabel: string; freeHours: number }[] = []
+      const emptyDays: { date: string; dayLabel: string; freeHours: string }[] = []
 
       for (let d = 0; d < 7; d++) {
         const checkDate = new Date()
         checkDate.setDate(checkDate.getDate() + d)
         const dateStr = checkDate.toISOString().split('T')[0]
-        const dayOfWeek = checkDate.getDay()
+        const jsDayOfWeek = checkDate.getDay() // 0=Sun, 1=Mon, ...
+        const isoWeekday = jsToIsoWeekday(jsDayOfWeek) // 0=Mon, ..., 6=Sun
 
-        const workDay = workDays.find((wd: any) => wd.day === dayOfWeek)
+        // FIXED: work_days uses ISO weekday (0=Mon, 6=Sun)
+        const workDay = workDays.find((wd: any) => wd.day === isoWeekday)
         if (workDay && !workDay.enabled) continue
+        if (!workDay) continue // unknown day = skip
 
-        const dayStaffHours = (staffWH || []).filter((wh: any) => wh.weekday === dayOfWeek)
-        
+        // FIXED: staff_working_hours.weekday uses 1=Mon, 7=Sun (DB convention)
+        const dbWeekday = isoWeekday + 1 // 1=Mon, ..., 7=Sun
+        const dayStaffHours = (staffWH || []).filter((wh: any) => wh.weekday === dbWeekday)
+
         let totalAvailableMinutes = 0
         if (dayStaffHours.length > 0) {
           for (const wh of dayStaffHours) {
@@ -98,19 +108,26 @@ export async function GET(request: NextRequest) {
             totalAvailableMinutes += (eh * 60 + em) - (sh * 60 + sm)
           }
         } else {
-          // No staff_working_hours set - assume 8h working day with 30min lunch
-          totalAvailableMinutes = 450
+          // No staff_working_hours set — fallback: use work_days start/end
+          if (workDay && workDay.start && workDay.end) {
+            const [ws, wsm] = workDay.start.split(':').map(Number)
+            const [we, wem] = workDay.end.split(':').map(Number)
+            totalAvailableMinutes = ((we * 60 + wem) - (ws * 60 + wsm)) * staffList.length
+          } else {
+            totalAvailableMinutes = 450 // 7.5h default
+          }
         }
 
+        // FIXED: bookings use start_at/end_at
         const dayBookings = (upcomingBookings || []).filter((b: any) =>
-          b.start_time?.startsWith(dateStr)
+          b.start_at?.startsWith(dateStr)
         )
 
         let bookedMinutes = 0
         for (const b of dayBookings) {
-          if (b.start_time && b.end_time) {
-            const start = new Date(b.start_time).getTime()
-            const end = new Date(b.end_time).getTime()
+          if (b.start_at && b.end_at) {
+            const start = new Date(b.start_at).getTime()
+            const end = new Date(b.end_at).getTime()
             bookedMinutes += (end - start) / 60000
           } else {
             bookedMinutes += slotDuration
@@ -118,15 +135,17 @@ export async function GET(request: NextRequest) {
         }
 
         const freeMinutes = Math.max(0, totalAvailableMinutes - bookedMinutes)
-        const freeHours = Math.round(freeMinutes / 60)
 
         if (totalAvailableMinutes > 0 && freeMinutes >= totalAvailableMinutes * 0.7) {
           const dayNames = ['ned\u011ble', 'pond\u011bl\u00ed', '\u00fater\u00fd', 'st\u0159eda', '\u010dtvrtek', 'p\u00e1tek', 'sobota']
           const dd = dateStr.split('-').reverse().join('.')
+          // FIXED: show decimal hours (7,5h not 8h)
+          const freeH = (freeMinutes / 60)
+          const freeFormatted = freeH % 1 === 0 ? `${freeH}` : freeH.toFixed(1).replace('.', ',')
           emptyDays.push({
             date: dateStr,
-            dayLabel: dayNames[dayOfWeek].charAt(0).toUpperCase() + dayNames[dayOfWeek].slice(1) + ' ' + dd,
-            freeHours,
+            dayLabel: dayNames[jsDayOfWeek].charAt(0).toUpperCase() + dayNames[jsDayOfWeek].slice(1) + ' ' + dd,
+            freeHours: freeFormatted,
           })
         }
       }
@@ -144,8 +163,7 @@ export async function GET(request: NextRequest) {
           data: { emptyDays, slotDuration },
         })
       }
-      }
-
+    }
 
     // === 2. REAKTIVACE KLIENTŮ (30+ dní neaktivní) ===
     if (allClients && allClients.length > 0) {
@@ -164,8 +182,8 @@ export async function GET(request: NextRequest) {
           type: 'reactivation',
           priority: inactive.length >= 5 ? 'high' : 'medium',
           icon: 'users',
-          title: `${inactive.length} ${inactive.length === 1 ? 'klient' : inactive.length < 5 ? 'klienti' : 'klientů'} se dlouho neobjednal/a`,
-          description: `${topInactive}${inactive.length > 5 ? ` a dalších ${inactive.length - 5}` : ''} — poslední návštěva před 30+ dny.`,
+          title: `${inactive.length} ${inactive.length === 1 ? 'klient' : inactive.length < 5 ? 'klienti' : 'klient\u016f'} se dlouho neobjednal/a`,
+          description: `${topInactive}${inactive.length > 5 ? ` a dal\u0161\u00edch ${inactive.length - 5}` : ''} \u2014 posledn\u00ed n\u00e1v\u0161t\u011bva p\u0159ed 30+ dny.`,
           action: '/clients',
           actionLabel: 'Zobrazit klienty',
           data: { count: inactive.length, clients: inactive.slice(0, 10).map(c => ({ id: c.id, name: c.full_name })) },
@@ -173,13 +191,13 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // === 3. TREND TRŽEB (tento vs minulý týden) ===
+    // === 3. TREND TRŽEB (tento vs minulý týden) — FIXED: start_at ===
     const { data: thisWeekBookings } = await supabaseAdmin
       .from('bookings')
       .select('price')
       .eq('organization_id', orgId)
-      .gte('start_time', new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString())
-      .lte('start_time', now.toISOString())
+      .gte('start_at', new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      .lte('start_at', now.toISOString())
       .eq('status', 'completed')
 
     const lastWeekStart = new Date(now)
@@ -191,8 +209,8 @@ export async function GET(request: NextRequest) {
       .from('bookings')
       .select('price')
       .eq('organization_id', orgId)
-      .gte('start_time', lastWeekStart.toISOString())
-      .lte('start_time', lastWeekEnd.toISOString())
+      .gte('start_at', lastWeekStart.toISOString())
+      .lte('start_at', lastWeekEnd.toISOString())
       .eq('status', 'completed')
 
     const thisWeekRevenue = (thisWeekBookings || []).reduce((sum, b) => sum + (b.price || 0), 0)
@@ -204,9 +222,9 @@ export async function GET(request: NextRequest) {
         id: 'revenue_trend',
         type: 'revenue_trend',
         priority: change < -20 ? 'high' : 'low',
-        icon: change >= 0 ? '📈' : '📉',
-        title: `Tržby ${change >= 0 ? '+' : ''}${Math.round(change)}% oproti minulému týdnu`,
-        description: `Tento týden: ${thisWeekRevenue.toLocaleString('cs')} Kč vs minulý: ${lastWeekRevenue.toLocaleString('cs')} Kč.`,
+        icon: change >= 0 ? 'trending-up' : 'trending-down',
+        title: `Tr\u017eby ${change >= 0 ? '+' : ''}${Math.round(change)}% oproti minul\u00e9mu t\u00fddnu`,
+        description: `Tento t\u00fdden: ${thisWeekRevenue.toLocaleString('cs')} K\u010d vs minul\u00fd: ${lastWeekRevenue.toLocaleString('cs')} K\u010d.`,
         action: '/reports',
         actionLabel: 'Zobrazit reporty',
         data: { thisWeek: thisWeekRevenue, lastWeek: lastWeekRevenue, change: Math.round(change) },
@@ -217,25 +235,25 @@ export async function GET(request: NextRequest) {
         type: 'revenue_trend',
         priority: 'low',
         icon: 'trending-up',
-        title: `Tržby tento týden: ${thisWeekRevenue.toLocaleString('cs')} Kč`,
-        description: 'Minulý týden nemáme data pro srovnání.',
+        title: `Tr\u017eby tento t\u00fdden: ${thisWeekRevenue.toLocaleString('cs')} K\u010d`,
+        description: 'Minul\u00fd t\u00fdden nem\u00e1me data pro srovn\u00e1n\u00ed.',
         data: { thisWeek: thisWeekRevenue, lastWeek: 0 },
       })
     }
 
-    // === 4. NEJLEPŠÍ SLUŽBA (30 dní) ===
+    // === 4. NEJLEPŠÍ SLUŽBA (30 dní) — FIXED: start_at ===
     const { data: recentBookings } = await supabaseAdmin
       .from('bookings')
-      .select('service_id, start_time, price, services(name)')
+      .select('service_id, start_at, price, services(name)')
       .eq('organization_id', orgId)
-      .gte('start_time', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .gte('start_at', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
       .in('status', ['confirmed', 'completed'])
 
     if (recentBookings && recentBookings.length >= 3) {
       const serviceStats: Record<string, { name: string; count: number; revenue: number }> = {}
       for (const b of recentBookings) {
         const sid = b.service_id || 'unknown'
-        const sname = (b.services as any)?.name || 'Neznámá'
+        const sname = (b.services as any)?.name || 'Nezn\u00e1m\u00e1'
         if (!serviceStats[sid]) serviceStats[sid] = { name: sname, count: 0, revenue: 0 }
         serviceStats[sid].count++
         serviceStats[sid].revenue += b.price || 0
@@ -249,26 +267,27 @@ export async function GET(request: NextRequest) {
           type: 'top_service',
           priority: 'low',
           icon: 'star',
-          title: `Nejžádanější služba: ${top.name}`,
-          description: `${top.count}x za posledních 30 dní, tržby ${top.revenue.toLocaleString('cs')} Kč.`,
+          title: `Nej\u017e\u00e1dan\u011bj\u0161\u00ed slu\u017eba: ${top.name}`,
+          description: `${top.count}x za posledn\u00edch 30 dn\u00ed, tr\u017eby ${top.revenue.toLocaleString('cs')} K\u010d.`,
           action: '/services',
-          actionLabel: 'Zobrazit služby',
+          actionLabel: 'Zobrazit slu\u017eby',
           data: { serviceName: top.name, count: top.count, revenue: top.revenue },
         })
       }
 
-      // === 5. NEJSLABŠÍ DEN ===
+      // === 5. NEJSLABŠÍ DEN — FIXED: start_at + ISO weekday ===
       const dayStats: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
       for (const b of recentBookings) {
-        if (b.start_time) {
-          const day = new Date(b.start_time).getDay()
+        if (b.start_at) {
+          const day = new Date(b.start_at).getDay()
           dayStats[day]++
         }
       }
-      const dayNames = ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota']
+      const dayNames = ['ned\u011ble', 'pond\u011bl\u00ed', '\u00fater\u00fd', 'st\u0159eda', '\u010dtvrtek', 'p\u00e1tek', 'sobota']
       const workDayEntries = Object.entries(dayStats).filter(([d]) => {
-        const wd = ((org?.work_days as any[]) || []).find((w: any) => w.day === Number(d))
-        return !wd || wd.enabled
+        const isoDay = jsToIsoWeekday(Number(d))
+        const wd = ((org?.work_days as any[]) || []).find((w: any) => w.day === isoDay)
+        return wd && wd.enabled
       })
 
       if (workDayEntries.length > 0) {
@@ -278,26 +297,26 @@ export async function GET(request: NextRequest) {
           type: 'weak_day',
           priority: 'medium',
           icon: 'lightbulb',
-          title: `Nejslabší den: ${dayNames[Number(weakest[0])]}`,
-          description: `Pouze ${weakest[1]} rezervací za posledních 30 dní. Zvažte promo akci nebo slevu.`,
+          title: `Nejslab\u0161\u00ed den: ${dayNames[Number(weakest[0])]}`,
+          description: `Pouze ${weakest[1]} rezervac\u00ed za posledn\u00edch 30 dn\u00ed. Zva\u017ete promo akci nebo slevu.`,
           data: { day: Number(weakest[0]), dayName: dayNames[Number(weakest[0])], bookings: Number(weakest[1]) },
         })
       }
     }
 
-    // === 6. NO-SHOW RIZIKO ===
+    // === 6. NO-SHOW RIZIKO — FIXED: start_at ===
     const { data: noShows } = await supabaseAdmin
       .from('bookings')
       .select('id')
       .eq('organization_id', orgId)
       .eq('status', 'no_show')
-      .gte('start_time', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .gte('start_at', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
 
     const { data: totalRecent } = await supabaseAdmin
       .from('bookings')
       .select('id')
       .eq('organization_id', orgId)
-      .gte('start_time', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .gte('start_at', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
 
     if (totalRecent && totalRecent.length > 0 && noShows) {
       const noShowRate = (noShows.length / totalRecent.length) * 100
@@ -307,8 +326,8 @@ export async function GET(request: NextRequest) {
           type: 'no_show_risk',
           priority: 'high',
           icon: 'alert',
-          title: `No-show míra: ${Math.round(noShowRate)}%`,
-          description: `${noShows.length} z ${totalRecent.length} rezervací za 30 dní. Zvažte zálohy nebo SMS připomínky.`,
+          title: `No-show m\u00edra: ${Math.round(noShowRate)}%`,
+          description: `${noShows.length} z ${totalRecent.length} rezervac\u00ed za 30 dn\u00ed. Zva\u017ete z\u00e1lohy nebo SMS p\u0159ipom\u00ednky.`,
           data: { rate: Math.round(noShowRate), noShows: noShows.length, total: totalRecent.length },
         })
       }
