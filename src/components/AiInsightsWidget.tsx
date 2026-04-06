@@ -1,4 +1,3 @@
-// PATH: src/components/AiInsightsWidget.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -30,16 +29,6 @@ const PRIORITY_COLORS: Record<string, { bg: string; border: string; dot: string 
   high: { bg: 'bg-red-50', border: 'border-red-200', dot: 'bg-red-500' },
   medium: { bg: 'bg-amber-50', border: 'border-amber-200', dot: 'bg-amber-500' },
   low: { bg: 'bg-blue-50', border: 'border-blue-200', dot: 'bg-blue-500' },
-}
-function parseListDescription(description: string): string[] | null {
-  if (!description || !description.startsWith('[')) return null
-  try {
-    const parsed = JSON.parse(description)
-    if (Array.isArray(parsed)) return parsed
-    return null
-  } catch {
-    return null
-  }
 }
 
 export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
@@ -117,7 +106,7 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
           </div>
           <div>
             <h3 className="font-bold text-gray-900">AI Copilot</h3>
-            <p className="text-xs text-gray-400">{insights.length} {insights.length === 1 ? 'doporučení' : insights.length < 5 ? 'doporučení' : 'doporučení'}</p>
+            <p className="text-xs text-gray-400">{insights.length} doporučení</p>
           </div>
         </div>
         <button
@@ -146,16 +135,16 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
                     <Icon className="w-4 h-4 text-gray-600 flex-shrink-0" />
                     <h4 className="text-sm font-semibold text-gray-900 truncate">{insight.title}</h4>
                   </div>
-                                   
-                                    {(() => {
-                    const listItems = insight.type === 'empty_slots' && insight.description.includes('|') ? insight.description.split('|') : null
-                    if (listItems) {
+
+                  {(() => {
+                    const parts = insight.description.split('|')
+                    if (parts.length > 1) {
                       return (
                         <ul className="mt-1 space-y-0.5">
-                          {listItems.map((item, idx) => (
+                          {parts.map((item: string, idx: number) => (
                             <li key={idx} className="text-xs text-gray-600 flex items-start gap-1.5">
-                              <span className="text-gray-400 mt-0.5">•</span>
-                              <span>{item}</span>
+                              <span className="text-gray-400 mt-0.5">{"•"}</span>
+                              <span>{item.trim()}</span>
                             </li>
                           ))}
                         </ul>
@@ -163,7 +152,6 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
                     }
                     return <p className="text-xs text-gray-600 leading-relaxed">{insight.description}</p>
                   })()}
-
 
                   {insight.action && (
                     <Link
@@ -189,10 +177,9 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
           style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)', color: '#fde68a' }}
         >
           <Bot className="w-4 h-4" />
-          Zobrazit všechna doporučení ({insights.length})
+          {"Zobrazit všechna doporučení (" + insights.length + ")"}
         </Link>
       )}
     </div>
   )
 }
-
