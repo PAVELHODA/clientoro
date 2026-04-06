@@ -1,4 +1,4 @@
-﻿// PATH: src/components/AiInsightsWidget.tsx
+// PATH: src/components/AiInsightsWidget.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -148,7 +148,7 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
                   </div>
                                    
                                     {(() => {
-                    const listItems = insight.type === 'empty_slots' && insight.description.includes('\n') ? insight.description.split('\n') : null
+                    const listItems = insight.type === 'empty_slots' && insight.description.includes('|') ? insight.description.split('|') : null
                     if (listItems) {
                       return (
                         <ul className="mt-1 space-y-0.5">
