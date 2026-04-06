@@ -1,4 +1,4 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
 
 // PATH: src/app/api/settings/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
@@ -198,7 +198,7 @@ export async function PUT(request: NextRequest) {
             const workStart = data.work_start || orgBeforeUpdate.work_start || 8
             const workEnd = data.work_end || orgBeforeUpdate.work_end || 17
             const whRows = []
-            for (let day = 0; day < 5; day++) {
+            for (let day = 0; day < 6; day++) {
               whRows.push({
                 staff_id: newStaff.id,
                 weekday: day,

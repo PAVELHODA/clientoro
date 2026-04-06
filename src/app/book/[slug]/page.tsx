@@ -155,7 +155,7 @@ export default function PublicBookingPage() {
   const hasAnyStaffWorking = (dateStr: string): boolean => {
     const date = new Date(dateStr + 'T12:00:00'); const weekday = jsToDbWeekday(date.getDay())
     const relevantWH = workingHours.filter(wh => relevantStaff.some(s => s.id === wh.staff_id))
-    if (relevantWH.length === 0) return weekday < 5
+    if (relevantWH.length === 0) return weekday < 6 // fallback: Po-So dostupné, Ne zavřeno
     return relevantStaff.some(staff => {
       const hasWH = relevantWH.some(wh => wh.staff_id === staff.id && wh.weekday === weekday)
       if (!hasWH) return false
