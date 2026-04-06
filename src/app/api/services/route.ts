@@ -36,12 +36,12 @@ export async function POST(request: NextRequest) {
     const validation = validateBody(serviceCreateSchema, body)
     if (!validation.success) {
       console.warn('[Services POST] Zod validation failed:', validation.error, 'Body:', JSON.stringify(body).slice(0, 500))
-      return NextResponse.json({ error: validation.error || 'NeplatnĂˇ data' }, { status: 400 })
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
     const validData = validation.data as any
 
-    // Kontrola duplicity nĂˇzvu sluĹľby ve stejnĂ© organizaci
+    // Kontrola duplicity názvu sluĹľby ve stejné organizaci
     const { data: existing } = await supabaseAdmin
       .from('services')
       .select('id')

@@ -7,64 +7,64 @@ import { useToast } from '@/components/Toast'
 const PLANS = [
   {
     slug: 'osvc',
-    name: 'OSVÄŚ',
+    name: 'OSVčŚ',
     desc: 'Pro podnikatele (1 osoba)',
     price: 49,
     priceAI: 99,
     popular: false,
     features: [
-      'KalendĂˇř + booking strĂˇnka',
-      'Rezervace (max 50/mÄ›s)',
+      'Kalendář + booking stránka',
+      'Rezervace (max 50/měs)',
       'Klienti CRM (max 100)',
       'Email notifikace',
     ],
-    limits: '50 rezervacĂ­/mÄ›s Â· 100 klientĹŻ Â· 1 osoba',
+    limits: '50 rezervací/měs Â· 100 klientĹŻ Â· 1 osoba',
   },
   {
     slug: 'firma',
     name: 'FIRMA',
-    desc: 'Majitel + max 4 zamÄ›stnanci',
+    desc: 'Majitel + max 4 zaměstnanci',
     price: 299,
     priceAI: 499,
     popular: true,
     features: [
-      'Vše z OSVÄŚ (neomezenÄ›)',
-      'SprĂˇva tĂ˝mu + staff kalendĂˇř',
+      'Vše z OSVčŚ (neomezeně)',
+      'Správa týmu + staff kalendář',
       'Google Calendar sync',
-      'Reporty per zamÄ›stnanec',
+      'Reporty per zaměstnanec',
     ],
-    limits: 'NeomezenĂ© rezervace Â· NeomezenĂ­ klienti Â· 5 osob',
+    limits: 'Neomezené rezervace Â· Neomezení klienti Â· 5 osob',
   },
   {
     slug: 'solo_inspire',
     name: 'SOLO INSPIRE',
-    desc: 'OSVÄŚ + AI a nĂˇstroje pro rĹŻst',
+    desc: 'OSVčŚ + AI a nástroje pro rĹŻst',
     price: 499,
     priceAI: 799,
     popular: false,
     features: [
-      'Vše z OSVÄŚ (neomezenÄ›)',
+      'Vše z OSVčŚ (neomezeně)',
       'AI statistiky + insighty',
-      'AI detekce mrtvĂ˝ch hodin',
+      'AI detekce mrtvých hodin',
       'Growth reporty',
-      'KampanÄ› (5/mÄ›s)',
+      'Kampaně (5/měs)',
     ],
-    limits: 'NeomezenĂ© Â· 1 osoba Â· 5 kampanĂ­/mÄ›s',
+    limits: 'Neomezené Â· 1 osoba Â· 5 kampaní/měs',
   },
   {
     slug: 'pro_inspire',
     name: 'PRO INSPIRE',
-    desc: 'Majitel + max 24 zamÄ›stnancĹŻ',
+    desc: 'Majitel + max 24 zaměstnancĹŻ',
     price: 1299,
     priceAI: 1999,
     popular: false,
     features: [
       'Vše z Firmy + Solo Inspire',
-      'AI Copilot (pokročilĂ˝)',
-      'NeomezenĂ© kampanÄ›',
+      'AI Copilot (pokročilý)',
+      'Neomezené kampaně',
       'Reporty per staff',
     ],
-    limits: 'NeomezenĂ© Â· 25 osob Â· NeomezenĂ© kampanÄ›',
+    limits: 'Neomezené Â· 25 osob Â· Neomezené kampaně',
   },
 ]
 
@@ -107,7 +107,7 @@ export default function SubscriptionSettings() {
         setWithAI(data.plan_with_ai || false)
       }
     } catch {
-      toast.error('Nepodařilo se načĂ­st informace o předplatnĂ©m')
+      toast.error('Nepodařilo se načíst informace o předplatném')
     } finally {
       setLoading(false)
     }
@@ -132,10 +132,10 @@ export default function SubscriptionSettings() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        toast.error(data.error || 'Chyba při vytvĂˇřenĂ­ platby')
+        toast.error(data.error || 'Chyba při vytváření platby')
       }
     } catch {
-      toast.error('Chyba při vytvĂˇřenĂ­ platby')
+      toast.error('Chyba při vytváření platby')
     } finally {
       setCheckoutLoading(null)
     }
@@ -149,10 +149,10 @@ export default function SubscriptionSettings() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        toast.error('Nejprve je potřeba aktivovat předplatnĂ©')
+        toast.error('Nejprve je potřeba aktivovat předplatné')
       }
     } catch {
-      toast.error('Chyba při otevĂ­rĂˇnĂ­ portĂˇlu')
+      toast.error('Chyba při otevírání portálu')
     } finally {
       setPortalLoading(false)
     }
@@ -182,10 +182,10 @@ export default function SubscriptionSettings() {
           <Clock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-blue-900">
-              ZkušebnĂ­ obdobĂ­ â€” zbĂ˝vĂˇ {trialDays} {trialDays === 1 ? 'den' : trialDays < 5 ? 'dny' : 'dnĂ­'}
+              Zkušební období â€” zbývá {trialDays} {trialDays === 1 ? 'den' : trialDays < 5 ? 'dny' : 'dní'}
             </p>
             <p className="text-xs text-blue-700 mt-0.5">
-              MĂˇte plnĂ˝ přĂ­stup ke všem funkcĂ­m. Po skončenĂ­ trialu vyberte plĂˇn.
+              Máte plný přístup ke všem funkcím. Po skončení trialu vyberte plán.
             </p>
           </div>
         </div>
@@ -196,11 +196,11 @@ export default function SubscriptionSettings() {
           <Check className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-emerald-900">
-              AktivnĂ­ předplatnĂ© â€” {PLANS.find(p => p.slug === currentPlan)?.name}{info?.plan_with_ai ? ' + AI' : ''}
+              Aktivní předplatné â€” {PLANS.find(p => p.slug === currentPlan)?.name}{info?.plan_with_ai ? ' + AI' : ''}
             </p>
             {info?.current_period_end && (
               <p className="text-xs text-emerald-700 mt-0.5">
-                DalšĂ­ platba: {new Date(info.current_period_end).toLocaleDateString('cs-CZ')}
+                Další platba: {new Date(info.current_period_end).toLocaleDateString('cs-CZ')}
               </p>
             )}
           </div>
@@ -219,7 +219,7 @@ export default function SubscriptionSettings() {
           <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-amber-900">Platba se nezdařila</p>
-            <p className="text-xs text-amber-700 mt-0.5">Aktualizujte platebnĂ­ Ăşdaje, jinak bude Ăşčet pozastaven.</p>
+            <p className="text-xs text-amber-700 mt-0.5">Aktualizujte platební údaje, jinak bude účet pozastaven.</p>
           </div>
           <button onClick={handlePortal} disabled={portalLoading}
             className="ml-auto text-xs text-amber-700 hover:text-amber-900 bg-white px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1">
@@ -233,9 +233,9 @@ export default function SubscriptionSettings() {
           <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-red-900">
-              {isCanceled ? 'PředplatnĂ© bylo zrušeno' : 'ZkušebnĂ­ obdobĂ­ vypršelo'}
+              {isCanceled ? 'Předplatné bylo zrušeno' : 'Zkušební období vypršelo'}
             </p>
-            <p className="text-xs text-red-700 mt-0.5">Vyberte plĂˇn pro pokračovĂˇnĂ­.</p>
+            <p className="text-xs text-red-700 mt-0.5">Vyberte plán pro pokračování.</p>
           </div>
         </div>
       )}
@@ -246,7 +246,7 @@ export default function SubscriptionSettings() {
           <Sparkles className="w-5 h-5 text-purple-600" />
           <div>
             <p className="text-sm font-semibold text-purple-900">AI funkce</p>
-            <p className="text-xs text-purple-700">Insighty, detekce mrtvĂ˝ch hodin, AI copilot</p>
+            <p className="text-xs text-purple-700">Insighty, detekce mrtvých hodin, AI copilot</p>
           </div>
         </div>
         <button
@@ -276,13 +276,13 @@ export default function SubscriptionSettings() {
             >
               {plan.popular && (
                 <div className="absolute -top-2.5 left-4 bg-blue-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-                  NejoblĂ­benÄ›jšĂ­
+                  Nejoblíbenější
                 </div>
               )}
 
               {isCurrent && (
                 <div className="absolute -top-2.5 right-4 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <Check className="w-3 h-3" /> AktivnĂ­
+                  <Check className="w-3 h-3" /> Aktivní
                 </div>
               )}
 
@@ -293,7 +293,7 @@ export default function SubscriptionSettings() {
 
               <div className="flex items-baseline gap-1 mb-3">
                 <span className="text-3xl font-bold text-gray-900">{price}</span>
-                <span className="text-sm text-gray-500">Kč/mÄ›s</span>
+                <span className="text-sm text-gray-500">Kč/měs</span>
                 {withAI && (
                   <span className="ml-2 text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full font-medium">
                     + AI
@@ -318,7 +318,7 @@ export default function SubscriptionSettings() {
                   disabled={portalLoading}
                   className="w-full py-2.5 text-sm font-medium text-emerald-700 bg-emerald-100 rounded-lg hover:bg-emerald-200 transition-colors flex items-center justify-center gap-1"
                 >
-                  {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-3.5 h-3.5" /> Spravovat předplatnĂ©</>}
+                  {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-3.5 h-3.5" /> Spravovat předplatné</>}
                 </button>
               ) : (
                 <button
@@ -335,7 +335,7 @@ export default function SubscriptionSettings() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      {isTrial || isExpired || isCanceled ? 'Vybrat plĂˇn' : 'Upgradovat'}
+                      {isTrial || isExpired || isCanceled ? 'Vybrat plán' : 'Upgradovat'}
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}
@@ -348,8 +348,8 @@ export default function SubscriptionSettings() {
 
       {/* Footer info */}
       <div className="text-center text-xs text-gray-400 space-y-1">
-        <p>Všechny ceny jsou bez DPH. Platba kartou přes zabezpečenĂ˝ Stripe checkout.</p>
-        <p>PředplatnĂ© mĹŻĹľete kdykoliv zrušit. Ĺ˝ĂˇdnĂ© skrytĂ© poplatky.</p>
+        <p>Všechny ceny jsou bez DPH. Platba kartou přes zabezpečený Stripe checkout.</p>
+        <p>Předplatné mĹŻĹľete kdykoliv zrušit. Ĺ˝ádné skryté poplatky.</p>
       </div>
     </div>
   )

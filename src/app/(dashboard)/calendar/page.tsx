@@ -177,28 +177,28 @@ export default function CalendarPage() {
     client: lang === 'en' ? 'Client' : 'Klient',
     service: t('cal_service'),
     specialist: lang === 'en' ? 'Specialist' : 'Specialista',
-    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'JmÄ‚Â©no klienta *',
+    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jmč‚Â©no klienta *',
     phone: lang === 'en' ? 'Phone *' : 'Telefon *',
     anyone: lang === 'en' ? 'Anyone available' : lang === 'sk' ? 'Ktokolvek volny' : 'Kdokoliv volny',
     select: lang === 'en' ? 'Select...' : 'Vyberte...',
-    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'VytvoriÄąÄ„ rezervÄ‚Ë‡ciu' : 'Vytvořit rezervaci',
-    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervÄ‚Ë‡cie' : 'Detail rezervace',
+    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvoričąč„ rezervč‚Ë‡ciu' : 'Vytvořit rezervaci',
+    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervč‚Ë‡cie' : 'Detail rezervace',
     time: lang === 'en' ? 'Time' : 'Ă„Ĺšas',
     price: t('cal_price'),
     status: lang === 'en' ? 'Status' : 'Stav',
     close: lang === 'en' ? 'Close' : 'Zavrit',
-    unknown: lang === 'en' ? 'Unknown' : 'NeznÄ‚Ë‡mÄ‚Ëť',
-    rez: lang === 'en' ? 'bookings' : 'rezervacĂ­',
+    unknown: lang === 'en' ? 'Unknown' : 'Neznč‚Ë‡mč‚Ëť',
+    rez: lang === 'en' ? 'bookings' : 'rezervací',
     at: lang === 'en' ? 'at' : 'v',
-    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'RezervÄ‚Ë‡cie v tomto termÄ‚Â­ne' : 'Rezervace v tomto termÄ‚Â­nu',
-    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'ÄąËťiadne rezervÄ‚Ë‡cie' : 'ÄąËťÄ‚Ë‡dnÄ‚Â© rezervace',
+    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervč‚Ë‡cie v tomto termč‚Â­ne' : 'Rezervace v tomto termč‚Â­nu',
+    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'čąËťiadne rezervč‚Ë‡cie' : 'čąËťč‚Ë‡dnč‚Â© rezervace',
     working: lang === 'en' ? 'Working' : lang === 'sk' ? 'Pracuju' : 'Pracuji',
     backfillBanner: lang === 'en' ? 'Backfill mode - you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis - moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis - moznost pridat rezervace do minulosti (max 90 dni)',
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
-    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'DÄ‚Â´vod spÄ‚Â¤tnÄ‚Â©ho zÄ‚Ë‡pisu *' : 'DÄąĹ»vod zpĂ„â€ştnÄ‚Â©ho zÄ‚Ë‡pisu *',
+    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dč‚Â´vod spč‚Â¤tnč‚Â©ho zč‚Ë‡pisu *' : 'DčąĹ»vod zpĂ„â€ştnč‚Â©ho zč‚Ë‡pisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
-    backfillLabel: lang === 'en' ? 'Backfill' : 'ZpĂ„â€ştnÄ‚Ëť zÄ‚Ë‡pis',
-    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvÄ‚Ĺź sluÄąÄľbu pre rezervÄ‚Ë‡cie' : 'Přidejte prvnÄ‚Â­ sluÄąÄľbu pro rezervace',
+    backfillLabel: lang === 'en' ? 'Backfill' : 'ZpĂ„â€ştnč‚Ëť zč‚Ë‡pis',
+    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvč‚Ĺź slučąčľbu pre rezervč‚Ë‡cie' : 'Přidejte prvnč‚Â­ slučąčľbu pro rezervace',
     emptyStaff: lang === 'en' ? 'Add team members to see staff columns' : lang === 'sk' ? 'Pridajte clenov timu' : 'Pridejte cleny tymu',
     conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
@@ -451,9 +451,9 @@ export default function CalendarPage() {
 
   const statusLabel = (status: string) => {
     const m: Record<string, Record<string, string>> = {
-      confirmed: { cs: 'Potvrzeno', sk: 'PotvrdenÄ‚Ë‡', en: 'Confirmed' },
-      completed: { cs: 'Dokončeno', sk: 'DokončenÄ‚Ë‡', en: 'Completed' },
-      cancelled: { cs: 'Zrušeno', sk: 'ZrušenÄ‚Ë‡', en: 'Cancelled' },
+      confirmed: { cs: 'Potvrzeno', sk: 'Potvrdenč‚Ë‡', en: 'Confirmed' },
+      completed: { cs: 'Dokončeno', sk: 'Dokončenč‚Ë‡', en: 'Completed' },
+      cancelled: { cs: 'Zrušeno', sk: 'Zrušenč‚Ë‡', en: 'Cancelled' },
       no_show: { cs: 'Nedorazil/a (no-show)', sk: 'Nedostavil/a sa', en: 'No-show' },
     }
     return m[status]?.[lang] || status
@@ -876,13 +876,13 @@ export default function CalendarPage() {
                   {qbService && getAvailableStaff().length === 0 && (
                     <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'ÄąËťiadny zamestnanec pre tÄ‚Ĺźto sluÄąÄľbu' : 'ÄąËťÄ‚Ë‡dnÄ‚Ëť zamĂ„â€şstnanec pro tuto sluÄąÄľbu'}
+                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'čąËťiadny zamestnanec pre tč‚Ĺźto slučąčľbu' : 'čąËťč‚Ë‡dnč‚Ëť zamĂ„â€şstnanec pro tuto slučąčľbu'}
                     </p>
                   )}
                   {qbService && selectedSlot && getAvailableStaff().length > 0 && getAvailableStaff().every(s => getBookingsForSlot(selectedSlot.date, selectedSlot.time, s.id).length > 0) && (
                     <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Všetci zamestnanci sÄ‚Ĺź v tomto čase obsadenÄ‚Â­' : 'Všichni zamĂ„â€şstnanci jsou v tomto čase obsazeni'}
+                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Všetci zamestnanci sč‚Ĺź v tomto čase obsadenč‚Â­' : 'Všichni zamĂ„â€şstnanci jsou v tomto čase obsazeni'}
                     </p>
                   )}
                 </div>
@@ -899,8 +899,8 @@ export default function CalendarPage() {
                     const digits = qbPhone.replace(/\D/g, '').replace(/^420|^421/, '')
                     setQbPhone(e.target.value + ' ' + digits)
                   }} className="w-[110px] px-2 py-2.5 border border-gray-200 rounded-xl text-sm font-medium bg-gray-50">
-                    <option value="+420">Ä‘Ĺşâ€ˇÂ¨Ä‘Ĺşâ€ˇĹĽ +420</option>
-                    <option value="+421">Ä‘Ĺşâ€ˇÂ¸Ä‘Ĺşâ€ˇÂ° +421</option>
+                    <option value="+420">č‘Ĺşâ€ˇÂ¨č‘Ĺşâ€ˇĹĽ +420</option>
+                    <option value="+421">č‘Ĺşâ€ˇÂ¸č‘Ĺşâ€ˇÂ° +421</option>
                   </select>
                   <input type="tel" id="qb-phone" name="qb-phone"
                     value={qbPhone.replace(/^\+42[01]\s?/, '')}
@@ -920,7 +920,7 @@ export default function CalendarPage() {
                     <label className="block text-sm font-medium text-amber-700 mb-1">{l.backfillNote}</label>
                     <input type="text" id="qb-note" name="qb-note" value={qbNote} onChange={e => setQbNote(e.target.value)}
                       className="w-full px-3 py-2.5 border-2 border-amber-300 rounded-xl text-sm bg-amber-50"
-                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'např. Klient nastoupil v pÄąĹ»lce mĂ„â€şsÄ‚Â­ce'} />
+                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'např. Klient nastoupil v pčąĹ»lce mĂ„â€şsč‚Â­ce'} />
                   </div>
                 ) : null
               })()}
