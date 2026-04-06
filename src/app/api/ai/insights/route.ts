@@ -54,6 +54,12 @@ export async function GET(request: NextRequest) {
       .eq('organization_id', orgId)
       .eq('active', true)
 
+        // DEBUG LOG
+    console.log('[AI Debug] orgId:', orgId)
+    console.log('[AI Debug] org:', org?.work_start, org?.work_end)
+    console.log('[AI Debug] staff:', staffList?.length)
+    console.log('[AI Debug] allClients:', allClients?.length)
+    console.log('[AI Debug] upcomingBookings:', upcomingBookings?.length)
     if (org && staffList && staffList.length > 0) {
       const workStart = org.work_start || 8
       const workEnd = org.work_end || 18
@@ -285,3 +291,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to generate insights' }, { status: 500 })
   }
 }
+
