@@ -1,4 +1,4 @@
-﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
+﻿// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -100,7 +100,14 @@ export default function CalendarPage() {
   const workStart = organization?.work_start || 6
   const workEnd = organization?.work_end || 22
 
-  // Auto-scroll to current time (red line)
+  // Force re-render red line every minute
+  const [, setTick] = useState(0)
+  useEffect(() => {
+    const interval = setInterval(() => setTick(t => t + 1), 60000)
+    return () => clearInterval(interval)
+  }, [])
+
+    // Auto-scroll to current time (red line)
   useEffect(() => {
     setTimeout(() => {
       if (!calendarRef.current) return
@@ -196,7 +203,7 @@ export default function CalendarPage() {
     conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
 
-  const toDateStr = (d: Date) => d.toISOString().split('T')[0]
+  const toDateStr = (d: Date) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`
   const todayStr = toDateStr(new Date())
   const dateStr = toDateStr(currentDate)
   const maxBackfillDate = toDateStr(new Date(Date.now() - 90 * 24 * 60 * 60 * 1000))
