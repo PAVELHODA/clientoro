@@ -65,13 +65,20 @@ export async function GET(request: NextRequest) {
     console.log('[AI Debug] orgId:', orgId)
     console.log('[AI Debug] staff:', staffList?.length, 'clients:', allClients?.length, 'bookings:', upcomingBookings?.length)
 
-    // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
+        // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
     if (org && staffList && staffList.length > 0) {
-      const workStart = org.work_start || 8
-      const workEnd = org.work_end || 18
       const workDays = (org.work_days as any[]) || []
-      const totalSlots = (workEnd - workStart)
-      const emptyDays: { date: string; dayName: string; freeHours: number }[] = []
+      
+      // Fetch slot_duration and services for realistic capacity
+      const { data: orgFull } = await supabaseAdmin
+        .from('organizations')
+        .select('slot_duration')
+        .eq('id', orgId)
+        .single()
+      
+      const slotDuration = orgFull?.slot_duration || 60
+      
+      const emptyDays: { date: string; dayLabel: string; freeSlots: number; totalSlots: number }[] = []
 
       for (let d = 0; d < 7; d++) {
         const checkDate = new Date(now)
@@ -79,34 +86,62 @@ export async function GET(request: NextRequest) {
         const dateStr = checkDate.toISOString().split('T')[0]
         const dayOfWeek = checkDate.getDay()
 
+        // Find work_day config for this day
         const workDay = workDays.find((wd: any) => wd.day === dayOfWeek)
         if (workDay && !workDay.enabled) continue
 
+        // Parse per-day working hours
+        const dayStart = workDay?.start || `${String(org.work_start || 8).padStart(2, '0')}:00`
+        const dayEnd = workDay?.end || `${String(org.work_end || 18).padStart(2, '0')}:00`
+        
+        const [startH, startM] = dayStart.split(':').map(Number)
+        const [endH, endM] = dayEnd.split(':').map(Number)
+        const dayMinutes = (endH * 60 + endM) - (startH * 60 + startM)
+        const totalSlots = Math.floor(dayMinutes / slotDuration)
+
+        // Count booked slots (by actual duration, not just count)
         const dayBookings = (upcomingBookings || []).filter(b =>
           b.start_time?.startsWith(dateStr)
         )
+        
+        let bookedMinutes = 0
+        for (const b of dayBookings) {
+          if (b.start_time && b.end_time) {
+            const start = new Date(b.start_time).getTime()
+            const end = new Date(b.end_time).getTime()
+            bookedMinutes += (end - start) / 60000
+          } else {
+            bookedMinutes += slotDuration // fallback
+          }
+        }
+        
+        const bookedSlots = Math.ceil(bookedMinutes / slotDuration)
+        const freeSlots = Math.max(0, totalSlots - bookedSlots)
 
-        const bookedHours = dayBookings.length
-        const freeHours = Math.max(0, totalSlots - bookedHours)
-
-        if (freeHours >= totalSlots * 0.7) {
+        // Flag day if 70%+ slots are free
+        if (freeSlots >= totalSlots * 0.7) {
           const dayNames = ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota']
-          emptyDays.push({ date: dateStr, dayName: dayNames[dayOfWeek], freeHours })
+          const dd = dateStr.split('-').reverse().join('.')
+          emptyDays.push({
+            date: dateStr,
+            dayLabel: `${dayNames[dayOfWeek].charAt(0).toUpperCase() + dayNames[dayOfWeek].slice(1)} ${dd}`,
+            freeSlots,
+            totalSlots,
+          })
         }
       }
 
       if (emptyDays.length > 0) {
-        const worst = emptyDays[0]
         insights.push({
           id: 'empty_slots_week',
           type: 'empty_slots',
           priority: emptyDays.length >= 3 ? 'high' : 'medium',
           icon: 'calendar',
           title: `${emptyDays.length} ${emptyDays.length === 1 ? 'den' : emptyDays.length < 5 ? 'dny' : 'dní'} s volnými termíny`,
-          description: emptyDays.map(d => `${d.dayName.charAt(0).toUpperCase() + d.dayName.slice(1)} ${d.date.split("-").reverse().join(".")} (${d.freeHours}h volných)`).join(" · "),
+          description: JSON.stringify(emptyDays.map(d => `${d.dayLabel} — ${d.freeSlots} z ${d.totalSlots} volných`)),
           action: '/calendar',
           actionLabel: 'Zobrazit kalendář',
-          data: { emptyDays },
+          data: { emptyDays, slotDuration },
         })
       }
     }

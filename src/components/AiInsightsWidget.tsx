@@ -136,7 +136,26 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
                     <Icon className="w-4 h-4 text-gray-600 flex-shrink-0" />
                     <h4 className="text-sm font-semibold text-gray-900 truncate">{insight.title}</h4>
                   </div>
-                  <p className="text-xs text-gray-600 leading-relaxed">{insight.description}</p>
+                                    {insight.type === 'empty_slots' ? (
+                    <ul className="mt-1 space-y-0.5">
+                      {(() => {
+                        try {
+                          const items = JSON.parse(insight.description)
+                          return (items as string[]).map((item: string, idx: number) => (
+                            <li key={idx} className="text-xs text-gray-600 flex items-start gap-1.5">
+                              <span className="text-gray-400 mt-0.5">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))
+                        } catch {
+                          return <li className="text-xs text-gray-600">{insight.description}</li>
+                        }
+                      })()}
+                    </ul>
+                  ) : (
+                    <p className="text-xs text-gray-600 leading-relaxed">{insight.description}</p>
+                  )}
+
                   {insight.action && (
                     <Link
                       href={insight.action}
