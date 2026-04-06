@@ -1,4 +1,4 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
 
 // PATH: src/app/api/public/booking/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
@@ -7,7 +7,7 @@ import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
 import { rateLimit } from '@/lib/rateLimit'
 import { publicBookingPostSchema, publicBookingGetSchema, validateBody } from '@/lib/validations'
 
-// GET â€” veĹ™ejnĂ© sluĹľby, staff a working hours pro booking
+// GET â€” veřejné sluĹľby, staff a working hours pro booking
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     // Zod validace
     const validation = validateBody(publicBookingGetSchema, { slug })
     if (!validation.success || !validation.data) {
-      return NextResponse.json({ error: validation.error || 'NeplatnĂˇ data' }, { status: 400 })
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
     const { data: org, error: orgError } = await supabaseAdmin
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       .eq('organization_id', org.id)
       .eq('active', true)
 
-    // Working hours pro vĹˇechny staff
+    // Working hours pro všechny staff
     const staffIds = (staff || []).map((s: any) => s.id)
     let workingHours: any[] = []
     if (staffIds.length > 0) {
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
       timeOffs = to || []
     }
 
-    // ExistujĂ­cĂ­ bookings (pro obsazenĂ© sloty)
+    // Existující bookings (pro obsazené sloty)
     const today = new Date().toISOString().split('T')[0]
     const { data: bookings } = await supabaseAdmin
       .from('bookings')
@@ -88,39 +88,39 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST â€” vytvoĹ™it novou veĹ™ejnou rezervaci + odeslat emaily
+// POST â€” vytvořit novou veřejnou rezervaci + odeslat emaily
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting â€” max 5 rezervacĂ­ za minutu z jednĂ© IP
+    // Rate limiting â€” max 5 rezervací za minutu z jedné IP
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const { allowed } = rateLimit(ip, 5)
     if (!allowed) {
-      return NextResponse.json({ error: 'PĹ™Ă­liĹˇ mnoho poĹľadavkĹŻ. Zkuste to za minutu.' }, { status: 429 })
+      return NextResponse.json({ error: 'Příliš mnoho poĹľadavkĹŻ. Zkuste to za minutu.' }, { status: 429 })
     }
 
     // Zod validace
     const body = await request.json()
     const validation = validateBody(publicBookingPostSchema, body)
     if (!validation.success || !validation.data) {
-      return NextResponse.json({ error: validation.error || 'NeplatnĂˇ data' }, { status: 400 })
+      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
     const { slug, service_id, staff_id, start_at, end_at, customer_name, customer_phone, customer_email, note, price } = validation.data
 
-    // Validace: end_at musĂ­ bĂ˝t po start_at
+    // Validace: end_at musí být po start_at
     if (new Date(end_at) <= new Date(start_at)) {
-      return NextResponse.json({ error: 'Konec rezervace musĂ­ bĂ˝t po zaÄŤĂˇtku' }, { status: 400 })
+      return NextResponse.json({ error: 'Konec rezervace musí být po začátku' }, { status: 400 })
     }
 
-    // Validace: rezervace nesmĂ­ bĂ˝t v minulosti
+    // Validace: rezervace nesmí být v minulosti
     if (new Date(start_at) < new Date()) {
-      return NextResponse.json({ error: 'Nelze vytvoĹ™it rezervaci v minulosti' }, { status: 400 })
+      return NextResponse.json({ error: 'Nelze vytvořit rezervaci v minulosti' }, { status: 400 })
     }
 
-    // Validace: maximĂˇlnĂ­ dĂ©lka rezervace 8 hodin
+    // Validace: maximální délka rezervace 8 hodin
     const durationMs = new Date(end_at).getTime() - new Date(start_at).getTime()
     if (durationMs > 8 * 60 * 60 * 1000) {
-      return NextResponse.json({ error: 'MaximĂˇlnĂ­ dĂ©lka rezervace je 8 hodin' }, { status: 400 })
+      return NextResponse.json({ error: 'Maximální délka rezervace je 8 hodin' }, { status: 400 })
     }
 
     // Najdi organizaci + email majitele + telefon
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
 
     if (!org) return NextResponse.json({ error: 'Organizace nenalezena' }, { status: 404 })
 
-    // Kontrola kolize â€” POUZE u stejnĂ©ho zamÄ›stnance
+    // Kontrola kolize â€” POUZE u stejného zaměstnance
     if (staff_id) {
       const { data: conflicts } = await supabaseAdmin
         .from('bookings')
@@ -144,11 +144,11 @@ export async function POST(request: NextRequest) {
         .gt('end_at', start_at)
 
       if (conflicts && conflicts.length > 0) {
-        return NextResponse.json({ error: 'Tento termĂ­n je jiĹľ obsazenĂ˝' }, { status: 409 })
+        return NextResponse.json({ error: 'Tento termín je jiĹľ obsazený' }, { status: 409 })
       }
     }
 
-    // Najdi nebo vytvoĹ™ klienta
+    // Najdi nebo vytvoř klienta
     let clientId = null
     const { data: existingClient } = await supabaseAdmin
       .from('clients')
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
       clientId = newClient?.id || null
     }
 
-    // Najdi nĂˇzev sluĹľby a staff
+    // Najdi název sluĹľby a staff
     const { data: service } = await supabaseAdmin
       .from('services')
       .select('name, duration')
@@ -197,7 +197,7 @@ export async function POST(request: NextRequest) {
       staffName = staffData?.full_name || ''
     }
 
-    // VytvoĹ™ rezervaci
+    // Vytvoř rezervaci
     const { data, error } = await supabaseAdmin
       .from('bookings')
       .insert({
@@ -220,7 +220,7 @@ export async function POST(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // Odeslat emaily (na pozadĂ­ â€” neÄŤekĂˇme na vĂ˝sledek)
+    // Odeslat emaily (na pozadí â€” nečekáme na výsledek)
     const startDate = new Date(start_at)
     const dateStr = startDate.toLocaleDateString('cs-CZ', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
@@ -229,7 +229,7 @@ export async function POST(request: NextRequest) {
       hour: '2-digit', minute: '2-digit'
     })
 
-    // Email klientovi â€” potvrzenĂ­
+    // Email klientovi â€” potvrzení
     if (customer_email) {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://clientoro.pro')
       const manageUrl = `${baseUrl}/booking/manage?token=${data.manage_token}`

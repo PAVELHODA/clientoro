@@ -1,4 +1,4 @@
-﻿﻿// PATH: src/app/(dashboard)/settings/page.tsx
+﻿// PATH: src/app/(dashboard)/settings/page.tsx
 'use client'
 
 import { createClient } from '@/lib/supabase'
