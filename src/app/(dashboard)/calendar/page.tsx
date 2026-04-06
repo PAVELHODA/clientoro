@@ -1,4 +1,4 @@
-﻿// PATH: src/app/(dashboard)/calendar/page.tsx
+// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -39,7 +39,7 @@ export default function CalendarPage() {
   const { t, lang } = useLang()
   const toast = useToast()
   const locale = lang === 'sk' ? 'sk-SK' : lang === 'en' ? 'en-US' : 'cs-CZ'
-  const currency = 'KÄŤ'
+  const currency = 'Kč'
   const isTeam = organization?.mode === 'team'
 
   const modeColors: Record<string, { gradient: string; text: string }> = {
@@ -181,7 +181,7 @@ export default function CalendarPage() {
     phone: lang === 'en' ? 'Phone *' : 'Telefon *',
     anyone: lang === 'en' ? 'Anyone available' : lang === 'sk' ? 'Ktokolvek volny' : 'Kdokoliv volny',
     select: lang === 'en' ? 'Select...' : 'Vyberte...',
-    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'VytvoriÄąÄ„ rezervÄ‚Ë‡ciu' : 'VytvoĹ™it rezervaci',
+    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'VytvoriÄąÄ„ rezervÄ‚Ë‡ciu' : 'Vytvořit rezervaci',
     bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervÄ‚Ë‡cie' : 'Detail rezervace',
     time: lang === 'en' ? 'Time' : 'Ă„Ĺšas',
     price: t('cal_price'),
@@ -198,7 +198,7 @@ export default function CalendarPage() {
     backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'DÄ‚Â´vod spÄ‚Â¤tnÄ‚Â©ho zÄ‚Ë‡pisu *' : 'DÄąĹ»vod zpĂ„â€ştnÄ‚Â©ho zÄ‚Ë‡pisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
     backfillLabel: lang === 'en' ? 'Backfill' : 'ZpĂ„â€ştnÄ‚Ëť zÄ‚Ë‡pis',
-    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvÄ‚Ĺź sluÄąÄľbu pre rezervÄ‚Ë‡cie' : 'PĹ™idejte prvnÄ‚Â­ sluÄąÄľbu pro rezervace',
+    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvÄ‚Ĺź sluÄąÄľbu pre rezervÄ‚Ë‡cie' : 'Přidejte prvnÄ‚Â­ sluÄąÄľbu pro rezervace',
     emptyStaff: lang === 'en' ? 'Add team members to see staff columns' : lang === 'sk' ? 'Pridajte clenov timu' : 'Pridejte cleny tymu',
     conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
@@ -452,8 +452,8 @@ export default function CalendarPage() {
   const statusLabel = (status: string) => {
     const m: Record<string, Record<string, string>> = {
       confirmed: { cs: 'Potvrzeno', sk: 'PotvrdenÄ‚Ë‡', en: 'Confirmed' },
-      completed: { cs: 'DokonÄŤeno', sk: 'DokonÄŤenÄ‚Ë‡', en: 'Completed' },
-      cancelled: { cs: 'ZruĹˇeno', sk: 'ZruĹˇenÄ‚Ë‡', en: 'Cancelled' },
+      completed: { cs: 'Dokončeno', sk: 'DokončenÄ‚Ë‡', en: 'Completed' },
+      cancelled: { cs: 'Zrušeno', sk: 'ZrušenÄ‚Ë‡', en: 'Cancelled' },
       no_show: { cs: 'Nedorazil/a (no-show)', sk: 'Nedostavil/a sa', en: 'No-show' },
     }
     return m[status]?.[lang] || status
@@ -882,7 +882,7 @@ export default function CalendarPage() {
                   {qbService && selectedSlot && getAvailableStaff().length > 0 && getAvailableStaff().every(s => getBookingsForSlot(selectedSlot.date, selectedSlot.time, s.id).length > 0) && (
                     <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'VĹˇetci zamestnanci sÄ‚Ĺź v tomto ÄŤase obsadenÄ‚Â­' : 'VĹˇichni zamĂ„â€şstnanci jsou v tomto ÄŤase obsazeni'}
+                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Všetci zamestnanci sÄ‚Ĺź v tomto čase obsadenÄ‚Â­' : 'Všichni zamĂ„â€şstnanci jsou v tomto čase obsazeni'}
                     </p>
                   )}
                 </div>
@@ -920,7 +920,7 @@ export default function CalendarPage() {
                     <label className="block text-sm font-medium text-amber-700 mb-1">{l.backfillNote}</label>
                     <input type="text" id="qb-note" name="qb-note" value={qbNote} onChange={e => setQbNote(e.target.value)}
                       className="w-full px-3 py-2.5 border-2 border-amber-300 rounded-xl text-sm bg-amber-50"
-                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'napĹ™. Klient nastoupil v pÄąĹ»lce mĂ„â€şsÄ‚Â­ce'} />
+                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'např. Klient nastoupil v pÄąĹ»lce mĂ„â€şsÄ‚Â­ce'} />
                   </div>
                 ) : null
               })()}
@@ -1029,7 +1029,7 @@ export default function CalendarPage() {
                 <div className="grid grid-cols-2 gap-2">
                   {showDetail.status !== 'completed' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'completed')}
-                      className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'DokonÄŤeno'}</button>
+                      className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokončeno'}</button>
                   )}
                   {showDetail.status !== 'cancelled' && (
                     <button onClick={() => handleStatusChange(showDetail.id, 'cancelled')}
