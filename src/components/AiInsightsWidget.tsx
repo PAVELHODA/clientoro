@@ -87,10 +87,10 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
           </div>
           <div>
             <h3 className="font-bold text-gray-900">AI Copilot</h3>
-            <p className="text-xs text-gray-400">Vše vypadá v pořádku</p>
+            <p className="text-xs text-gray-400">Vse v poradku</p>
           </div>
         </div>
-        <p className="text-sm text-gray-500">Zatím nemám dostatek dat pro doporučení. Přidejte služby, klienty a rezervace.</p>
+        <p className="text-sm text-gray-500">Zatim nemam dostatek dat pro doporuceni. Pridejte sluzby, klienty a rezervace.</p>
       </div>
     )
   }
@@ -106,7 +106,7 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
           </div>
           <div>
             <h3 className="font-bold text-gray-900">AI Copilot</h3>
-            <p className="text-xs text-gray-400">{insights.length} doporučení</p>
+            <p className="text-xs text-gray-400">{insights.length} doporuceni</p>
           </div>
         </div>
         <button
@@ -143,7 +143,7 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
                         <ul className="mt-1 space-y-0.5">
                           {parts.map((item: string, idx: number) => (
                             <li key={idx} className="text-xs text-gray-600 flex items-start gap-1.5">
-                              <span className="text-gray-400 mt-0.5">{"•"}</span>
+                              <span className="text-gray-400 mt-0.5">&bull;</span>
                               <span>{item.trim()}</span>
                             </li>
                           ))}
@@ -177,7 +177,7 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
           style={{ background: 'linear-gradient(135deg, #134a6a, #1d8898)', color: '#fde68a' }}
         >
           <Bot className="w-4 h-4" />
-          {"Zobrazit všechna doporučení (" + insights.length + ")"}
+          Zobrazit vsechna doporuceni ({insights.length})
         </Link>
       )}
     </div>
