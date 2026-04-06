@@ -50,9 +50,8 @@ export async function GET(request: NextRequest) {
 
     const { data: staffList } = await supabaseAdmin
       .from('staff')
-      .select('id, name')
+      .select('id, full_name, is_active')
       .eq('organization_id', orgId)
-      .eq('active', true)
     if (org && staffList && staffList.length > 0) {
       const workStart = org.work_start || 8
       const workEnd = org.work_end || 18
@@ -105,17 +104,17 @@ export async function GET(request: NextRequest) {
 
     const { data: allClients } = await supabaseAdmin
       .from('clients')
-      .select('id, name, email, phone, last_visit')
+      .select('id, full_name, email, phone, last_visit_at')
       .eq('organization_id', orgId)
 
     if (allClients) {
       const inactive = allClients.filter(c => {
-        if (!c.last_visit) return true
-        return new Date(c.last_visit) < thirtyDaysAgo
+        if (!c.last_visit_at) return true
+        return new Date(c.last_visit_at) < thirtyDaysAgo
       })
 
       if (inactive.length > 0) {
-        const topInactive = inactive.slice(0, 5).map(c => c.name).join(', ')
+        const topInactive = inactive.slice(0, 5).map(c => c.full_name).join(', ')
         insights.push({
           id: 'reactivation',
           type: 'reactivation',
@@ -125,7 +124,7 @@ export async function GET(request: NextRequest) {
           description: `${topInactive}${inactive.length > 5 ? ` a dalších ${inactive.length - 5}` : ''} — poslední návštěva před 30+ dny.`,
           action: '/clients',
           actionLabel: 'Zobrazit klienty',
-          data: { count: inactive.length, clients: inactive.slice(0, 10).map(c => ({ id: c.id, name: c.name })) },
+          data: { count: inactive.length, clients: inactive.slice(0, 10).map(c => ({ id: c.id, name: c.full_name })) },
         })
       }
     }
@@ -292,5 +291,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to generate insights' }, { status: 500 })
   }
 }
+
 
 
