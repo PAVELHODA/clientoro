@@ -15,9 +15,19 @@ export async function GET(request: NextRequest) {
     const { count: totalNotifications } = await supabaseAdmin.from('notifications').select('*', { count: 'exact', head: true })
 
     const orgsWithCounts = await Promise.all((organizations || []).map(async (org: any) => {
-      const { count: bookings_count } = await supabaseAdmin.from('bookings').select('*', { count: 'exact', head: true }).eq('organization_id', org.id)
-      const { count: clients_count } = await supabaseAdmin.from('clients').select('*', { count: 'exact', head: true }).eq('organization_id', org.id)
-      return { ...org, bookings_count, clients_count }
+      const [bookingsRes, clientsRes, staffRes, servicesRes] = await Promise.all([
+        supabaseAdmin.from('bookings').select('*', { count: 'exact', head: true }).eq('organization_id', org.id),
+        supabaseAdmin.from('clients').select('*', { count: 'exact', head: true }).eq('organization_id', org.id),
+        supabaseAdmin.from('staff').select('*', { count: 'exact', head: true }).eq('organization_id', org.id),
+        supabaseAdmin.from('services').select('*', { count: 'exact', head: true }).eq('organization_id', org.id),
+      ])
+      return {
+        ...org,
+        bookings_count: bookingsRes.count || 0,
+        clients_count: clientsRes.count || 0,
+        staff_count: staffRes.count || 0,
+        services_count: servicesRes.count || 0,
+      }
     }))
 
     return NextResponse.json({
