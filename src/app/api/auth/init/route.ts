@@ -1,4 +1,4 @@
-﻿// PATH: src/app/api/auth/init/route.ts
+// PATH: src/app/api/auth/init/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'

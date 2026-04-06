@@ -1,4 +1,4 @@
-// PATH: src/app/(dashboard)/calendar/page.tsx
+﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -100,14 +100,7 @@ export default function CalendarPage() {
   const workStart = organization?.work_start || 6
   const workEnd = organization?.work_end || 22
 
-  // Force re-render red line every minute
-  const [, setTick] = useState(0)
-  useEffect(() => {
-    const interval = setInterval(() => setTick(t => t + 1), 60000)
-    return () => clearInterval(interval)
-  }, [])
-
-    // Auto-scroll to current time (red line)
+  // Auto-scroll to current time (red line)
   useEffect(() => {
     setTimeout(() => {
       if (!calendarRef.current) return
@@ -177,33 +170,33 @@ export default function CalendarPage() {
     client: lang === 'en' ? 'Client' : 'Klient',
     service: t('cal_service'),
     specialist: lang === 'en' ? 'Specialist' : 'Specialista',
-    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jmč‚Â©no klienta *',
+    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'Jméno klienta *',
     phone: lang === 'en' ? 'Phone *' : 'Telefon *',
     anyone: lang === 'en' ? 'Anyone available' : lang === 'sk' ? 'Ktokolvek volny' : 'Kdokoliv volny',
     select: lang === 'en' ? 'Select...' : 'Vyberte...',
-    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvoričąč„ rezervč‚Ë‡ciu' : 'Vytvořit rezervaci',
-    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervč‚Ë‡cie' : 'Detail rezervace',
-    time: lang === 'en' ? 'Time' : 'Ă„Ĺšas',
+    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvoriť rezerváciu' : 'Vytvořit rezervaci',
+    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervácie' : 'Detail rezervace',
+    time: lang === 'en' ? 'Time' : 'Čas',
     price: t('cal_price'),
     status: lang === 'en' ? 'Status' : 'Stav',
     close: lang === 'en' ? 'Close' : 'Zavrit',
-    unknown: lang === 'en' ? 'Unknown' : 'Neznč‚Ë‡mč‚Ëť',
-    rez: lang === 'en' ? 'bookings' : 'rezervací',
+    unknown: lang === 'en' ? 'Unknown' : 'Neznámý',
+    rez: lang === 'en' ? 'book.' : 'rez.',
     at: lang === 'en' ? 'at' : 'v',
-    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervč‚Ë‡cie v tomto termč‚Â­ne' : 'Rezervace v tomto termč‚Â­nu',
-    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'čąËťiadne rezervč‚Ë‡cie' : 'čąËťč‚Ë‡dnč‚Â© rezervace',
+    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervácie v tomto termíne' : 'Rezervace v tomto termínu',
+    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Žiadne rezervácie' : 'Žádné rezervace',
     working: lang === 'en' ? 'Working' : lang === 'sk' ? 'Pracuju' : 'Pracuji',
     backfillBanner: lang === 'en' ? 'Backfill mode - you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis - moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis - moznost pridat rezervace do minulosti (max 90 dni)',
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
-    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dč‚Â´vod spč‚Â¤tnč‚Â©ho zč‚Ë‡pisu *' : 'DčąĹ»vod zpĂ„â€ştnč‚Â©ho zč‚Ë‡pisu *',
+    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'Dôvod spätného zápisu *' : 'Důvod zpětného zápisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
-    backfillLabel: lang === 'en' ? 'Backfill' : 'ZpĂ„â€ştnč‚Ëť zč‚Ë‡pis',
-    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvč‚Ĺź slučąčľbu pre rezervč‚Ë‡cie' : 'Přidejte prvnč‚Â­ slučąčľbu pro rezervace',
+    backfillLabel: lang === 'en' ? 'Backfill' : 'Zpětný zápis',
+    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvú službu pre rezervácie' : 'Přidejte první službu pro rezervace',
     emptyStaff: lang === 'en' ? 'Add team members to see staff columns' : lang === 'sk' ? 'Pridajte clenov timu' : 'Pridejte cleny tymu',
     conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
 
-  const toDateStr = (d: Date) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`
+  const toDateStr = (d: Date) => d.toISOString().split('T')[0]
   const todayStr = toDateStr(new Date())
   const dateStr = toDateStr(currentDate)
   const maxBackfillDate = toDateStr(new Date(Date.now() - 90 * 24 * 60 * 60 * 1000))
@@ -379,9 +372,8 @@ export default function CalendarPage() {
     const minutes = now.getMinutes()
     if (hours < workStart || hours >= workEnd) return null
     const totalMinutes = (hours - workStart) * 60 + minutes
-    const slotsFromStart = totalMinutes / 15
-    const remPerSlot = 2.5
-    return slotsFromStart * remPerSlot
+    const totalWorkMinutes = (workEnd - workStart) * 60
+    return (totalMinutes / totalWorkMinutes) * 100
   }
 
   const getAvailableStaff = () => {
@@ -451,9 +443,9 @@ export default function CalendarPage() {
 
   const statusLabel = (status: string) => {
     const m: Record<string, Record<string, string>> = {
-      confirmed: { cs: 'Potvrzeno', sk: 'Potvrdenč‚Ë‡', en: 'Confirmed' },
-      completed: { cs: 'Dokončeno', sk: 'Dokončenč‚Ë‡', en: 'Completed' },
-      cancelled: { cs: 'Zrušeno', sk: 'Zrušenč‚Ë‡', en: 'Cancelled' },
+      confirmed: { cs: 'Potvrzeno', sk: 'Potvrdená', en: 'Confirmed' },
+      completed: { cs: 'Dokončeno', sk: 'Dokončená', en: 'Completed' },
+      cancelled: { cs: 'Zrušeno', sk: 'Zrušená', en: 'Cancelled' },
       no_show: { cs: 'Nedorazil/a (no-show)', sk: 'Nedostavil/a sa', en: 'No-show' },
     }
     return m[status]?.[lang] || status
@@ -577,7 +569,7 @@ export default function CalendarPage() {
       {viewMode === 'day' && !isTeam && (
         <div ref={calendarRef} className="bg-white rounded-2xl border-2 border-gray-300 overflow-auto shadow-sm relative" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
-            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}rem` }}>
+            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}%` }}>
               <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
               <div className="flex-1 h-0.5 bg-red-500" />
             </div>
@@ -634,7 +626,7 @@ export default function CalendarPage() {
       {viewMode === 'day' && isTeam && (
         <div ref={calendarRef} className="bg-white rounded-2xl border-2 border-gray-300 overflow-auto shadow-sm relative" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
-            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}rem` }}>
+            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `calc(3rem + ${getCurrentTimePosition()}% * 0.85)` }}>
               <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
               <div className="flex-1 h-0.5 bg-red-500" />
             </div>
@@ -876,13 +868,13 @@ export default function CalendarPage() {
                   {qbService && getAvailableStaff().length === 0 && (
                     <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'čąËťiadny zamestnanec pre tč‚Ĺźto slučąčľbu' : 'čąËťč‚Ë‡dnč‚Ëť zamĂ„â€şstnanec pro tuto slučąčľbu'}
+                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'Žiadny zamestnanec pre túto službu' : 'Žádný zaměstnanec pro tuto službu'}
                     </p>
                   )}
                   {qbService && selectedSlot && getAvailableStaff().length > 0 && getAvailableStaff().every(s => getBookingsForSlot(selectedSlot.date, selectedSlot.time, s.id).length > 0) && (
                     <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Všetci zamestnanci sč‚Ĺź v tomto čase obsadenč‚Â­' : 'Všichni zamĂ„â€şstnanci jsou v tomto čase obsazeni'}
+                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'Všetci zamestnanci sú v tomto čase obsadení' : 'Všichni zaměstnanci jsou v tomto čase obsazeni'}
                     </p>
                   )}
                 </div>
@@ -899,8 +891,8 @@ export default function CalendarPage() {
                     const digits = qbPhone.replace(/\D/g, '').replace(/^420|^421/, '')
                     setQbPhone(e.target.value + ' ' + digits)
                   }} className="w-[110px] px-2 py-2.5 border border-gray-200 rounded-xl text-sm font-medium bg-gray-50">
-                    <option value="+420">č‘Ĺşâ€ˇÂ¨č‘Ĺşâ€ˇĹĽ +420</option>
-                    <option value="+421">č‘Ĺşâ€ˇÂ¸č‘Ĺşâ€ˇÂ° +421</option>
+                    <option value="+420">🇨🇿 +420</option>
+                    <option value="+421">🇸🇰 +421</option>
                   </select>
                   <input type="tel" id="qb-phone" name="qb-phone"
                     value={qbPhone.replace(/^\+42[01]\s?/, '')}
@@ -920,7 +912,7 @@ export default function CalendarPage() {
                     <label className="block text-sm font-medium text-amber-700 mb-1">{l.backfillNote}</label>
                     <input type="text" id="qb-note" name="qb-note" value={qbNote} onChange={e => setQbNote(e.target.value)}
                       className="w-full px-3 py-2.5 border-2 border-amber-300 rounded-xl text-sm bg-amber-50"
-                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'např. Klient nastoupil v pčąĹ»lce mĂ„â€şsč‚Â­ce'} />
+                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'např. Klient nastoupil v půlce měsíce'} />
                   </div>
                 ) : null
               })()}
@@ -971,7 +963,7 @@ export default function CalendarPage() {
                         {b.price ? ` | ${b.price} ${currency}` : ''}
                       </p>
                       {isTeam && b.staff && <span className="text-xs text-violet-600 bg-violet-50 px-1.5 py-0.5 rounded">{b.staff.full_name}</span>}
-                      {b.is_backfill && <span className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Ă˘ĹąÂ± {l.backfillLabel}</span>}
+                      {b.is_backfill && <span className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">⏱ {l.backfillLabel}</span>}
                       {hasConflict(b) && <span className="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded">{l.conflict}</span>}
                     </div>
                   </button>
@@ -1018,7 +1010,7 @@ export default function CalendarPage() {
                 {showDetail.price && <div className="flex justify-between"><span className="text-gray-500">{l.price}</span><span className="font-medium">{showDetail.price} {currency}</span></div>}
                 <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium px-2 py-0.5 rounded-full text-xs ${statusColor(showDetail.status)}`}>{statusLabel(showDetail.status)}</span></div>
                 {showDetail.is_backfill && (
-                  <div className="flex justify-between"><span className="text-gray-500">{l.backfillLabel}</span><span className="font-medium text-amber-600 px-2 py-0.5 bg-amber-50 rounded-full text-xs">Ă˘ĹąÂ±</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">{l.backfillLabel}</span><span className="font-medium text-amber-600 px-2 py-0.5 bg-amber-50 rounded-full text-xs">⏱</span></div>
                 )}
                 {hasConflict(showDetail) && (
                   <div className="flex justify-between"><span className="text-gray-500">{l.conflict}</span><span className="font-medium text-red-600 px-2 py-0.5 bg-red-50 rounded-full text-xs">{l.conflict}</span></div>

@@ -7,64 +7,64 @@ import { useToast } from '@/components/Toast'
 const PLANS = [
   {
     slug: 'osvc',
-    name: 'OSVčŚ',
+    name: 'OSVÄŚ',
     desc: 'Pro podnikatele (1 osoba)',
     price: 49,
     priceAI: 99,
     popular: false,
     features: [
-      'Kalendář + booking stránka',
-      'Rezervace (max 50/měs)',
+      'KalendĂˇĹ™ + booking strĂˇnka',
+      'Rezervace (max 50/mÄ›s)',
       'Klienti CRM (max 100)',
       'Email notifikace',
     ],
-    limits: '50 rezervací/měs Â· 100 klientĹŻ Â· 1 osoba',
+    limits: '50 rezervacĂ­/mÄ›s Â· 100 klientĹŻ Â· 1 osoba',
   },
   {
     slug: 'firma',
     name: 'FIRMA',
-    desc: 'Majitel + max 4 zaměstnanci',
+    desc: 'Majitel + max 4 zamÄ›stnanci',
     price: 299,
     priceAI: 499,
     popular: true,
     features: [
-      'Vše z OSVčŚ (neomezeně)',
-      'Správa týmu + staff kalendář',
+      'VĹˇe z OSVÄŚ (neomezenÄ›)',
+      'SprĂˇva tĂ˝mu + staff kalendĂˇĹ™',
       'Google Calendar sync',
-      'Reporty per zaměstnanec',
+      'Reporty per zamÄ›stnanec',
     ],
-    limits: 'Neomezené rezervace Â· Neomezení klienti Â· 5 osob',
+    limits: 'NeomezenĂ© rezervace Â· NeomezenĂ­ klienti Â· 5 osob',
   },
   {
     slug: 'solo_inspire',
     name: 'SOLO INSPIRE',
-    desc: 'OSVčŚ + AI a nástroje pro rĹŻst',
+    desc: 'OSVÄŚ + AI a nĂˇstroje pro rĹŻst',
     price: 499,
     priceAI: 799,
     popular: false,
     features: [
-      'Vše z OSVčŚ (neomezeně)',
+      'VĹˇe z OSVÄŚ (neomezenÄ›)',
       'AI statistiky + insighty',
-      'AI detekce mrtvých hodin',
+      'AI detekce mrtvĂ˝ch hodin',
       'Growth reporty',
-      'Kampaně (5/měs)',
+      'KampanÄ› (5/mÄ›s)',
     ],
-    limits: 'Neomezené Â· 1 osoba Â· 5 kampaní/měs',
+    limits: 'NeomezenĂ© Â· 1 osoba Â· 5 kampanĂ­/mÄ›s',
   },
   {
     slug: 'pro_inspire',
     name: 'PRO INSPIRE',
-    desc: 'Majitel + max 24 zaměstnancĹŻ',
+    desc: 'Majitel + max 24 zamÄ›stnancĹŻ',
     price: 1299,
     priceAI: 1999,
     popular: false,
     features: [
-      'Vše z Firmy + Solo Inspire',
-      'AI Copilot (pokročilý)',
-      'Neomezené kampaně',
+      'VĹˇe z Firmy + Solo Inspire',
+      'AI Copilot (pokroÄŤilĂ˝)',
+      'NeomezenĂ© kampanÄ›',
       'Reporty per staff',
     ],
-    limits: 'Neomezené Â· 25 osob Â· Neomezené kampaně',
+    limits: 'NeomezenĂ© Â· 25 osob Â· NeomezenĂ© kampanÄ›',
   },
 ]
 
@@ -107,7 +107,7 @@ export default function SubscriptionSettings() {
         setWithAI(data.plan_with_ai || false)
       }
     } catch {
-      toast.error('Nepodařilo se načíst informace o předplatném')
+      toast.error('NepodaĹ™ilo se naÄŤĂ­st informace o pĹ™edplatnĂ©m')
     } finally {
       setLoading(false)
     }
@@ -132,10 +132,10 @@ export default function SubscriptionSettings() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        toast.error(data.error || 'Chyba při vytváření platby')
+        toast.error(data.error || 'Chyba pĹ™i vytvĂˇĹ™enĂ­ platby')
       }
     } catch {
-      toast.error('Chyba při vytváření platby')
+      toast.error('Chyba pĹ™i vytvĂˇĹ™enĂ­ platby')
     } finally {
       setCheckoutLoading(null)
     }
@@ -149,10 +149,10 @@ export default function SubscriptionSettings() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        toast.error('Nejprve je potřeba aktivovat předplatné')
+        toast.error('Nejprve je potĹ™eba aktivovat pĹ™edplatnĂ©')
       }
     } catch {
-      toast.error('Chyba při otevírání portálu')
+      toast.error('Chyba pĹ™i otevĂ­rĂˇnĂ­ portĂˇlu')
     } finally {
       setPortalLoading(false)
     }
@@ -182,10 +182,10 @@ export default function SubscriptionSettings() {
           <Clock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-blue-900">
-              Zkušební období â€” zbývá {trialDays} {trialDays === 1 ? 'den' : trialDays < 5 ? 'dny' : 'dní'}
+              ZkuĹˇebnĂ­ obdobĂ­ â€” zbĂ˝vĂˇ {trialDays} {trialDays === 1 ? 'den' : trialDays < 5 ? 'dny' : 'dnĂ­'}
             </p>
             <p className="text-xs text-blue-700 mt-0.5">
-              Máte plný přístup ke všem funkcím. Po skončení trialu vyberte plán.
+              MĂˇte plnĂ˝ pĹ™Ă­stup ke vĹˇem funkcĂ­m. Po skonÄŤenĂ­ trialu vyberte plĂˇn.
             </p>
           </div>
         </div>
@@ -196,11 +196,11 @@ export default function SubscriptionSettings() {
           <Check className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-emerald-900">
-              Aktivní předplatné â€” {PLANS.find(p => p.slug === currentPlan)?.name}{info?.plan_with_ai ? ' + AI' : ''}
+              AktivnĂ­ pĹ™edplatnĂ© â€” {PLANS.find(p => p.slug === currentPlan)?.name}{info?.plan_with_ai ? ' + AI' : ''}
             </p>
             {info?.current_period_end && (
               <p className="text-xs text-emerald-700 mt-0.5">
-                Další platba: {new Date(info.current_period_end).toLocaleDateString('cs-CZ')}
+                DalĹˇĂ­ platba: {new Date(info.current_period_end).toLocaleDateString('cs-CZ')}
               </p>
             )}
           </div>
@@ -218,8 +218,8 @@ export default function SubscriptionSettings() {
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-sm font-semibold text-amber-900">Platba se nezdařila</p>
-            <p className="text-xs text-amber-700 mt-0.5">Aktualizujte platební údaje, jinak bude účet pozastaven.</p>
+            <p className="text-sm font-semibold text-amber-900">Platba se nezdaĹ™ila</p>
+            <p className="text-xs text-amber-700 mt-0.5">Aktualizujte platebnĂ­ Ăşdaje, jinak bude ĂşÄŤet pozastaven.</p>
           </div>
           <button onClick={handlePortal} disabled={portalLoading}
             className="ml-auto text-xs text-amber-700 hover:text-amber-900 bg-white px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1">
@@ -233,9 +233,9 @@ export default function SubscriptionSettings() {
           <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-red-900">
-              {isCanceled ? 'Předplatné bylo zrušeno' : 'Zkušební období vypršelo'}
+              {isCanceled ? 'PĹ™edplatnĂ© bylo zruĹˇeno' : 'ZkuĹˇebnĂ­ obdobĂ­ vyprĹˇelo'}
             </p>
-            <p className="text-xs text-red-700 mt-0.5">Vyberte plán pro pokračování.</p>
+            <p className="text-xs text-red-700 mt-0.5">Vyberte plĂˇn pro pokraÄŤovĂˇnĂ­.</p>
           </div>
         </div>
       )}
@@ -246,7 +246,7 @@ export default function SubscriptionSettings() {
           <Sparkles className="w-5 h-5 text-purple-600" />
           <div>
             <p className="text-sm font-semibold text-purple-900">AI funkce</p>
-            <p className="text-xs text-purple-700">Insighty, detekce mrtvých hodin, AI copilot</p>
+            <p className="text-xs text-purple-700">Insighty, detekce mrtvĂ˝ch hodin, AI copilot</p>
           </div>
         </div>
         <button
@@ -276,13 +276,13 @@ export default function SubscriptionSettings() {
             >
               {plan.popular && (
                 <div className="absolute -top-2.5 left-4 bg-blue-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-                  Nejoblíbenější
+                  NejoblĂ­benÄ›jĹˇĂ­
                 </div>
               )}
 
               {isCurrent && (
                 <div className="absolute -top-2.5 right-4 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <Check className="w-3 h-3" /> Aktivní
+                  <Check className="w-3 h-3" /> AktivnĂ­
                 </div>
               )}
 
@@ -293,7 +293,7 @@ export default function SubscriptionSettings() {
 
               <div className="flex items-baseline gap-1 mb-3">
                 <span className="text-3xl font-bold text-gray-900">{price}</span>
-                <span className="text-sm text-gray-500">Kč/měs</span>
+                <span className="text-sm text-gray-500">KÄŤ/mÄ›s</span>
                 {withAI && (
                   <span className="ml-2 text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full font-medium">
                     + AI
@@ -318,7 +318,7 @@ export default function SubscriptionSettings() {
                   disabled={portalLoading}
                   className="w-full py-2.5 text-sm font-medium text-emerald-700 bg-emerald-100 rounded-lg hover:bg-emerald-200 transition-colors flex items-center justify-center gap-1"
                 >
-                  {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-3.5 h-3.5" /> Spravovat předplatné</>}
+                  {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-3.5 h-3.5" /> Spravovat pĹ™edplatnĂ©</>}
                 </button>
               ) : (
                 <button
@@ -335,7 +335,7 @@ export default function SubscriptionSettings() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      {isTrial || isExpired || isCanceled ? 'Vybrat plán' : 'Upgradovat'}
+                      {isTrial || isExpired || isCanceled ? 'Vybrat plĂˇn' : 'Upgradovat'}
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}
@@ -348,8 +348,8 @@ export default function SubscriptionSettings() {
 
       {/* Footer info */}
       <div className="text-center text-xs text-gray-400 space-y-1">
-        <p>Všechny ceny jsou bez DPH. Platba kartou přes zabezpečený Stripe checkout.</p>
-        <p>Předplatné mĹŻĹľete kdykoliv zrušit. Ĺ˝ádné skryté poplatky.</p>
+        <p>VĹˇechny ceny jsou bez DPH. Platba kartou pĹ™es zabezpeÄŤenĂ˝ Stripe checkout.</p>
+        <p>PĹ™edplatnĂ© mĹŻĹľete kdykoliv zruĹˇit. Ĺ˝ĂˇdnĂ© skrytĂ© poplatky.</p>
       </div>
     </div>
   )

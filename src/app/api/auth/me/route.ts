@@ -1,4 +1,4 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
 
 // PATH: src/app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from 'next/server'

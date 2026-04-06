@@ -1,4 +1,4 @@
-﻿// PATH: src/components/ClientoroLogo.tsx
+// PATH: src/components/ClientoroLogo.tsx
 'use client'
 
 import { Waves } from 'lucide-react'

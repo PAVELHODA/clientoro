@@ -1,4 +1,4 @@
-﻿// PATH: src/lib/api/requireAuth.ts
+// PATH: src/lib/api/requireAuth.ts
 import { NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from './supabaseAdmin'

@@ -1,4 +1,4 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
 
 // PATH: src/app/api/clients/[id]/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
