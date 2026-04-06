@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
           id: 'empty_slots_week',
           type: 'empty_slots',
           priority: emptyDays.length >= 3 ? 'high' : 'medium',
-          icon: '📅',
+          icon: 'calendar',
           title: `${emptyDays.length} ${emptyDays.length === 1 ? 'den' : emptyDays.length < 5 ? 'dny' : 'dní'} s volnými termíny`,
           description: `${worst.dayName.charAt(0).toUpperCase() + worst.dayName.slice(1)} (${worst.date.split('-').reverse().join('.')}) má ${worst.freeHours}h volných z ${totalSlots}h.`,
           action: '/calendar',
@@ -127,7 +127,7 @@ export async function GET(request: NextRequest) {
           id: 'reactivation',
           type: 'reactivation',
           priority: inactive.length >= 5 ? 'high' : 'medium',
-          icon: '😴',
+          icon: 'users',
           title: `${inactive.length} ${inactive.length === 1 ? 'klient' : inactive.length < 5 ? 'klienti' : 'klientů'} se dlouho neobjednal/a`,
           description: `${topInactive}${inactive.length > 5 ? ` a dalších ${inactive.length - 5}` : ''} — poslední návštěva před 30+ dny.`,
           action: '/clients',
@@ -180,7 +180,7 @@ export async function GET(request: NextRequest) {
         id: 'revenue_trend',
         type: 'revenue_trend',
         priority: 'low',
-        icon: '📈',
+        icon: 'trending-up',
         title: `Tržby tento týden: ${thisWeekRevenue.toLocaleString('cs')} Kč`,
         description: 'Minulý týden nemáme data pro srovnání.',
         data: { thisWeek: thisWeekRevenue, lastWeek: 0 },
@@ -212,7 +212,7 @@ export async function GET(request: NextRequest) {
           id: 'top_service',
           type: 'top_service',
           priority: 'low',
-          icon: '⭐',
+          icon: 'star',
           title: `Nejžádanější služba: ${top.name}`,
           description: `${top.count}x za posledních 30 dní, tržby ${top.revenue.toLocaleString('cs')} Kč.`,
           action: '/services',
@@ -241,7 +241,7 @@ export async function GET(request: NextRequest) {
           id: 'weak_day',
           type: 'weak_day',
           priority: 'medium',
-          icon: '💡',
+          icon: 'lightbulb',
           title: `Nejslabší den: ${dayNames[Number(weakest[0])]}`,
           description: `Pouze ${weakest[1]} rezervací za posledních 30 dní. Zvažte promo akci nebo slevu.`,
           data: { day: Number(weakest[0]), dayName: dayNames[Number(weakest[0])], bookings: Number(weakest[1]) },
@@ -270,7 +270,7 @@ export async function GET(request: NextRequest) {
           id: 'no_show_risk',
           type: 'no_show_risk',
           priority: 'high',
-          icon: '⚠️',
+          icon: 'alert',
           title: `No-show míra: ${Math.round(noShowRate)}%`,
           description: `${noShows.length} z ${totalRecent.length} rezervací za 30 dní. Zvažte zálohy nebo SMS připomínky.`,
           data: { rate: Math.round(noShowRate), noShows: noShows.length, total: totalRecent.length },
@@ -291,3 +291,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to generate insights' }, { status: 500 })
   }
 }
+
