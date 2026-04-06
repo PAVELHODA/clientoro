@@ -31,6 +31,16 @@ const PRIORITY_COLORS: Record<string, { bg: string; border: string; dot: string 
   medium: { bg: 'bg-amber-50', border: 'border-amber-200', dot: 'bg-amber-500' },
   low: { bg: 'bg-blue-50', border: 'border-blue-200', dot: 'bg-blue-500' },
 }
+function parseListDescription(description: string): string[] | null {
+  if (!description || !description.startsWith('[')) return null
+  try {
+    const parsed = JSON.parse(description)
+    if (Array.isArray(parsed)) return parsed
+    return null
+  } catch {
+    return null
+  }
+}
 
 export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
   const { organization } = useAuth()
@@ -136,25 +146,24 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
                     <Icon className="w-4 h-4 text-gray-600 flex-shrink-0" />
                     <h4 className="text-sm font-semibold text-gray-900 truncate">{insight.title}</h4>
                   </div>
-                                    {insight.type === 'empty_slots' ? (
-                    <ul className="mt-1 space-y-0.5">
-                      {(() => {
-                        try {
-                          const items = JSON.parse(insight.description)
-                          return (items as string[]).map((item: string, idx: number) => (
+                                   
+                                    {(() => {
+                    const listItems = insight.type === 'empty_slots' ? parseListDescription(insight.description) : null
+                    if (listItems) {
+                      return (
+                        <ul className="mt-1 space-y-0.5">
+                          {listItems.map((item, idx) => (
                             <li key={idx} className="text-xs text-gray-600 flex items-start gap-1.5">
                               <span className="text-gray-400 mt-0.5">•</span>
                               <span>{item}</span>
                             </li>
-                          ))
-                        } catch {
-                          return <li className="text-xs text-gray-600">{insight.description}</li>
-                        }
-                      })()}
-                    </ul>
-                  ) : (
-                    <p className="text-xs text-gray-600 leading-relaxed">{insight.description}</p>
-                  )}
+                          ))}
+                        </ul>
+                      )
+                    }
+                    return <p className="text-xs text-gray-600 leading-relaxed">{insight.description}</p>
+                  })()}
+
 
                   {insight.action && (
                     <Link
