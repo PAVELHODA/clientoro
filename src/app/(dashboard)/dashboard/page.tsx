@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/AuthProvider'
+import { AiInsightsWidget } from '@/components/AiInsightsWidget'
 import { useLang } from '@/lib/LangContext'
 import {
   Calendar, TrendingUp, TrendingDown, Users, DollarSign,
@@ -420,4 +421,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
 
