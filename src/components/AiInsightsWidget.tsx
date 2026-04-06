@@ -168,3 +168,4 @@ export function AiInsightsWidget({ maxItems = 3 }: { maxItems?: number }) {
   )
 }
 
+
