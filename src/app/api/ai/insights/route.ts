@@ -29,7 +29,27 @@ export async function GET(request: NextRequest) {
   const insights: Insight[] = []
 
   try {
-    // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
+    // Fetch org settings
+    const { data: org } = await supabaseAdmin
+      .from('organizations')
+      .select('work_start, work_end, work_days')
+      .eq('id', orgId)
+      .single()
+
+    // Fetch active staff
+    const { data: staffList } = await supabaseAdmin
+      .from('staff')
+      .select('id, full_name, active')
+      .eq('organization_id', orgId)
+      .eq('active', true)
+
+    // Fetch all clients
+    const { data: allClients } = await supabaseAdmin
+      .from('clients')
+      .select('id, full_name, email, phone, last_visit_at')
+      .eq('organization_id', orgId)
+
+    // Fetch upcoming bookings (7 days)
     const weekFromNow = new Date(now)
     weekFromNow.setDate(weekFromNow.getDate() + 7)
     const weekEnd = weekFromNow.toISOString().split('T')[0]
@@ -42,16 +62,10 @@ export async function GET(request: NextRequest) {
       .lte('start_time', weekEnd)
       .in('status', ['confirmed', 'pending'])
 
-    const { data: org } = await supabaseAdmin
-      .from('organizations')
-      .select('work_start, work_end, work_days')
-      .eq('id', orgId)
-      .single()
+    console.log('[AI Debug] orgId:', orgId)
+    console.log('[AI Debug] staff:', staffList?.length, 'clients:', allClients?.length, 'bookings:', upcomingBookings?.length)
 
-    const { data: staffList } = await supabaseAdmin
-      .from('staff')
-      .select('id, full_name, is_active')
-      .eq('organization_id', orgId)
+    // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
     if (org && staffList && staffList.length > 0) {
       const workStart = org.work_start || 8
       const workEnd = org.work_end || 18
@@ -98,16 +112,10 @@ export async function GET(request: NextRequest) {
     }
 
     // === 2. REAKTIVACE KLIENTŮ (30+ dní neaktivní) ===
-    const thirtyDaysAgo = new Date(now)
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-    const thirtyDaysStr = thirtyDaysAgo.toISOString()
+    if (allClients && allClients.length > 0) {
+      const thirtyDaysAgo = new Date(now)
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-    const { data: allClients } = await supabaseAdmin
-      .from('clients')
-      .select('id, full_name, email, phone, last_visit_at')
-      .eq('organization_id', orgId)
-
-    if (allClients) {
       const inactive = allClients.filter(c => {
         if (!c.last_visit_at) return true
         return new Date(c.last_visit_at) < thirtyDaysAgo
@@ -129,20 +137,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-        // DEBUG LOG
-    console.log('[AI Debug] orgId:', orgId)
-    console.log('[AI Debug] org:', JSON.stringify({ work_start: org?.work_start, work_end: org?.work_end }))
-    console.log('[AI Debug] staff:', staffList?.length)
-    console.log('[AI Debug] allClients:', allClients?.length)
-    console.log('[AI Debug] upcomingBookings:', upcomingBookings?.length)
-    console.log('[AI Debug] insights so far:', insights.length)
-
     // === 3. TREND TRŽEB (tento vs minulý týden) ===
-    const lastWeekStart = new Date(now)
-    lastWeekStart.setDate(lastWeekStart.getDate() - 14)
-    const lastWeekEnd = new Date(now)
-    lastWeekEnd.setDate(lastWeekEnd.getDate() - 7)
-
     const { data: thisWeekBookings } = await supabaseAdmin
       .from('bookings')
       .select('price')
@@ -150,6 +145,11 @@ export async function GET(request: NextRequest) {
       .gte('start_time', new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString())
       .lte('start_time', now.toISOString())
       .eq('status', 'completed')
+
+    const lastWeekStart = new Date(now)
+    lastWeekStart.setDate(lastWeekStart.getDate() - 14)
+    const lastWeekEnd = new Date(now)
+    lastWeekEnd.setDate(lastWeekEnd.getDate() - 7)
 
     const { data: lastWeekBookings } = await supabaseAdmin
       .from('bookings')
@@ -171,8 +171,8 @@ export async function GET(request: NextRequest) {
         icon: change >= 0 ? '📈' : '📉',
         title: `Tržby ${change >= 0 ? '+' : ''}${Math.round(change)}% oproti minulému týdnu`,
         description: `Tento týden: ${thisWeekRevenue.toLocaleString('cs')} Kč vs minulý: ${lastWeekRevenue.toLocaleString('cs')} Kč.`,
-        action: '/stats',
-        actionLabel: 'Zobrazit statistiky',
+        action: '/reports',
+        actionLabel: 'Zobrazit reporty',
         data: { thisWeek: thisWeekRevenue, lastWeek: lastWeekRevenue, change: Math.round(change) },
       })
     } else if (thisWeekRevenue > 0) {
@@ -187,10 +187,10 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // === 4. NEJLEPŠÍ SLUŽBA ===
+    // === 4. NEJLEPŠÍ SLUŽBA (30 dní) ===
     const { data: recentBookings } = await supabaseAdmin
       .from('bookings')
-      .select('service_id, services(name), price')
+      .select('service_id, start_time, price, services(name)')
       .eq('organization_id', orgId)
       .gte('start_time', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
       .in('status', ['confirmed', 'completed'])
@@ -220,14 +220,12 @@ export async function GET(request: NextRequest) {
           data: { serviceName: top.name, count: top.count, revenue: top.revenue },
         })
       }
-    }
 
-    // === 5. NEJSLABŠÍ DEN ===
-    if (recentBookings && recentBookings.length >= 5) {
+      // === 5. NEJSLABŠÍ DEN ===
       const dayStats: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
       for (const b of recentBookings) {
-        if ((b as any).start_time) {
-          const day = new Date((b as any).start_time).getDay()
+        if (b.start_time) {
+          const day = new Date(b.start_time).getDay()
           dayStats[day]++
         }
       }
@@ -238,7 +236,7 @@ export async function GET(request: NextRequest) {
       })
 
       if (workDayEntries.length > 0) {
-        const weakest = workDayEntries.sort((a, b) => a[1] - b[1])[0]
+        const weakest = workDayEntries.sort((a, b) => Number(a[1]) - Number(b[1]))[0]
         insights.push({
           id: 'weak_day',
           type: 'weak_day',
@@ -246,7 +244,7 @@ export async function GET(request: NextRequest) {
           icon: '💡',
           title: `Nejslabší den: ${dayNames[Number(weakest[0])]}`,
           description: `Pouze ${weakest[1]} rezervací za posledních 30 dní. Zvažte promo akci nebo slevu.`,
-          data: { day: Number(weakest[0]), dayName: dayNames[Number(weakest[0])], bookings: weakest[1] },
+          data: { day: Number(weakest[0]), dayName: dayNames[Number(weakest[0])], bookings: Number(weakest[1]) },
         })
       }
     }
@@ -281,8 +279,10 @@ export async function GET(request: NextRequest) {
     }
 
     // === SORT: high → medium → low ===
-    const priorityOrder = { high: 0, medium: 1, low: 2 }
+    const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 }
     insights.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+
+    console.log('[AI Insights] Generated', insights.length, 'insights for org', orgId)
 
     return NextResponse.json({ insights, generatedAt: now.toISOString() })
 
@@ -291,6 +291,3 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to generate insights' }, { status: 500 })
   }
 }
-
-
-
