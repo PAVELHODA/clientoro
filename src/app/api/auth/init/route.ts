@@ -1,4 +1,4 @@
-// PATH: src/app/api/auth/init/route.ts
+﻿// PATH: src/app/api/auth/init/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
@@ -12,9 +12,12 @@ export async function GET(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
-          get(name: string) { return request.cookies.get(name)?.value },
-          set() {},
-          remove() {},
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll(cookiesToSet) {
+            // API routes can't set cookies on response easily, but we need getAll for reading
+          },
         },
       }
     )
@@ -62,17 +65,14 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // KLÍČOVÉ: Přečti cookie pro aktivní org
     const activeOrgCookie = request.cookies.get('clientoro_active_org')?.value
     let activeOrgId = activeOrgCookie || availableOrgs[0]?.id || null
 
-    // Ověř přístup
     if (activeOrgId && !profile.is_superadmin) {
       const hasAccess = availableOrgs.some((o: any) => o.id === activeOrgId)
       if (!hasAccess) activeOrgId = availableOrgs[0]?.id || null
     }
 
-    // Superadmin — ověř že org existuje
     if (activeOrgId && profile.is_superadmin) {
       const exists = availableOrgs.some((o: any) => o.id === activeOrgId)
       if (!exists) activeOrgId = availableOrgs[0]?.id || null
