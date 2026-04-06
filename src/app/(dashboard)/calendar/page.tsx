@@ -177,28 +177,28 @@ export default function CalendarPage() {
     client: lang === 'en' ? 'Client' : 'Klient',
     service: t('cal_service'),
     specialist: lang === 'en' ? 'Specialist' : 'Specialista',
-    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'JmĂ©no klienta *',
+    clientName: lang === 'en' ? 'Client name *' : lang === 'sk' ? 'Meno klienta *' : 'JmÄ‚Â©no klienta *',
     phone: lang === 'en' ? 'Phone *' : 'Telefon *',
     anyone: lang === 'en' ? 'Anyone available' : lang === 'sk' ? 'Ktokolvek volny' : 'Kdokoliv volny',
     select: lang === 'en' ? 'Select...' : 'Vyberte...',
-    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'VytvoriĹĄ rezervĂˇciu' : 'VytvoĹ™it rezervaci',
-    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervĂˇcie' : 'Detail rezervace',
-    time: lang === 'en' ? 'Time' : 'ÄŚas',
+    createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'VytvoriÄąÄ„ rezervÄ‚Ë‡ciu' : 'VytvoĹ™it rezervaci',
+    bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervÄ‚Ë‡cie' : 'Detail rezervace',
+    time: lang === 'en' ? 'Time' : 'Ă„Ĺšas',
     price: t('cal_price'),
     status: lang === 'en' ? 'Status' : 'Stav',
     close: lang === 'en' ? 'Close' : 'Zavrit',
-    unknown: lang === 'en' ? 'Unknown' : 'NeznĂˇmĂ˝',
-    rez: lang === 'en' ? 'bookings' : 'rezervací',
+    unknown: lang === 'en' ? 'Unknown' : 'NeznÄ‚Ë‡mÄ‚Ëť',
+    rez: lang === 'en' ? 'bookings' : 'rezervacĂ­',
     at: lang === 'en' ? 'at' : 'v',
-    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'RezervĂˇcie v tomto termĂ­ne' : 'Rezervace v tomto termĂ­nu',
-    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Ĺ˝iadne rezervĂˇcie' : 'Ĺ˝ĂˇdnĂ© rezervace',
+    slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'RezervÄ‚Ë‡cie v tomto termÄ‚Â­ne' : 'Rezervace v tomto termÄ‚Â­nu',
+    noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'ÄąËťiadne rezervÄ‚Ë‡cie' : 'ÄąËťÄ‚Ë‡dnÄ‚Â© rezervace',
     working: lang === 'en' ? 'Working' : lang === 'sk' ? 'Pracuju' : 'Pracuji',
     backfillBanner: lang === 'en' ? 'Backfill mode - you can add bookings to past (max 90 days)' : lang === 'sk' ? 'Zpetny zapis - moznost pridat rezervacie do minulosti (max 90 dni)' : 'Zpetny zapis - moznost pridat rezervace do minulosti (max 90 dni)',
     backfillAdded: lang === 'en' ? 'added' : lang === 'sk' ? 'pridanych' : 'pridano',
-    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'DĂ´vod spĂ¤tnĂ©ho zĂˇpisu *' : 'DĹŻvod zpÄ›tnĂ©ho zĂˇpisu *',
+    backfillNote: lang === 'en' ? 'Reason for backfill *' : lang === 'sk' ? 'DÄ‚Â´vod spÄ‚Â¤tnÄ‚Â©ho zÄ‚Ë‡pisu *' : 'DÄąĹ»vod zpĂ„â€ştnÄ‚Â©ho zÄ‚Ë‡pisu *',
     freeSlotsBanner: lang === 'en' ? 'free slots! Offer them with AI' : lang === 'sk' ? 'volnych terminov! Ponuknite ich s AI' : 'volnych terminu! Nabidnete je s AI',
-    backfillLabel: lang === 'en' ? 'Backfill' : 'ZpÄ›tnĂ˝ zĂˇpis',
-    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvĂş sluĹľbu pre rezervĂˇcie' : 'PĹ™idejte prvnĂ­ sluĹľbu pro rezervace',
+    backfillLabel: lang === 'en' ? 'Backfill' : 'ZpĂ„â€ştnÄ‚Ëť zÄ‚Ë‡pis',
+    emptyServices: lang === 'en' ? 'Add your first service to start booking' : lang === 'sk' ? 'Pridajte prvÄ‚Ĺź sluÄąÄľbu pre rezervÄ‚Ë‡cie' : 'PĹ™idejte prvnÄ‚Â­ sluÄąÄľbu pro rezervace',
     emptyStaff: lang === 'en' ? 'Add team members to see staff columns' : lang === 'sk' ? 'Pridajte clenov timu' : 'Pridejte cleny tymu',
     conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
@@ -377,11 +377,11 @@ export default function CalendarPage() {
     const now = new Date()
     const hours = now.getHours()
     const minutes = now.getMinutes()
-    console.log("[RED LINE] hours:", hours, "min:", minutes, "workStart:", workStart, "workEnd:", workEnd, "position:", (hours >= workStart && hours < workEnd) ? ((hours - workStart) * 60 + minutes) / ((workEnd - workStart) * 60) * 100 : null)
     if (hours < workStart || hours >= workEnd) return null
     const totalMinutes = (hours - workStart) * 60 + minutes
-    const totalWorkMinutes = (workEnd - workStart) * 60
-    return (totalMinutes / totalWorkMinutes) * 100
+    const slotsFromStart = totalMinutes / 15
+    const remPerSlot = 2.5
+    return slotsFromStart * remPerSlot
   }
 
   const getAvailableStaff = () => {
@@ -451,9 +451,9 @@ export default function CalendarPage() {
 
   const statusLabel = (status: string) => {
     const m: Record<string, Record<string, string>> = {
-      confirmed: { cs: 'Potvrzeno', sk: 'PotvrdenĂˇ', en: 'Confirmed' },
-      completed: { cs: 'DokonÄŤeno', sk: 'DokonÄŤenĂˇ', en: 'Completed' },
-      cancelled: { cs: 'ZruĹˇeno', sk: 'ZruĹˇenĂˇ', en: 'Cancelled' },
+      confirmed: { cs: 'Potvrzeno', sk: 'PotvrdenÄ‚Ë‡', en: 'Confirmed' },
+      completed: { cs: 'DokonÄŤeno', sk: 'DokonÄŤenÄ‚Ë‡', en: 'Completed' },
+      cancelled: { cs: 'ZruĹˇeno', sk: 'ZruĹˇenÄ‚Ë‡', en: 'Cancelled' },
       no_show: { cs: 'Nedorazil/a (no-show)', sk: 'Nedostavil/a sa', en: 'No-show' },
     }
     return m[status]?.[lang] || status
@@ -577,7 +577,7 @@ export default function CalendarPage() {
       {viewMode === 'day' && !isTeam && (
         <div ref={calendarRef} className="bg-white rounded-2xl border-2 border-gray-300 overflow-auto shadow-sm relative" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
-            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}%` }}>
+            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}rem` }}>
               <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
               <div className="flex-1 h-0.5 bg-red-500" />
             </div>
@@ -634,7 +634,7 @@ export default function CalendarPage() {
       {viewMode === 'day' && isTeam && (
         <div ref={calendarRef} className="bg-white rounded-2xl border-2 border-gray-300 overflow-auto shadow-sm relative" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           {dateStr === todayStr && getCurrentTimePosition() !== null && (
-            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `calc(3rem + ${getCurrentTimePosition()}% * 0.85)` }}>
+            <div className="absolute left-20 right-0 z-10 flex items-center" style={{ top: `${getCurrentTimePosition()}rem` }}>
               <div className="w-3 h-3 bg-red-500 rounded-full -ml-1.5" />
               <div className="flex-1 h-0.5 bg-red-500" />
             </div>
@@ -876,13 +876,13 @@ export default function CalendarPage() {
                   {qbService && getAvailableStaff().length === 0 && (
                     <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'Ĺ˝iadny zamestnanec pre tĂşto sluĹľbu' : 'Ĺ˝ĂˇdnĂ˝ zamÄ›stnanec pro tuto sluĹľbu'}
+                      {lang === 'en' ? 'No staff assigned to this service' : lang === 'sk' ? 'ÄąËťiadny zamestnanec pre tÄ‚Ĺźto sluÄąÄľbu' : 'ÄąËťÄ‚Ë‡dnÄ‚Ëť zamĂ„â€şstnanec pro tuto sluÄąÄľbu'}
                     </p>
                   )}
                   {qbService && selectedSlot && getAvailableStaff().length > 0 && getAvailableStaff().every(s => getBookingsForSlot(selectedSlot.date, selectedSlot.time, s.id).length > 0) && (
                     <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'VĹˇetci zamestnanci sĂş v tomto ÄŤase obsadenĂ­' : 'VĹˇichni zamÄ›stnanci jsou v tomto ÄŤase obsazeni'}
+                      {lang === 'en' ? 'All staff busy at this time' : lang === 'sk' ? 'VĹˇetci zamestnanci sÄ‚Ĺź v tomto ÄŤase obsadenÄ‚Â­' : 'VĹˇichni zamĂ„â€şstnanci jsou v tomto ÄŤase obsazeni'}
                     </p>
                   )}
                 </div>
@@ -899,8 +899,8 @@ export default function CalendarPage() {
                     const digits = qbPhone.replace(/\D/g, '').replace(/^420|^421/, '')
                     setQbPhone(e.target.value + ' ' + digits)
                   }} className="w-[110px] px-2 py-2.5 border border-gray-200 rounded-xl text-sm font-medium bg-gray-50">
-                    <option value="+420">đź‡¨đź‡ż +420</option>
-                    <option value="+421">đź‡¸đź‡° +421</option>
+                    <option value="+420">Ä‘Ĺşâ€ˇÂ¨Ä‘Ĺşâ€ˇĹĽ +420</option>
+                    <option value="+421">Ä‘Ĺşâ€ˇÂ¸Ä‘Ĺşâ€ˇÂ° +421</option>
                   </select>
                   <input type="tel" id="qb-phone" name="qb-phone"
                     value={qbPhone.replace(/^\+42[01]\s?/, '')}
@@ -920,7 +920,7 @@ export default function CalendarPage() {
                     <label className="block text-sm font-medium text-amber-700 mb-1">{l.backfillNote}</label>
                     <input type="text" id="qb-note" name="qb-note" value={qbNote} onChange={e => setQbNote(e.target.value)}
                       className="w-full px-3 py-2.5 border-2 border-amber-300 rounded-xl text-sm bg-amber-50"
-                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'napĹ™. Klient nastoupil v pĹŻlce mÄ›sĂ­ce'} />
+                      placeholder={lang === 'en' ? 'e.g. Client joined mid-month' : 'napĹ™. Klient nastoupil v pÄąĹ»lce mĂ„â€şsÄ‚Â­ce'} />
                   </div>
                 ) : null
               })()}
@@ -971,7 +971,7 @@ export default function CalendarPage() {
                         {b.price ? ` | ${b.price} ${currency}` : ''}
                       </p>
                       {isTeam && b.staff && <span className="text-xs text-violet-600 bg-violet-50 px-1.5 py-0.5 rounded">{b.staff.full_name}</span>}
-                      {b.is_backfill && <span className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">âŹ± {l.backfillLabel}</span>}
+                      {b.is_backfill && <span className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Ă˘ĹąÂ± {l.backfillLabel}</span>}
                       {hasConflict(b) && <span className="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded">{l.conflict}</span>}
                     </div>
                   </button>
@@ -1018,7 +1018,7 @@ export default function CalendarPage() {
                 {showDetail.price && <div className="flex justify-between"><span className="text-gray-500">{l.price}</span><span className="font-medium">{showDetail.price} {currency}</span></div>}
                 <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium px-2 py-0.5 rounded-full text-xs ${statusColor(showDetail.status)}`}>{statusLabel(showDetail.status)}</span></div>
                 {showDetail.is_backfill && (
-                  <div className="flex justify-between"><span className="text-gray-500">{l.backfillLabel}</span><span className="font-medium text-amber-600 px-2 py-0.5 bg-amber-50 rounded-full text-xs">âŹ±</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">{l.backfillLabel}</span><span className="font-medium text-amber-600 px-2 py-0.5 bg-amber-50 rounded-full text-xs">Ă˘ĹąÂ±</span></div>
                 )}
                 {hasConflict(showDetail) && (
                   <div className="flex justify-between"><span className="text-gray-500">{l.conflict}</span><span className="font-medium text-red-600 px-2 py-0.5 bg-red-50 rounded-full text-xs">{l.conflict}</span></div>
