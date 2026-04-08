@@ -75,7 +75,9 @@ export async function POST(request: NextRequest) {
       await supabaseAdmin.from('notifications').insert({
         organization_id,
         type: 'new_booking',
-        title: 'Nová rezervace',
+        channel: 'system',
+        subject: 'Nová rezervace',
+        status: 'pending',
         body: `${clientName} — ${serviceName} (${date}, ${time})`,
         booking_id,
       })
@@ -133,7 +135,9 @@ export async function POST(request: NextRequest) {
       await supabaseAdmin.from('notifications').insert({
         organization_id,
         type: 'booking_cancelled',
-        title: 'Rezervace zrušena',
+        channel: 'system',
+        subject: 'Rezervace zrušena',
+        status: 'pending',
         body: `${clientName} zrušil/a ${serviceName} (${date}, ${time})`,
         booking_id,
       })
@@ -190,7 +194,9 @@ export async function POST(request: NextRequest) {
         await supabaseAdmin.from('notifications').insert({
           organization_id,
           type: 'waitlist_notified',
-          title: 'Waitlist — slot nabídnut',
+          subject: 'Waitlist — slot nabídnut',
+          channel: 'system',
+          status: 'pending',
           body: `Uvolněný slot nabídnut: ${first.customer_name || 'Klient'} (${first.customer_phone || first.customer_email || ''})`,
           booking_id,
         })
