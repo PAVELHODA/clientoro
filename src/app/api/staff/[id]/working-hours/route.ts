@@ -73,6 +73,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         weekday: wh.weekday,
         start_time: wh.start_time,
         end_time: wh.end_time,
+        break_start: wh.break_start || null,
+        break_end: wh.break_end || null,
       }))
 
     if (rows.length > 0) {

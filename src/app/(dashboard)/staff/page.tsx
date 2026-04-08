@@ -17,7 +17,7 @@ interface StaffMember {
   staff_services: { service_id: string }[]
 }
 interface Service { id: string; name: string; color: string }
-interface WorkingHour { weekday: number; start_time: string; end_time: string; enabled: boolean }
+interface WorkingHour { weekday: number; start_time: string; end_time: string; enabled: boolean; break_start: string; break_end: string }
 interface TimeOff { id: string; type: string; start_at: string; end_at: string; reason: string | null }
 
 interface FormData { full_name: string; email: string; phone: string; active: boolean; service_ids: string[] }
@@ -79,6 +79,7 @@ export default function StaffPage() {
     timeOff: t('staff_time_off'),
     dayOff: lang === 'en' ? 'Day off' : lang === 'sk' ? 'Voľno' : 'Volno',
     saveWH: lang === 'en' ? '💾 Save working hours' : lang === 'sk' ? '💾 Uložiť pracovnú dobu' : '💾 Uložit pracovní dobu',
+    breakLabel: lang === 'en' ? 'Break' : lang === 'sk' ? 'Pauza' : 'Pauza',
     whSaved: lang === 'en' ? 'Working hours saved!' : lang === 'sk' ? 'Pracovná doba uložená!' : 'Pracovní doba uložena!',
     timeOffAndAbsences: lang === 'en' ? 'Time off & absences' : lang === 'sk' ? 'Voľná a absencie' : 'Volna a absence',
     addTimeOff: lang === 'en' ? '+ Add time off' : lang === 'sk' ? '+ Pridať voľno' : '+ Přidat volno',
@@ -106,7 +107,7 @@ export default function StaffPage() {
   }
 
   const DEFAULT_HOURS: WorkingHour[] = WEEKDAYS.map((_, i) => ({
-  weekday: i + 1, start_time: '08:00', end_time: '17:00', enabled: i < 5,
+  weekday: i + 1, start_time: '08:00', end_time: '17:00', enabled: i < 5, break_start: '', break_end: '',
 }))
 
   const [staff, setStaff] = useState<StaffMember[]>([])
@@ -147,7 +148,7 @@ export default function StaffPage() {
       const merged = DEFAULT_HOURS.map(dh => {
         const existing = (data.working_hours || []).find((wh: any) => wh.weekday === dh.weekday)
         return existing
-          ? { weekday: existing.weekday, start_time: existing.start_time.substring(0, 5), end_time: existing.end_time.substring(0, 5), enabled: true }
+          ? { weekday: existing.weekday, start_time: existing.start_time.substring(0, 5), end_time: existing.end_time.substring(0, 5), enabled: true, break_start: existing.break_start ? existing.break_start.substring(0, 5) : '', break_end: existing.break_end ? existing.break_end.substring(0, 5) : '' }
           : { ...dh, enabled: false }
       })
       setWorkingHours(merged)
@@ -421,12 +422,19 @@ export default function StaffPage() {
                                   {WEEKDAYS_SHORT[wh.weekday - 1]}
                                 </span>
                                 {wh.enabled ? (
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex items-center gap-2 flex-wrap">
                                     <input type="time" value={wh.start_time} onChange={e => updateWH(wh.weekday, 'start_time', e.target.value)}
                                       className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 w-28" />
                                     <span className="text-gray-400">—</span>
                                     <input type="time" value={wh.end_time} onChange={e => updateWH(wh.weekday, 'end_time', e.target.value)}
                                       className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 w-28" />
+                                    <span className="text-gray-300 mx-1">|</span>
+                                    <span className="text-xs text-gray-500 font-medium">{l.breakLabel}:</span>
+                                    <input type="time" value={wh.break_start} onChange={e => updateWH(wh.weekday, 'break_start', e.target.value)}
+                                      className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 w-24 bg-amber-50" />
+                                    <span className="text-gray-400">—</span>
+                                    <input type="time" value={wh.break_end} onChange={e => updateWH(wh.weekday, 'break_end', e.target.value)}
+                                      className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 w-24 bg-amber-50" />
                                   </div>
                                 ) : (
                                   <span className="text-sm text-gray-400">{l.dayOff}</span>

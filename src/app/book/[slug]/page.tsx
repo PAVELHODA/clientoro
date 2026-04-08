@@ -24,7 +24,7 @@ interface Staff {
   id: string; full_name: string; avatar_url: string | null
   staff_services: { service_id: string }[]
 }
-interface WorkingHour { staff_id: string; weekday: number; start_time: string; end_time: string }
+interface WorkingHour { staff_id: string; weekday: number; start_time: string; end_time: string; break_start: string | null; break_end: string | null }
 interface TimeOff { staff_id: string; start_at: string; end_at: string }
 interface ExistingBooking { start_at: string; end_at: string; staff_id: string; service_id: string }
 
@@ -257,9 +257,17 @@ const jsToDbWeekday = (jsDay: number) => jsDay === 0 ? 7 : jsDay
     const duration = selectedService.duration; const now = new Date()
     const isToday = selectedDate === now.toISOString().split('T')[0]; const slots: string[] = []
     const relevantWH = workingHours.filter(wh => relevantStaff.some(s => s.id === wh.staff_id) && wh.weekday === weekday)
-    const timeRanges: { start: number; end: number; staffId: string | null }[] = []
-    if (relevantWH.length === 0) timeRanges.push({ start: (org?.work_start || 8) * 60, end: (org?.work_end || 17) * 60, staffId: null })
-    else for (const wh of relevantWH) { const [sh, sm] = wh.start_time.split(':').map(Number); const [eh, em] = wh.end_time.split(':').map(Number); timeRanges.push({ start: sh * 60 + (sm || 0), end: eh * 60 + (em || 0), staffId: wh.staff_id }) }
+    const timeRanges: { start: number; end: number; staffId: string | null; breakStart: number | null; breakEnd: number | null }[] = []
+    if (relevantWH.length === 0) timeRanges.push({ start: (org?.work_start || 8) * 60, end: (org?.work_end || 17) * 60, staffId: null, breakStart: null, breakEnd: null })
+    else {
+      for (const wh of relevantWH) {
+        const [sh, sm] = wh.start_time.split(':').map(Number)
+        const [eh, em] = wh.end_time.split(':').map(Number)
+        const breakStart = wh.break_start ? (() => { const [bh, bm] = wh.break_start.split(':').map(Number); return bh * 60 + (bm || 0) })() : null
+        const breakEnd = wh.break_end ? (() => { const [bh, bm] = wh.break_end.split(':').map(Number); return bh * 60 + (bm || 0) })() : null
+        timeRanges.push({ start: sh * 60 + (sm || 0), end: eh * 60 + (em || 0), staffId: wh.staff_id, breakStart, breakEnd })
+      }
+    }
     const earliestStart = Math.min(...timeRanges.map(r => r.start)); const latestEnd = Math.max(...timeRanges.map(r => r.end))
     for (let mins = earliestStart; mins + duration <= latestEnd; mins += 30) {
       const h = Math.floor(mins / 60); const m = mins % 60
@@ -270,6 +278,7 @@ const jsToDbWeekday = (jsDay: number) => jsDay === 0 ? 7 : jsDay
       const ok = relevantStaff.some(staff => {
         const staffWH = timeRanges.find(r => r.staffId === staff.id || r.staffId === null)
         if (!staffWH) return false; if (mins < staffWH.start || mins + duration > staffWH.end) return false
+        if (staffWH.breakStart !== null && staffWH.breakEnd !== null) { if (mins < staffWH.breakEnd && mins + duration > staffWH.breakStart) return false }
         return !existingBookings.some(b => b.staff_id === staff.id && b.start_at < slotEndISO && b.end_at > slotStartISO)
       })
       if (ok && !slots.includes(slotTime)) slots.push(slotTime)
