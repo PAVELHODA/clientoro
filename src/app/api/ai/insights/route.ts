@@ -23,7 +23,7 @@ function jsToIsoWeekday(jsDay: number): number {
 }
 
 export async function GET(request: NextRequest) {
-  const auth = await requireAuth(request)
+  const auth = await requireAuth(request, 'staff')
   if (!auth.authorized || !auth.organizationId) {
     return NextResponse.json({ error: auth.error }, { status: auth.status || 401 })
   }

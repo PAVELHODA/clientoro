@@ -2,9 +2,14 @@
 
 // PATH: src/app/api/ares/route.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAuth } from '@/lib/api/requireAuth'
 
 export async function GET(request: NextRequest) {
   try {
+    const auth = await requireAuth(request, 'staff')
+    if (!auth.authorized) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status })
+    }
     const ico = request.nextUrl.searchParams.get('ico')
     if (!ico || !/^\d{8}$/.test(ico)) {
       return NextResponse.json({ error: 'IČO musí mít 8 číslic' }, { status: 400 })

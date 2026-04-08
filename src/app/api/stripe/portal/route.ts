@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { requireAuth } from '@/lib/api/requireAuth';
 import { createClient } from '@supabase/supabase-js';
 import { stripe } from '@/lib/stripe';
 
@@ -9,6 +10,10 @@ const supabase = createClient(
 
 export async function POST(req: NextRequest) {
   try {
+    const auth = await requireAuth(req, 'owner')
+    if (!auth.authorized) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status })
+    }
     const token = req.cookies.get('sb-access-token')?.value;
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
