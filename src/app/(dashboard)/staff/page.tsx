@@ -106,8 +106,8 @@ export default function StaffPage() {
   }
 
   const DEFAULT_HOURS: WorkingHour[] = WEEKDAYS.map((_, i) => ({
-    weekday: i, start_time: '08:00', end_time: '17:00', enabled: i < 5,
-  }))
+  weekday: i + 1, start_time: '08:00', end_time: '17:00', enabled: i < 5,
+}))
 
   const [staff, setStaff] = useState<StaffMember[]>([])
   const [services, setServices] = useState<Service[]>([])
@@ -418,7 +418,7 @@ export default function StaffPage() {
                                   <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${wh.enabled ? 'left-4' : 'left-1'}`} />
                                 </button>
                                 <span className={`w-16 text-sm font-medium ${wh.enabled ? 'text-gray-900' : 'text-gray-400'}`}>
-                                  {WEEKDAYS_SHORT[wh.weekday]}
+                                  {WEEKDAYS_SHORT[wh.weekday - 1]}
                                 </span>
                                 {wh.enabled ? (
                                   <div className="flex items-center gap-2">

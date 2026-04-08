@@ -1,4 +1,4 @@
-// PATH: src/app/book/[slug]/page.tsx
+﻿// PATH: src/app/book/[slug]/page.tsx
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
@@ -150,8 +150,8 @@ export default function PublicBookingPage() {
   // ===== BUSINESS LOGIC =====
   const availableStaff = selectedService ? staffList.filter(s => s.staff_services?.some(ss => ss.service_id === selectedService.id)) : staffList
   const relevantStaff = selectedStaff ? [selectedStaff] : availableStaff
-  const jsToDbWeekday = (jsDay: number) => jsDay === 0 ? 6 : jsDay - 1
-
+// Convert JS getDay() (0=Sun) to ISO 8601 weekday (1=Mon, 7=Sun)
+const jsToDbWeekday = (jsDay: number) => jsDay === 0 ? 7 : jsDay
   const hasAnyStaffWorking = (dateStr: string): boolean => {
     const date = new Date(dateStr + 'T12:00:00'); const weekday = jsToDbWeekday(date.getDay())
     const relevantWH = workingHours.filter(wh => relevantStaff.some(s => s.id === wh.staff_id))
@@ -220,7 +220,7 @@ export default function PublicBookingPage() {
   const isDayAvailable = (dateStr: string) => {
     if (dateStr < todayStr) return false
     const d = new Date(dateStr + 'T12:00:00')
-    const dbWeekday = jsToDbWeekday(d.getDay()) // 0=Po...6=Ne
+    const dbWeekday = jsToDbWeekday(d.getDay()) // ISO: 1=Po...7=Ne
 
     // Najdi relevantní staff (podle vybrané služby)
     const relevantStaff = selectedStaff

@@ -1,4 +1,4 @@
-// PATH: src/app/api/ai/insights/route.ts
+﻿// PATH: src/app/api/ai/insights/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
@@ -17,9 +17,9 @@ interface Insight {
   data?: Record<string, any>
 }
 
-// Convert JS getDay() (0=Sun) to ISO weekday used in work_days (0=Mon)
+// Convert JS getDay() (0=Sun) to ISO 8601 weekday (1=Mon, 7=Sun)
 function jsToIsoWeekday(jsDay: number): number {
-  return jsDay === 0 ? 6 : jsDay - 1
+  return jsDay === 0 ? 7 : jsDay
 }
 
 export async function GET(request: NextRequest) {
@@ -89,16 +89,16 @@ export async function GET(request: NextRequest) {
         checkDate.setDate(checkDate.getDate() + d)
         const dateStr = checkDate.toISOString().split('T')[0]
         const jsDayOfWeek = checkDate.getDay() // 0=Sun, 1=Mon, ...
-        const isoWeekday = jsToIsoWeekday(jsDayOfWeek) // 0=Mon, ..., 6=Sun
+        const isoWeekday = jsToIsoWeekday(jsDayOfWeek) // 1=Mon, ..., 7=Sun
 
-        // FIXED: work_days uses ISO weekday (0=Mon, 6=Sun)
-        const workDay = workDays.find((wd: any) => wd.day === isoWeekday)
+        // work_days uses 0-based (0=Mon, 6=Sun), convert from ISO
+        const workDay = workDays.find((wd: any) => wd.day === isoWeekday - 1)
         if (workDay && !workDay.enabled) continue
         if (!workDay) continue // unknown day = skip
 
-        // FIXED: staff_working_hours.weekday uses 1=Mon, 7=Sun (DB convention)
-        const dbWeekday = isoWeekday + 1 // 1=Mon, ..., 7=Sun
-        const dayStaffHours = (staffWH || []).filter((wh: any) => wh.weekday === dbWeekday)
+        // staff_working_hours.weekday uses ISO 8601 (1=Mon, 7=Sun)
+
+        const dayStaffHours = (staffWH || []).filter((wh: any) => wh.weekday === isoWeekday)
 
         let totalAvailableMinutes = 0
         if (dayStaffHours.length > 0) {
@@ -286,7 +286,7 @@ export async function GET(request: NextRequest) {
       const dayNames = ['ned\u011ble', 'pond\u011bl\u00ed', '\u00fater\u00fd', 'st\u0159eda', '\u010dtvrtek', 'p\u00e1tek', 'sobota']
       const workDayEntries = Object.entries(dayStats).filter(([d]) => {
         const isoDay = jsToIsoWeekday(Number(d))
-        const wd = ((org?.work_days as any[]) || []).find((w: any) => w.day === isoDay)
+        const wd = ((org?.work_days as any[]) || []).find((w: any) => w.day === isoDay - 1)
         return wd && wd.enabled
       })
 
