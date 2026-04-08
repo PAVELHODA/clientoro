@@ -160,7 +160,18 @@ export default function AiPage() {
                         {colors.label}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 leading-relaxed">{insight.description}</p>
+                    {insight.type === 'empty_slots' && (insight.data?.emptyDays || insight.description?.includes('|')) ? (
+                      <ul className="text-sm text-gray-600 leading-relaxed mt-1 space-y-1">
+                        {(insight.data?.emptyDays || insight.description.split('|').map((s: string) => ({ dayLabel: s.split(' \u2014 ')[0]?.trim(), freeHours: s.split(' \u2014 ')[1]?.replace(/h.*/, '')?.trim() }))).map((d: any, idx: number) => (
+                          <li key={idx} className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0" />
+                            <span><span className="font-medium">{d.dayLabel}</span> — {d.freeHours}h</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-gray-600 leading-relaxed">{insight.description}</p>
+                    )}
                     {insight.action && (
                       <Link
                         href={insight.action}

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     // Fetch org settings
     const { data: org } = await supabaseAdmin
       .from('organizations')
-      .select('work_start, work_end, work_days, slot_duration')
+      .select('work_start, work_end, work_days, slot_duration, break_duration, break_start')
       .eq('id', orgId)
       .single()
 
@@ -105,7 +105,13 @@ export async function GET(request: NextRequest) {
           for (const wh of dayStaffHours) {
             const [sh, sm] = wh.start_time.split(':').map(Number)
             const [eh, em] = wh.end_time.split(':').map(Number)
-            totalAvailableMinutes += (eh * 60 + em) - (sh * 60 + sm)
+            let staffMinutes = (eh * 60 + em) - (sh * 60 + sm)
+            // Subtract org-level break
+            const breakMins = org?.break_duration || 0
+            if (breakMins > 0) {
+              staffMinutes = Math.max(0, staffMinutes - breakMins)
+            }
+            totalAvailableMinutes += staffMinutes
           }
         } else {
           // No staff_working_hours set — fallback: use work_days start/end

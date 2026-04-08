@@ -54,6 +54,7 @@ export async function PUT(request: NextRequest) {
       'notification_email', 'notify_on_booking', 'notify_on_cancel',
       'reminder_enabled', 'followup_enabled', 'weekly_report_enabled',
       'work_days',
+      'break_duration', 'break_start',
     ]
 
     console.log('[Settings PUT] body:', JSON.stringify(body))

@@ -11,7 +11,7 @@ import SubscriptionSettings from '@/components/SubscriptionSettings'
 interface OrgSettings {
   id: string; name: string; mode: string; address: string; phone: string
   email: string; website: string; work_start: number; work_end: number
-  slot_duration: number; booking_link: string; timezone: string
+  slot_duration: number; break_duration: number; break_start: string; booking_link: string; timezone: string
   notification_email: string; notify_on_booking: boolean; notify_on_cancel: boolean
   work_days: any[]
 }
@@ -30,6 +30,7 @@ const EMPTY: OrgSettings = {
   id: '', name: '', mode: 'solo', address: '', phone: '', email: '',
   website: '', work_start: 8, work_end: 18, slot_duration: 30,
   booking_link: '', timezone: 'Europe/Prague',
+  break_duration: 30, break_start: '12:00',
   notification_email: '', notify_on_booking: true, notify_on_cancel: true,
   work_days: DEFAULT_WORK_DAYS,
 }
@@ -89,6 +90,9 @@ export default function SettingsPage() {
     testEmail: lang === 'en' ? 'Send test email' : lang === 'sk' ? 'Poslať testovací email' : 'Poslat testovací email',
     testSent: lang === 'en' ? 'Test email sent!' : lang === 'sk' ? 'Testovací email odoslaný!' : 'Testovací email odeslán!',
     workingHours: lang === 'en' ? 'Working hours & calendar' : lang === 'sk' ? 'Pracovná doba a kalendár' : 'Pracovní doba a kalendář',
+    breakDuration: lang === 'en' ? 'Break duration' : lang === 'sk' ? 'Dĺžka prestávky' : 'Délka pauzy',
+    breakStart: lang === 'en' ? 'Break start' : lang === 'sk' ? 'Začiatok prestávky' : 'Začátek pauzy',
+    noBreak: lang === 'en' ? 'No break' : lang === 'sk' ? 'Žiadna' : 'Žádná',
     slotDuration: lang === 'en' ? 'Slot duration' : lang === 'sk' ? 'Dĺžka slotu' : 'Délka termínu',
     minutes: lang === 'en' ? 'minutes' : 'minut',
     bookingPage: lang === 'en' ? 'Booking page' : 'Booking stránka',
@@ -208,7 +212,7 @@ export default function SettingsPage() {
   ]
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
-      if (d && !d.error) setS({ ...EMPTY, ...d, work_days: d.work_days || DEFAULT_WORK_DAYS })
+      if (d && !d.error) setS({ ...EMPTY, ...d, work_days: d.work_days || DEFAULT_WORK_DAYS, break_duration: d.break_duration ?? 0, break_start: d.break_start || '12:00' })
     }).finally(() => setLoading(false))
 
     fetch('/api/auth/google/status').then(r => r.json()).then(d => {
@@ -511,6 +515,31 @@ export default function SettingsPage() {
                 <option value={60}>60 {l.minutes}</option>
               </select>
             </div>
+            <div className="flex-1 w-full sm:w-auto">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{l.breakDuration}</label>
+              <select value={s.break_duration} onChange={e => setS({ ...s, break_duration: parseInt(e.target.value) })}
+                className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value={0}>{l.noBreak}</option>
+                <option value={15}>15 {l.minutes}</option>
+                <option value={30}>30 {l.minutes}</option>
+                <option value={45}>45 {l.minutes}</option>
+                <option value={60}>60 {l.minutes}</option>
+              </select>
+            </div>
+            {s.break_duration > 0 && (
+              <div className="flex-1 w-full sm:w-auto">
+                <label className="block text-sm font-medium text-gray-700 mb-1">{l.breakStart}</label>
+                <select value={s.break_start} onChange={e => setS({ ...s, break_start: e.target.value })}
+                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <option value="11:00">11:00</option>
+                  <option value="11:30">11:30</option>
+                  <option value="12:00">12:00</option>
+                  <option value="12:30">12:30</option>
+                  <option value="13:00">13:00</option>
+                  <option value="13:30">13:30</option>
+                </select>
+              </div>
+            )}
             <div className="flex-1 bg-amber-50 rounded-xl p-3 border border-amber-200">
               <p className="text-xs text-amber-700">💡 {lang === 'en' ? 'Odd/even week — coming soon' : lang === 'sk' ? 'Lichý/sudý týždeň — čoskoro' : 'Lichý/sudý týden — brzy'}</p>
             </div>
