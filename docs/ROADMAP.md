@@ -1,5 +1,5 @@
 # CLIENTORO — Roadmapa
-> Poslední aktualizace: 2026-03-25
+> Poslední aktualizace: 2026-04-08
 
 ---
 
@@ -26,7 +26,7 @@
 
 ---
 
-## 🔜 ZÍTRA (26.3.2026)
+## 📌 BACKLOG (původně 26.3)
 - [ ] Test manage stránky
 - [ ] Logo salonu v emailu
 - [ ] Booking ID v emailu
@@ -48,7 +48,7 @@
 
 ---
 
-## 📅 TENTO TÝDEN
+## 📅 KRÁTKÝ HORIZONT
 - [ ] Smart alternativa ("Petr nemá, ale Jana ano")
 - [ ] Waitlist DB tabulka + UI
 - [ ] SMS notifikace (Twilio)

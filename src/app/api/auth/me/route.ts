@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     if (profile.is_superadmin) {
       role = 'superadmin'
 
-      // Superadmin â€” get first membership for org context
+      // Superadmin — get first membership for org context
       const { data: membership } = await supabaseAdmin
         .from('memberships')
         .select('organization_id, role')

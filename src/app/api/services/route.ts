@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     const validData = validation.data as any
 
-    // Kontrola duplicity názvu sluĹľby ve stejné organizaci
+    // Kontrola duplicity názvu služby ve stejné organizaci
     const { data: existing } = await supabaseAdmin
       .from('services')
       .select('id')
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (existing) {
-      return NextResponse.json({ error: `SluĹľba "${validData.name}" jiĹľ existuje` }, { status: 409 })
+      return NextResponse.json({ error: `Služba "${validData.name}" již existuje` }, { status: 409 })
     }
 
     const insertData = {

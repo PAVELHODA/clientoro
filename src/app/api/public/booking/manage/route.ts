@@ -5,7 +5,7 @@ import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendBookingCancellation, sendOwnerCancellation } from '@/lib/email'
 
-// GET â€” detail rezervace podle manage_token
+// GET — detail rezervace podle manage_token
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PATCH â€” zruĹˇit nebo zmÄ›nit rezervaci
+// PATCH — zrušit nebo změnit rezervaci
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json()
@@ -60,7 +60,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     if (action === 'cancel') {
-      // ZruĹˇit
+      // Zrušit
       const { error: updateErr } = await supabaseAdmin
         .from('bookings')
         .update({ status: 'cancelled' })
@@ -68,13 +68,13 @@ export async function PATCH(request: NextRequest) {
 
       if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
 
-      // Odeslat email o zruĹˇenĂ­
+      // Odeslat email o zrušení
       const org = booking.organizations as any
       const startDate = new Date(booking.start_at)
       const dateStr = startDate.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
       const timeStr = startDate.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
 
-      // Email klientovi o zruĹˇenĂ­
+      // Email klientovi o zrušení
       const customerEmail = booking.customer_email
       console.log('[Manage cancel] customer_email:', customerEmail)
       if (customerEmail) {
@@ -90,7 +90,7 @@ export async function PATCH(request: NextRequest) {
         }).catch(err => console.error('[Cancel email to client failed]', err))
       }
 
-      // Email majiteli o zruĹˇenĂ­
+      // Email majiteli o zrušení
       const ownerEmail = org?.notification_email || org?.email
       console.log('[Manage cancel] owner_email:', ownerEmail)
       if (ownerEmail) {

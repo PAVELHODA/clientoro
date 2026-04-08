@@ -26,14 +26,14 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     if (!params.id || !/^[0-9a-f-]{36}$/.test(params.id)) {
-      return NextResponse.json({ error: 'NeplatnĂ© ID' }, { status: 400 })
+      return NextResponse.json({ error: 'Neplatné ID' }, { status: 400 })
     }
 
     const body = await request.json()
     const updateData = sanitizeUpdate(body, ALLOWED_BOOKING_FIELDS)
 
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ error: 'Ĺ˝ĂˇdnĂˇ data k aktualizaci' }, { status: 400 })
+      return NextResponse.json({ error: 'Žádná data k aktualizaci' }, { status: 400 })
     }
 
     const { data, error } = await supabaseAdmin
@@ -71,7 +71,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     if (!params.id || !/^[0-9a-f-]{36}$/.test(params.id)) {
-      return NextResponse.json({ error: 'NeplatnĂ© ID' }, { status: 400 })
+      return NextResponse.json({ error: 'Neplatné ID' }, { status: 400 })
     }
 
     const { error } = await supabaseAdmin

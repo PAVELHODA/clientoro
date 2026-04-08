@@ -25,14 +25,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     if (!params.id || !/^[0-9a-f-]{36}$/.test(params.id)) {
-      return NextResponse.json({ error: 'NeplatnĂ© ID' }, { status: 400 })
+      return NextResponse.json({ error: 'Neplatné ID' }, { status: 400 })
     }
 
     const body = await request.json()
     const updateData = sanitizeUpdate(body, ALLOWED_SERVICE_FIELDS)
 
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ error: 'Ĺ˝ĂˇdnĂˇ data k aktualizaci' }, { status: 400 })
+      return NextResponse.json({ error: 'Žádná data k aktualizaci' }, { status: 400 })
     }
 
     const { data, error } = await supabaseAdmin
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    if (!data) return NextResponse.json({ error: 'SluĹľba nenalezena' }, { status: 404 })
+    if (!data) return NextResponse.json({ error: 'Služba nenalezena' }, { status: 404 })
     return NextResponse.json(data)
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -57,7 +57,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     if (!params.id || !/^[0-9a-f-]{36}$/.test(params.id)) {
-      return NextResponse.json({ error: 'NeplatnĂ© ID' }, { status: 400 })
+      return NextResponse.json({ error: 'Neplatné ID' }, { status: 400 })
     }
 
     const { error } = await supabaseAdmin

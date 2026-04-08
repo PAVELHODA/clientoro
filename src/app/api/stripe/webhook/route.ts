@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Disable body parsing â€” Stripe needs raw body
+// Disable body parsing — Stripe needs raw body
 export const runtime = 'nodejs';
 
 

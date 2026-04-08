@@ -65,7 +65,7 @@ export async function DELETE(request: NextRequest) {
       .delete()
       .eq('organization_id', orgId)
 
-    // 7. Smazat sluĹľby
+    // 7. Smazat služby
     await supabaseAdmin
       .from('services')
       .delete()
@@ -89,7 +89,7 @@ export async function DELETE(request: NextRequest) {
       .delete()
       .eq('auth_user_id', userId)
 
-    // 11. Smazat auth uĹľivatele
+    // 11. Smazat auth uživatele
     const { error: authDeleteError } = await supabaseAdmin.auth.admin.deleteUser(userId!)
     if (authDeleteError) {
       console.error('Auth delete error:', authDeleteError)
