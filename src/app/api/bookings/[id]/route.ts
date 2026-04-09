@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
+import { sanitizeUpdate } from '@/lib/api/sanitizeUpdate'
 
 const ALLOWED_BOOKING_FIELDS = [
   'service_id', 'staff_id', 'client_id', 'start_at', 'end_at',
@@ -11,15 +12,10 @@ const ALLOWED_BOOKING_FIELDS = [
   'note', 'internal_note', 'price', 'status', 'source',
   'is_backfill', 'backfill_note',
 ]
-
-function sanitizeUpdate(body: any, allowedFields: string[]) {
-  const clean: any = {}
-  for (const key of allowedFields) {
+for (const key of allowedFields) {
     if (body[key] !== undefined) clean[key] = body[key]
   }
   return clean
-}
-
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const auth = await requireAuth(request, 'staff')

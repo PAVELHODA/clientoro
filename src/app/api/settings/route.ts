@@ -209,8 +209,6 @@ export async function PUT(request: NextRequest) {
             const { error: whError } = await supabaseAdmin
               .from('staff_working_hours')
               .insert(whRows)
-            if (whError) console.error('[Auto-create WH] Error:', whError)
-            else console.log('[Auto-create WH] Created', whRows.length, 'working hour rows')
 
             // 3. Přiřaď všechny služby organizace tomuto staff
             const { data: orgServices } = await supabaseAdmin
@@ -227,8 +225,6 @@ export async function PUT(request: NextRequest) {
               const { error: ssError } = await supabaseAdmin
                 .from('staff_services')
                 .insert(ssRows)
-              if (ssError) console.error('[Auto-create SS] Error:', ssError)
-              else console.log('[Auto-create SS] Linked', ssRows.length, 'services')
             }
           }
         } else {

@@ -4,20 +4,16 @@ export const dynamic = 'force-dynamic'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
+import { sanitizeUpdate } from '@/lib/api/sanitizeUpdate'
 
 const ALLOWED_CLIENT_FIELDS = [
   'full_name', 'phone', 'email', 'note', 'tags',
   'birthday', 'source', 'total_visits', 'last_visit_at',
 ]
-
-function sanitizeUpdate(body: any, allowedFields: string[]) {
-  const clean: any = {}
-  for (const key of allowedFields) {
+for (const key of allowedFields) {
     if (body[key] !== undefined) clean[key] = body[key]
   }
   return clean
-}
-
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const auth = await requireAuth(request, 'manager')
