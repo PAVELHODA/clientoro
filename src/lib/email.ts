@@ -128,7 +128,7 @@ export async function sendBookingConfirmation({
           </div>`
         })() : ''}
         ${manageUrl ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;">
-          <a href="${manageUrl}" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#0e3a5c,#2ba0b0);color:white;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
+        <a href="${manageUrl}" style="display:inline-block;padding:10px 24px;background-color:#0e3a5c;color:#ffffff;text-decoration:none;border-radius:10px;font-size:13px;font-weight:600;">Spravovat rezervaci</a>
           <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">Změnit nebo zrušit rezervaci</p>
         </div>` : ''}`,
     }),
