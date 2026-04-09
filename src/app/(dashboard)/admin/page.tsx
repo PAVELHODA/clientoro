@@ -157,10 +157,10 @@ export default function AdminPage() {
       {tab === 'dashboard' && (
         <div className="space-y-3">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {[
+                       {[
               { key: 'orgs' as ExpandedStat, tab: 'organizations' as Tab | null, icon: Building2, color: 'text-blue-500', bg: 'bg-blue-50', border: 'border-blue-200', label: 'Organizace', value: stats?.totalOrgs || 0 },
-              { key: 'users' as ExpandedStat, tab: null, icon: Users, color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-200', label: 'Uživatelé', value: stats?.totalUsers || 0 },
-              { key: 'bookings' as ExpandedStat, tab: null, icon: Calendar, color: 'text-purple-500', bg: 'bg-purple-50', border: 'border-purple-200', label: 'Rezervace', value: stats?.totalBookings || 0 },
+              { key: 'users' as ExpandedStat, tab: null, icon: Users, color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-200', label: 'Uživatelé', value: stats?.totalUsers || 0, expandLabel: 'Zobrazit detail' },
+              { key: 'bookings' as ExpandedStat, tab: null, icon: Calendar, color: 'text-purple-500', bg: 'bg-purple-50', border: 'border-purple-200', label: 'Rezervace', value: stats?.totalBookings || 0, expandLabel: 'Zobrazit detail' },
               { key: 'notifications' as ExpandedStat, tab: null, icon: Bell, color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-200', label: 'Notifikace', value: stats?.totalNotifications || 0 },
               { key: 'categories' as ExpandedStat, tab: 'categories' as Tab | null, icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-50', border: 'border-indigo-200', label: 'Kategorie', value: categories.length },
               { key: 'templates' as ExpandedStat, tab: 'categories' as Tab | null, icon: Layers, color: 'text-cyan-500', bg: 'bg-cyan-50', border: 'border-cyan-200', label: 'Šablony', value: categories.reduce((sum, c) => sum + (c.service_templates?.length || 0), 0) },
@@ -175,12 +175,12 @@ export default function AdminPage() {
                   <ChevronDown className={`w-3 h-3 text-gray-300 transition-transform ${expandedStat === s.key ? 'rotate-180' : ''}`} />
                 </div>
                 <p className="text-2xl font-bold text-gray-900">{s.value}</p>
-                {s.tab && (
-                  <button onClick={(e) => { e.stopPropagation(); setTab(s.tab as Tab) }}
+                               {(s.tab || s.expandLabel) && (
+                  <button onClick={(e) => { e.stopPropagation(); s.tab ? setTab(s.tab as Tab) : toggleStat(s.key) }}
                     className="mt-2 text-[10px] sm:text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
-                    Spravovat <ArrowRight className="w-3 h-3" />
+                    {s.tab ? 'Spravovat' : s.expandLabel} <ArrowRight className="w-3 h-3" />
                   </button>
-                )}
+                )} 
               </div>
             ))}
           </div>
