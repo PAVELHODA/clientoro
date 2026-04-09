@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { data: organizations } = await supabaseAdmin.from('organizations').select('*').order('created_at')
-    const { count: totalUsers } = await supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true })
+    const { count: totalUsers } = await supabaseAdmin.from('staff').select('*', { count: 'exact', head: true })
     const { count: totalBookings } = await supabaseAdmin.from('bookings').select('*', { count: 'exact', head: true })
     const { count: totalNotifications } = await supabaseAdmin.from('notifications').select('*', { count: 'exact', head: true })
 
