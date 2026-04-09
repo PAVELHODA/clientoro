@@ -210,7 +210,12 @@ export default function SettingsPage() {
   ]
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
-      if (d && !d.error) setS({ ...EMPTY, ...d, work_days: d.work_days || DEFAULT_WORK_DAYS, break_duration: d.break_duration ?? 0, break_start: d.break_start || '12:00' })
+      if (d && !d.error) {
+          console.log('[SETTINGS DEBUG] API response:', JSON.stringify({re: d.reminder_enabled, fe: d.followup_enabled, rre: d.review_request_enabled}))
+          const merged = { ...EMPTY, ...d, work_days: d.work_days || DEFAULT_WORK_DAYS, break_duration: d.break_duration ?? 0, break_start: d.break_start || '12:00' }
+          console.log('[SETTINGS DEBUG] After merge:', JSON.stringify({re: merged.reminder_enabled, fe: merged.followup_enabled, rre: merged.review_request_enabled}))
+          setS(merged)
+        }
     }).finally(() => setLoading(false))
 
     fetch('/api/auth/google/status').then(r => r.json()).then(d => {
@@ -433,4 +438,5 @@ export default function SettingsPage() {
     </div>
   )
 }
+
 
