@@ -13,6 +13,8 @@ interface OrgSettings {
   email: string; website: string; work_start: number; work_end: number
   slot_duration: number; break_duration: number; break_start: string; booking_link: string; timezone: string
   notification_email: string; notify_on_booking: boolean; notify_on_cancel: boolean
+  reminder_enabled: boolean; reminder_hours_before: number
+  followup_enabled: boolean; review_request_enabled: boolean; google_review_url: string
   work_days: any[]
 }
 
@@ -32,6 +34,8 @@ const EMPTY: OrgSettings = {
   booking_link: '', timezone: 'Europe/Prague',
   break_duration: 30, break_start: '12:00',
   notification_email: '', notify_on_booking: true, notify_on_cancel: true,
+  reminder_enabled: true, reminder_hours_before: 24,
+  followup_enabled: false, review_request_enabled: false, google_review_url: '',
   work_days: DEFAULT_WORK_DAYS,
 }
 
@@ -433,6 +437,95 @@ export default function SettingsPage() {
                   <p className="text-xs text-gray-500">{l.notifOnCancelDesc}</p>
                 </div>
               </label>
+            </div>
+            {/* === AUTOMATICKÉ EMAILY KLIENTŮM === */}
+            <div className="pt-4 mt-4 border-t border-gray-200">
+              <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                {lang === 'en' ? 'Automatic emails to clients' : lang === 'sk' ? 'Automatické emaily klientom' : 'Automatické emaily klientům'}
+              </h3>
+              <p className="text-xs text-gray-500 mb-3">
+                {lang === 'en' ? 'Sent automatically based on booking events.' : lang === 'sk' ? 'Odosielané automaticky podľa udalostí rezervácií.' : 'Odesílané automaticky podle událostí rezervací.'}
+              </p>
+
+              <div className="space-y-3">
+                {/* Připomínka den předem */}
+                <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                  <button onClick={() => setS({ ...s, reminder_enabled: !s.reminder_enabled })}
+                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.reminder_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
+                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.reminder_enabled ? 'left-5' : 'left-1'}`} />
+                  </button>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      📅 {lang === 'en' ? 'Reminder before appointment' : lang === 'sk' ? 'Pripomienka pred návštevou' : 'Připomínka před návštěvou'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {lang === 'en' ? 'Client receives a reminder email before their appointment.' : lang === 'sk' ? 'Klient dostane pripomienku emailom pred termínom.' : 'Klient dostane připomínku emailem před termínem.'}
+                    </p>
+                    {s.reminder_enabled && (
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="text-xs text-gray-500">
+                          {lang === 'en' ? 'Send' : lang === 'sk' ? 'Odoslať' : 'Odeslat'}
+                        </span>
+                        <select value={s.reminder_hours_before || 24}
+                          onChange={e => setS({ ...s, reminder_hours_before: parseInt(e.target.value) })}
+                          className="px-2 py-1 border border-gray-200 rounded-lg text-xs bg-white">
+                          <option value={3}>3h</option>
+                          <option value={6}>6h</option>
+                          <option value={12}>12h</option>
+                          <option value={24}>24h</option>
+                          <option value={48}>48h</option>
+                        </select>
+                        <span className="text-xs text-gray-500">
+                          {lang === 'en' ? 'before' : lang === 'sk' ? 'pred termínom' : 'před termínem'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Poděkování po návštěvě */}
+                <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                  <button onClick={() => setS({ ...s, followup_enabled: !s.followup_enabled })}
+                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.followup_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
+                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.followup_enabled ? 'left-5' : 'left-1'}`} />
+                  </button>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      🙏 {lang === 'en' ? 'Thank you after visit' : lang === 'sk' ? 'Poďakovanie po návšteve' : 'Poděkování po návštěvě'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {lang === 'en' ? 'Client receives a thank you email after their visit.' : lang === 'sk' ? 'Klient dostane ďakovný email po návšteve.' : 'Klient dostane děkovný email po návštěvě.'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Žádost o recenzi */}
+                <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                  <button onClick={() => setS({ ...s, review_request_enabled: !s.review_request_enabled })}
+                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.review_request_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
+                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.review_request_enabled ? 'left-5' : 'left-1'}`} />
+                  </button>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      ⭐ {lang === 'en' ? 'Google review request' : lang === 'sk' ? 'Žiadosť o Google recenziu' : 'Žádost o Google recenzi'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {lang === 'en' ? 'Client receives a review request after their visit.' : lang === 'sk' ? 'Klient dostane žiadosť o recenziu po návšteve.' : 'Klient dostane žádost o recenzi po návštěvě.'}
+                    </p>
+                    {s.review_request_enabled && (
+                      <div className="mt-2">
+                        <input type="url" value={s.google_review_url || ''}
+                          onChange={e => setS({ ...s, google_review_url: e.target.value })}
+                          className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500"
+                          placeholder={lang === 'en' ? 'Google review link (optional)' : 'Odkaz na Google recenze (nepovinné)'} />
+                        <p className="text-xs text-gray-400 mt-1">
+                          {lang === 'en' ? 'Paste your Google Maps review URL' : lang === 'sk' ? 'Vložte odkaz na Google Maps recenzie' : 'Vložte odkaz na Google Maps recenze'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {s.notification_email && s.notify_on_booking && (

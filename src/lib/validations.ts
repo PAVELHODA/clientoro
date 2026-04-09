@@ -192,6 +192,18 @@ export const settingsUpdateSchema = z.object({
   zip: z.string().max(20).optional().or(z.literal('')).or(z.null()),
   logo_url: z.string().max(500).optional().or(z.literal('')).or(z.null()),
   language: z.string().max(5).optional(),
+    notification_email: z.string().max(200).optional().or(z.literal('')).or(z.null()),
+  notify_on_booking: z.boolean().optional(),
+  notify_on_cancel: z.boolean().optional(),
+  reminder_enabled: z.boolean().optional(),
+  reminder_hours_before: z.number().int().min(1).max(72).optional(),
+  followup_enabled: z.boolean().optional(),
+  review_request_enabled: z.boolean().optional(),
+  google_review_url: z.string().max(500).optional().or(z.literal('')).or(z.null()),
+  weekly_report_enabled: z.boolean().optional(),
+  break_duration: z.number().int().min(0).max(120).optional(),
+  break_start: z.string().max(10).optional().or(z.literal('')),
+  work_days: z.any().optional(),
 }).passthrough()
 
 // ============================================================

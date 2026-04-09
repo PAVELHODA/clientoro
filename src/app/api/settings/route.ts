@@ -45,14 +45,16 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
-    const allowedFields = [
+        const allowedFields = [
       'name', 'mode', 'address', 'phone', 'email',
       'website', 'work_start', 'work_end', 'slot_duration',
       'booking_link', 'timezone', 'onboarding_completed',
       'category', 'description', 'city', 'zip', 'logo_url',
       'language', 'ico', 'dic',
       'notification_email', 'notify_on_booking', 'notify_on_cancel',
-      'reminder_enabled', 'followup_enabled', 'weekly_report_enabled',
+      'reminder_enabled', 'reminder_hours_before',
+      'followup_enabled', 'review_request_enabled', 'google_review_url',
+      'weekly_report_enabled',
       'work_days',
       'break_duration', 'break_start',
     ]
