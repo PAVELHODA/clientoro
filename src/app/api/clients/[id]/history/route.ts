@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const clientId = params.id
 
     // Verify client belongs to org
-    const { data: client } = await supabaseAdmin
+    const { data: client } = await (supabaseAdmin as any)
       .from('clients')
       .select('id')
       .eq('id', clientId)
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     if (!client) return NextResponse.json({ error: 'Client not found' }, { status: 404 })
 
     // Get bookings for this client
-    const { data: bookings } = await supabaseAdmin
+    const { data: bookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id, start_at, end_at, status, price, customer_name, services(name, color, duration), staff(full_name)')
       .eq('client_id', clientId)

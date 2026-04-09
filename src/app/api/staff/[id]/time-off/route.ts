@@ -11,7 +11,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     const body = await request.json()
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('staff_time_off')
       .insert({
         staff_id: params.id,
@@ -41,7 +41,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!timeOffId) return NextResponse.json({ error: 'time_off_id required' }, { status: 400 })
 
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from('staff_time_off')
       .delete()
       .eq('id', timeOffId)

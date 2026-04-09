@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     let staffData = null
 
     if (Object.keys(updateData).length > 0) {
-      const { data, error } = await supabaseAdmin
+      const { data, error } = await (supabaseAdmin as any)
         .from('staff')
         .update(updateData)
         .eq('id', params.id)
@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     if (service_ids !== undefined) {
       // Ověř že staff patří do organizace
       if (!staffData) {
-        const { data: check } = await supabaseAdmin
+        const { data: check } = await (supabaseAdmin as any)
           .from('staff')
           .select('id')
           .eq('id', params.id)
@@ -54,7 +54,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         if (!check) return NextResponse.json({ error: 'Zaměstnanec nenalezen' }, { status: 404 })
       }
 
-      await supabaseAdmin
+      await (supabaseAdmin as any)
         .from('staff_services')
         .delete()
         .eq('staff_id', params.id)
@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
           }))
 
         if (staffServices.length > 0) {
-          await supabaseAdmin
+          await (supabaseAdmin as any)
             .from('staff_services')
             .insert(staffServices)
         }
@@ -90,7 +90,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: 'Neplatné ID' }, { status: 400 })
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from('staff')
       .delete()
       .eq('id', params.id)

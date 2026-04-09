@@ -11,7 +11,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     const staffId = params.id
 
-    const { data: workingHours, error: whError } = await supabaseAdmin
+    const { data: workingHours, error: whError } = await (supabaseAdmin as any)
       .from('staff_working_hours')
       .select('*')
       .eq('staff_id', staffId)
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     if (whError) return NextResponse.json({ error: whError.message }, { status: 500 })
 
-    const { data: exceptions, error: exError } = await supabaseAdmin
+    const { data: exceptions, error: exError } = await (supabaseAdmin as any)
       .from('staff_exceptions')
       .select('*')
       .eq('staff_id', staffId)
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     if (exError) return NextResponse.json({ error: exError.message }, { status: 500 })
 
-    const { data: timeOff, error: toError } = await supabaseAdmin
+    const { data: timeOff, error: toError } = await (supabaseAdmin as any)
       .from('staff_time_off')
       .select('*')
       .eq('staff_id', staffId)
@@ -58,7 +58,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'working_hours must be an array' }, { status: 400 })
     }
 
-    const { error: deleteError } = await supabaseAdmin
+    const { error: deleteError } = await (supabaseAdmin as any)
       .from('staff_working_hours')
       .delete()
       .eq('staff_id', staffId)
@@ -78,14 +78,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       }))
 
     if (rows.length > 0) {
-      const { error: insertError } = await supabaseAdmin
+      const { error: insertError } = await (supabaseAdmin as any)
         .from('staff_working_hours')
         .insert(rows)
 
       if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 })
     }
 
-    const { data } = await supabaseAdmin
+    const { data } = await (supabaseAdmin as any)
       .from('staff_working_hours')
       .select('*')
       .eq('staff_id', staffId)

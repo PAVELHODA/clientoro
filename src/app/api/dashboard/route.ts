@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString()
     const prevMonthEnd = monthStart
 
-    const { data: todayBookings } = await supabaseAdmin
+    const { data: todayBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id, start_at, end_at, status, price, service_id, staff_id, customer_name, client_id, services(name, color, duration), staff(full_name)')
       .eq('organization_id', orgId)
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     const todayNoShow = (todayBookings || []).filter(b => b.status === 'no_show').length
 
-    const { data: weekBookings } = await supabaseAdmin
+    const { data: weekBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id, start_at, status, price, service_id, staff_id')
       .eq('organization_id', orgId)
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       .filter(b => b.status !== 'no_show')
       .reduce((sum, b) => sum + (b.price || 0), 0)
 
-    const { data: monthBookings } = await supabaseAdmin
+    const { data: monthBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id, start_at, status, price, service_id, staff_id')
       .eq('organization_id', orgId)
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
 
     const monthNoShow = (monthBookings || []).filter(b => b.status === 'no_show').length
 
-    const { data: prevMonthBookings } = await supabaseAdmin
+    const { data: prevMonthBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id, price, status')
       .eq('organization_id', orgId)
@@ -80,19 +80,19 @@ export async function GET(request: NextRequest) {
       .filter(b => b.status !== 'no_show')
       .reduce((sum, b) => sum + (b.price || 0), 0)
 
-    const { count: newClientsMonth } = await supabaseAdmin
+    const { count: newClientsMonth } = await (supabaseAdmin as any)
       .from('clients')
       .select('id', { count: 'exact', head: true })
       .eq('organization_id', orgId)
       .gte('created_at', monthStart)
       .lt('created_at', monthEnd)
 
-    const { count: totalClients } = await supabaseAdmin
+    const { count: totalClients } = await (supabaseAdmin as any)
       .from('clients')
       .select('id', { count: 'exact', head: true })
       .eq('organization_id', orgId)
 
-    const { count: totalStaff } = await supabaseAdmin
+    const { count: totalStaff } = await (supabaseAdmin as any)
       .from('staff')
       .select('id', { count: 'exact', head: true })
       .eq('organization_id', orgId)
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
       serviceCount[sid].revenue += b.price || 0
     }
 
-    const { data: allServices } = await supabaseAdmin
+    const { data: allServices } = await (supabaseAdmin as any)
       .from('services')
       .select('id, name, color')
       .eq('organization_id', orgId)

@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('service_categories')
       .select('*, service_templates(*)')
       .eq('active', true)
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     if (body.type === 'category') {
-      const { data, error } = await supabaseAdmin.from('service_categories').insert({
+      const { data, error } = await (supabaseAdmin as any).from('service_categories').insert({
         name: body.name, slug: body.slug, icon: body.icon, description: body.description, sort_order: body.sort_order || 99,
       }).select().single()
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (body.type === 'template') {
-      const { data, error } = await supabaseAdmin.from('service_templates').insert({
+      const { data, error } = await (supabaseAdmin as any).from('service_templates').insert({
         category_id: body.category_id, name: body.name, duration: body.duration, price: body.price, color: body.color, sort_order: body.sort_order || 99,
       }).select().single()
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -60,10 +60,10 @@ export async function DELETE(request: NextRequest) {
     if (!id || !type) return NextResponse.json({ error: 'Missing id or type' }, { status: 400 })
 
     if (type === 'category') {
-      await supabaseAdmin.from('service_templates').delete().eq('category_id', id)
-      await supabaseAdmin.from('service_categories').delete().eq('id', id)
+      await (supabaseAdmin as any).from('service_templates').delete().eq('category_id', id)
+      await (supabaseAdmin as any).from('service_categories').delete().eq('id', id)
     } else if (type === 'template') {
-      await supabaseAdmin.from('service_templates').delete().eq('id', id)
+      await (supabaseAdmin as any).from('service_templates').delete().eq('id', id)
     }
 
     return NextResponse.json({ deleted: true })

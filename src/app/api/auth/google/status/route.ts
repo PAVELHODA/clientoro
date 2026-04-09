@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { data } = await supabaseAdmin
+    const { data } = await (supabaseAdmin as any)
       .from('google_calendar_tokens')
       .select('google_email, calendar_id, updated_at')
       .eq('organization_id', auth.organizationId)

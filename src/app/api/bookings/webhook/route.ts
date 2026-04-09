@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     // ========== TEST ==========
     if (action === 'test') {
-      const { data: org } = await supabaseAdmin
+      const { data: org } = await (supabaseAdmin as any)
         .from('organizations')
         .select('name, notification_email')
         .eq('id', organization_id)
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing booking_id' }, { status: 400 })
     }
 
-    const { data: booking } = await supabaseAdmin
+    const { data: booking } = await (supabaseAdmin as any)
       .from('bookings')
       .select('*, services(name, duration, price), staff(full_name), clients(full_name, phone, email)')
       .eq('id', booking_id)
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
 
-    const { data: org } = await supabaseAdmin
+    const { data: org } = await (supabaseAdmin as any)
       .from('organizations')
       .select('name, phone, address, notification_email, notify_on_booking, notify_on_cancel')
       .eq('id', organization_id)
@@ -78,12 +78,13 @@ export async function POST(request: NextRequest) {
     // ========== CREATED ==========
     if (action === 'created') {
       // In-app notifikace
-      await supabaseAdmin.from('notifications').insert({
+      await (supabaseAdmin as any).from('notifications').insert({
         organization_id,
         type: 'new_booking',
         channel: 'system',
+        recipient: org?.notification_email || 'system',
         subject: 'Nová rezervace',
-        status: 'pending',
+        status: 'sent',
         body: `${clientName} — ${serviceName} (${date}, ${time})`,
         booking_id,
       })
@@ -138,12 +139,13 @@ export async function POST(request: NextRequest) {
     // ========== CANCELLED ==========
     if (action === 'cancelled') {
       // In-app notifikace
-      await supabaseAdmin.from('notifications').insert({
+      await (supabaseAdmin as any).from('notifications').insert({
         organization_id,
         type: 'booking_cancelled',
         channel: 'system',
+        recipient: org?.notification_email || 'system',
         subject: 'Rezervace zrušena',
-        status: 'pending',
+        status: 'sent',
         body: `${clientName} zrušil/a ${serviceName} (${date}, ${time})`,
         booking_id,
       })
@@ -184,7 +186,7 @@ export async function POST(request: NextRequest) {
 
       // Waitlist
       const bookingDate = booking.start_at.split('T')[0]
-      const { data: waitlistMatches } = await supabaseAdmin
+      const { data: waitlistMatches } = await (supabaseAdmin as any)
         .from('waitlist').select('*')
         .eq('organization_id', organization_id).eq('status', 'waiting')
         .or('service_id.eq.' + booking.service_id + ',service_id.is.null')
@@ -193,16 +195,17 @@ export async function POST(request: NextRequest) {
 
       if (waitlistMatches && waitlistMatches.length > 0) {
         const first = waitlistMatches[0]
-        await supabaseAdmin.from('waitlist').update({
+        await (supabaseAdmin as any).from('waitlist').update({
           status: 'notified', notified_at: new Date().toISOString(),
         }).eq('id', first.id)
 
-        await supabaseAdmin.from('notifications').insert({
+        await (supabaseAdmin as any).from('notifications').insert({
           organization_id,
           type: 'waitlist_notified',
+          recipient: org?.notification_email || 'system',
           subject: 'Waitlist — slot nabídnut',
           channel: 'system',
-          status: 'pending',
+          status: 'sent',
           body: `Uvolněný slot nabídnut: ${first.customer_name || 'Klient'} (${first.customer_phone || first.customer_email || ''})`,
           booking_id,
         })

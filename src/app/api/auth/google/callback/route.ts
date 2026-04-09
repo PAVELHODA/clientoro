@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     const expiresAt = new Date(Date.now() + tokens.expires_in * 1000)
 
     // Upsert token (pokud už existuje, přepiš)
-    const { error: dbError } = await supabaseAdmin
+    const { error: dbError } = await (supabaseAdmin as any)
       .from('google_calendar_tokens')
       .upsert({
         organization_id: state,

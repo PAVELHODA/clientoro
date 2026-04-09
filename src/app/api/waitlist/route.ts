@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('waitlist')
       .select('*, clients(full_name, phone, email), services(name, duration, price)')
       .eq('organization_id', auth.organizationId)
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('waitlist')
       .insert({ ...body, organization_id: auth.organizationId })
       .select()

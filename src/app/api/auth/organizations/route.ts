@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     // Superadmin vidí VŠECHNY organizace
     if (auth.role === 'superadmin') {
-      const { data } = await supabaseAdmin
+      const { data } = await (supabaseAdmin as any)
         .from('organizations')
         .select('id, name, mode, slug, logo_url')
         .order('name')
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Ostatní vidí jen své (přes memberships)
-    const { data: profile } = await supabaseAdmin
+    const { data: profile } = await (supabaseAdmin as any)
       .from('profiles')
       .select('id')
       .eq('auth_user_id', auth.userId)
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     if (!profile) return NextResponse.json([])
 
-    const { data: memberships } = await supabaseAdmin
+    const { data: memberships } = await (supabaseAdmin as any)
       .from('memberships')
       .select('organization_id, role, organizations(id, name, mode, slug, logo_url)')
       .eq('user_id', profile.id)

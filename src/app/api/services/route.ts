@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('services')
       .select('*')
       .eq('organization_id', auth.organizationId)
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const validData = validation.data as any
 
     // Kontrola duplicity názvu služby ve stejné organizaci
-    const { data: existing } = await supabaseAdmin
+    const { data: existing } = await (supabaseAdmin as any)
       .from('services')
       .select('id')
       .eq('organization_id', auth.organizationId)
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       buffer_after_minutes: validData.buffer_after_minutes || 0,
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('services')
       .insert(insertData)
       .select()

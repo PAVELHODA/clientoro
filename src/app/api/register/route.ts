@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '')
 
-    const { data: existingSlug } = await supabaseAdmin
+    const { data: existingSlug } = await (supabaseAdmin as any)
       .from('organizations')
       .select('id')
       .eq('slug', slug)
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Vytvoření profilu
-    const { error: profileError } = await supabaseAdmin.from('profiles').insert({
+    const { error: profileError } = await (supabaseAdmin as any).from('profiles').insert({
       auth_user_id: userId,
       email,
       name: businessName,
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     if (profileError) console.error('Profile insert error:', profileError)
 
     // Vytvoření organizace
-    const { data: orgData, error: orgError } = await supabaseAdmin.from('organizations').insert({
+    const { data: orgData, error: orgError } = await (supabaseAdmin as any).from('organizations').insert({
       name: businessName,
       slug,
       owner_user_id: userId,
@@ -104,14 +104,14 @@ export async function POST(request: NextRequest) {
 
     // Vytvoření membership
     if (orgData) {
-      const { data: profileData } = await supabaseAdmin
+      const { data: profileData } = await (supabaseAdmin as any)
         .from('profiles')
         .select('id')
         .eq('auth_user_id', userId)
         .single()
 
       if (profileData) {
-        const { error: memberError } = await supabaseAdmin.from('memberships').insert({
+        const { error: memberError } = await (supabaseAdmin as any).from('memberships').insert({
           user_id: profileData.id,
           organization_id: orgData.id,
           role: 'owner',
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     // DB notifikace pro admina (systémová)
     try {
       if (orgData) {
-        await supabaseAdmin.from('notifications').insert({
+        await (supabaseAdmin as any).from('notifications').insert({
           organization_id: orgData.id,
           type: 'new_organization',
           channel: 'system',

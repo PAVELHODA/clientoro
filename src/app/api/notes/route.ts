@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('notes')
       .insert({
         organization_id: auth.organizationId,
@@ -79,7 +79,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Missing id or content' }, { status: 400 })
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('notes')
       .update({
         content: content.trim(),
@@ -107,7 +107,7 @@ export async function DELETE(request: NextRequest) {
     const id = searchParams.get('id')
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from('notes')
       .delete()
       .eq('id', id)

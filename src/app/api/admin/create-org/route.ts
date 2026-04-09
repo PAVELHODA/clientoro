@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const { name, mode, category } = await request.json()
     if (!name) return NextResponse.json({ error: 'Name required' }, { status: 400 })
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('organizations')
       .insert({ name, mode: mode || 'solo', category: category || 'other', work_start: 6, work_end: 22 })
       .select()

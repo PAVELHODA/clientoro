@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     const prevEnd = prevEndDate.toISOString()
 
     // Current period bookings
-    const { data: bookings } = await supabaseAdmin
+    const { data: bookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id, start_at, status, price, service_id, staff_id, client_id, customer_name')
       .eq('organization_id', orgId)
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       .lt('start_at', end)
 
     // Previous period bookings
-    const { data: prevBookings } = await supabaseAdmin
+    const { data: prevBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id, status, price')
       .eq('organization_id', orgId)
@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     const uniqueClients = clientIds.size
 
     // --- New clients this period ---
-    const { count: newClients } = await supabaseAdmin
+    const { count: newClients } = await (supabaseAdmin as any)
       .from('clients')
       .select('id', { count: 'exact', head: true })
       .eq('organization_id', orgId)
@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
       else svcMap[sid].revenue += b.price || 0
     }
 
-    const { data: services } = await supabaseAdmin
+    const { data: services } = await (supabaseAdmin as any)
       .from('services')
       .select('id, name, color, price')
       .eq('organization_id', orgId)
@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
       else staffMap[sid].revenue += b.price || 0
     }
 
-    const { data: staffList } = await supabaseAdmin
+    const { data: staffList } = await (supabaseAdmin as any)
       .from('staff')
       .select('id, full_name')
       .eq('organization_id', orgId)

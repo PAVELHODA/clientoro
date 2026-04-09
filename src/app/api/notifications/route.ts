@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('notifications')
       .select('*')
       .eq('organization_id', auth.organizationId)
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('notifications')
       .insert({ ...body, organization_id: auth.organizationId })
       .select()
@@ -47,7 +47,7 @@ export async function PATCH(request: NextRequest) {
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('notifications')
       .update({ read: true })
       .eq('organization_id', auth.organizationId)

@@ -35,21 +35,21 @@ export async function GET(request: NextRequest) {
 
   try {
     // Fetch org settings
-    const { data: org } = await supabaseAdmin
+    const { data: org } = await (supabaseAdmin as any)
       .from('organizations')
       .select('work_start, work_end, work_days, slot_duration, break_duration, break_start')
       .eq('id', orgId)
       .single()
 
     // Fetch active staff
-    const { data: staffList } = await supabaseAdmin
+    const { data: staffList } = await (supabaseAdmin as any)
       .from('staff')
       .select('id, full_name, active')
       .eq('organization_id', orgId)
       .eq('active', true)
 
     // Fetch all clients
-    const { data: allClients } = await supabaseAdmin
+    const { data: allClients } = await (supabaseAdmin as any)
       .from('clients')
       .select('id, full_name, email, phone, last_visit_at')
       .eq('organization_id', orgId)
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     weekFromNow.setDate(weekFromNow.getDate() + 7)
     const weekEnd = weekFromNow.toISOString().split('T')[0]
 
-    const { data: upcomingBookings } = await supabaseAdmin
+    const { data: upcomingBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('start_at, end_at, staff_id')
       .eq('organization_id', orgId)
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       const workDays = (org.work_days as any[]) || []
 
       // Fetch staff working hours for realistic capacity
-      const { data: staffWH } = await supabaseAdmin
+      const { data: staffWH } = await (supabaseAdmin as any)
         .from('staff_working_hours')
         .select('staff_id, weekday, start_time, end_time')
         .in('staff_id', staffList.map(s => s.id))
@@ -195,7 +195,7 @@ export async function GET(request: NextRequest) {
     }
 
     // === 3. TREND TRŽEB (tento vs minulý týden) — FIXED: start_at ===
-    const { data: thisWeekBookings } = await supabaseAdmin
+    const { data: thisWeekBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('price')
       .eq('organization_id', orgId)
@@ -208,7 +208,7 @@ export async function GET(request: NextRequest) {
     const lastWeekEnd = new Date(now)
     lastWeekEnd.setDate(lastWeekEnd.getDate() - 7)
 
-    const { data: lastWeekBookings } = await supabaseAdmin
+    const { data: lastWeekBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('price')
       .eq('organization_id', orgId)
@@ -245,7 +245,7 @@ export async function GET(request: NextRequest) {
     }
 
     // === 4. NEJLEPŠÍ SLUŽBA (30 dní) — FIXED: start_at ===
-    const { data: recentBookings } = await supabaseAdmin
+    const { data: recentBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('service_id, start_at, price, services(name)')
       .eq('organization_id', orgId)
@@ -308,14 +308,14 @@ export async function GET(request: NextRequest) {
     }
 
     // === 6. NO-SHOW RIZIKO — FIXED: start_at ===
-    const { data: noShows } = await supabaseAdmin
+    const { data: noShows } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id')
       .eq('organization_id', orgId)
       .eq('status', 'no_show')
       .gte('start_at', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
 
-    const { data: totalRecent } = await supabaseAdmin
+    const { data: totalRecent } = await (supabaseAdmin as any)
       .from('bookings')
       .select('id')
       .eq('organization_id', orgId)

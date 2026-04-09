@@ -9,10 +9,10 @@ export async function GET(request: NextRequest) {
     const auth = await requireAuth(request, 'superadmin')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { data: organizations } = await supabaseAdmin.from('organizations').select('*').order('created_at')
-    const { count: totalUsers } = await supabaseAdmin.from('staff').select('*', { count: 'exact', head: true })
-    const { count: totalBookings } = await supabaseAdmin.from('bookings').select('*', { count: 'exact', head: true })
-    const { count: totalNotifications } = await supabaseAdmin.from('notifications').select('*', { count: 'exact', head: true })
+    const { data: organizations } = await (supabaseAdmin as any).from('organizations').select('*').order('created_at')
+    const { count: totalUsers } = await (supabaseAdmin as any).from('staff').select('*', { count: 'exact', head: true })
+    const { count: totalBookings } = await (supabaseAdmin as any).from('bookings').select('*', { count: 'exact', head: true })
+    const { count: totalNotifications } = await (supabaseAdmin as any).from('notifications').select('*', { count: 'exact', head: true })
 
     const orgsWithCounts = await Promise.all((organizations || []).map(async (org: any) => {
       const [bookingsRes, clientsRes, staffRes, servicesRes] = await Promise.all([

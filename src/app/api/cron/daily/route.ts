@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     // 1. PRIPOMINKY (dynamicke reminder_hours)
     // ========================================
     // Najdi vĹˇechny organizace s reminders
-    const { data: reminderOrgs } = await supabaseAdmin
+    const { data: reminderOrgs } = await (supabaseAdmin as any)
       .from('organizations')
       .select('id, name, phone, address, slug, reminder_enabled, reminder_hours')
       .eq('reminder_enabled', true)
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         const windowStart = new Date(now.getTime() + (hours - 0.5) * 60 * 60 * 1000)
         const windowEnd = new Date(now.getTime() + (hours + 0.5) * 60 * 60 * 1000)
 
-        const { data: bookings } = await supabaseAdmin
+        const { data: bookings } = await (supabaseAdmin as any)
           .from('bookings')
           .select(`
             id, start_at, end_at, customer_name, customer_email, customer_phone, price,
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
                 orgAddress: org.address,
               })
 
-              await supabaseAdmin
+              await (supabaseAdmin as any)
                 .from('bookings')
                 .update({ reminder_sent: true })
                 .eq('id', booking.id)
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
     const yesterdayStart = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0).toISOString()
     const yesterdayEnd = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59).toISOString()
 
-    const { data: followupBookings } = await supabaseAdmin
+    const { data: followupBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select(`
         id, start_at, end_at, customer_name, customer_email, customer_phone, price,
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
             bookingUrl,
           })
 
-          await supabaseAdmin
+          await (supabaseAdmin as any)
             .from('bookings')
             .update({ followup_sent: true })
             .eq('id', booking.id)
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
     const twoDaysAgoStart = new Date(twoDaysAgo.getFullYear(), twoDaysAgo.getMonth(), twoDaysAgo.getDate(), 0, 0, 0).toISOString()
     const twoDaysAgoEnd = new Date(twoDaysAgo.getFullYear(), twoDaysAgo.getMonth(), twoDaysAgo.getDate(), 23, 59, 59).toISOString()
 
-    const { data: reviewBookings } = await supabaseAdmin
+    const { data: reviewBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select(`
         id, start_at, customer_name, customer_email, organization_id,
@@ -206,7 +206,7 @@ export async function GET(request: NextRequest) {
             bookingUrl: `https://clientoro.pro/book/${org.slug}`,
           })
 
-          await supabaseAdmin
+          await (supabaseAdmin as any)
             .from('bookings')
             .update({ review_sent: true })
             .eq('id', booking.id)
@@ -230,7 +230,7 @@ export async function GET(request: NextRequest) {
     const tomorrowEnd = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59).toISOString()
 
     // Najdi zitrejsi bookings pro kazdou org
-    const { data: tomorrowBookings } = await supabaseAdmin
+    const { data: tomorrowBookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select(`
         id, start_at, customer_name, price, organization_id,
@@ -255,14 +255,14 @@ export async function GET(request: NextRequest) {
       }
 
       for (const [orgId, { org, bookings }] of orgMap) {
-        const { data: owner } = await supabaseAdmin
+        const { data: owner } = await (supabaseAdmin as any)
           .from('profiles')
           .select('email')
           .eq('organization_id', orgId)
           .eq('role', 'owner')
           .single()
 
-        const { data: orgData } = await supabaseAdmin
+        const { data: orgData } = await (supabaseAdmin as any)
           .from('organizations')
           .select('email')
           .eq('id', orgId)
@@ -307,14 +307,14 @@ export async function GET(request: NextRequest) {
       const weekAgo = new Date(now)
       weekAgo.setDate(weekAgo.getDate() - 7)
 
-      const { data: orgs } = await supabaseAdmin
+      const { data: orgs } = await (supabaseAdmin as any)
         .from('organizations')
         .select('id, name, email, slug')
         .eq('weekly_report_enabled', true)
 
       if (orgs) {
         for (const org of orgs) {
-          const { data: weekBookings } = await supabaseAdmin
+          const { data: weekBookings } = await (supabaseAdmin as any)
             .from('bookings')
             .select('id, status, price, start_at, services(price)')
             .eq('organization_id', org.id)
@@ -334,7 +334,7 @@ export async function GET(request: NextRequest) {
             .filter((b: any) => b.status !== 'cancelled' && b.status !== 'no_show')
             .reduce((sum: number, b: any) => sum + ((b.services as any)?.price || b.price || 0), 0)
 
-          const { data: owner } = await supabaseAdmin
+          const { data: owner } = await (supabaseAdmin as any)
             .from('profiles')
             .select('email')
             .eq('organization_id', org.id)

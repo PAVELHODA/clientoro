@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     // Kontrola duplicity telefonu ve stejné organizaci
     if (validData.phone) {
-      const { data: existing } = await supabaseAdmin
+      const { data: existing } = await (supabaseAdmin as any)
         .from('clients')
         .select('id, full_name')
         .eq('organization_id', auth.organizationId)
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
     if (validData.tags && Array.isArray(validData.tags)) insertData.tags = validData.tags
     if (validData.birthday) insertData.birthday = validData.birthday
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('clients')
       .insert(insertData)
       .select()

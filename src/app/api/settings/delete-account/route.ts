@@ -16,31 +16,31 @@ export async function DELETE(request: NextRequest) {
     const orgId = auth.organizationId
 
     // 1. Smazat waitlist
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('waitlist')
       .delete()
       .eq('organization_id', orgId)
 
     // 2. Smazat notifikace
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('notifications')
       .delete()
       .eq('organization_id', orgId)
 
     // 3. Smazat rezervace
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('bookings')
       .delete()
       .eq('organization_id', orgId)
 
     // 4. Smazat klienty
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('clients')
       .delete()
       .eq('organization_id', orgId)
 
     // 5. Smazat staff data (working hours, time off, staff_services)
-    const { data: staffData } = await supabaseAdmin
+    const { data: staffData } = await (supabaseAdmin as any)
       .from('staff')
       .select('id')
       .eq('organization_id', orgId)
@@ -48,43 +48,43 @@ export async function DELETE(request: NextRequest) {
     if (staffData && staffData.length > 0) {
       const staffIds = staffData.map(s => s.id)
 
-      await supabaseAdmin
+      await (supabaseAdmin as any)
         .from('staff_working_hours')
         .delete()
         .in('staff_id', staffIds)
 
-      await supabaseAdmin
+      await (supabaseAdmin as any)
         .from('staff_time_off')
         .delete()
         .in('staff_id', staffIds)
     }
 
     // 6. Smazat staff
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('staff')
       .delete()
       .eq('organization_id', orgId)
 
     // 7. Smazat služby
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('services')
       .delete()
       .eq('organization_id', orgId)
 
     // 8. Smazat memberships
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('memberships')
       .delete()
       .eq('organization_id', orgId)
 
     // 9. Smazat organizaci
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('organizations')
       .delete()
       .eq('id', orgId)
 
     // 10. Smazat profil
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('profiles')
       .delete()
       .eq('auth_user_id', userId)

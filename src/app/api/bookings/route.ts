@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     // Kontrola kolize — POUZE u stejného zaměstnance na stejný čas
     if (validData.staff_id && !validData.is_backfill) {
-      const { data: conflicts } = await supabaseAdmin
+      const { data: conflicts } = await (supabaseAdmin as any)
         .from('bookings')
         .select('id')
         .eq('organization_id', auth.organizationId)
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     let clientId = validData.client_id || null
     if (!clientId && validData.customer_phone) {
       // Hledej existujícího klienta podle telefonu
-      const { data: existingClient } = await supabaseAdmin
+      const { data: existingClient } = await (supabaseAdmin as any)
         .from('clients')
         .select('id, total_visits, full_name')
         .eq('organization_id', auth.organizationId)
@@ -101,14 +101,14 @@ export async function POST(request: NextRequest) {
       if (existingClient) {
         clientId = existingClient.id
         // Aktualizuj počet návštěv
-        await supabaseAdmin.from('clients').update({
+        await (supabaseAdmin as any).from('clients').update({
           total_visits: (existingClient.total_visits || 0) + 1,
           last_visit_at: validData.start_at,
           full_name: validData.customer_name || existingClient.full_name,
         }).eq('id', clientId)
       } else if (validData.customer_name) {
         // Vytvoř nového klienta
-        const { data: newClient } = await supabaseAdmin
+        const { data: newClient } = await (supabaseAdmin as any)
           .from('clients')
           .insert({
             organization_id: auth.organizationId,
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Vložení rezervace
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('bookings')
       .insert({
         ...validData,

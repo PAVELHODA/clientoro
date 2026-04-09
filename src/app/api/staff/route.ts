@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('staff')
       .select(`*, staff_services (service_id)`)
       .eq('organization_id', auth.organizationId)
@@ -48,14 +48,14 @@ export async function POST(request: NextRequest) {
 
     // Kontrola limitu zaměstnanců dle módu
     // Majitel se nepočítá — solo = 0 staff, team = 4 staff + majitel, pro = 24 staff + majitel
-    const { data: org } = await supabaseAdmin
+    const { data: org } = await (supabaseAdmin as any)
       .from('organizations')
       .select('mode')
       .eq('id', auth.organizationId)
       .single()
 
     if (org) {
-      const { count } = await supabaseAdmin
+      const { count } = await (supabaseAdmin as any)
         .from('staff')
         .select('id', { count: 'exact', head: true })
         .eq('organization_id', auth.organizationId)
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
 
     // Kontrola duplicity emailu ve stejné organizaci
     if (validData.email) {
-      const { data: existing } = await supabaseAdmin
+      const { data: existing } = await (supabaseAdmin as any)
         .from('staff')
         .select('id, full_name')
         .eq('organization_id', auth.organizationId)
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     if (validData.color) insertData.color = validData.color
     if (validData.position) insertData.position = validData.position
 
-    const { data: staff, error: staffError } = await supabaseAdmin
+    const { data: staff, error: staffError } = await (supabaseAdmin as any)
       .from('staff')
       .insert(insertData)
       .select()
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
         service_id: serviceId,
       }))
 
-      const { error: ssError } = await supabaseAdmin
+      const { error: ssError } = await (supabaseAdmin as any)
         .from('staff_services')
         .insert(staffServices)
 

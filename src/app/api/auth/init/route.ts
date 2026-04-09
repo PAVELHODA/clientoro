@@ -1,4 +1,4 @@
-// PATH: src/app/api/auth/init/route.ts
+﻿// PATH: src/app/api/auth/init/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
-    const { data: profile } = await supabaseAdmin
+    const { data: profile } = await (supabaseAdmin as any)
       .from('profiles')
       .select('id, email, name, is_superadmin, avatar_url, phone')
       .eq('auth_user_id', user.id)
@@ -44,13 +44,13 @@ export async function GET(request: NextRequest) {
 
     if (profile.is_superadmin) {
       role = 'superadmin'
-      const { data: allOrgs } = await supabaseAdmin
+      const { data: allOrgs } = await (supabaseAdmin as any)
         .from('organizations')
         .select('id, name, mode, slug, logo_url')
         .order('name')
       availableOrgs = allOrgs || []
     } else {
-      const { data: memberships } = await supabaseAdmin
+      const { data: memberships } = await (supabaseAdmin as any)
         .from('memberships')
         .select('organization_id, role, organizations(id, name, mode, slug, logo_url)')
         .eq('user_id', profile.id)
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
 
     let organization = null
     if (activeOrgId) {
-      const { data: orgData } = await supabaseAdmin
+      const { data: orgData } = await (supabaseAdmin as any)
         .from('organizations')
         .select('*')
         .eq('id', activeOrgId)
@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
       organization = orgData
 
       if (role === 'staff' && activeOrgId && !profile.is_superadmin) {
-        const { data: staffRecord } = await supabaseAdmin
+        const { data: staffRecord } = await (supabaseAdmin as any)
           .from('staff')
           .select('id, app_role, permissions')
           .eq('user_id', profile.id)
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
         if (staffRecord) {
           staffId = staffRecord.id
           if (staffRecord.app_role === 'manager') role = 'manager'
-          permissions = staffRecord.permissions || {}
+          permissions = (staffRecord.permissions as unknown as Record<string, boolean>) ?? {}
         }
       }
     }

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const token = searchParams.get('token')
     if (!token) return NextResponse.json({ error: 'Token is required' }, { status: 400 })
 
-    const { data: booking, error } = await supabaseAdmin
+    const { data: booking, error } = await (supabaseAdmin as any)
       .from('bookings')
       .select(`
         id, start_at, end_at, customer_name, customer_phone, customer_email,
@@ -48,7 +48,7 @@ export async function PATCH(request: NextRequest) {
     if (!token || !action) return NextResponse.json({ error: 'Token and action required' }, { status: 400 })
 
     // Najdi booking
-    const { data: booking, error: findErr } = await supabaseAdmin
+    const { data: booking, error: findErr } = await (supabaseAdmin as any)
       .from('bookings')
       .select(`
         id, start_at, customer_name, customer_email, customer_phone, price, status,
@@ -68,7 +68,7 @@ export async function PATCH(request: NextRequest) {
 
     if (action === 'cancel') {
       // Zrušit
-      const { error: updateErr } = await supabaseAdmin
+      const { error: updateErr } = await (supabaseAdmin as any)
         .from('bookings')
         .update({ status: 'cancelled' })
         .eq('id', booking.id)

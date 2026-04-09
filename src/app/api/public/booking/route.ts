@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
     }
 
-    const { data: org, error: orgError } = await supabaseAdmin
+    const { data: org, error: orgError } = await (supabaseAdmin as any)
       .from('organizations')
       .select('id, name, mode, work_start, work_end, slug, description, phone, address, logo_url')
       .eq('slug', validation.data.slug)
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     if (orgError || !org) return NextResponse.json({ error: 'Organizace nenalezena' }, { status: 404 })
 
     // Služby (jen public + active)
-    const { data: services } = await supabaseAdmin
+    const { data: services } = await (supabaseAdmin as any)
       .from('services')
       .select('id, name, duration, price, color, category, description')
       .eq('organization_id', org.id)
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       .order('sort_order', { ascending: true })
 
     // Staff (jen active)
-    const { data: staff } = await supabaseAdmin
+    const { data: staff } = await (supabaseAdmin as any)
       .from('staff')
       .select('id, full_name, avatar_url, staff_services(service_id)')
       .eq('organization_id', org.id)
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     const staffIds = (staff || []).map((s: any) => s.id)
     let workingHours: any[] = []
     if (staffIds.length > 0) {
-      const { data: wh } = await supabaseAdmin
+      const { data: wh } = await (supabaseAdmin as any)
         .from('staff_working_hours')
         .select('*')
         .in('staff_id', staffIds)
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     let timeOffs: any[] = []
     if (staffIds.length > 0) {
       const today = new Date().toISOString()
-      const { data: to } = await supabaseAdmin
+      const { data: to } = await (supabaseAdmin as any)
         .from('staff_time_off')
         .select('*')
         .in('staff_id', staffIds)
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
 
     // Existující bookings (pro obsazené sloty)
     const today = new Date().toISOString().split('T')[0]
-    const { data: bookings } = await supabaseAdmin
+    const { data: bookings } = await (supabaseAdmin as any)
       .from('bookings')
       .select('start_at, end_at, staff_id, service_id')
       .eq('organization_id', org.id)
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Najdi organizaci + email majitele + telefon
-    const { data: org } = await supabaseAdmin
+    const { data: org } = await (supabaseAdmin as any)
       .from('organizations')
       .select('id, name, email, phone, notification_email, notify_on_booking, logo_url, address')
       .eq('slug', slug)
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
 
     // Kontrola kolize — POUZE u stejného zaměstnance
     if (staff_id) {
-      const { data: conflicts } = await supabaseAdmin
+      const { data: conflicts } = await (supabaseAdmin as any)
         .from('bookings')
         .select('id')
         .eq('organization_id', org.id)
@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
 
     // Najdi nebo vytvoř klienta
     let clientId = null
-    const { data: existingClient } = await supabaseAdmin
+    const { data: existingClient } = await (supabaseAdmin as any)
       .from('clients')
       .select('id, total_visits')
       .eq('organization_id', org.id)
@@ -166,12 +166,12 @@ export async function POST(request: NextRequest) {
 
     if (existingClient) {
       clientId = existingClient.id
-      await supabaseAdmin.from('clients').update({
+      await (supabaseAdmin as any).from('clients').update({
         total_visits: (existingClient.total_visits || 0) + 1,
         last_visit_at: start_at,
       }).eq('id', clientId)
     } else {
-      const { data: newClient } = await supabaseAdmin
+      const { data: newClient } = await (supabaseAdmin as any)
         .from('clients')
         .insert({
           organization_id: org.id,
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Najdi název služby a staff
-    const { data: service } = await supabaseAdmin
+    const { data: service } = await (supabaseAdmin as any)
       .from('services')
       .select('name, duration')
       .eq('id', service_id)
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
 
     let staffName = ''
     if (staff_id) {
-      const { data: staffData } = await supabaseAdmin
+      const { data: staffData } = await (supabaseAdmin as any)
         .from('staff')
         .select('full_name')
         .eq('id', staff_id)
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Vytvoř rezervaci
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('bookings')
       .insert({
         organization_id: org.id,

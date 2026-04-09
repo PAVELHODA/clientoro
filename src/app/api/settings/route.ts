@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: auth.error }, { status: auth.status })
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('organizations')
       .select('*')
       .eq('id', auth.organizationId)
@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest) {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '')
 
-      const { data: existingSlug } = await supabaseAdmin
+      const { data: existingSlug } = await (supabaseAdmin as any)
         .from('organizations')
         .select('id')
         .eq('slug', newSlug)
@@ -103,7 +103,7 @@ export async function PUT(request: NextRequest) {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '')
 
-      const { data: existingSlug } = await supabaseAdmin
+      const { data: existingSlug } = await (supabaseAdmin as any)
         .from('organizations')
         .select('id')
         .eq('slug', explicitSlug)
@@ -120,7 +120,7 @@ export async function PUT(request: NextRequest) {
     if (updateData.mode) {
       const soloModes = ['solo', 'solo_inspire']
       if (soloModes.includes(updateData.mode)) {
-        const { count } = await supabaseAdmin
+        const { count } = await (supabaseAdmin as any)
           .from('staff')
           .select('id', { count: 'exact', head: true })
           .eq('organization_id', auth.organizationId)
@@ -140,7 +140,7 @@ export async function PUT(request: NextRequest) {
     // Pokud dokončujeme onboarding, načteme aktuální data organizace PŘED updatem
     let orgBeforeUpdate: any = null
     if (isFinishingOnboarding) {
-      const { data: currentOrg } = await supabaseAdmin
+      const { data: currentOrg } = await (supabaseAdmin as any)
         .from('organizations')
         .select('*')
         .eq('id', auth.organizationId)
@@ -148,7 +148,7 @@ export async function PUT(request: NextRequest) {
       orgBeforeUpdate = currentOrg
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('organizations')
       .update(updateData)
       .eq('id', auth.organizationId)
@@ -163,14 +163,14 @@ export async function PUT(request: NextRequest) {
     if (isFinishingOnboarding && orgBeforeUpdate && !orgBeforeUpdate.onboarding_completed) {
       try {
         // Zkontroluj jestli už staff existuje
-        const { count: existingStaff } = await supabaseAdmin
+        const { count: existingStaff } = await (supabaseAdmin as any)
           .from('staff')
           .select('id', { count: 'exact', head: true })
           .eq('organization_id', auth.organizationId)
 
         if (!existingStaff || existingStaff === 0) {
           // Získej profil majitele
-          const { data: ownerProfile } = await supabaseAdmin
+          const { data: ownerProfile } = await (supabaseAdmin as any)
             .from('profiles')
             .select('id, name, email')
             .eq('auth_user_id', auth.userId)
@@ -180,7 +180,7 @@ export async function PUT(request: NextRequest) {
           const staffEmail = ownerProfile?.email || data.email || ''
 
           // 1. Vytvoř staff záznam
-          const { data: newStaff, error: staffError } = await supabaseAdmin
+          const { data: newStaff, error: staffError } = await (supabaseAdmin as any)
             .from('staff')
             .insert({
               organization_id: auth.organizationId,
@@ -206,12 +206,12 @@ export async function PUT(request: NextRequest) {
                 end_time: `${String(workEnd).padStart(2, '0')}:00`,
               })
             }
-            const { error: whError } = await supabaseAdmin
+            const { error: whError } = await (supabaseAdmin as any)
               .from('staff_working_hours')
               .insert(whRows)
 
             // 3. Přiřaď všechny služby organizace tomuto staff
-            const { data: orgServices } = await supabaseAdmin
+            const { data: orgServices } = await (supabaseAdmin as any)
               .from('services')
               .select('id')
               .eq('organization_id', auth.organizationId)
@@ -222,7 +222,7 @@ export async function PUT(request: NextRequest) {
                 staff_id: newStaff.id,
                 service_id: svc.id,
               }))
-              const { error: ssError } = await supabaseAdmin
+              const { error: ssError } = await (supabaseAdmin as any)
                 .from('staff_services')
                 .insert(ssRows)
             }
@@ -238,7 +238,7 @@ export async function PUT(request: NextRequest) {
     if (isFinishingOnboarding && orgBeforeUpdate && !orgBeforeUpdate.onboarding_completed) {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.clientoro.pro'
       // Načti KOMPLETNÍ org data (update vrací jen změněné sloupce)
-      const { data: fullOrg } = await supabaseAdmin
+      const { data: fullOrg } = await (supabaseAdmin as any)
         .from('organizations')
         .select('*')
         .eq('id', auth.organizationId)
@@ -246,7 +246,7 @@ export async function PUT(request: NextRequest) {
       const org = fullOrg || data
 
       // Získej email majitele
-      const { data: ownerProf } = await supabaseAdmin.from('profiles').select('email').eq('auth_user_id', auth.userId).single()
+      const { data: ownerProf } = await (supabaseAdmin as any).from('profiles').select('email').eq('auth_user_id', auth.userId).single()
       const ownerEmail = org.email || ownerProf?.email || orgBeforeUpdate?.email || ''
 
       // 1. Welcome email pro zákazníka

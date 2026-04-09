@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get profile
-    const { data: profile } = await supabaseAdmin
+    const { data: profile } = await (supabaseAdmin as any)
       .from('profiles')
       .select('id, is_superadmin')
       .eq('auth_user_id', user.id)
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Superadmin může přepnout na cokoliv
     if (profile.is_superadmin) {
-      const { data: org } = await supabaseAdmin
+      const { data: org } = await (supabaseAdmin as any)
         .from('organizations')
         .select('*')
         .eq('id', organizationId)
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Ostatní — ověř membership
-    const { data: membership } = await supabaseAdmin
+    const { data: membership } = await (supabaseAdmin as any)
       .from('memberships')
       .select('organization_id, role, organizations(*)')
       .eq('user_id', profile.id)

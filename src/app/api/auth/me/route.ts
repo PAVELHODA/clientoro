@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+﻿export const dynamic = 'force-dynamic'
 
 // PATH: src/app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from 'next/server'
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 2. Get profile
-    const { data: profile } = await supabaseAdmin
+    const { data: profile } = await (supabaseAdmin as any)
       .from('profiles')
       .select('id, email, name, is_superadmin, avatar_url, phone')
       .eq('auth_user_id', user.id)
@@ -46,8 +46,8 @@ export async function GET(request: NextRequest) {
     if (profile.is_superadmin) {
       role = 'superadmin'
 
-      // Superadmin — get first membership for org context
-      const { data: membership } = await supabaseAdmin
+      // Superadmin â€” get first membership for org context
+      const { data: membership } = await (supabaseAdmin as any)
         .from('memberships')
         .select('organization_id, role')
         .eq('user_id', profile.id)
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       }
     } else {
       // Get membership
-      const { data: membership } = await supabaseAdmin
+      const { data: membership } = await (supabaseAdmin as any)
         .from('memberships')
         .select('organization_id, role')
         .eq('user_id', profile.id)
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
       // If role is staff, check if they're a manager via staff.app_role
       if (role === 'staff' && organizationId) {
-        const { data: staffRecord } = await supabaseAdmin
+        const { data: staffRecord } = await (supabaseAdmin as any)
           .from('staff')
           .select('id, app_role, permissions')
           .eq('user_id', profile.id)
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
           if (staffRecord.app_role === 'manager') {
             role = 'manager'
           }
-          permissions = staffRecord.permissions || {}
+          permissions = (staffRecord.permissions as unknown as Record<string, boolean>) ?? {}
         }
       }
     }
