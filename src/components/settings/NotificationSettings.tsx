@@ -1,4 +1,4 @@
-// PATH: src/components/settings/NotificationSettings.tsx
+﻿// PATH: src/components/settings/NotificationSettings.tsx
 'use client'
 
 import { Bell, Mail, Check } from 'lucide-react'
@@ -85,11 +85,11 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
             {lang === 'en' ? 'Automatic emails to clients' : lang === 'sk' ? 'Automatické emaily klientom' : 'Automatické emaily klientům'}
           </h3>
           <p className="text-xs text-gray-500 mb-3">
-            {lang === 'en' ? 'Sent automatically based on booking events.' : lang === 'sk' ? 'Odosielané automaticky podľa udalostí rezervácií.' : 'Odesílané automaticky podle událostí rezervací.'}
+            {lang === 'en' ? 'Sent automatically based on booking events.' : lang === 'sk' ? 'OdosielanĂ© automaticky podÄľa udalostĂ­ rezervĂˇciĂ­.' : 'OdesĂ­lanĂ© automaticky podle udĂˇlostĂ­ rezervacĂ­.'}
           </p>
 
           <div className="space-y-3">
-            {/* Připomínka */}
+            {/* PĹ™ipomĂ­nka */}
             <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
               <button onClick={() => setS({ ...s, reminder_enabled: !s.reminder_enabled })}
                 className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.reminder_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
@@ -97,10 +97,10 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
               </button>
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-900">
-                  📅 {lang === 'en' ? 'Reminder before appointment' : lang === 'sk' ? 'Pripomienka pred návštevou' : 'Připomínka před návštěvou'}
+                  đź“… {lang === 'en' ? 'Reminder before appointment' : lang === 'sk' ? 'Pripomienka pred nĂˇvĹˇtevou' : 'PĹ™ipomĂ­nka pĹ™ed nĂˇvĹˇtÄ›vou'}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {lang === 'en' ? 'Client receives a reminder email before their appointment.' : lang === 'sk' ? 'Klient dostane pripomienku emailom pred termínom.' : 'Klient dostane připomínku emailem před termínem.'}
+                  {lang === 'en' ? 'Client receives a reminder email before their appointment.' : lang === 'sk' ? 'Klient dostane pripomienku emailom pred termĂ­nom.' : 'Klient dostane pĹ™ipomĂ­nku emailem pĹ™ed termĂ­nem.'}
                 </p>
                 {s.reminder_enabled && (
                   <div className="mt-2 flex items-center gap-2">
@@ -117,14 +117,14 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
                       <option value={48}>48h</option>
                     </select>
                     <span className="text-xs text-gray-500">
-                      {lang === 'en' ? 'before' : lang === 'sk' ? 'pred termínom' : 'před termínem'}
+                      {lang === 'en' ? 'before' : lang === 'sk' ? 'pred termĂ­nom' : 'pĹ™ed termĂ­nem'}
                     </span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Poděkování po návštěvě */}
+            {/* PodÄ›kovĂˇnĂ­ po nĂˇvĹˇtÄ›vÄ› */}
             <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
               <button onClick={() => setS({ ...s, followup_enabled: !s.followup_enabled })}
                 className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.followup_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
@@ -132,7 +132,7 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
               </button>
               <div>
                 <p className="text-sm font-medium text-gray-900">
-                  🙏 {lang === 'en' ? 'Thank you after visit' : lang === 'sk' ? 'Poďakovanie po návšteve' : 'Poděkování po návštěvě'}
+                  đź™Ź {lang === 'en' ? 'Thank you after visit' : lang === 'sk' ? 'Poďakovanie po návšteve' : 'PodÄ›kovĂˇnĂ­ po nĂˇvĹˇtÄ›vÄ›'}
                 </p>
                 <p className="text-xs text-gray-500">
                   {lang === 'en' ? 'Client receives a thank you email after their visit.' : lang === 'sk' ? 'Klient dostane ďakovný email po návšteve.' : 'Klient dostane děkovný email po návštěvě.'}
@@ -148,7 +148,7 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
               </button>
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-900">
-                  ⭐ {lang === 'en' ? 'Google review request' : lang === 'sk' ? 'Žiadosť o Google recenziu' : 'Žádost o Google recenzi'}
+                  â­ {lang === 'en' ? 'Google review request' : lang === 'sk' ? 'Žiadosť o Google recenziu' : 'Žádost o Google recenzi'}
                 </p>
                 <p className="text-xs text-gray-500">
                   {lang === 'en' ? 'Client receives a review request after their visit.' : lang === 'sk' ? 'Klient dostane žiadosť o recenziu po návšteve.' : 'Klient dostane žádost o recenzi po návštěvě.'}
@@ -158,7 +158,7 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
                     <input type="url" value={s.google_review_url || ''}
                       onChange={e => setS({ ...s, google_review_url: e.target.value })}
                       className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500"
-                      placeholder={lang === 'en' ? 'Google review link (optional)' : 'Odkaz na Google recenze (nepovinné)'} />
+                      placeholder={lang === 'en' ? 'Google review link (optional)' : 'Odkaz na Google recenze (nepovinnĂ©)'} />
                     <p className="text-xs text-gray-400 mt-1">
                       {lang === 'en' ? 'Paste your Google Maps review URL' : lang === 'sk' ? 'Vložte odkaz na Google Maps recenzie' : 'Vložte odkaz na Google Maps recenze'}
                     </p>
@@ -172,7 +172,7 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
         {s.notification_email && s.notify_on_booking && (
           <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2">
             <p className="text-sm text-green-700 flex items-center gap-2">
-              <Check className="w-4 h-4" /> {lang === 'en' ? 'Notifications active' : lang === 'sk' ? 'Notifikácie aktívne' : 'Notifikace aktivní'} &rarr; {s.notification_email}
+              <Check className="w-4 h-4" /> {lang === 'en' ? 'Notifications active' : lang === 'sk' ? 'NotifikĂˇcie aktĂ­vne' : 'Notifikace aktivní­'} &rarr; {s.notification_email}
             </p>
           </div>
         )}
@@ -180,3 +180,4 @@ export default function NotificationSettings({ s, setS, lang, l, sendTestEmail, 
     </div>
   )
 }
+
