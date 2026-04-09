@@ -291,7 +291,7 @@ export default function SettingsPage() {
           <h1 className="text-2xl font-bold text-gray-900">{l.title}</h1>
       {/* DEBUG - REMOVE LATER */}
       <div style={{background:"#fef3c7",border:"2px solid #f59e0b",padding:16,borderRadius:8,marginBottom:16,fontFamily:"monospace",fontSize:13}}>
-        <b>STATE:</b> reminder={String(s.reminder_enabled)} | followup={String(s.followup_enabled)} | review={String(s.review_request_enabled)}<br/><b>RAW API:</b> {debugRaw}
+        <b>STATE:</b> reminder={String(s.reminder_enabled)} | followup={String(s.followup_enabled)} | review={String(s.review_request_enabled)} --- <b>RAW API:</b> {debugRaw}
       </div>
           <p className="mt-1 text-gray-500">{l.subtitle}</p>
         </div>
@@ -444,5 +444,6 @@ export default function SettingsPage() {
     </div>
   )
 }
+
 
 
