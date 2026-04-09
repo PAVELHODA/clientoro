@@ -10,14 +10,11 @@ import {
 } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30 // Vercel timeout 30s
+export const maxDuration = 30
 
 export async function GET(request: NextRequest) {
-  // 1. Bezpečnost — ověř CRON_SECRET nebo superadmin
   const authHeader = request.headers.get('authorization')
   const cronSecret = process.env.CRON_SECRET
-
-  // Vercel posílá Bearer token, nebo můžeš volat ručně s ?secret=xxx
   const urlSecret = new URL(request.url).searchParams.get('secret')
 
   const isAuthorized =
@@ -32,74 +29,76 @@ export async function GET(request: NextRequest) {
   const results = {
     reminders: { sent: 0, skipped: 0, errors: 0, details: [] as string[] },
     followups: { sent: 0, skipped: 0, errors: 0, details: [] as string[] },
+    reviews: { sent: 0, skipped: 0, errors: 0, details: [] as string[] },
     weeklyReports: { sent: 0, skipped: 0, errors: 0, details: [] as string[] },
   }
 
   try {
     // ========================================
-    // 2. PŘIPOMÍNKY — zítřejší rezervace
+    // 2. PŘIPOMÍNKY — dynamické reminder_hours per organizace
     // ========================================
-    const tomorrow = new Date(now)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    const tomorrowStart = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 0, 0).toISOString()
-    const tomorrowEnd = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59).toISOString()
+    // Najdi všechny organizace s reminders
+    const { data: reminderOrgs } = await supabaseAdmin
+      .from('organizations')
+      .select('id, name, phone, address, slug, reminder_enabled, reminder_hours')
+      .eq('reminder_enabled', true)
 
-    const { data: reminderBookings } = await supabaseAdmin
-      .from('bookings')
-      .select(`
-        id, start_at, end_at, customer_name, customer_email, customer_phone, price,
-        reminder_sent, organization_id,
-        services (id, name, duration, price),
-        staff (id, full_name),
-        organizations!inner (id, name, phone, address, reminder_enabled, slug)
-      `)
-      .eq('status', 'confirmed')
-      .eq('reminder_sent', false)
-      .gte('start_at', tomorrowStart)
-      .lte('start_at', tomorrowEnd)
+    const allReminderBookings: any[] = []
 
-    if (reminderBookings && reminderBookings.length > 0) {
-      for (const booking of reminderBookings) {
-        const org = booking.organizations as any
-        if (!org?.reminder_enabled) {
-          results.reminders.skipped++
-          continue
-        }
+    if (reminderOrgs) {
+      for (const org of reminderOrgs) {
+        const hours = org.reminder_hours || 24
+        const windowStart = new Date(now.getTime() + (hours - 0.5) * 60 * 60 * 1000)
+        const windowEnd = new Date(now.getTime() + (hours + 0.5) * 60 * 60 * 1000)
 
-        const email = booking.customer_email
-        if (!email) {
-          results.reminders.skipped++
-          continue
-        }
+        const { data: bookings } = await supabaseAdmin
+          .from('bookings')
+          .select(`
+            id, start_at, end_at, customer_name, customer_email, customer_phone, price,
+            reminder_sent, organization_id,
+            services (id, name, duration, price),
+            staff (id, full_name)
+          `)
+          .eq('organization_id', org.id)
+          .eq('status', 'confirmed')
+          .eq('reminder_sent', false)
+          .gte('start_at', windowStart.toISOString())
+          .lte('start_at', windowEnd.toISOString())
 
-        const startDate = new Date(booking.start_at)
-        const date = startDate.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
-        const time = startDate.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
+        if (bookings && bookings.length > 0) {
+          for (const booking of bookings) {
+            const email = booking.customer_email
+            if (!email) { results.reminders.skipped++; continue }
 
-        try {
-          await sendBookingReminder({
-            to: email,
-            customerName: booking.customer_name || 'Klient',
-            serviceName: (booking.services as any)?.name || 'Služba',
-            staffName: (booking.staff as any)?.full_name,
-            date,
-            time,
-            orgName: org.name,
-            orgPhone: org.phone,
-            orgAddress: org.address,
-          })
+            const startDate = new Date(booking.start_at)
+            const date = startDate.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+            const time = startDate.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
 
-          // Označ jako odesláno
-          await supabaseAdmin
-            .from('bookings')
-            .update({ reminder_sent: true })
-            .eq('id', booking.id)
+            try {
+              await sendBookingReminder({
+                to: email,
+                customerName: booking.customer_name || 'Klient',
+                serviceName: (booking.services as any)?.name || 'Služba',
+                staffName: (booking.staff as any)?.full_name,
+                date, time,
+                orgName: org.name,
+                orgPhone: org.phone,
+                orgAddress: org.address,
+              })
 
-          results.reminders.sent++
-          results.reminders.details.push(`${org.name}: ${booking.customer_name} (${email})`)
-        } catch (err) {
-          results.reminders.errors++
-          console.error('[cron/reminder]', booking.id, err)
+              await supabaseAdmin
+                .from('bookings')
+                .update({ reminder_sent: true })
+                .eq('id', booking.id)
+
+              results.reminders.sent++
+              results.reminders.details.push(`${org.name}: ${booking.customer_name} (${email})`)
+              allReminderBookings.push({ ...booking, organizations: org })
+            } catch (err) {
+              results.reminders.errors++
+              console.error('[cron/reminder]', booking.id, err)
+            }
+          }
         }
       }
     }
@@ -129,16 +128,10 @@ export async function GET(request: NextRequest) {
     if (followupBookings && followupBookings.length > 0) {
       for (const booking of followupBookings) {
         const org = booking.organizations as any
-        if (!org?.followup_enabled) {
-          results.followups.skipped++
-          continue
-        }
+        if (!org?.followup_enabled) { results.followups.skipped++; continue }
 
         const email = booking.customer_email
-        if (!email) {
-          results.followups.skipped++
-          continue
-        }
+        if (!email) { results.followups.skipped++; continue }
 
         const bookingUrl = `https://clientoro.pro/book/${org.slug}`
 
@@ -168,13 +161,91 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
+    // 3b. REVIEW REQUEST — 2 dny po návštěvě
+    // ========================================
+    const twoDaysAgo = new Date(now)
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
+    const twoDaysAgoStart = new Date(twoDaysAgo.getFullYear(), twoDaysAgo.getMonth(), twoDaysAgo.getDate(), 0, 0, 0).toISOString()
+    const twoDaysAgoEnd = new Date(twoDaysAgo.getFullYear(), twoDaysAgo.getMonth(), twoDaysAgo.getDate(), 23, 59, 59).toISOString()
+
+    const { data: reviewBookings } = await supabaseAdmin
+      .from('bookings')
+      .select(`
+        id, start_at, customer_name, customer_email, organization_id,
+        review_sent, followup_sent,
+        services (id, name),
+        staff (id, full_name),
+        organizations!inner (id, name, slug, review_request_enabled, google_review_url)
+      `)
+      .in('status', ['confirmed', 'completed'])
+      .eq('review_sent', false)
+      .eq('followup_sent', true)
+      .gte('start_at', twoDaysAgoStart)
+      .lte('start_at', twoDaysAgoEnd)
+
+    if (reviewBookings && reviewBookings.length > 0) {
+      for (const booking of reviewBookings) {
+        const org = booking.organizations as any
+        if (!org?.review_request_enabled) { results.reviews.skipped++; continue }
+
+        const email = booking.customer_email
+        if (!email) { results.reviews.skipped++; continue }
+
+        const reviewUrl = org.google_review_url || `https://clientoro.pro/book/${org.slug}`
+
+        try {
+          await sendEmail({
+            to: email,
+            subject: `Jak se Vám u nás líbilo? — ${org.name}`,
+            html: reviewEmailTemplate({
+              customerName: booking.customer_name || 'Klient',
+              serviceName: (booking.services as any)?.name || 'Služba',
+              staffName: (booking.staff as any)?.full_name,
+              orgName: org.name,
+              reviewUrl,
+              bookingUrl: `https://clientoro.pro/book/${org.slug}`,
+            }),
+          })
+
+          await supabaseAdmin
+            .from('bookings')
+            .update({ review_sent: true })
+            .eq('id', booking.id)
+
+          results.reviews.sent++
+          results.reviews.details.push(`${org.name}: ${booking.customer_name} (${email})`)
+        } catch (err) {
+          results.reviews.errors++
+          console.error('[cron/review]', booking.id, err)
+        }
+      }
+    }
+
+    // ========================================
     // 4. DENNÍ SOUHRN PRO MAJITELE — co je zítra
     // ========================================
-    // Seskupíme zítřejší rezervace per organizace a pošleme majiteli
-    if (reminderBookings && reminderBookings.length > 0) {
+    const tomorrow = new Date(now)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    const tomorrowStart = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 0, 0).toISOString()
+    const tomorrowEnd = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59).toISOString()
+
+    // Najdi zítřejší bookings pro daily summary
+    const { data: tomorrowBookings } = await supabaseAdmin
+      .from('bookings')
+      .select(`
+        id, start_at, customer_name, price, organization_id,
+        services (id, name, price),
+        staff (id, full_name),
+        organizations!inner (id, name, reminder_enabled)
+      `)
+      .eq('status', 'confirmed')
+      .gte('start_at', tomorrowStart)
+      .lte('start_at', tomorrowEnd)
+
+    if (tomorrowBookings && tomorrowBookings.length > 0) {
       const orgMap = new Map<string, { org: any; bookings: any[] }>()
 
-      for (const booking of reminderBookings) {
+      for (const booking of tomorrowBookings) {
         const org = booking.organizations as any
         if (!org?.reminder_enabled) continue
         if (!orgMap.has(org.id)) {
@@ -184,7 +255,6 @@ export async function GET(request: NextRequest) {
       }
 
       for (const [orgId, { org, bookings }] of orgMap) {
-        // Najdi majitele
         const { data: owner } = await supabaseAdmin
           .from('profiles')
           .select('email')
@@ -192,7 +262,6 @@ export async function GET(request: NextRequest) {
           .eq('role', 'owner')
           .single()
 
-        // Fallback: email z organizations
         const { data: orgData } = await supabaseAdmin
           .from('organizations')
           .select('email')
@@ -215,9 +284,7 @@ export async function GET(request: NextRequest) {
             orgName: org.name,
             tomorrowDate: tomorrow.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long' }),
             bookingsCount: sortedBookings.length,
-            firstTime,
-            lastTime,
-            totalRevenue,
+            firstTime, lastTime, totalRevenue,
             bookings: sortedBookings.map((b: any) => ({
               time: new Date(b.start_at).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }),
               customerName: b.customer_name || 'Klient',
@@ -234,12 +301,11 @@ export async function GET(request: NextRequest) {
     // ========================================
     // 5. TÝDENNÍ REPORT — jen v pondělí
     // ========================================
-    const dayOfWeek = now.getUTCDay() // 0=neděle, 1=pondělí
+    const dayOfWeek = now.getUTCDay()
     if (dayOfWeek === 1) {
       const weekAgo = new Date(now)
       weekAgo.setDate(weekAgo.getDate() - 7)
 
-      // Najdi všechny organizace s weekly_report_enabled
       const { data: orgs } = await supabaseAdmin
         .from('organizations')
         .select('id, name, email, slug')
@@ -247,7 +313,6 @@ export async function GET(request: NextRequest) {
 
       if (orgs) {
         for (const org of orgs) {
-          // Statistiky za minulý týden
           const { data: weekBookings } = await supabaseAdmin
             .from('bookings')
             .select('id, status, price, start_at, services(price)')
@@ -268,7 +333,6 @@ export async function GET(request: NextRequest) {
             .filter((b: any) => b.status !== 'cancelled' && b.status !== 'no_show')
             .reduce((sum: number, b: any) => sum + ((b.services as any)?.price || b.price || 0), 0)
 
-          // Najdi majitele
           const { data: owner } = await supabaseAdmin
             .from('profiles')
             .select('email')
@@ -277,10 +341,7 @@ export async function GET(request: NextRequest) {
             .single()
 
           const ownerEmail = owner?.email || org.email
-          if (!ownerEmail) {
-            results.weeklyReports.skipped++
-            continue
-          }
+          if (!ownerEmail) { results.weeklyReports.skipped++; continue }
 
           try {
             await sendWeeklyReport({
@@ -307,7 +368,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 6. SUPERADMIN SOUHRN — vždy
+    // 6. SUPERADMIN SOUHRN
     // ========================================
     const superadminEmail = process.env.SUPERADMIN_EMAIL || 'atom369@centrum.cz'
     try {
@@ -326,6 +387,7 @@ export async function GET(request: NextRequest) {
       results: {
         reminders: { sent: results.reminders.sent, skipped: results.reminders.skipped, errors: results.reminders.errors },
         followups: { sent: results.followups.sent, skipped: results.followups.skipped, errors: results.followups.errors },
+        reviews: { sent: results.reviews.sent, skipped: results.reviews.skipped, errors: results.reviews.errors },
         weeklyReports: { sent: results.weeklyReports.sent, skipped: results.weeklyReports.skipped, errors: results.weeklyReports.errors },
       },
     })
@@ -333,4 +395,54 @@ export async function GET(request: NextRequest) {
     console.error('[cron/daily] Fatal error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
+}
+
+// ===== Review Request Email Template =====
+function reviewEmailTemplate({ customerName, serviceName, staffName, orgName, reviewUrl, bookingUrl }: {
+  customerName: string; serviceName: string; staffName?: string; orgName: string; reviewUrl: string; bookingUrl: string
+}) {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"/></head><body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:520px;margin:0 auto;padding:20px;">
+    <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+      <div style="background:linear-gradient(135deg,#0e3a5c,#2ba0b0);padding:24px 24px 20px;text-align:center;">
+        <h1 style="color:white;font-size:18px;font-weight:700;margin:0;">${orgName}</h1>
+      </div>
+      <div style="padding:24px;">
+        <h2 style="color:#111827;font-size:18px;font-weight:700;margin:0 0 16px;">Jak se Vám u nás líbilo? ⭐</h2>
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+          Dobrý den <strong>${customerName}</strong>, děkujeme za Vaši nedávnou návštěvu${staffName ? ` u specialisty <strong>${staffName}</strong>` : ''}.
+        </p>
+        <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:16px 0;text-align:center;">
+          <p style="margin:0 0 4px;color:#92400e;font-size:14px;font-weight:600;">Služba: ${serviceName}</p>
+          <p style="margin:0;color:#92400e;font-size:13px;">Vaše zpětná vazba nám velmi pomáhá!</p>
+        </div>
+        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:16px 0;">
+          Byli jste spokojeni? Budeme moc rádi, když nám necháte krátké hodnocení. Zabere to jen minutku a pomůže to dalším klientům.
+        </p>
+        <div style="margin:20px 0;text-align:center;">
+          <a href="${reviewUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;text-decoration:none;border-radius:10px;font-size:15px;font-weight:700;">⭐ Ohodnotit na Google</a>
+        </div>
+        <div style="border-top:1px solid #e5e7eb;margin:20px 0;padding-top:16px;text-align:center;">
+          <p style="color:#9ca3af;font-size:13px;margin:0 0 8px;">Chcete si zarezervovat další termín?</p>
+          <a href="${bookingUrl}" style="color:#2ba0b0;font-size:13px;font-weight:600;text-decoration:none;">Rezervovat znovu →</a>
+        </div>
+      </div>
+      <div style="padding:16px 24px;background:#f9fafb;text-align:center;">
+        <p style="color:#9ca3af;font-size:11px;margin:0;">Odesláno přes Clientoro · ${orgName}</p>
+      </div>
+    </div>
+  </div></body></html>`
+}
+
+// Local sendEmail for review (to avoid circular import issues)
+async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+  if (!process.env.RESEND_API_KEY || !to) return { success: false }
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: process.env.EMAIL_FROM || 'Clientoro <noreply@clientoro.pro>', to, subject, html }),
+    })
+    return { success: res.ok }
+  } catch { return { success: false } }
 }
