@@ -44,6 +44,7 @@ const EMPTY: OrgSettings = {
 
 export default function SettingsPage() {
   const [s, setS] = useState<OrgSettings>(EMPTY)
+  const [debugRaw, setDebugRaw] = useState<string>('loading...')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [gcalConnected, setGcalConnected] = useState(false)
@@ -211,6 +212,7 @@ export default function SettingsPage() {
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
       if (d && !d.error) {
+          setDebugRaw(JSON.stringify({re: d.reminder_enabled, fe: d.followup_enabled, rre: d.review_request_enabled, type_re: typeof d.reminder_enabled, type_fe: typeof d.followup_enabled}))
           console.log('[SETTINGS DEBUG] API response:', JSON.stringify({re: d.reminder_enabled, fe: d.followup_enabled, rre: d.review_request_enabled}))
           const merged = { ...EMPTY, ...d, work_days: d.work_days || DEFAULT_WORK_DAYS, break_duration: d.break_duration ?? 0, break_start: d.break_start || '12:00' }
           console.log('[SETTINGS DEBUG] After merge:', JSON.stringify({re: merged.reminder_enabled, fe: merged.followup_enabled, rre: merged.review_request_enabled}))
@@ -289,7 +291,7 @@ export default function SettingsPage() {
           <h1 className="text-2xl font-bold text-gray-900">{l.title}</h1>
       {/* DEBUG - REMOVE LATER */}
       <div style={{background:"#fef3c7",border:"2px solid #f59e0b",padding:16,borderRadius:8,marginBottom:16,fontFamily:"monospace",fontSize:13}}>
-        <b>DEBUG:</b> reminder={String(s.reminder_enabled)} | followup={String(s.followup_enabled)} | review={String(s.review_request_enabled)} | hours={s.reminder_hours_before}
+        <b>STATE:</b> reminder={String(s.reminder_enabled)} | followup={String(s.followup_enabled)} | review={String(s.review_request_enabled)}<br/><b>RAW API:</b> {debugRaw}
       </div>
           <p className="mt-1 text-gray-500">{l.subtitle}</p>
         </div>
