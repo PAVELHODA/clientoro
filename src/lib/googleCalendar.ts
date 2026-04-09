@@ -186,7 +186,6 @@ export async function createCalendarEvent(organizationId: string, booking: {
     }
 
     const data = await res.json()
-    console.log('[gcal] Event created:', data.id)
 
     await supabaseAdmin
       .from('bookings')
@@ -223,7 +222,6 @@ export async function deleteCalendarEvent(organizationId: string, gcalEventId: s
     )
 
     if (res.ok || res.status === 404) {
-      console.log('[gcal] Event deleted:', gcalEventId)
       return true
     }
 

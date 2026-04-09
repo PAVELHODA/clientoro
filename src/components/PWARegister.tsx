@@ -17,10 +17,8 @@ export function PWARegister() {
       navigator.serviceWorker
         .register('/sw.js')
         .then((registration) => {
-          console.log('[PWA] SW registered:', registration.scope)
         })
         .catch((error) => {
-          console.log('[PWA] SW registration failed:', error)
         })
     }
   }, [])

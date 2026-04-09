@@ -66,7 +66,6 @@ export async function GET(request: NextRequest) {
       .gte('start_at', today)
       .lte('start_at', weekEnd)
       .in('status', ['confirmed', 'pending'])
-    console.log('[AI Debug] staff:', staffList?.length, 'clients:', allClients?.length, 'bookings:', upcomingBookings?.length)
 
     // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
     if (org && staffList && staffList.length > 0) {

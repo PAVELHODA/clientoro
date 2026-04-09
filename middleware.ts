@@ -48,7 +48,10 @@ export async function middleware(request: NextRequest) {
 
   const isAuthPage =
     path.startsWith('/login') ||
-    path.startsWith('/register')
+    path.startsWith('/register') ||
+    path.startsWith('/forgot-password') ||
+    path.startsWith('/reset-password') ||
+    path.startsWith('/booking-redirect')
 
   const isOnboarding = path.startsWith('/onboarding')
 

@@ -78,7 +78,6 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
       html,
     })
     if (error) { console.error('[Email error]', error); return { success: false, error } }
-    console.log('[Email sent]', to, subject)
     return { success: true, id: data?.id }
   } catch (err) {
     console.error('[Email send error]', err)
