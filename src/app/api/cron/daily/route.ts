@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // ========================================
-    // 2. PĹIPOMĂŤNKY â€” dynamickĂ© reminder_hours per organizace
+    // 1. PRIPOMINKY (dynamicke reminder_hours)
     // ========================================
     // Najdi vĹˇechny organizace s reminders
     const { data: reminderOrgs } = await supabaseAdmin
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 3. FOLLOW-UP â€” vÄŤerejĹˇĂ­ dokonÄŤenĂ© rezervace
+    // Otevrene + teprve dokoncene rezervace
     // ========================================
     const yesterday = new Date(now)
     yesterday.setDate(yesterday.getDate() - 1)
@@ -162,7 +162,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 3b. REVIEW REQUEST â€” 2 dny po nĂˇvĹˇtÄ›vÄ›
+    // 2 dny po navsteve
     // ========================================
     const twoDaysAgo = new Date(now)
     twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
@@ -219,14 +219,14 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 4. DENNĂŤ SOUHRN PRO MAJITELE â€” co je zĂ­tra
+    // 4. DENNI SOUHRN PRO MAJITELE -- co je zitra
     // ========================================
     const tomorrow = new Date(now)
     tomorrow.setDate(tomorrow.getDate() + 1)
     const tomorrowStart = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 0, 0).toISOString()
     const tomorrowEnd = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59).toISOString()
 
-    // Najdi zĂ­tĹ™ejĹˇĂ­ bookings pro daily summary
+    // Najdi zitrejsi bookings pro kazdou org
     const { data: tomorrowBookings } = await supabaseAdmin
       .from('bookings')
       .select(`
@@ -296,7 +296,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 5. TĂťDENNĂŤ REPORT â€” jen v pondÄ›lĂ­
+    // 5. TYDENNI REPORT (pondeli)
     // ========================================
     const dayOfWeek = now.getUTCDay()
     if (dayOfWeek === 1) {

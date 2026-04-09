@@ -99,7 +99,7 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ success: true, message: 'Ăščet a všechna data byla trvale smazána' })
+    return NextResponse.json({ success: true, message: 'Účet a všechna data byla trvale smazána' })
   } catch (err) {
     console.error('Delete account error:', err)
     return NextResponse.json({ error: 'Chyba při mazání účtu' }, { status: 500 })
