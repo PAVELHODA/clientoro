@@ -52,7 +52,7 @@ export async function PUT(request: NextRequest) {
       'category', 'description', 'city', 'zip', 'logo_url',
       'language', 'ico', 'dic',
       'notification_email', 'notify_on_booking', 'notify_on_cancel',
-      'reminder_enabled', 'reminder_hours',
+      'reminder_enabled', 'reminder_hours_before',
       'followup_enabled', 'review_request_enabled', 'google_review_url',
       'weekly_report_enabled',
       'work_days',
