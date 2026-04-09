@@ -175,12 +175,16 @@ export default function AdminPage() {
                   <ChevronDown className={`w-3 h-3 text-gray-300 transition-transform ${expandedStat === s.key ? 'rotate-180' : ''}`} />
                 </div>
                 <p className="text-2xl font-bold text-gray-900">{s.value}</p>
-                               {(s.tab || s.expandLabel) && (
-                  <button onClick={(e) => { e.stopPropagation(); s.tab ? setTab(s.tab as Tab) : toggleStat(s.key) }}
+                                 {(s.tab || s.expandLabel) && (
+                  <button onClick={(e) => { 
+                    e.stopPropagation(); 
+                    if (s.tab) { setTab(s.tab as Tab) } 
+                    else { toggleStat(s.key); setTimeout(() => document.getElementById(`detail-${s.key}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100) }
+                  }}
                     className="mt-2 text-[10px] sm:text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
                     {s.tab ? 'Spravovat' : s.expandLabel} <ArrowRight className="w-3 h-3" />
                   </button>
-                )} 
+                )}
               </div>
             ))}
           </div>
@@ -207,7 +211,8 @@ export default function AdminPage() {
           )}
 
           {expandedStat === 'users' && (
-            <div className="bg-white rounded-xl border border-emerald-200 p-4 animate-in fade-in duration-200">
+             <div id="detail-bookings" className="bg-white rounded-xl border border-purple-200 p-4 animate-in fade-in duration-200">
+
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2"><Users className="w-4 h-4 text-emerald-500" /> Uživatelé podle organizací</h3>
                 <button onClick={() => setExpandedStat(null)} className="p-1 hover:bg-gray-100 rounded-lg"><X className="w-4 h-4 text-gray-400" /></button>
