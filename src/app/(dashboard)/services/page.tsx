@@ -6,7 +6,7 @@ import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import { getServiceCategories } from '@/lib/serviceCategories'
-import { Scissors, Plus, Clock, DollarSign, Eye, EyeOff, Edit2, Trash2, X, Check, Search, ChevronDown } from 'lucide-react'
+import { Scissors, Plus, Clock, EyeOff, Edit2, Trash2, X, Search, ChevronDown } from 'lucide-react'
 import { ServicesSkeleton } from '@/components/Skeleton'
 
 interface Service {

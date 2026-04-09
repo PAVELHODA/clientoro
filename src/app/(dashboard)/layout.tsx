@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
-import { useAuth, type UserRole } from '@/components/AuthProvider'
+import { useAuth } from '@/components/AuthProvider'
 import { translations, type Lang } from '@/lib/i18n'
-import { LangContext, useLang } from '@/lib/LangContext'
+import { LangContext } from '@/lib/LangContext'
 import {
   Calendar, ClipboardList, Users, Scissors, UserCircle,
   BarChart3, Settings, LogOut, Waves, Sun, Megaphone, Bot,
@@ -318,7 +318,7 @@ function NotificationBell() {
           setNotifications(data || [])
           setUnreadCount((data || []).filter((n: any) => !n.read).length)
         }
-      } catch (e) {}
+      } catch (e) { /* Non-critical */ }
     }
     fetchNotifications()
     intervalRef.current = setInterval(fetchNotifications, 60000)
@@ -330,7 +330,7 @@ function NotificationBell() {
       await fetch('/api/notifications', { method: 'PATCH' })
       setNotifications(prev => prev.map(n => ({ ...n, read: true })))
       setUnreadCount(0)
-    } catch (e) {}
+    } catch (e) { /* Non-critical */ }
   }
 
   return (

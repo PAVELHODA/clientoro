@@ -8,7 +8,7 @@ import { AiInsightsWidget } from '@/components/AiInsightsWidget'
 import { useLang } from '@/lib/LangContext'
 import {
   Calendar, TrendingUp, TrendingDown, Users, DollarSign,
-  Clock, AlertTriangle, Star, ArrowRight, Zap, Coffee, Sun, Moon, Lamp,
+  AlertTriangle, ArrowRight, Zap, Coffee, Sun, Moon, Lamp,
 } from 'lucide-react'
 import { DashboardSkeleton } from '@/components/Skeleton'
 

@@ -1,7 +1,7 @@
 ﻿'use client'
 import { useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { Waves, Mail, ArrowLeft, ArrowRight, CheckCircle, Loader2 } from 'lucide-react'
+import { Waves, Mail, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react'
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

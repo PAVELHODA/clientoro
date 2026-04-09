@@ -1,7 +1,7 @@
 ﻿// PATH: src/app/(dashboard)/growth/qr/page.tsx
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'

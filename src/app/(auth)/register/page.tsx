@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { Waves, Mail, Lock, ArrowRight, Building2, User, Eye, EyeOff, RefreshCw } from 'lucide-react'
+import { Waves, Mail, ArrowRight, Building2, User, Eye, EyeOff, RefreshCw } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
 
 const flagUrls: Record<PublicLang, string> = { cs: 'https://flagcdn.com/w40/cz.png', sk: 'https://flagcdn.com/w40/sk.png', en: 'https://flagcdn.com/w40/gb.png' }

@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import {
-  ClipboardList, Search, Calendar, DollarSign, AlertTriangle,
-  CheckCircle, XCircle, Clock, X, Trash2, ChevronRight, Phone,
+  ClipboardList, Search, Calendar, AlertTriangle,
+  CheckCircle, XCircle, X, Trash2, ChevronRight, Phone,
   Mail, Plus, Filter, ArrowUpDown,
 } from 'lucide-react'
 import { BookingsSkeleton } from '@/components/Skeleton'

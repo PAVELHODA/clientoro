@@ -1,13 +1,13 @@
 ﻿﻿// PATH: src/app/(dashboard)/calendar/page.tsx
 'use client'
 
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useAuth } from '@/components/AuthProvider'
 import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import {
   Calendar, ChevronLeft, ChevronRight, Plus,
-  X, Loader2, Filter, Sparkles, AlertTriangle,
+  X, Loader2, Filter, AlertTriangle,
   Users, Clock, DollarSign,
 } from 'lucide-react'
 

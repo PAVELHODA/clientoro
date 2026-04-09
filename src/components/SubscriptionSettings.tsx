@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Crown, Zap, Check, ArrowRight, Loader2, Clock, AlertTriangle, ExternalLink, Sparkles } from 'lucide-react'
+import { Check, ArrowRight, Loader2, Clock, AlertTriangle, ExternalLink, Sparkles } from 'lucide-react'
 import { useToast } from '@/components/Toast'
 
 const PLANS = [

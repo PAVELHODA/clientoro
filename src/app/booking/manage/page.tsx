@@ -2,7 +2,7 @@
 // PATH: src/app/booking/manage/page.tsx
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Check, X, Calendar as CalendarIcon, Clock, User, MapPin, Phone, Loader2, AlertTriangle, Waves } from 'lucide-react'
+import { Check, X, Calendar, Clock, User, MapPin, Phone, Loader2, AlertTriangle, Waves } from 'lucide-react'
 
 function ManageBookingContent() {
   const searchParams = useSearchParams()
@@ -123,7 +123,7 @@ function ManageBookingContent() {
               </div>
             )}
             <div className="flex items-center gap-3">
-              <CalendarIcon className="w-4 h-4 text-white/30" />
+              <Calendar className="w-4 h-4 text-white/30" />
               <span className="text-white/50 text-sm">Datum</span>
               <span className="text-white font-semibold text-sm ml-auto">{formatDate(booking.start_at)}</span>
             </div>
@@ -174,7 +174,7 @@ function ManageBookingContent() {
             <a href={`/book/${org?.slug}?reschedule=${token}&service=${(booking.services as any)?.name || ''}&staff=${(booking.staff as any)?.full_name || ''}`}
               className="w-full flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 hover:bg-blue-50 transition-colors text-left">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
-                <CalendarIcon className="w-5 h-5 text-white" />
+                <Calendar className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-gray-800">Změnit termín</p>
