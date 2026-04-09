@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
 
     // Sanitizace search parametru — max 100 znaků, odstranění nebezpečných znaků
-    const sanitizedSearch = search.slice(0, 100).replace(/[%_\\]/g, '')
+  const sanitizedSearch = search.slice(0, 100).replace(/[%_\\(),.]/g, '')
 
     let query = supabaseAdmin
       .from('clients')

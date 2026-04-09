@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { validateBody } from '@/lib/validations'
+import { isRateLimited } from '@/lib/api/rateLimit'
 
 const registerSchema = z.object({
   email: z.string().email('Neplatný formát emailu'),
@@ -20,6 +21,12 @@ const registerSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (isRateLimited(clientIP, 5)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   try {
     const body = await request.json()
 

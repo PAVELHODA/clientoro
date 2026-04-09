@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
               await sendBookingReminder({
                 to: email,
                 customerName: booking.customer_name || 'Klient',
-                serviceName: (booking.services as any)?.name || 'SluĹľba',
+                serviceName: (booking.services as any)?.name || 'Služba',
                 staffName: (booking.staff as any)?.full_name,
                 date, time,
                 orgName: org.name,
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
           await sendBookingFollowup({
             to: email,
             customerName: booking.customer_name || 'Klient',
-            serviceName: (booking.services as any)?.name || 'SluĹľba',
+            serviceName: (booking.services as any)?.name || 'Služba',
             staffName: (booking.staff as any)?.full_name,
             orgName: org.name,
             orgPhone: org.phone,
@@ -288,7 +288,7 @@ export async function GET(request: NextRequest) {
             bookings: sortedBookings.map((b: any) => ({
               time: new Date(b.start_at).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }),
               customerName: b.customer_name || 'Klient',
-              serviceName: (b.services as any)?.name || 'SluĹľba',
+              serviceName: (b.services as any)?.name || 'Služba',
               staffName: (b.staff as any)?.full_name,
             })),
           })

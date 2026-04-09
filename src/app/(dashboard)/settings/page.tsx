@@ -267,7 +267,7 @@ export default function SettingsPage() {
     setTestingSend(true)
     try {
       const r = await fetch('/api/bookings/webhook', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-webhook-secret': process.env.INTERNAL_WEBHOOK_SECRET || '' },
         body: JSON.stringify({ action: 'test', organization_id: s.id }),
       })
       const data = await r.json()

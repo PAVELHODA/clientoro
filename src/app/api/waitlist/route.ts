@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
+import { isRateLimited } from '@/lib/api/rateLimit'
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,6 +25,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (isRateLimited(clientIP, 5)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   try {
     const auth = await requireAuth(request, 'manager')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })

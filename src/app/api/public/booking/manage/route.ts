@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendBookingCancellation, sendOwnerCancellation } from '@/lib/email'
+import { isRateLimited } from '@/lib/api/rateLimit'
 
 // GET — detail rezervace podle manage_token
 export async function GET(request: NextRequest) {
@@ -34,6 +35,12 @@ export async function GET(request: NextRequest) {
 
 // PATCH — zrušit nebo změnit rezervaci
 export async function PATCH(request: NextRequest) {
+  // Rate limiting
+  const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (isRateLimited(clientIP, 10)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   try {
     const body = await request.json()
     const { token, action } = body

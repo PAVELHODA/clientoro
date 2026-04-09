@@ -11,6 +11,12 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify internal webhook secret
+    const authHeader = request.headers.get('x-webhook-secret')
+    if (authHeader !== process.env.INTERNAL_WEBHOOK_SECRET) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await request.json()
     const { action, booking_id, organization_id } = body
 

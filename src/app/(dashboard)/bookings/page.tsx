@@ -127,7 +127,7 @@ export default function BookingsPage() {
         if (status === 'cancelled' || status === 'completed' || status === 'no_show') {
           fetch('/api/bookings/webhook', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'x-webhook-secret': process.env.INTERNAL_WEBHOOK_SECRET || '' },
             body: JSON.stringify({ action: status, booking_id: id }),
           }).catch(err => console.error('[webhook]', err))
         }

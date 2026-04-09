@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
       const protocol = baseUrl.includes('localhost') ? 'http' : 'https'
       await fetch(protocol + '://' + baseUrl + '/api/bookings/webhook', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-webhook-secret': process.env.INTERNAL_WEBHOOK_SECRET || '' },
         body: JSON.stringify({ action: 'created', booking_id: data.id, organization_id: auth.organizationId }),
       })
     } catch (e) { console.error('[webhook-trigger]', e) }

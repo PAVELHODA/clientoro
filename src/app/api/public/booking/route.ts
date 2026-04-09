@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
 import { rateLimit } from '@/lib/rateLimit'
 import { publicBookingPostSchema, publicBookingGetSchema, validateBody } from '@/lib/validations'
+import { isRateLimited } from '@/lib/api/rateLimit'
 
 // GET — veřejné služby, staff a working hours pro booking
 export async function GET(request: NextRequest) {
@@ -90,6 +91,12 @@ export async function GET(request: NextRequest) {
 
 // POST — vytvořit novou veřejnou rezervaci + odeslat emaily
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  if (isRateLimited(clientIP, 10)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   try {
     // Rate limiting — max 5 rezervací za minutu z jedné IP
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
