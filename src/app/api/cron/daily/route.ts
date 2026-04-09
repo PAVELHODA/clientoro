@@ -96,6 +96,7 @@ export async function GET(request: NextRequest) {
               results.reminders.details.push(`${org.name}: ${booking.customer_name} (${email})`)
               allReminderBookings.push({ ...booking, organizations: org })
             } catch (err) {
+              // Inner catch: individual item failure must not break the loop
               results.reminders.errors++
               console.error('[cron/reminder]', booking.id, err)
             }
@@ -155,6 +156,7 @@ export async function GET(request: NextRequest) {
           results.followups.sent++
           results.followups.details.push(`${org.name}: ${booking.customer_name} (${email})`)
         } catch (err) {
+          // Inner catch: individual item failure must not break the loop
           results.followups.errors++
           console.error('[cron/followup]', booking.id, err)
         }
@@ -212,6 +214,7 @@ export async function GET(request: NextRequest) {
           results.reviews.sent++
           results.reviews.details.push(`${org.name}: ${booking.customer_name} (${email})`)
         } catch (err) {
+          // Inner catch: individual item failure must not break the loop
           results.reviews.errors++
           console.error('[cron/review]', booking.id, err)
         }
@@ -290,6 +293,7 @@ export async function GET(request: NextRequest) {
             })),
           })
         } catch (err) {
+          // Inner catch: individual org failure must not break the loop
           console.error('[cron/owner-summary]', orgId, err)
         }
       }
@@ -357,6 +361,7 @@ export async function GET(request: NextRequest) {
             results.weeklyReports.sent++
             results.weeklyReports.details.push(`${org.name} â†’ ${ownerEmail}`)
           } catch (err) {
+            // Inner catch: individual item failure must not break the loop
             results.weeklyReports.errors++
             console.error('[cron/weekly]', org.id, err)
           }
@@ -375,6 +380,7 @@ export async function GET(request: NextRequest) {
         results,
       })
     } catch (err) {
+      // Inner catch: individual org failure must not break the loop
       console.error('[cron/superadmin-summary]', err)
     }
 
@@ -389,6 +395,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (err) {
+    // Inner catch: individual org failure must not break the loop
     console.error('[cron/daily] Fatal error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

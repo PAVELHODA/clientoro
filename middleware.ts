@@ -51,7 +51,6 @@ export async function middleware(request: NextRequest) {
     path.startsWith('/register') ||
     path.startsWith('/forgot-password') ||
     path.startsWith('/reset-password') ||
-    path.startsWith('/booking-redirect')
 
   const isOnboarding = path.startsWith('/onboarding')
 
