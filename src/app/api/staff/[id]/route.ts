@@ -9,10 +9,6 @@ import { sanitizeUpdate } from '@/lib/api/sanitizeUpdate'
 const ALLOWED_STAFF_FIELDS = [
   'full_name', 'email', 'phone', 'color', 'position', 'active', 'sort_order',
 ]
-for (const key of allowedFields) {
-    if (body[key] !== undefined) clean[key] = body[key]
-  }
-  return clean
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const auth = await requireAuth(request, 'owner')

@@ -12,10 +12,6 @@ const ALLOWED_BOOKING_FIELDS = [
   'note', 'internal_note', 'price', 'status', 'source',
   'is_backfill', 'backfill_note',
 ]
-for (const key of allowedFields) {
-    if (body[key] !== undefined) clean[key] = body[key]
-  }
-  return clean
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const auth = await requireAuth(request, 'staff')

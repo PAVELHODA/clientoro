@@ -10,10 +10,6 @@ const ALLOWED_CLIENT_FIELDS = [
   'full_name', 'phone', 'email', 'note', 'tags',
   'birthday', 'source', 'total_visits', 'last_visit_at',
 ]
-for (const key of allowedFields) {
-    if (body[key] !== undefined) clean[key] = body[key]
-  }
-  return clean
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const auth = await requireAuth(request, 'manager')
