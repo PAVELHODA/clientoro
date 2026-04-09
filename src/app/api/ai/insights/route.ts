@@ -66,8 +66,6 @@ export async function GET(request: NextRequest) {
       .gte('start_at', today)
       .lte('start_at', weekEnd)
       .in('status', ['confirmed', 'pending'])
-
-    console.log('[AI Debug] orgId:', orgId)
     console.log('[AI Debug] staff:', staffList?.length, 'clients:', allClients?.length, 'bookings:', upcomingBookings?.length)
 
     // === 1. VOLNÉ TERMÍNY (příštích 7 dní) ===
@@ -342,9 +340,6 @@ export async function GET(request: NextRequest) {
     // === SORT: high → medium → low ===
     const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 }
     insights.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
-
-    console.log('[AI Insights] Generated', insights.length, 'insights for org', orgId)
-
     return NextResponse.json({ insights, generatedAt: now.toISOString() })
 
   } catch (error) {

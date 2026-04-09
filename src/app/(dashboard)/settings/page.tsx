@@ -7,7 +7,10 @@ import { useLang } from '@/lib/LangContext'
 import { useToast } from '@/components/Toast'
 import { Bell, Mail, Check, Lock, Eye, EyeOff } from 'lucide-react'
 import SubscriptionSettings from '@/components/SubscriptionSettings'
-
+import NotificationSettings from '@/components/settings/NotificationSettings'
+import WorkingHoursSettings from '@/components/settings/WorkingHoursSettings'
+import PasswordSection from '@/components/settings/PasswordSection'
+import DangerZone from '@/components/settings/DangerZone'
 interface OrgSettings {
   id: string; name: string; mode: string; address: string; phone: string
   email: string; website: string; work_start: number; work_end: number
@@ -43,19 +46,10 @@ export default function SettingsPage() {
   const [s, setS] = useState<OrgSettings>(EMPTY)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [showDeleteFlow, setShowDeleteFlow] = useState(false)
   const [gcalConnected, setGcalConnected] = useState(false)
   const [gcalEmail, setGcalEmail] = useState('')
   const [gcalLoading, setGcalLoading] = useState(false)
-  const [deleteConfirmName, setDeleteConfirmName] = useState('')
-  const [backupDone, setBackupDone] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [deletingAccount, setDeletingAccount] = useState(false)
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [changingPassword, setChangingPassword] = useState(false)
-  const [showPasswords, setShowPasswords] = useState(false)
   const [testingSend, setTestingSend] = useState(false)
   const { t, lang, modeGradient } = useLang()
   const supabase = createClient()
@@ -280,48 +274,6 @@ export default function SettingsPage() {
     finally { setTestingSend(false) }
   }
 
-  const handleDelete = async () => {
-    setDeletingAccount(true)
-    try {
-      const res = await fetch('/api/settings/delete-account', { method: 'DELETE' })
-      const data = await res.json()
-      if (res.ok) {
-        toast.success(l.deleteSuccess)
-        setTimeout(() => { window.location.href = '/' }, 3000)
-      } else {
-        toast.error(data.error || l.deleteError)
-      }
-    } catch {
-      toast.error(l.deleteError)
-    } finally {
-      setDeletingAccount(false)
-    }
-  }
-
-  const handleChangePassword = async () => {
-    if (newPassword.length < 6) { toast.warning(l.passwordTooShort); return }
-    if (newPassword !== confirmPassword) { toast.warning(l.passwordMismatch); return }
-    setChangingPassword(true)
-    try {
-      const { error } = await supabase.auth.updateUser({ password: newPassword })
-      if (error) {
-        toast.error(l.passwordError + ': ' + error.message)
-      } else {
-        toast.success(l.passwordChanged)
-        setCurrentPassword('')
-        setNewPassword('')
-        setConfirmPassword('')
-        setTimeout(async () => {
-          await supabase.auth.signOut()
-          window.location.href = '/login'
-        }, 2000)
-      }
-    } catch (err) {
-      toast.error(l.passwordError)
-    } finally {
-      setChangingPassword(false)
-    }
-  }
 
   if (loading) return <div className="text-center py-12 text-gray-400">{l.loading}</div>
 
@@ -381,263 +333,11 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* EMAIL NOTIFIKACE */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center gap-2 mb-1">
-            <Bell className="w-5 h-5 text-blue-600" />
-            <h2 className="text-lg font-semibold text-gray-900">{l.notifications}</h2>
-          </div>
-          <p className="text-sm text-gray-500 mb-4">{l.notifDesc}</p>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.notifEmail}</label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="email" value={s.notification_email || ''} onChange={e => setS({ ...s, notification_email: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder={l.notifEmailPlaceholder} />
-                </div>
-                {s.notification_email && (
-                  <button onClick={sendTestEmail} disabled={testingSend}
-                    className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 disabled:opacity-50 whitespace-nowrap">
-                    {testingSend ? '...' : l.testEmail}
-                  </button>
-                )}
-              </div>
-            </div>
+        <NotificationSettings s={s} setS={setS} lang={lang} l={l} sendTestEmail={sendTestEmail} testingSend={testingSend} modeGradient={modeGradient} />
 
-            {!s.notification_email && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
-                <p className="text-sm text-amber-700 flex items-center gap-2">
-                  <Bell className="w-4 h-4" /> {l.notifNotSet}
-                </p>
-              </div>
-            )}
+        <WorkingHoursSettings s={s} setS={setS} lang={lang} l={l} />
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <label className="flex items-start gap-3 flex-1 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors">
-                <button onClick={() => setS({ ...s, notify_on_booking: !s.notify_on_booking })}
-                  className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.notify_on_booking ? 'bg-green-500' : 'bg-gray-300'}`}>
-                  <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.notify_on_booking ? 'left-5' : 'left-1'}`} />
-                </button>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{l.notifOnBooking}</p>
-                  <p className="text-xs text-gray-500">{l.notifOnBookingDesc}</p>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-3 flex-1 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors">
-                <button onClick={() => setS({ ...s, notify_on_cancel: !s.notify_on_cancel })}
-                  className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.notify_on_cancel ? 'bg-green-500' : 'bg-gray-300'}`}>
-                  <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.notify_on_cancel ? 'left-5' : 'left-1'}`} />
-                </button>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{l.notifOnCancel}</p>
-                  <p className="text-xs text-gray-500">{l.notifOnCancelDesc}</p>
-                </div>
-              </label>
-            </div>
-            {/* === AUTOMATICKÉ EMAILY KLIENTŮM === */}
-            <div className="pt-4 mt-4 border-t border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">
-                {lang === 'en' ? 'Automatic emails to clients' : lang === 'sk' ? 'Automatické emaily klientom' : 'Automatické emaily klientům'}
-              </h3>
-              <p className="text-xs text-gray-500 mb-3">
-                {lang === 'en' ? 'Sent automatically based on booking events.' : lang === 'sk' ? 'Odosielané automaticky podľa udalostí rezervácií.' : 'Odesílané automaticky podle událostí rezervací.'}
-              </p>
-
-              <div className="space-y-3">
-                {/* Připomínka den předem */}
-                <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                  <button onClick={() => setS({ ...s, reminder_enabled: !s.reminder_enabled })}
-                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.reminder_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
-                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.reminder_enabled ? 'left-5' : 'left-1'}`} />
-                  </button>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
-                      📅 {lang === 'en' ? 'Reminder before appointment' : lang === 'sk' ? 'Pripomienka pred návštevou' : 'Připomínka před návštěvou'}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {lang === 'en' ? 'Client receives a reminder email before their appointment.' : lang === 'sk' ? 'Klient dostane pripomienku emailom pred termínom.' : 'Klient dostane připomínku emailem před termínem.'}
-                    </p>
-                    {s.reminder_enabled && (
-                      <div className="mt-2 flex items-center gap-2">
-                        <span className="text-xs text-gray-500">
-                          {lang === 'en' ? 'Send' : lang === 'sk' ? 'Odoslať' : 'Odeslat'}
-                        </span>
-                        <select value={s.reminder_hours_before || 24}
-                          onChange={e => setS({ ...s, reminder_hours_before: parseInt(e.target.value) })}
-                          className="px-2 py-1 border border-gray-200 rounded-lg text-xs bg-white">
-                          <option value={3}>3h</option>
-                          <option value={6}>6h</option>
-                          <option value={12}>12h</option>
-                          <option value={24}>24h</option>
-                          <option value={48}>48h</option>
-                        </select>
-                        <span className="text-xs text-gray-500">
-                          {lang === 'en' ? 'before' : lang === 'sk' ? 'pred termínom' : 'před termínem'}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Poděkování po návštěvě */}
-                <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                  <button onClick={() => setS({ ...s, followup_enabled: !s.followup_enabled })}
-                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.followup_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
-                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.followup_enabled ? 'left-5' : 'left-1'}`} />
-                  </button>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      🙏 {lang === 'en' ? 'Thank you after visit' : lang === 'sk' ? 'Poďakovanie po návšteve' : 'Poděkování po návštěvě'}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {lang === 'en' ? 'Client receives a thank you email after their visit.' : lang === 'sk' ? 'Klient dostane ďakovný email po návšteve.' : 'Klient dostane děkovný email po návštěvě.'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Žádost o recenzi */}
-                <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                  <button onClick={() => setS({ ...s, review_request_enabled: !s.review_request_enabled })}
-                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 mt-0.5 ${s.review_request_enabled ? 'bg-green-500' : 'bg-gray-300'}`}>
-                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${s.review_request_enabled ? 'left-5' : 'left-1'}`} />
-                  </button>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
-                      ⭐ {lang === 'en' ? 'Google review request' : lang === 'sk' ? 'Žiadosť o Google recenziu' : 'Žádost o Google recenzi'}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {lang === 'en' ? 'Client receives a review request after their visit.' : lang === 'sk' ? 'Klient dostane žiadosť o recenziu po návšteve.' : 'Klient dostane žádost o recenzi po návštěvě.'}
-                    </p>
-                    {s.review_request_enabled && (
-                      <div className="mt-2">
-                        <input type="url" value={s.google_review_url || ''}
-                          onChange={e => setS({ ...s, google_review_url: e.target.value })}
-                          className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500"
-                          placeholder={lang === 'en' ? 'Google review link (optional)' : 'Odkaz na Google recenze (nepovinné)'} />
-                        <p className="text-xs text-gray-400 mt-1">
-                          {lang === 'en' ? 'Paste your Google Maps review URL' : lang === 'sk' ? 'Vložte odkaz na Google Maps recenzie' : 'Vložte odkaz na Google Maps recenze'}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {s.notification_email && s.notify_on_booking && (
-              <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2">
-                <p className="text-sm text-green-700 flex items-center gap-2">
-                  <Check className="w-4 h-4" /> {lang === 'en' ? 'Notifications active' : lang === 'sk' ? 'Notifikácie aktívne' : 'Notifikace aktivní'} &rarr; {s.notification_email}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Pracovní doba */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">{l.workingHours}</h2>
-          <p className="text-sm text-gray-500 mb-4">{lang === 'en' ? <>Schedule applies to every week. <strong>Each day can be disabled or set to custom hours.</strong> <em>Set up odd/even weeks and vacation periods — coming soon on Clientoro.pro.</em></> : lang === 'sk' ? <>Rozvrh platí pre každý týždeň. <strong>Každý deň možno vypnúť alebo nastaviť vlastné hodiny.</strong> <em>Nastaviť si lichý/sudý týždeň a obdobie voľna — už čoskoro na Clientoro.pro.</em></> : <>Rozvrh platí pro každý týden. <strong>Každý den lze vypnout nebo nastavit vlastní hodiny.</strong> <em>Nastavit si lichý/sudý týden a období volna — již brzy na Clientoro.pro.</em></>}</p>
-          
-          <div className="space-y-2 mb-4">
-            {(lang === 'en' ? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] : lang === 'sk' ? ['Po','Ut','St','Št','Pi','So','Ne'] : ['Po','Út','St','Čt','Pá','So','Ne']).map((dayName, i) => {
-              const wd = (s.work_days || DEFAULT_WORK_DAYS)[i] || DEFAULT_WORK_DAYS[i]
-              const hours: string[] = []
-              for (let h = 5; h <= 23; h++) {
-                hours.push(`${h.toString().padStart(2, '0')}:00`)
-                hours.push(`${h.toString().padStart(2, '0')}:30`)
-              }
-              return (
-                <div key={i} className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl border transition-all ${wd.enabled ? 'border-emerald-200 bg-emerald-50/50' : 'border-gray-200 bg-gray-50'}`}>
-                  <button
-                    onClick={() => {
-                      const newDays = [...(s.work_days || DEFAULT_WORK_DAYS)]
-                      newDays[i] = { ...newDays[i], enabled: !newDays[i].enabled }
-                      setS({ ...s, work_days: newDays })
-                    }}
-                    className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 ${wd.enabled ? 'bg-emerald-500' : 'bg-gray-300'}`}>
-                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${wd.enabled ? 'left-5' : 'left-1'}`} />
-                  </button>
-                  <span className={`w-8 text-sm font-bold flex-shrink-0 ${wd.enabled ? 'text-gray-900' : 'text-gray-400'}`}>{dayName}</span>
-                  {wd.enabled ? (
-                    <div className="flex items-center gap-1 sm:gap-2 flex-1">
-                      <select value={wd.start} onChange={e => {
-                        const newDays = [...(s.work_days || DEFAULT_WORK_DAYS)]
-                        newDays[i] = { ...newDays[i], start: e.target.value }
-                        setS({ ...s, work_days: newDays })
-                      }} className="px-1.5 sm:px-2 py-1.5 border border-gray-200 rounded-lg text-xs sm:text-sm bg-white">
-                        {hours.map(h => <option key={h} value={h}>{h}</option>)}
-                      </select>
-                      <span className="text-gray-400 text-xs">—</span>
-                      <select value={wd.end} onChange={e => {
-                        const newDays = [...(s.work_days || DEFAULT_WORK_DAYS)]
-                        newDays[i] = { ...newDays[i], end: e.target.value }
-                        setS({ ...s, work_days: newDays })
-                      }} className="px-1.5 sm:px-2 py-1.5 border border-gray-200 rounded-lg text-xs sm:text-sm bg-white">
-                        {hours.map(h => <option key={h} value={h}>{h}</option>)}
-                      </select>
-                      <div className="hidden sm:block flex-1 mx-2">
-                        <div className="h-2 bg-gray-100 rounded-full relative">
-                          <div className="h-2 bg-emerald-300 rounded-full absolute" style={{
-                            left: `${((parseInt(wd.start) - 5) / 18) * 100}%`,
-                            width: `${Math.max(((parseInt(wd.end) - parseInt(wd.start)) / 18) * 100, 5)}%`
-                          }} />
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-gray-400 italic">{lang === 'en' ? 'Closed' : lang === 'sk' ? 'Zatvorené' : 'Zavřeno'}</span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4 border-t border-gray-200">
-            <div className="flex-1 w-full sm:w-auto">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.slotDuration}</label>
-              <select value={s.slot_duration} onChange={e => setS({ ...s, slot_duration: parseInt(e.target.value) })}
-                className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option value={15}>15 {l.minutes}</option>
-                <option value={30}>30 {l.minutes}</option>
-                <option value={45}>45 {l.minutes}</option>
-                <option value={60}>60 {l.minutes}</option>
-              </select>
-            </div>
-            <div className="flex-1 w-full sm:w-auto">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.breakDuration}</label>
-              <select value={s.break_duration} onChange={e => setS({ ...s, break_duration: parseInt(e.target.value) })}
-                className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option value={0}>{l.noBreak}</option>
-                <option value={15}>15 {l.minutes}</option>
-                <option value={30}>30 {l.minutes}</option>
-                <option value={45}>45 {l.minutes}</option>
-                <option value={60}>60 {l.minutes}</option>
-              </select>
-            </div>
-            {s.break_duration > 0 && (
-              <div className="flex-1 w-full sm:w-auto">
-                <label className="block text-sm font-medium text-gray-700 mb-1">{l.breakStart}</label>
-                <select value={s.break_start} onChange={e => setS({ ...s, break_start: e.target.value })}
-                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                  <option value="11:00">11:00</option>
-                  <option value="11:30">11:30</option>
-                  <option value="12:00">12:00</option>
-                  <option value="12:30">12:30</option>
-                  <option value="13:00">13:00</option>
-                  <option value="13:30">13:30</option>
-                </select>
-              </div>
-            )}
-            <div className="flex-1 bg-amber-50 rounded-xl p-3 border border-amber-200">
-              <p className="text-xs text-amber-700">💡 {lang === 'en' ? 'Odd/even week — coming soon' : lang === 'sk' ? 'Lichý/sudý týždeň — čoskoro' : 'Lichý/sudý týden — brzy'}</p>
-            </div>
-          </div>
-        </div>
         {/* Booking stránka */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">{l.bookingPage}</h2>
@@ -725,95 +425,10 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* Změna hesla */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center gap-2 mb-1">
-            <Eye className="w-5 h-5 text-gray-600" />
-            <h3 className="text-lg font-semibold text-gray-900">{l.changePassword}</h3>
-          </div>
-          <p className="text-sm text-gray-500 mb-4">{l.changePasswordDesc}</p>
-          <div className="space-y-3 max-w-md">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.newPasswordLabel}</label>
-              <div className="relative">
-                <input type={showPasswords ? 'text' : 'password'} value={newPassword}
-                  onChange={e => setNewPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-24"
-                  placeholder="Min. 6 znaků" minLength={6} />
-                <button type="button" onClick={() => setShowPasswords(!showPasswords)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1">
-                  {showPasswords ? <><EyeOff className="w-3.5 h-3.5" /> {l.hidePassword}</> : <><Eye className="w-3.5 h-3.5" /> {l.showPassword}</>}
-                </button>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{l.confirmPasswordLabel}</label>
-              <input type={showPasswords ? 'text' : 'password'} value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Zopakujte nové heslo" minLength={6} />
-            </div>
-            {newPassword && confirmPassword && newPassword !== confirmPassword && (
-              <p className="text-xs text-red-500">{l.passwordMismatch}</p>
-            )}
-            <button onClick={handleChangePassword}
-              disabled={changingPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword || newPassword.length < 6}
-              style={{ background: modeGradient }}
-              className="px-4 py-2 text-white rounded-lg hover:brightness-110 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed">
-              {changingPassword ? '...' : l.changePasswordBtn}
-            </button>
-          </div>
-        </div>
 
-        {/* Nebezpečná zóna */}
-        <div className="bg-red-50 rounded-xl border border-red-200 p-6">
-          <h3 className="text-lg font-bold text-red-800 mb-2">⚠️ {l.dangerZone}</h3>
-          <p className="text-sm text-red-600 mb-4">{l.dangerDesc}</p>
+        <PasswordSection lang={lang} l={l} modeGradient={modeGradient} />
 
-          {!showDeleteFlow ? (
-            <button onClick={() => setShowDeleteFlow(true)}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">
-              {l.deleteBtn}
-            </button>
-          ) : (
-            <div className="space-y-4 mt-4">
-              <div className="bg-white rounded-lg border border-red-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">{l.backupTitle}</h4>
-                <p className="text-sm text-gray-600 mb-3">{l.backupDesc}</p>
-                <button onClick={async () => {
-                  const r = await fetch('/api/settings/export')
-                  if (r.ok) {
-                    const blob = await r.blob()
-                    const url = URL.createObjectURL(blob)
-                    const a = document.createElement('a'); a.href = url; a.download = 'clientoro-backup.csv'; a.click()
-                    setBackupDone(true); toast.success(l.backupDoneLabel)
-                  }
-                }} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
-                  {backupDone ? l.backupDoneLabel : l.backupBtn}
-                </button>
-              </div>
-
-              <div className="bg-white rounded-lg border border-red-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">{l.confirmTitle}</h4>
-                <p className="text-sm text-gray-600 mb-3">{l.confirmDesc} <strong>{s.name}</strong></p>
-                <input type="text" value={deleteConfirmName} onChange={e => setDeleteConfirmName(e.target.value)}
-                  placeholder={l.confirmPlaceholder}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3" />
-                <div className="flex gap-3">
-                  <button disabled={deleteConfirmName !== s.name || deletingAccount} onClick={handleDelete}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed">
-                    {deletingAccount ? '...' : l.confirmYes}
-                  </button>
-                  <button onClick={() => { setShowDeleteFlow(false); setDeleteConfirmName(''); setBackupDone(false) }}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">
-                    {l.confirmNo}
-                  </button>
-                </div>
-                {deleteConfirmName === s.name && <p className="text-xs text-red-500 mt-2">{l.confirmNote}</p>}
-              </div>
-            </div>
-          )}
-        </div>
+        <DangerZone orgName={s.name} l={l} onDeleted={() => { window.location.href = '/' }} />
       </div>
     </div>
   )

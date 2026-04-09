@@ -1,4 +1,4 @@
-// PATH: src/app/api/cron/daily/route.ts
+﻿// PATH: src/app/api/cron/daily/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import {
@@ -7,6 +7,7 @@ import {
   sendOwnerDailySummary,
   sendWeeklyReport,
   sendSuperadminCronSummary,
+  sendReviewRequest,
 } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
@@ -35,9 +36,9 @@ export async function GET(request: NextRequest) {
 
   try {
     // ========================================
-    // 2. PŘIPOMÍNKY — dynamické reminder_hours per organizace
+    // 2. PĹIPOMĂŤNKY â€” dynamickĂ© reminder_hours per organizace
     // ========================================
-    // Najdi všechny organizace s reminders
+    // Najdi vĹˇechny organizace s reminders
     const { data: reminderOrgs } = await supabaseAdmin
       .from('organizations')
       .select('id, name, phone, address, slug, reminder_enabled, reminder_hours')
@@ -78,7 +79,7 @@ export async function GET(request: NextRequest) {
               await sendBookingReminder({
                 to: email,
                 customerName: booking.customer_name || 'Klient',
-                serviceName: (booking.services as any)?.name || 'Služba',
+                serviceName: (booking.services as any)?.name || 'SluĹľba',
                 staffName: (booking.staff as any)?.full_name,
                 date, time,
                 orgName: org.name,
@@ -104,7 +105,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 3. FOLLOW-UP — včerejší dokončené rezervace
+    // 3. FOLLOW-UP â€” vÄŤerejĹˇĂ­ dokonÄŤenĂ© rezervace
     // ========================================
     const yesterday = new Date(now)
     yesterday.setDate(yesterday.getDate() - 1)
@@ -139,7 +140,7 @@ export async function GET(request: NextRequest) {
           await sendBookingFollowup({
             to: email,
             customerName: booking.customer_name || 'Klient',
-            serviceName: (booking.services as any)?.name || 'Služba',
+            serviceName: (booking.services as any)?.name || 'SluĹľba',
             staffName: (booking.staff as any)?.full_name,
             orgName: org.name,
             orgPhone: org.phone,
@@ -161,7 +162,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 3b. REVIEW REQUEST — 2 dny po návštěvě
+    // 3b. REVIEW REQUEST â€” 2 dny po nĂˇvĹˇtÄ›vÄ›
     // ========================================
     const twoDaysAgo = new Date(now)
     twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
@@ -194,17 +195,13 @@ export async function GET(request: NextRequest) {
         const reviewUrl = org.google_review_url || `https://clientoro.pro/book/${org.slug}`
 
         try {
-          await sendEmail({
+          await sendReviewRequest({
             to: email,
-            subject: `Jak se Vám u nás líbilo? — ${org.name}`,
-            html: reviewEmailTemplate({
-              customerName: booking.customer_name || 'Klient',
-              serviceName: (booking.services as any)?.name || 'Služba',
-              staffName: (booking.staff as any)?.full_name,
-              orgName: org.name,
-              reviewUrl,
-              bookingUrl: `https://clientoro.pro/book/${org.slug}`,
-            }),
+            customerName: booking.customer_name || 'Klient',
+            orgName: org.name,
+            staffName: (booking.staff as any)?.full_name,
+            googleReviewUrl: reviewUrl,
+            bookingUrl: `https://clientoro.pro/book/${org.slug}`,
           })
 
           await supabaseAdmin
@@ -222,14 +219,14 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 4. DENNÍ SOUHRN PRO MAJITELE — co je zítra
+    // 4. DENNĂŤ SOUHRN PRO MAJITELE â€” co je zĂ­tra
     // ========================================
     const tomorrow = new Date(now)
     tomorrow.setDate(tomorrow.getDate() + 1)
     const tomorrowStart = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 0, 0).toISOString()
     const tomorrowEnd = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59).toISOString()
 
-    // Najdi zítřejší bookings pro daily summary
+    // Najdi zĂ­tĹ™ejĹˇĂ­ bookings pro daily summary
     const { data: tomorrowBookings } = await supabaseAdmin
       .from('bookings')
       .select(`
@@ -288,7 +285,7 @@ export async function GET(request: NextRequest) {
             bookings: sortedBookings.map((b: any) => ({
               time: new Date(b.start_at).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }),
               customerName: b.customer_name || 'Klient',
-              serviceName: (b.services as any)?.name || 'Služba',
+              serviceName: (b.services as any)?.name || 'SluĹľba',
               staffName: (b.staff as any)?.full_name,
             })),
           })
@@ -299,7 +296,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ========================================
-    // 5. TÝDENNÍ REPORT — jen v pondělí
+    // 5. TĂťDENNĂŤ REPORT â€” jen v pondÄ›lĂ­
     // ========================================
     const dayOfWeek = now.getUTCDay()
     if (dayOfWeek === 1) {
@@ -358,7 +355,7 @@ export async function GET(request: NextRequest) {
             })
 
             results.weeklyReports.sent++
-            results.weeklyReports.details.push(`${org.name} → ${ownerEmail}`)
+            results.weeklyReports.details.push(`${org.name} â†’ ${ownerEmail}`)
           } catch (err) {
             results.weeklyReports.errors++
             console.error('[cron/weekly]', org.id, err)
@@ -395,54 +392,4 @@ export async function GET(request: NextRequest) {
     console.error('[cron/daily] Fatal error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
-
-// ===== Review Request Email Template =====
-function reviewEmailTemplate({ customerName, serviceName, staffName, orgName, reviewUrl, bookingUrl }: {
-  customerName: string; serviceName: string; staffName?: string; orgName: string; reviewUrl: string; bookingUrl: string
-}) {
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"/></head><body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <div style="max-width:520px;margin:0 auto;padding:20px;">
-    <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-      <div style="background:linear-gradient(135deg,#0e3a5c,#2ba0b0);padding:24px 24px 20px;text-align:center;">
-        <h1 style="color:white;font-size:18px;font-weight:700;margin:0;">${orgName}</h1>
-      </div>
-      <div style="padding:24px;">
-        <h2 style="color:#111827;font-size:18px;font-weight:700;margin:0 0 16px;">Jak se Vám u nás líbilo? ⭐</h2>
-        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
-          Dobrý den <strong>${customerName}</strong>, děkujeme za Vaši nedávnou návštěvu${staffName ? ` u specialisty <strong>${staffName}</strong>` : ''}.
-        </p>
-        <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:16px 0;text-align:center;">
-          <p style="margin:0 0 4px;color:#92400e;font-size:14px;font-weight:600;">Služba: ${serviceName}</p>
-          <p style="margin:0;color:#92400e;font-size:13px;">Vaše zpětná vazba nám velmi pomáhá!</p>
-        </div>
-        <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:16px 0;">
-          Byli jste spokojeni? Budeme moc rádi, když nám necháte krátké hodnocení. Zabere to jen minutku a pomůže to dalším klientům.
-        </p>
-        <div style="margin:20px 0;text-align:center;">
-          <a href="${reviewUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;text-decoration:none;border-radius:10px;font-size:15px;font-weight:700;">⭐ Ohodnotit na Google</a>
-        </div>
-        <div style="border-top:1px solid #e5e7eb;margin:20px 0;padding-top:16px;text-align:center;">
-          <p style="color:#9ca3af;font-size:13px;margin:0 0 8px;">Chcete si zarezervovat další termín?</p>
-          <a href="${bookingUrl}" style="color:#2ba0b0;font-size:13px;font-weight:600;text-decoration:none;">Rezervovat znovu →</a>
-        </div>
-      </div>
-      <div style="padding:16px 24px;background:#f9fafb;text-align:center;">
-        <p style="color:#9ca3af;font-size:11px;margin:0;">Odesláno přes Clientoro · ${orgName}</p>
-      </div>
-    </div>
-  </div></body></html>`
-}
-
-// Local sendEmail for review (to avoid circular import issues)
-async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
-  if (!process.env.RESEND_API_KEY || !to) return { success: false }
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: process.env.EMAIL_FROM || 'Clientoro <noreply@clientoro.pro>', to, subject, html }),
-    })
-    return { success: res.ok }
-  } catch { return { success: false } }
 }

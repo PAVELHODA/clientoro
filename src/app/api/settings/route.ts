@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json({ ...data, booking_link: data.slug || '' })
+   return NextResponse.json({ ...data, booking_link: data.slug || '', reminder_hours_before: data.reminder_hours ?? 24 })
+
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -58,8 +59,6 @@ export async function PUT(request: NextRequest) {
       'work_days',
       'break_duration', 'break_start',
     ]
-
-    console.log('[Settings PUT] body:', JSON.stringify(body))
     const updateData: any = {}
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
@@ -195,8 +194,6 @@ export async function PUT(request: NextRequest) {
           if (staffError) {
             console.error('[Auto-create staff] Error:', staffError)
           } else if (newStaff) {
-            console.log('[Auto-create staff] Created:', newStaff.id, staffName)
-
             // 2. Vytvoř working hours (Po-Pá dle org.work_start/work_end)
             const workStart = data.work_start || orgBeforeUpdate.work_start || 8
             const workEnd = data.work_end || orgBeforeUpdate.work_end || 17
@@ -235,7 +232,6 @@ export async function PUT(request: NextRequest) {
             }
           }
         } else {
-          console.log('[Auto-create staff] Staff already exists, count:', existingStaff)
         }
       } catch (staffErr) {
         console.error('[Auto-create staff] Unexpected error:', staffErr)
@@ -277,8 +273,6 @@ export async function PUT(request: NextRequest) {
         slug: org.slug || '',
         address: org.address || '',
       }).catch(err => console.error('[Admin notification failed]', err))
-
-      console.log('[Onboarding completed] Emaily odeslány pro:', org.name)
     }
 
     return NextResponse.json(data)

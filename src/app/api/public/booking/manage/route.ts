@@ -76,7 +76,6 @@ export async function PATCH(request: NextRequest) {
 
       // Email klientovi o zrušení
       const customerEmail = booking.customer_email
-      console.log('[Manage cancel] customer_email:', customerEmail)
       if (customerEmail) {
         sendBookingCancellation({
           to: customerEmail,
@@ -92,7 +91,6 @@ export async function PATCH(request: NextRequest) {
 
       // Email majiteli o zrušení
       const ownerEmail = org?.notification_email || org?.email
-      console.log('[Manage cancel] owner_email:', ownerEmail)
       if (ownerEmail) {
         sendOwnerCancellation({
           to: ownerEmail,

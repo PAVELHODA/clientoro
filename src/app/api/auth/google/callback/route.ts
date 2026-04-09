@@ -53,8 +53,6 @@ export async function GET(request: NextRequest) {
       console.error('[gcal-callback] DB error:', dbError)
       return NextResponse.redirect(new URL('/settings?gcal=error', request.url))
     }
-
-    console.log('[gcal-callback] Connected:', googleEmail, 'for org:', state)
     return NextResponse.redirect(new URL('/settings?gcal=connected', request.url))
   } catch (err) {
     console.error('[gcal-callback] Error:', err)
