@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
 import { requireAuth } from '@/lib/api/requireAuth'
 import { NextRequest, NextResponse } from 'next/server'
 import { bookingCreateSchema, validateBody } from '@/lib/validations'
+import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
 
 export async function GET(request: NextRequest) {
   try {
@@ -143,16 +144,52 @@ export async function POST(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // Webhook notifikace
+    // Přímé posílání emailů (bez webhook self-fetch)
     try {
-      const baseUrl = request.headers.get('host') || 'localhost:3000'
-      const protocol = baseUrl.includes('localhost') ? 'http' : 'https'
-      await fetch(protocol + '://' + baseUrl + '/api/bookings/webhook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-webhook-secret': process.env.INTERNAL_WEBHOOK_SECRET || '' },
-        body: JSON.stringify({ action: 'created', booking_id: data.id, organization_id: auth.organizationId }),
+      const startDate = new Date(data.start_at)
+      const dateStr = startDate.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+      const timeStr = startDate.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
+      const clientEmail = data.clients?.email || data.customer_email
+      const clientName = data.clients?.full_name || data.customer_name || 'Klient'
+      const serviceName = data.services?.name || 'Služba'
+      const staffName = data.staff?.full_name || undefined
+
+      // Org data pro emaily
+      const { data: org } = await supabaseAdmin.from('organizations')
+        .select('name, phone, address, logo_url, notification_email, notify_on_booking, slug')
+        .eq('id', auth.organizationId).single()
+
+      // Email klientovi
+      if (clientEmail) {
+        sendBookingConfirmation({
+          to: clientEmail, customerName: clientName, serviceName, staffName,
+          date: dateStr, time: timeStr, price: data.price || undefined,
+          orgName: org?.name || 'Salon', orgPhone: org?.phone || undefined,
+          logoUrl: org?.logo_url || undefined, address: org?.address || undefined,
+          startAt: data.start_at, duration: data.services?.duration || 60,
+          bookingId: 'CLT-' + new Date().getFullYear() + '-' + String(data.id).substring(0, 6).toUpperCase(),
+        }).catch(err => console.error('[Email to client]', err))
+      }
+
+      // Email majiteli
+      const ownerEmail = org?.notification_email
+      if (ownerEmail && org?.notify_on_booking !== false) {
+        sendOwnerNotification({
+          to: ownerEmail, customerName: clientName, customerPhone: data.customer_phone || '',
+          customerEmail: clientEmail || undefined, serviceName, staffName,
+          date: dateStr, time: timeStr, price: data.price || undefined,
+          orgName: org?.name || 'Salon',
+        }).catch(err => console.error('[Email to owner]', err))
+      }
+
+      // In-app notifikace
+      await supabaseAdmin.from('notifications').insert({
+        organization_id: auth.organizationId, type: 'new_booking', channel: 'system',
+        recipient: ownerEmail || 'system', subject: 'Nová rezervace', status: 'sent',
+        body: clientName + ' — ' + serviceName + ' (' + dateStr + ', ' + timeStr + ')',
+        booking_id: data.id,
       })
-    } catch (e) { console.error('[webhook-trigger]', e) }
+    } catch (e) { console.error('[email-notify]', e) }
 
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
