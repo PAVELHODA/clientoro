@@ -601,7 +601,7 @@ export default function CalendarPage() {
                   {booking && isStart ? (
                     <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-1.5 hover:brightness-95 transition-all ${isPast ? 'opacity-75' : ''}`}
                       style={{ minHeight: `${slotCount * 2}rem` }}>
-                      <div className={`rounded-lg p-2 h-full text-white shadow-sm ${booking.status === "cancelled" || booking.status === "no_show" ? "opacity-50" : ""} ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
+                      <div className={`rounded-lg p-2 h-full text-white shadow-sm ${booking.status === "completed" ? "opacity-60 ring-2 ring-green-400" : ""} ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
                         style={{ backgroundColor: booking.services?.color || '#3b82f6' }} data-status={booking.status}>
                         <div className="flex items-center justify-between">
                           <span className="font-semibold text-sm">{booking.services?.name || l.booking}</span>
@@ -679,7 +679,7 @@ export default function CalendarPage() {
                           {booking && isStart ? (
                             <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-1 hover:brightness-95 transition-all ${isPast ? 'opacity-75' : ''}`}
                               style={{ minHeight: `${slotCount * 2}rem` }}>
-                              <div className={`rounded-md p-1.5 h-full text-white text-xs shadow-sm ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
+                              <div className={`rounded-md p-1.5 h-full text-white text-xs shadow-sm ${booking.status === "completed" ? "opacity-60 ring-2 ring-green-400" : ""} ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
                                 style={{ backgroundColor: booking.services?.color || '#3b82f6' }} data-status={booking.status}>
                                 <p className="font-semibold truncate">{booking.services?.name}</p>
                                 <p className="opacity-80 truncate">{booking.customer_name || booking.clients?.full_name}</p>
@@ -755,7 +755,7 @@ export default function CalendarPage() {
                           <div className="space-y-0.5">
                             {slotBookings.filter(b => isBookingStart(ds, time, b)).map(b => (
                               <button key={b.id} onClick={() => setShowDetail(b)}
-                                className={`w-full text-left rounded-md p-1 text-white text-[11px] hover:brightness-90 transition-all ${isPast ? 'opacity-70' : ''} ${hasConflict(b) ? 'ring-2 ring-red-500' : ''}`}
+                                className={`w-full text-left rounded-md p-1 text-white text-[11px] hover:brightness-90 transition-all ${b.status === "completed" ? "opacity-60 ring-2 ring-green-400" : ""} ${isPast ? 'opacity-70' : ''} ${hasConflict(b) ? 'ring-2 ring-red-500' : ''}`}
                                 style={{ backgroundColor: b.services?.color || '#3b82f6' }}>
                                 <p className="font-semibold truncate">{b.services?.name}</p>
                                 <p className="opacity-80 truncate">{b.customer_name || b.clients?.full_name}</p>
