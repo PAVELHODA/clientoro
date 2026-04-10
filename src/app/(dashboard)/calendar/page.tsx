@@ -177,11 +177,12 @@ export default function CalendarPage() {
     createBooking: lang === 'en' ? 'Create booking' : lang === 'sk' ? 'Vytvoriť rezerváciu' : 'Vytvořit rezervaci',
     bookingDetail: lang === 'en' ? 'Booking detail' : lang === 'sk' ? 'Detail rezervácie' : 'Detail rezervace',
     time: lang === 'en' ? 'Time' : 'Čas',
+    date: lang === "en" ? "Date" : lang === "sk" ? "Dátum" : "Datum",
     price: t('cal_price'),
     status: lang === 'en' ? 'Status' : 'Stav',
     close: lang === 'en' ? 'Close' : 'Zavrit',
     unknown: lang === 'en' ? 'Unknown' : 'Neznámý',
-    rez: lang === 'en' ? 'book.' : 'rez.',
+    rez: lang === 'en' ? 'B' : 'R',
     at: lang === 'en' ? 'at' : 'v',
     slotBookings: lang === 'en' ? 'Bookings in this slot' : lang === 'sk' ? 'Rezervácie v tomto termíne' : 'Rezervace v tomto termínu',
     noBookings: lang === 'en' ? 'No bookings' : lang === 'sk' ? 'Žiadne rezervácie' : 'Žádné rezervace',
@@ -603,7 +604,8 @@ export default function CalendarPage() {
                           <span className="font-semibold text-sm">{booking.services?.name || l.booking}</span>
                           <span className="text-xs opacity-80">{booking.services?.duration} min</span>
                         </div>
-                        <p className="text-sm opacity-90 mt-0.5">{booking.clients?.full_name || booking.customer_name || l.client}</p>
+                        <p className="text-sm opacity-90 mt-0.5">{booking.customer_name || booking.clients?.full_name || l.client}</p>
+                        {booking.staff && <p className="text-xs opacity-75 mt-0.5">👤 {booking.staff.full_name}</p>}
                         {booking.is_backfill && <span className="inline-block mt-1 px-1.5 py-0.5 bg-amber-200 text-amber-800 rounded text-[10px] font-bold">&#9201;</span>}
                         {hasConflict(booking) && <span className="inline-block mt-1 ml-1 px-1.5 py-0.5 bg-red-200 text-red-800 rounded text-[10px] font-bold">{l.conflict}</span>}
                         {isPast && <span className={`inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
@@ -677,7 +679,8 @@ export default function CalendarPage() {
                               <div className={`rounded-md p-1.5 h-full text-white text-xs shadow-sm ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
                                 style={{ backgroundColor: booking.services?.color || '#3b82f6' }}>
                                 <p className="font-semibold truncate">{booking.services?.name}</p>
-                                <p className="opacity-80 truncate">{booking.clients?.full_name || booking.customer_name}</p>
+                                <p className="opacity-80 truncate">{booking.customer_name || booking.clients?.full_name}</p>
+                          {booking.staff && <span className="text-xs opacity-70 block truncate">👤 {booking.staff.full_name}</span>}
                                 {booking.is_backfill && <span className="text-[9px] bg-amber-200 text-amber-800 px-1 rounded">&#9201;</span>}
                                 {isPast && <span className={`inline-block mt-0.5 px-1 py-0.5 rounded text-[10px] font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
                               </div>
@@ -752,7 +755,7 @@ export default function CalendarPage() {
                                 className={`w-full text-left rounded-md p-1 text-white text-[11px] hover:brightness-90 transition-all ${isPast ? 'opacity-70' : ''} ${hasConflict(b) ? 'ring-2 ring-red-500' : ''}`}
                                 style={{ backgroundColor: b.services?.color || '#3b82f6' }}>
                                 <p className="font-semibold truncate">{b.services?.name}</p>
-                                <p className="opacity-80 truncate">{b.clients?.full_name || b.customer_name}</p>
+                                <p className="opacity-80 truncate">{b.customer_name || b.clients?.full_name}</p>
                               </button>
                             ))}
                           </div>
@@ -956,7 +959,7 @@ export default function CalendarPage() {
                       <span className="font-semibold text-sm text-gray-900">{b.services?.name || l.booking}</span>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(b.status)}`}>{statusLabel(b.status)}</span>
                     </div>
-                    <p className="text-sm text-gray-600">{b.clients?.full_name || b.customer_name || l.unknown}</p>
+                    <p className="text-sm text-gray-600">{b.customer_name || b.clients?.full_name || l.unknown}</p>
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <p className="text-xs text-gray-400">
                         {new Date(b.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} - {new Date(b.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
@@ -996,16 +999,16 @@ export default function CalendarPage() {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold" style={{ backgroundColor: showDetail.services?.color || '#3b82f6' }}>
-                  {(showDetail.clients?.full_name || showDetail.customer_name || '?').split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
+                  {(showDetail.customer_name || showDetail.clients?.full_name || '?').split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">{showDetail.clients?.full_name || showDetail.customer_name || l.unknown}</p>
+                  <p className="font-semibold text-gray-900">{showDetail.customer_name || showDetail.clients?.full_name || l.unknown}</p>
                   <p className="text-sm text-gray-500">{formatPhone(showDetail.clients?.phone || showDetail.customer_phone)}</p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">{l.service}</span><span className="font-medium">{showDetail.services?.name}</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">{l.time}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} - {new Date(showDetail.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">{l.date || "Datum"}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span></div><div className="flex justify-between"><span className="text-gray-500">{l.time}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} - {new Date(showDetail.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span></div>
                 {isTeam && showDetail.staff && <div className="flex justify-between"><span className="text-gray-500">{l.specialist}</span><span className="font-medium">{showDetail.staff.full_name}</span></div>}
                 {showDetail.price && <div className="flex justify-between"><span className="text-gray-500">{l.price}</span><span className="font-medium">{showDetail.price} {currency}</span></div>}
                 <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium px-2 py-0.5 rounded-full text-xs ${statusColor(showDetail.status)}`}>{statusLabel(showDetail.status)}</span></div>
