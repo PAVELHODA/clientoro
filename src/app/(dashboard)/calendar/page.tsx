@@ -145,6 +145,7 @@ export default function CalendarPage() {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
       setShowDetail(prev => prev ? { ...prev, status: newStatus } : null)
       toast.success(lang === 'en' ? 'Status updated' : 'Stav aktualizován')
+      setTimeout(() => setShowDetail(null), 1200)
     } catch (e) {
       toast.error(lang === 'en' ? 'Error updating status' : 'Chyba pri aktualizaci stavu')
     }
@@ -305,7 +306,6 @@ export default function CalendarPage() {
   }
 
   const filteredBookings = bookings.filter(b => {
-    if (b.status === 'cancelled') return false
     if (filterStaff !== 'all' && b.staff_id !== filterStaff) return false
     return true
   })
@@ -1028,7 +1028,10 @@ export default function CalendarPage() {
                       className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokončeno'}</button>
                   )}
                   {showDetail.status !== 'cancelled' && (
-                    <button onClick={() => handleStatusChange(showDetail.id, 'cancelled')}
+                    <button onClick={() => {
+                        if (!confirm(lang === 'en' ? 'Cancel this booking? The client will be notified.' : 'Opravdu chcete zrušit tuto rezervaci? Klient bude informován.')) return
+                        handleStatusChange(showDetail.id, 'cancelled')
+                      }}
                       className="px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100">{lang === 'en' ? 'Cancel' : 'Zrusit'}</button>
                   )}
                   {showDetail.status !== 'no_show' && (
