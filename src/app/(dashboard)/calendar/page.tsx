@@ -144,6 +144,7 @@ export default function CalendarPage() {
       if (!res.ok) throw new Error('Failed')
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
       setShowDetail(prev => prev ? { ...prev, status: newStatus } : null)
+      toast.success(lang === 'en' ? 'Status updated' : 'Stav aktualizován')
     } catch (e) {
       toast.error(lang === 'en' ? 'Error updating status' : 'Chyba pri aktualizaci stavu')
     }
@@ -152,8 +153,8 @@ export default function CalendarPage() {
   const dayNames = lang === 'en'
     ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     : lang === 'sk'
-    ? ['Po', 'Ut', 'St', 'St', 'Pi', 'So', 'Ne']
-    : ['Po', 'Ut', 'St', 'Ct', 'Pa', 'So', 'Ne']
+    ? ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne']
+    : ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne']
 
   const l = {
     title: t('cal_title'),
@@ -598,8 +599,8 @@ export default function CalendarPage() {
                   {booking && isStart ? (
                     <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-1.5 hover:brightness-95 transition-all ${isPast ? 'opacity-75' : ''}`}
                       style={{ minHeight: `${slotCount * 2}rem` }}>
-                      <div className={`rounded-lg p-2 h-full text-white shadow-sm ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
-                        style={{ backgroundColor: booking.services?.color || '#3b82f6' }}>
+                      <div className={`rounded-lg p-2 h-full text-white shadow-sm ${booking.status === "cancelled" || booking.status === "no_show" ? "opacity-50" : ""} ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
+                        style={{ backgroundColor: booking.services?.color || '#3b82f6' }} data-status={booking.status}>
                         <div className="flex items-center justify-between">
                           <span className="font-semibold text-sm">{booking.services?.name || l.booking}</span>
                           <span className="text-xs opacity-80">{booking.services?.duration} min</span>
@@ -608,7 +609,7 @@ export default function CalendarPage() {
                         {booking.staff && <p className="text-xs opacity-75 mt-0.5">👤 {booking.staff.full_name}</p>}
                         {booking.is_backfill && <span className="inline-block mt-1 px-1.5 py-0.5 bg-amber-200 text-amber-800 rounded text-[10px] font-bold">&#9201;</span>}
                         {hasConflict(booking) && <span className="inline-block mt-1 ml-1 px-1.5 py-0.5 bg-red-200 text-red-800 rounded text-[10px] font-bold">{l.conflict}</span>}
-                        {isPast && <span className={`inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
+                        {booking.status !== "confirmed" && <span className={`inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
                       </div>
                     </button>
                   ) : !booking ? (
@@ -677,12 +678,12 @@ export default function CalendarPage() {
                             <button onClick={() => setShowDetail(booking)} className={`w-full text-left p-1 hover:brightness-95 transition-all ${isPast ? 'opacity-75' : ''}`}
                               style={{ minHeight: `${slotCount * 2}rem` }}>
                               <div className={`rounded-md p-1.5 h-full text-white text-xs shadow-sm ${hasConflict(booking) ? 'ring-2 ring-red-500' : ''}`}
-                                style={{ backgroundColor: booking.services?.color || '#3b82f6' }}>
+                                style={{ backgroundColor: booking.services?.color || '#3b82f6' }} data-status={booking.status}>
                                 <p className="font-semibold truncate">{booking.services?.name}</p>
                                 <p className="opacity-80 truncate">{booking.customer_name || booking.clients?.full_name}</p>
                           {booking.staff && <span className="text-xs opacity-70 block truncate">👤 {booking.staff.full_name}</span>}
                                 {booking.is_backfill && <span className="text-[9px] bg-amber-200 text-amber-800 px-1 rounded">&#9201;</span>}
-                                {isPast && <span className={`inline-block mt-0.5 px-1 py-0.5 rounded text-[10px] font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
+                                {booking.status !== "confirmed" && <span className={`inline-block mt-0.5 px-1 py-0.5 rounded text-[10px] font-medium ${statusColor(booking.status)}`}>{statusLabel(booking.status)}</span>}
                               </div>
                             </button>
                           ) : !booking ? (
