@@ -102,24 +102,6 @@ export default function CalendarPage() {
   const workStart = organization?.work_start || 6
   const workEnd = organization?.work_end || 22
 
-  // Auto-scroll to current time (red line)
-  useEffect(() => {
-    setTimeout(() => {
-      if (!calendarRef.current) return
-      const now = new Date()
-      const h = now.getHours()
-      const m = now.getMinutes()
-      if (h < workStart || h >= workEnd) {
-        calendarRef.current.scrollTop = 0
-        return
-      }
-      const minutesSinceStart = (h - workStart) * 60 + m
-      const totalMinutes = (workEnd - workStart) * 60
-      const ratio = Math.max(0, (minutesSinceStart - 60) / totalMinutes)
-      const maxScroll = calendarRef.current.scrollHeight - calendarRef.current.clientHeight
-      calendarRef.current.scrollTop = maxScroll * ratio
-    }, 100)
-  }, [viewMode, currentDate, loading])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -264,6 +246,19 @@ export default function CalendarPage() {
   }
 
   useEffect(() => { setLoading(true); fetchData() }, [currentDate, viewMode])
+
+  // Auto-scroll to current time on load
+  useEffect(() => {
+    if (loading || viewMode === 'month' || !calendarRef.current) return
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMin = now.getMinutes()
+    if (currentHour < workStart || currentHour >= workEnd) return
+    const slotsFromStart = (currentHour - workStart) * 4 + Math.floor(currentMin / 15)
+    const pxPerSlot = 32 // min-h-[2rem] = 32px
+    const scrollTarget = Math.max(0, slotsFromStart * pxPerSlot - 150)
+    calendarRef.current.scrollTop = scrollTarget
+  }, [loading, viewMode]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const goToday = () => setCurrentDate(new Date())
   const goPrev = () => {
