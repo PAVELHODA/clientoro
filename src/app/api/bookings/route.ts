@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       .order('start_at', { ascending: true })
 
     if (start) query = query.gte('start_at', start)
-    if (end) query = query.lte('start_at', end)
+    if (end) query = query.lte('start_at', end + 'T23:59:59.999Z')
 
     const { data, error } = await query
 
