@@ -404,7 +404,7 @@ export default function CalendarPage() {
       const res = await fetch('/api/bookings', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          service_id: qbService, staff_id: qbStaff || null,
+          service_id: qbService, staff_id: qbStaff || (!isTeam && staffList.length === 1 ? staffList[0].id : null),
           start_at: startDate.toISOString(), end_at: endDate.toISOString(),
           customer_name: qbName, customer_phone: formatPhone(qbPhone), customer_email: qbEmail || undefined,
           price: svc?.price || null,
