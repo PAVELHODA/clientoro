@@ -58,6 +58,7 @@ export default function CalendarPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('week')
   const [filterStaff, setFilterStaff] = useState<string>('all')
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; time: string } | null>(null)
+  const [cancelConfirm, setCancelConfirm] = useState<{id: string, name: string} | null>(null)
   const [showDetail, setShowDetail] = useState<Booking | null>(null)
   const [showSlotBookings, setShowSlotBookings] = useState<{ date: string; time: string; bookings: Booking[] } | null>(null)
   const [qbService, setQbService] = useState('')
@@ -306,6 +307,7 @@ export default function CalendarPage() {
   }
 
   const filteredBookings = bookings.filter(b => {
+    if (b.status === 'cancelled' || b.status === 'no_show') return false
     if (filterStaff !== 'all' && b.staff_id !== filterStaff) return false
     return true
   })
@@ -1028,10 +1030,7 @@ export default function CalendarPage() {
                       className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokončeno'}</button>
                   )}
                   {showDetail.status !== 'cancelled' && (
-                    <button onClick={() => {
-                        if (!confirm(lang === 'en' ? 'Cancel this booking? The client will be notified.' : 'Opravdu chcete zrušit tuto rezervaci? Klient bude informován.')) return
-                        handleStatusChange(showDetail.id, 'cancelled')
-                      }}
+                    <button onClick={() => setCancelConfirm({id: showDetail.id, name: showDetail.customer_name || showDetail.clients?.full_name || ''})}
                       className="px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100">{lang === 'en' ? 'Cancel' : 'Zrusit'}</button>
                   )}
                   {showDetail.status !== 'no_show' && (
@@ -1046,6 +1045,35 @@ export default function CalendarPage() {
               </div>
             </div>
             <button onClick={() => setShowDetail(null)} className="w-full mt-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200">{l.close}</button>
+          </div>
+        </div>
+      )}
+
+      {cancelConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4" onClick={() => setCancelConfirm(null)}>
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6" onClick={e => e.stopPropagation()}>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-red-600 text-xl">✕</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                {lang === 'en' ? 'Cancel booking?' : 'Zrušit rezervaci?'}
+              </h3>
+              <p className="text-gray-500 text-sm mb-6">
+                {cancelConfirm.name && <><strong>{cancelConfirm.name}</strong> — </>}
+                {lang === 'en' ? 'The slot will be freed and the client notified.' : 'Slot se uvolní a klient bude informován.'}
+              </p>
+              <div className="flex gap-3">
+                <button onClick={() => setCancelConfirm(null)}
+                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  {lang === 'en' ? 'Keep' : 'Ponechat'}
+                </button>
+                <button onClick={() => { handleStatusChange(cancelConfirm.id, 'cancelled'); setCancelConfirm(null); }}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700">
+                  {lang === 'en' ? 'Cancel booking' : 'Zrušit'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
