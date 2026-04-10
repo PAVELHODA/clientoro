@@ -65,6 +65,7 @@ export default function CalendarPage() {
   const [qbStaff, setQbStaff] = useState('')
   const [qbName, setQbName] = useState('')
   const [qbPhone, setQbPhone] = useState('+420 ')
+  const [qbEmail, setQbEmail] = useState('')
   const [qbPhonePrefix, setQbPhonePrefix] = useState('+420')
 
   const formatPhone = (p: string | null | undefined): string => {
@@ -405,14 +406,14 @@ export default function CalendarPage() {
         body: JSON.stringify({
           service_id: qbService, staff_id: qbStaff || null,
           start_at: startDate.toISOString(), end_at: endDate.toISOString(),
-          customer_name: qbName, customer_phone: formatPhone(qbPhone),
+          customer_name: qbName, customer_phone: formatPhone(qbPhone), customer_email: qbEmail || undefined,
           price: svc?.price || null,
           status: isPast ? 'completed' : 'confirmed',
         }),
       })
       if (res.ok) {
         if (isPast) setBackfillCount(prev => prev + 1)
-        setSelectedSlot(null); setQbService(''); setQbStaff(''); setQbName(''); setQbPhone(qbPhonePrefix + ' '); setQbNote(''); fetchData()
+        setSelectedSlot(null); setQbService(''); setQbStaff(''); setQbName(''); setQbPhone(qbPhonePrefix + ' '); setQbNote(''); setQbEmail(''); fetchData()
       }
     } catch (err) { console.error(err) }
     finally { setQbSaving(false) }
@@ -908,6 +909,12 @@ export default function CalendarPage() {
                     }}
                     className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="777 123 456" />
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{lang === 'en' ? 'Email (optional)' : 'Email (nepovinný)'}</label>
+                <input type="email" id="qb-email" name="qb-email" value={qbEmail} onChange={e => setQbEmail(e.target.value)}
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm" placeholder="jan@email.cz" />
+                <p className="text-xs text-gray-400 mt-1">{lang === 'en' ? 'Client will receive booking confirmation' : 'Klient obdrží potvrzení rezervace'}</p>
               </div>
               {(() => {
                 const isDayPast = selectedSlot.date < todayStr
