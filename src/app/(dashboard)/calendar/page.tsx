@@ -197,7 +197,7 @@ export default function CalendarPage() {
     conflict: lang === 'en' ? 'Conflict!' : 'Konflikt!',
   }
 
-  const toDateStr = (d: Date) => d.toISOString().split('T')[0]
+  const toDateStr = (d: Date) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`
   const todayStr = toDateStr(new Date())
   const dateStr = toDateStr(currentDate)
   const maxBackfillDate = toDateStr(new Date(Date.now() - 90 * 24 * 60 * 60 * 1000))
@@ -1009,7 +1009,7 @@ export default function CalendarPage() {
               <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">{l.service}</span><span className="font-medium">{showDetail.services?.name}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">{l.date || "Datum"}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span></div><div className="flex justify-between"><span className="text-gray-500">{l.time}</span><span className="font-medium">{new Date(showDetail.start_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} - {new Date(showDetail.end_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span></div>
-                {isTeam && showDetail.staff && <div className="flex justify-between"><span className="text-gray-500">{l.specialist}</span><span className="font-medium">{showDetail.staff.full_name}</span></div>}
+                {showDetail.staff && <div className="flex justify-between"><span className="text-gray-500">{l.specialist}</span><span className="font-medium">{showDetail.staff.full_name}</span></div>}
                 {showDetail.price && <div className="flex justify-between"><span className="text-gray-500">{l.price}</span><span className="font-medium">{showDetail.price} {currency}</span></div>}
                 <div className="flex justify-between"><span className="text-gray-500">{l.status}</span><span className={`font-medium px-2 py-0.5 rounded-full text-xs ${statusColor(showDetail.status)}`}>{statusLabel(showDetail.status)}</span></div>
                 {showDetail.is_backfill && (
