@@ -1026,25 +1026,26 @@ export default function CalendarPage() {
               </div>
               <div className="pt-2">
                 <p className="text-xs text-gray-400 mb-2">{lang === 'en' ? 'Change status:' : 'Zmenit stav:'}</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {showDetail.status !== 'completed' && (
-                    <button onClick={() => handleStatusChange(showDetail.id, 'completed')}
-                      className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokončeno'}</button>
-                  )}
-                  {showDetail.status !== 'cancelled' && (
-                    <button onClick={() => setCancelConfirm({id: showDetail.id, name: showDetail.customer_name || showDetail.clients?.full_name || ''})}
-                      className="px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100">{lang === 'en' ? 'Cancel' : 'Zrusit'}</button>
-                  )}
-                  {showDetail.status !== 'no_show' && (
-                    <button onClick={() => handleStatusChange(showDetail.id, 'no_show')}
-                      className="px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-100">{lang === 'en' ? 'No-show' : 'Nedostavil/a se'}</button>
-                  )}
-                  {showDetail.status !== 'confirmed' && (
-                    <button onClick={() => handleStatusChange(showDetail.id, 'confirmed')}
-                      className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100">{lang === 'en' ? 'Confirm' : 'Potvrdit'}</button>
-                  )}
-                </div>
-              </div>
+                {(() => {
+                  const detailDate = new Date(showDetail.start_at)
+                  const now = new Date()
+                  const todayStr = toDateStr(new Date())
+                  const detailDateStr = toDateStr(detailDate)
+                  const isPastBooking = detailDate < now
+                  const isFutureBooking = detailDateStr > todayStr
+
+                  if (isPastBooking) return <p className="text-xs text-gray-400">{lang === 'en' ? 'Past booking - read only' : 'Minulá rezervace - jen pro čtení'}</p>
+
+                  return <>
+                    <p className="text-xs text-gray-400 mb-2">{lang === 'en' ? 'Change status:' : 'Zmenit stav:'}</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {!isFutureBooking && showDetail.status !== 'completed' && <button onClick={() => handleStatusChange(showDetail.id, 'completed')} className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100">{lang === 'en' ? 'Completed' : 'Dokončeno'}</button>}
+                      {showDetail.status !== 'cancelled' && <button onClick={() => setCancelConfirm({id: showDetail.id, name: showDetail.customer_name || showDetail.clients?.full_name || ''})} className="px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100">{lang === 'en' ? 'Cancel' : 'Zrusit'}</button>}
+                      {!isFutureBooking && showDetail.status !== 'no_show' && <button onClick={() => handleStatusChange(showDetail.id, 'no_show')} className="px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-100">{lang === 'en' ? 'No-show' : 'Nedostavil/a se'}</button>}
+                      {showDetail.status !== 'confirmed' && <button onClick={() => handleStatusChange(showDetail.id, 'confirmed')} className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100">{lang === 'en' ? 'Confirm' : 'Potvrdit'}</button>}
+                    </div>
+                  </>
+                })()
             </div>
             <button onClick={() => setShowDetail(null)} className="w-full mt-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200">{l.close}</button>
           </div>
