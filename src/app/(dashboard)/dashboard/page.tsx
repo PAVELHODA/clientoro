@@ -2,6 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { MotivationalBanner } from '@/components/MotivationalBanner'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/AuthProvider'
 import { AiInsightsWidget } from '@/components/AiInsightsWidget'
@@ -171,53 +172,53 @@ export default function DashboardPage() {
       )}
 
       {/* KPI karty — dnes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
+        <div className="rounded-lg p-3" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_today_bookings')}</span>
-            <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-blue-600" />
+            <span className="text-xs font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_today_bookings')}</span>
+            <div className="w-7 h-7 bg-blue-100 rounded flex items-center justify-center">
+              <Calendar className="w-5 h-5 w-4 h-4 text-blue-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{data.today.bookings}</p>
+          <p className="text-2xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{data.today.bookings}</p>
           <p className="text-xs mt-1" style={{ color: ct?.textMuted || '#94a3b8' }}>{t('dash_this_week')}: {data.week.bookings}</p>
         </div>
 
-        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
+        <div className="rounded-lg p-3" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_today_revenue')}</span>
-            <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
+            <span className="text-xs font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_today_revenue')}</span>
+            <div className="w-7 h-7 bg-green-100 rounded flex items-center justify-center">
               <span className="text-sm font-bold text-green-600">Kč</span>
             </div>
           </div>
-          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{formatPrice(data.today.revenue)}</p>
+          <p className="text-2xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{formatPrice(data.today.revenue)}</p>
           <p className="text-xs mt-1" style={{ color: ct?.textMuted || '#94a3b8' }}>{t('dash_this_week')}: {formatPrice(data.week.revenue)}</p>
         </div>
 
-        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
+        <div className="rounded-lg p-3" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_month_revenue')}</span>
+            <span className="text-xs font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_month_revenue')}</span>
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${data.month.revenueChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
               {data.month.revenueChange >= 0
-                ? <TrendingUp className="w-5 h-5 text-green-600" />
+                ? <TrendingUp className="w-5 h-5 w-4 h-4 text-green-600" />
                 : <TrendingDown className="w-5 h-5 text-red-600" />
               }
             </div>
           </div>
-          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{formatPrice(data.month.revenue)}</p>
+          <p className="text-2xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{formatPrice(data.month.revenue)}</p>
           <p className={`text-xs mt-1 font-medium ${data.month.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {data.month.revenueChange >= 0 ? "\u2191" : "\u2193"} {Math.abs(data.month.revenueChange)}% {t('dash_vs_last_month')}
           </p>
         </div>
 
-        <div className="rounded-xl p-5" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
+        <div className="rounded-lg p-3" style={{ background: ct?.cardBg || '#fff', border: ct?.cardBorder || '1px solid #e2e8f0' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_clients')}</span>
+            <span className="text-xs font-medium" style={{ color: ct?.textMuted || '#64748b' }}>{t('dash_clients')}</span>
             <div className="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-purple-600" />
+              <Users className="w-5 h-5 w-4 h-4 text-purple-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{data.totals.clients}</p>
+          <p className="text-2xl font-bold" style={{ color: ct?.textPrimary || '#0f172a' }}>{data.totals.clients}</p>
           <p className="text-xs text-green-600 mt-1 font-medium">+{data.month.newClients} {t('dash_new_this_month')}</p>
         </div>
       </div>
@@ -421,5 +422,7 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+
 
 

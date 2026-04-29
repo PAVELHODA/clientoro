@@ -139,6 +139,15 @@ export const translations: Record<Lang, Record<string, string>> = {
     set_save: 'Uložit změny',
     set_saving: 'Ukládám...',
     set_saved: 'Uloženo!',
+    mot_tip_1: 'Máte volné sloty? Nabídněte je klientům – zvýšíte tržby.',
+    mot_tip_2: 'Připomínky 24h před rezervací snižují no-show až o 80%.',
+    mot_tip_3: 'Průměrný klient se vrací 3x – investujte do retence.',
+    mot_tip_4: 'Recenze zvyšují konverzi nových klientů o 45%.',
+    mot_tip_5: 'Referral program = nejlevnější marketing.',
+    mot_tip_6: 'Dlouhodobí klienti jsou 5x ziskovější.',
+    mot_tip_7: 'Kvalitní CRM paměť = lepší service & retence.',
+    mot_tip_8: 'Zkuste balíčky – průměrný nákup vzroste.',
+
   },
 
   sk: {
@@ -276,6 +285,15 @@ export const translations: Record<Lang, Record<string, string>> = {
     set_save: 'Uložiť zmeny',
     set_saving: 'Ukladám...',
     set_saved: 'Uložené!',
+    mot_tip_1: 'Máte voľné sloty? Ponúknite ich klientom – zvýšite tržby.',
+    mot_tip_2: 'Pripomienky 24h pred rezerváciou znižujú no-show až o 80%.',
+    mot_tip_3: 'Priemerný klient sa vracia 3x – investujte do retenzie.',
+    mot_tip_4: 'Recenzie zvyšujú konverziu nových klientov o 45%.',
+    mot_tip_5: 'Referral program = najlacnejší marketing.',
+    mot_tip_6: 'Dlhodobí klienti sú 5x ziskovejší.',
+    mot_tip_7: 'Kvalitné CRM pamäť = lepší servis & retenzía.',
+    mot_tip_8: 'Skúste balíčky – priemerný nákup sa zvýši.',
+
   },
 
   en: {
@@ -413,6 +431,15 @@ export const translations: Record<Lang, Record<string, string>> = {
     set_save: 'Save changes',
     set_saving: 'Saving...',
     set_saved: 'Saved!',
+    mot_tip_1: 'Have free slots? Offer them to clients – boost revenue.',
+    mot_tip_2: 'Reminders 24h before booking reduce no-show by 80%.',
+    mot_tip_3: 'Average client returns 3x – invest in retention.',
+    mot_tip_4: 'Reviews increase new client conversion by 45%.',
+    mot_tip_5: 'Referral program = cheapest marketing.',
+    mot_tip_6: 'Long-term clients are 5x more profitable.',
+    mot_tip_7: 'Good CRM memory = better service & retention.',
+    mot_tip_8: 'Try packages – average purchase will grow.',
+
   },
 }
 
@@ -427,3 +454,4 @@ export function getLocale(lang: Lang): string {
 export function getCurrency(lang: Lang): string {
   return translations[lang]?.currency || 'Kč'
 }
+

@@ -1,5 +1,4 @@
-const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
-export const dynamic = 'force-dynamic'
+Ôªøexport const dynamic = 'force-dynamic'
 
 // PATH: src/app/api/bookings/route.ts
 import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
@@ -10,34 +9,6 @@ import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
 
 export async function GET(request: NextRequest) {
   try {
-    if (DEMO_MODE) {
-  return NextResponse.json([
-    {
-      id: '1',
-      start_at: '2026-04-20T10:00:00',
-      end_at: '2026-04-20T11:00:00',
-      price: 1000,
-      customer_name: 'Jan Nov·k',
-      customer_phone: '123456789',
-      status: 'confirmed',
-      clients: { full_name: 'Jan Nov·k' },
-      services: { name: 'Konzultace', duration: 60, price: 1000 },
-      staff: { full_name: 'Demo Staff' }
-    },
-    {
-      id: '2',
-      start_at: '2026-04-20T14:00:00',
-      end_at: '2026-04-20T15:00:00',
-      price: 1500,
-      customer_name: 'Petra Svobodov·',
-      customer_phone: '987654321',
-      status: 'confirmed',
-      clients: { full_name: 'Petra Svobodov·' },
-      services: { name: 'TrÈnink', duration: 60, price: 1500 },
-      staff: { full_name: 'Demo Staff' }
-    }
-  ])
-}
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
@@ -70,9 +41,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    if (DEMO_MODE) {
-  return NextResponse.json({ success: true, demo: true })
-}
     const auth = await requireAuth(request, 'staff')
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
@@ -84,27 +52,27 @@ export async function POST(request: NextRequest) {
       organization_id: auth.organizationId,
     })
     if (!validation.success || !validation.data) {
-      return NextResponse.json({ error: validation.error || 'Neplatn· data' }, { status: 400 })
+      return NextResponse.json({ error: validation.error || 'Neplatn√° data' }, { status: 400 })
     }
 
     const validData = validation.data
 
-    // Validace: end_at musÌ b˝t po start_at
+    // Validace: end_at mus√≠ b√Ωt po start_at
     if (new Date(validData.end_at) <= new Date(validData.start_at)) {
-      return NextResponse.json({ error: 'Konec rezervace musÌ b˝t po zaË·tku' }, { status: 400 })
+      return NextResponse.json({ error: 'Konec rezervace mus√≠ b√Ωt po zaƒç√°tku' }, { status: 400 })
     }
 
     // Rezervace v minulosti:
-    // - Backfill (6◊ klik): kdokoliv m˘ûe (is_backfill = true)
-    // - Owner / Superadmin: m˘ûe vûdy
-    // - Staff / Manager: NEMŸéE (pokud nenÌ backfill)
+    // - Backfill (6√ó klik): kdokoliv m≈Ø≈æe (is_backfill = true)
+    // - Owner / Superadmin: m≈Ø≈æe v≈ædy
+    // - Staff / Manager: NEM≈Æ≈ΩE (pokud nen√≠ backfill)
     if (!validData.is_backfill && new Date(validData.start_at) < new Date()) {
       if (auth.role !== 'owner' && auth.role !== 'superadmin') {
-        return NextResponse.json({ error: 'Pouze majitel m˘ûe vytvo¯it rezervaci v minulosti' }, { status: 403 })
+        return NextResponse.json({ error: 'Pouze majitel m≈Ø≈æe vytvo≈ôit rezervaci v minulosti' }, { status: 403 })
       }
     }
 
-    // Kontrola kolize ó POUZE u stejnÈho zamÏstnance na stejn˝ Ëas
+    // Kontrola kolize ‚Äî POUZE u stejn√©ho zamƒõstnance na stejn√Ω ƒças
     if (validData.staff_id && !validData.is_backfill) {
       const { data: conflicts } = await (supabaseAdmin as any)
         .from('bookings')
@@ -116,14 +84,14 @@ export async function POST(request: NextRequest) {
         .gt('end_at', validData.start_at)
 
       if (conflicts && conflicts.length > 0) {
-        return NextResponse.json({ error: 'Tento zamÏstnanec m· v danÈm Ëase jiû rezervaci' }, { status: 409 })
+        return NextResponse.json({ error: 'Tento zamƒõstnanec m√° v dan√©m ƒçase ji≈æ rezervaci' }, { status: 409 })
       }
     }
 
-    // Auto-create klienta pokud m· telefon a nem· client_id
+    // Auto-create klienta pokud m√° telefon a nem√° client_id
     let clientId = validData.client_id || null
     if (!clientId && validData.customer_phone) {
-      // Hledej existujÌcÌho klienta podle telefonu
+      // Hledej existuj√≠c√≠ho klienta podle telefonu
       const { data: existingClient } = await (supabaseAdmin as any)
         .from('clients')
         .select('id, total_visits, full_name')
@@ -133,14 +101,14 @@ export async function POST(request: NextRequest) {
 
       if (existingClient) {
         clientId = existingClient.id
-        // Aktualizuj poËet n·vötÏv
+        // Aktualizuj poƒçet n√°v≈°tƒõv
         await (supabaseAdmin as any).from('clients').update({
           total_visits: (existingClient.total_visits || 0) + 1,
           last_visit_at: validData.start_at,
           full_name: validData.customer_name || existingClient.full_name,
         }).eq('id', clientId)
       } else if (validData.customer_name) {
-        // Vytvo¯ novÈho klienta
+        // Vytvo≈ô nov√©ho klienta
         const { data: newClient } = await (supabaseAdmin as any)
           .from('clients')
           .insert({
@@ -158,7 +126,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // VloûenÌ rezervace
+    // Vlo≈æen√≠ rezervace
     const { data, error } = await (supabaseAdmin as any)
       .from('bookings')
       .insert({
@@ -176,14 +144,14 @@ export async function POST(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // P¯ÌmÈ posÌl·nÌ email˘ (bez webhook self-fetch)
+    // P≈ô√≠m√© pos√≠l√°n√≠ email≈Ø (bez webhook self-fetch)
     try {
       const startDate = new Date(data.start_at)
       const dateStr = startDate.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
       const timeStr = startDate.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
       const clientEmail = data.clients?.email || data.customer_email
       const clientName = data.clients?.full_name || data.customer_name || 'Klient'
-      const serviceName = data.services?.name || 'Sluûba'
+      const serviceName = data.services?.name || 'Slu≈æba'
       const staffName = data.staff?.full_name || undefined
 
       // Org data pro emaily
@@ -217,8 +185,8 @@ export async function POST(request: NextRequest) {
       // In-app notifikace
       await supabaseAdmin.from('notifications').insert({
         organization_id: auth.organizationId, type: 'new_booking', channel: 'system',
-        recipient: ownerEmail || 'system', subject: 'Nov· rezervace', status: 'sent',
-        body: clientName + ' ó ' + serviceName + ' (' + dateStr + ', ' + timeStr + ')',
+        recipient: ownerEmail || 'system', subject: 'Nov√° rezervace', status: 'sent',
+        body: clientName + ' ‚Äî ' + serviceName + ' (' + dateStr + ', ' + timeStr + ')',
         booking_id: data.id,
       })
     } catch (e) { console.error('[email-notify]', e) }
