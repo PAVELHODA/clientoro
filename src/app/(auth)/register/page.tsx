@@ -96,6 +96,20 @@ export default function RegisterPage() {
   }
 
   return (
+{/* ⚠️ DEMO ALERT */}
+{true && (
+  <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-xl flex items-start gap-3">
+    <div>
+      <p className="font-semibold text-amber-900 text-sm">🎬 Demo verze</p>
+      <p className="text-xs text-amber-700 mt-1">
+        Toto je demonstrační verze aplikace. Registrace není dostupná.
+        <br />
+        <strong>Pro přihlášení použijte:</strong> admin@clientoro.pro
+      </p>
+    </div>
+  </div>
+)}
+
     <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #0f3a5c, #14607a, #1a8a8a)' }}>
       {/* Levá strana — hero */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
@@ -200,7 +214,7 @@ export default function RegisterPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_business_name')}</label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)}
+                  <input type="text" disabled={true} value={businessName} onChange={e => setBusinessName(e.target.value)}
                     disabled={isDemoMode}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder={t('register_business_placeholder')} required />
@@ -233,7 +247,7 @@ export default function RegisterPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_email')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  <input type="email" disabled={true} value={email} onChange={e => setEmail(e.target.value)}
                     disabled={isDemoMode}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder={t('email_placeholder')} required />
@@ -305,3 +319,4 @@ export default function RegisterPage() {
     </div>
   )
 }
+
