@@ -1,4 +1,4 @@
-﻿﻿// PATH: src/app/(auth)/register/page.tsx
+// PATH: src/app/(auth)/register/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -26,7 +26,6 @@ export default function RegisterPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  // ⚠️ DEMO MODE FLAG
   const isDemoMode = DEMO_CONFIG.isEnabled
 
   useEffect(() => {
@@ -55,7 +54,6 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // ⚠️ BLOKOVÁNÍ V DEMO MODU
     if (isDemoMode) {
       setError(DEMO_CONFIG.messages.demoAlert)
       return
@@ -96,20 +94,6 @@ export default function RegisterPage() {
   }
 
   return (
-{/* ⚠️ DEMO ALERT */}
-{true && (
-  <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-xl flex items-start gap-3">
-    <div>
-      <p className="font-semibold text-amber-900 text-sm">🎬 Demo verze</p>
-      <p className="text-xs text-amber-700 mt-1">
-        Toto je demonstrační verze aplikace. Registrace není dostupná.
-        <br />
-        <strong>Pro přihlášení použijte:</strong> admin@clientoro.pro
-      </p>
-    </div>
-  </div>
-)}
-
     <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #0f3a5c, #14607a, #1a8a8a)' }}>
       {/* Levá strana — hero */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
@@ -151,7 +135,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Vlnky */}
         <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '180px' }}>
           <svg viewBox="0 0 1200 120" className="w-full h-full" preserveAspectRatio="none" fill="none">
             <path d="M0 70 Q100 55 200 65 Q300 75 400 60 Q500 45 600 58 Q700 70 800 55 Q900 40 1000 52 Q1100 65 1200 48 L1200 120 L0 120 Z" fill="rgba(255,255,255,0.03)" />
@@ -165,7 +148,6 @@ export default function RegisterPage() {
       <div className="w-full lg:flex-1 flex items-center justify-center px-4 sm:px-6 lg:bg-gray-50">
         <div className="w-full max-w-md">
 
-          {/* Clientoro nadpis - jen mobil */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg mb-3" style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
               <Waves className="w-7 h-7 text-white" />
@@ -173,7 +155,6 @@ export default function RegisterPage() {
             <h1 className="text-2xl font-bold text-white lg:text-gray-900">Clientoro</h1>
           </div>
 
-          {/* Language switcher */}
           <div className="flex justify-center mb-4 gap-1">
             {(['cs', 'sk', 'en'] as PublicLang[]).map(l => (
               <button key={l} onClick={() => setLang(l)}
@@ -209,19 +190,17 @@ export default function RegisterPage() {
             )}
 
             <form onSubmit={handleRegister} className="space-y-4">
-              {/* Název firmy */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_business_name')}</label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="text" disabled={true} value={businessName} onChange={e => setBusinessName(e.target.value)}
+                  <input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)}
                     disabled={isDemoMode}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder={t('register_business_placeholder')} required />
                 </div>
               </div>
 
-              {/* Typ podnikání */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_type')}</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -242,19 +221,17 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_email')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="email" disabled={true} value={email} onChange={e => setEmail(e.target.value)}
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                     disabled={isDemoMode}
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder={t('email_placeholder')} required />
                 </div>
               </div>
 
-              {/* Heslo */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_password')}</label>
                 <div className="relative">
@@ -274,7 +251,6 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* GDPR */}
               <div className="flex items-start gap-3">
                 <input type="checkbox" id="gdpr" required disabled={isDemoMode}
                   className="mt-1 w-4 h-4 rounded border-gray-300 text-sky-600 focus:ring-sky-500 disabled:opacity-50" />
@@ -283,7 +259,6 @@ export default function RegisterPage() {
                 </label>
               </div>
 
-              {/* Submit */}
               <button type="submit" disabled={loading || isDemoMode}
                 className="w-full py-3 text-white rounded-xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 transition-all hover:shadow-xl"
                 style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
@@ -319,4 +294,3 @@ export default function RegisterPage() {
     </div>
   )
 }
-
