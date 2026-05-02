@@ -4,6 +4,18 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+
+  if (DEMO_MODE) {
+    const url = request.nextUrl.clone()
+
+    if (url.pathname === '/') {
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
+
+    return NextResponse.next()
+  }
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -90,3 +102,4 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|api|icons|manifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
+

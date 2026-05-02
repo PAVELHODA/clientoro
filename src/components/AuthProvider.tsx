@@ -105,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         setUser(data.user ? { id: data.user.id, email: data.user.email } : null)
         setRole((data.role as UserRole) || 'staff')
-        setOrganization(data.organization || null)
+        setOrganization(data.organization || data.availableOrgs?.[0] || null)
         setAvailableOrgs(data.availableOrgs || [])
 
         // Uložit aktivní org do cookie
@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await fetch('/api/auth/init')
       if (res.ok) {
         const data = await res.json()
-        setOrganization(data.organization || null)
+        setOrganization(data.organization || data.availableOrgs?.[0] || null)
         setAvailableOrgs(data.availableOrgs || [])
       }
     } catch (err) {
@@ -182,3 +182,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   )
 }
+
+

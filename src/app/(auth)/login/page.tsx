@@ -33,15 +33,34 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+
+  if (email !== 'admin@clientoro.pro') {
+  alert('Demo mode – přihlášení není dostupné')
+  return
+}
     setError('')
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setError(error.message === 'Invalid login credentials' ? t('login_error_credentials') : error.message)
-      } else { window.location.href = '/dashboard' }
-    } catch (err) { setError(t('login_error_unexpected')) }
-    finally { setLoading(false) }
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (error) {
+    setError(error.message || 'Login failed')
+    setLoading(false)
+    return
+  }
+
+  // ✅ refresh session
+  await supabase.auth.getSession()
+
+  window.location.href = '/dashboard'
+  } catch (err) {
+  console.error(err)
+  setError(err?.message || JSON.stringify(err))
+  setLoading(false)
+}
   }
 
   return (
@@ -197,4 +216,14 @@ export default function LoginPage() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
 

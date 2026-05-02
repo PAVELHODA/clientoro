@@ -4,10 +4,15 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { Waves, Mail, ArrowRight, Building2, User, Eye, EyeOff, RefreshCw } from 'lucide-react'
+import { Waves, Mail, ArrowRight, Building2, User, Eye, EyeOff, RefreshCw, AlertCircle } from 'lucide-react'
 import { PublicLang, publicTranslations } from '@/lib/publicI18n'
+import { DEMO_CONFIG } from '@/lib/demo-config'
 
-const flagUrls: Record<PublicLang, string> = { cs: 'https://flagcdn.com/w40/cz.png', sk: 'https://flagcdn.com/w40/sk.png', en: 'https://flagcdn.com/w40/gb.png' }
+const flagUrls: Record<PublicLang, string> = {
+  cs: 'https://flagcdn.com/w40/cz.png',
+  sk: 'https://flagcdn.com/w40/sk.png',
+  en: 'https://flagcdn.com/w40/gb.png'
+}
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -20,6 +25,9 @@ export default function RegisterPage() {
   const [lang, setLangState] = useState<PublicLang>('cs')
   const router = useRouter()
   const supabase = createClient()
+
+  // ⚠️ DEMO MODE FLAG
+  const isDemoMode = DEMO_CONFIG.isEnabled
 
   useEffect(() => {
     const stored = localStorage.getItem('clientoro_lang') as PublicLang | null
@@ -46,6 +54,13 @@ export default function RegisterPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // ⚠️ BLOKOVÁNÍ V DEMO MODU
+    if (isDemoMode) {
+      setError(DEMO_CONFIG.messages.demoAlert)
+      return
+    }
+
     setError('')
     setLoading(true)
     try {
@@ -122,39 +137,12 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Vlnky + zlatí lidé — rozšířené na celou šířku */}
+        {/* Vlnky */}
         <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '180px' }}>
           <svg viewBox="0 0 1200 120" className="w-full h-full" preserveAspectRatio="none" fill="none">
-            {/* Vlnky */}
             <path d="M0 70 Q100 55 200 65 Q300 75 400 60 Q500 45 600 58 Q700 70 800 55 Q900 40 1000 52 Q1100 65 1200 48 L1200 120 L0 120 Z" fill="rgba(255,255,255,0.03)" />
             <path d="M0 78 Q150 62 300 75 Q450 88 600 68 Q750 50 900 65 Q1050 80 1200 62 L1200 120 L0 120 Z" fill="rgba(255,255,255,0.05)" />
             <path d="M0 85 Q120 72 240 82 Q360 92 480 75 Q600 58 720 72 Q840 85 960 68 Q1080 52 1200 65 L1200 120 L0 120 Z" fill="rgba(255,255,255,0.08)" />
-
-            {/* Řada 1 — horní, jemná */}
-            
-            
-            
-            
-            
-            
-
-            {/* Řada 2 — hlavní, výrazná */}
-            
-            
-            
-            
-            
-            
-            
-            
-
-            {/* Řada 3 — dolní, na vlnkách */}
-            
-            
-            
-            
-            
-            
           </svg>
         </div>
       </div>
@@ -181,8 +169,22 @@ export default function RegisterPage() {
             ))}
           </div>
 
-
           <div className="bg-white rounded-2xl border-2 border-amber-400/50 lg:border-gray-200/80 p-8 shadow-sm">
+            {/* ⚠️ DEMO ALERT */}
+            {isDemoMode && (
+              <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-xl flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-amber-900 text-sm">🎬 Demo verze</p>
+                  <p className="text-xs text-amber-700 mt-1">
+                    Toto je demonstrační verze aplikace. Registrace není dostupná.
+                    <br />
+                    <strong>Pro přihlášení použijte:</strong> admin@clientoro.pro
+                  </p>
+                </div>
+              </div>
+            )}
+
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('register_title')}</h2>
             <p className="text-sm text-gray-400 mb-6">{t('register_subtitle')}</p>
 
@@ -199,7 +201,8 @@ export default function RegisterPage() {
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
+                    disabled={isDemoMode}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder={t('register_business_placeholder')} required />
                 </div>
               </div>
@@ -208,15 +211,15 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_type')}</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <button type="button" onClick={() => setMode('solo')}
-                    className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                  <button type="button" onClick={() => !isDemoMode && setMode('solo')} disabled={isDemoMode}
+                    className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                       mode === 'solo' ? 'text-white shadow-md' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                     }`}
                     style={mode === 'solo' ? { background: 'linear-gradient(135deg, #0e4d64, #0f6b7a)', borderColor: '#0f6b7a' } : {}}>
                     <User className="w-4 h-4 flex-shrink-0" /> {t('register_freelancer')}
                   </button>
-                  <button type="button" onClick={() => setMode('team')}
-                    className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                  <button type="button" onClick={() => !isDemoMode && setMode('team')} disabled={isDemoMode}
+                    className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                       mode === 'team' ? 'text-white shadow-md' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                     }`}
                     style={mode === 'team' ? { background: 'linear-gradient(135deg, #0c2d48, #0e4d64)', borderColor: '#0e4d64' } : {}}>
@@ -231,7 +234,8 @@ export default function RegisterPage() {
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
+                    disabled={isDemoMode}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder={t('email_placeholder')} required />
                 </div>
               </div>
@@ -241,14 +245,15 @@ export default function RegisterPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('register_password')}</label>
                 <div className="relative">
                   <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
-                    className="w-full pl-4 pr-20 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors"
+                    disabled={isDemoMode}
+                    className="w-full pl-4 pr-20 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 bg-gray-50 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder={t('register_password_placeholder')} minLength={6} required />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} disabled={isDemoMode}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
-                  <button type="button" onClick={generatePassword}
-                    className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-600"
+                  <button type="button" onClick={generatePassword} disabled={isDemoMode}
+                    className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-600 disabled:opacity-50"
                     title={t('register_generate_password')}>
                     <RefreshCw className="w-4 h-4" />
                   </button>
@@ -257,15 +262,15 @@ export default function RegisterPage() {
 
               {/* GDPR */}
               <div className="flex items-start gap-3">
-                <input type="checkbox" id="gdpr" required
-                  className="mt-1 w-4 h-4 rounded border-gray-300 text-sky-600 focus:ring-sky-500" />
+                <input type="checkbox" id="gdpr" required disabled={isDemoMode}
+                  className="mt-1 w-4 h-4 rounded border-gray-300 text-sky-600 focus:ring-sky-500 disabled:opacity-50" />
                 <label htmlFor="gdpr" className="text-xs text-gray-500 leading-relaxed">
                   {t('register_gdpr')}
                 </label>
               </div>
 
               {/* Submit */}
-              <button type="submit" disabled={loading}
+              <button type="submit" disabled={loading || isDemoMode}
                 className="w-full py-3 text-white rounded-xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 transition-all hover:shadow-xl"
                 style={{ background: 'linear-gradient(135deg, #0c2d48, #0f6b7a)' }}>
                 {loading ? (
@@ -294,9 +299,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <p className="text-center text-xs text-gray-300 mt-6">{"\uD83C\uDFC6"} Clientoro — {t('login_feature_4')}</p>
-
-          
+          <p className="text-center text-xs text-gray-300 mt-6">🏆 Clientoro — {t('login_feature_4')}</p>
         </div>
       </div>
     </div>

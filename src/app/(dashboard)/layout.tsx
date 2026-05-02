@@ -441,7 +441,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     )
   }
 
-  if (!organization) {
+  if (false) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center max-w-md mx-auto p-8">
@@ -679,3 +679,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </LangContext.Provider>
   )
 }
+
+
+
+
+

@@ -1,230 +1,80 @@
-const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
-export const dynamic = 'force-dynamic'
-
-// PATH: src/app/api/bookings/route.ts
-import { supabaseAdmin } from '@/lib/api/supabaseAdmin'
-import { requireAuth } from '@/lib/api/requireAuth'
-import { NextRequest, NextResponse } from 'next/server'
-import { bookingCreateSchema, validateBody } from '@/lib/validations'
-import { sendBookingConfirmation, sendOwnerNotification } from '@/lib/email'
+// src/app/api/bookings/route.ts
+import { createServerSupabase } from '@/lib/supabase-server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    if (DEMO_MODE) {
-  return NextResponse.json([
-    {
-      id: '1',
-      start_at: '2026-04-20T10:00:00',
-      end_at: '2026-04-20T11:00:00',
-      price: 1000,
-      customer_name: 'Jan Novák',
-      customer_phone: '123456789',
-      status: 'confirmed',
-      clients: { full_name: 'Jan Novák' },
-      services: { name: 'Konzultace', duration: 60, price: 1000 },
-      staff: { full_name: 'Demo Staff' }
-    },
-    {
-      id: '2',
-      start_at: '2026-04-20T14:00:00',
-      end_at: '2026-04-20T15:00:00',
-      price: 1500,
-      customer_name: 'Petra Svobodová',
-      customer_phone: '987654321',
-      status: 'confirmed',
-      clients: { full_name: 'Petra Svobodová' },
-      services: { name: 'Trénink', duration: 60, price: 1500 },
-      staff: { full_name: 'Demo Staff' }
+    const supabase = await createServerSupabase();
+
+    // 1. OvÄ›Å™ session
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
     }
-  ])
-}
-    const auth = await requireAuth(request, 'staff')
-    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-    const { searchParams } = new URL(request.url)
-    const start = searchParams.get('start')
-    const end = searchParams.get('end')
+    // 2. ZÃ­skej org_id z memberships
+    const { data: memberships, error: membershipError } = await supabase
+      .from('memberships')
+      .select('org_id')
+      .eq('user_id', user.id)
+      .limit(1);
 
-    let query = supabaseAdmin
+    if (membershipError || !memberships?.length) {
+      return NextResponse.json(
+        { error: 'No organization found' },
+        { status: 404 }
+      );
+    }
+
+    const orgId = memberships[0].org_id;
+
+    // 3. Fetch bookings
+    const { data: bookings, error: bookingsError } = await supabase
       .from('bookings')
-      .select(`
-        *,
-        clients (id, full_name, phone, email),
-        services (id, name, color, duration, price),
-        staff (id, full_name)
-      `)
-      .eq('organization_id', auth.organizationId)
-      .order('start_at', { ascending: true })
+      .select(
+        `
+        id,
+        client_id,
+        service_id,
+        staff_id,
+        start_time,
+        end_time,
+        status,
+        notes,
+        created_at,
+        clients(id, first_name, last_name, email, phone),
+        services(id, name, duration),
+        staff(id, first_name, last_name)
+      `
+      )
+      .eq('org_id', orgId)
+      .order('start_time', { ascending: false });
 
-    if (start) query = query.gte('start_at', start)
-    if (end) query = query.lte('start_at', end + 'T23:59:59.999Z')
-
-    const { data, error } = await query
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    return NextResponse.json(data)
-  } catch (err) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    if (DEMO_MODE) {
-  return NextResponse.json({ success: true, demo: true })
-}
-    const auth = await requireAuth(request, 'staff')
-    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
-
-    const body = await request.json()
-
-    // Zod validace
-    const validation = validateBody(bookingCreateSchema, {
-      ...body,
-      organization_id: auth.organizationId,
-    })
-    if (!validation.success || !validation.data) {
-      return NextResponse.json({ error: validation.error || 'Neplatná data' }, { status: 400 })
+    if (bookingsError) {
+      console.error('[Bookings API] Error:', bookingsError);
+      return NextResponse.json(
+        { error: 'Failed to fetch bookings' },
+        { status: 500 }
+      );
     }
 
-    const validData = validation.data
-
-    // Validace: end_at musí být po start_at
-    if (new Date(validData.end_at) <= new Date(validData.start_at)) {
-      return NextResponse.json({ error: 'Konec rezervace musí být po zaèátku' }, { status: 400 })
-    }
-
-    // Rezervace v minulosti:
-    // - Backfill (6× klik): kdokoliv mùže (is_backfill = true)
-    // - Owner / Superadmin: mùže vždy
-    // - Staff / Manager: NEMÙŽE (pokud není backfill)
-    if (!validData.is_backfill && new Date(validData.start_at) < new Date()) {
-      if (auth.role !== 'owner' && auth.role !== 'superadmin') {
-        return NextResponse.json({ error: 'Pouze majitel mùže vytvoøit rezervaci v minulosti' }, { status: 403 })
-      }
-    }
-
-    // Kontrola kolize — POUZE u stejného zamìstnance na stejný èas
-    if (validData.staff_id && !validData.is_backfill) {
-      const { data: conflicts } = await (supabaseAdmin as any)
-        .from('bookings')
-        .select('id')
-        .eq('organization_id', auth.organizationId)
-        .eq('staff_id', validData.staff_id)
-        .neq('status', 'cancelled')
-        .lt('start_at', validData.end_at)
-        .gt('end_at', validData.start_at)
-
-      if (conflicts && conflicts.length > 0) {
-        return NextResponse.json({ error: 'Tento zamìstnanec má v daném èase již rezervaci' }, { status: 409 })
-      }
-    }
-
-    // Auto-create klienta pokud má telefon a nemá client_id
-    let clientId = validData.client_id || null
-    if (!clientId && validData.customer_phone) {
-      // Hledej existujícího klienta podle telefonu
-      const { data: existingClient } = await (supabaseAdmin as any)
-        .from('clients')
-        .select('id, total_visits, full_name')
-        .eq('organization_id', auth.organizationId)
-        .eq('phone', validData.customer_phone)
-        .single()
-
-      if (existingClient) {
-        clientId = existingClient.id
-        // Aktualizuj poèet návštìv
-        await (supabaseAdmin as any).from('clients').update({
-          total_visits: (existingClient.total_visits || 0) + 1,
-          last_visit_at: validData.start_at,
-          full_name: validData.customer_name || existingClient.full_name,
-        }).eq('id', clientId)
-      } else if (validData.customer_name) {
-        // Vytvoø nového klienta
-        const { data: newClient } = await (supabaseAdmin as any)
-          .from('clients')
-          .insert({
-            organization_id: auth.organizationId,
-            full_name: validData.customer_name,
-            phone: validData.customer_phone,
-            email: validData.customer_email || null,
-            source: validData.source === 'online' ? 'online' : 'manual',
-            total_visits: 1,
-            last_visit_at: validData.start_at,
-          })
-          .select('id')
-          .single()
-        clientId = newClient?.id || null
-      }
-    }
-
-    // Vložení rezervace
-    const { data, error } = await (supabaseAdmin as any)
-      .from('bookings')
-      .insert({
-        ...validData,
-        organization_id: auth.organizationId,
-        client_id: clientId,
-      })
-      .select(`
-        *,
-        clients (id, full_name, phone, email),
-        services (id, name, color, duration, price),
-        staff (id, full_name)
-      `)
-      .single()
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-    // Pøímé posílání emailù (bez webhook self-fetch)
-    try {
-      const startDate = new Date(data.start_at)
-      const dateStr = startDate.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
-      const timeStr = startDate.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
-      const clientEmail = data.clients?.email || data.customer_email
-      const clientName = data.clients?.full_name || data.customer_name || 'Klient'
-      const serviceName = data.services?.name || 'Služba'
-      const staffName = data.staff?.full_name || undefined
-
-      // Org data pro emaily
-      const { data: org } = await supabaseAdmin.from('organizations')
-        .select('name, phone, address, logo_url, notification_email, notify_on_booking, slug')
-        .eq('id', auth.organizationId).single()
-
-      // Email klientovi
-      if (clientEmail) {
-        sendBookingConfirmation({
-          to: clientEmail, customerName: clientName, serviceName, staffName,
-          date: dateStr, time: timeStr, price: data.price || undefined,
-          orgName: org?.name || 'Salon', orgPhone: org?.phone || undefined,
-          logoUrl: org?.logo_url || undefined, address: org?.address || undefined,
-          startAt: data.start_at, duration: data.services?.duration || 60,
-          bookingId: 'CLT-' + new Date().getFullYear() + '-' + String(data.id).substring(0, 6).toUpperCase(),
-        }).catch(err => console.error('[Email to client]', err))
-      }
-
-      // Email majiteli
-      const ownerEmail = org?.notification_email
-      if (ownerEmail && org?.notify_on_booking !== false) {
-        sendOwnerNotification({
-          to: ownerEmail, customerName: clientName, customerPhone: data.customer_phone || '',
-          customerEmail: clientEmail || undefined, serviceName, staffName,
-          date: dateStr, time: timeStr, price: data.price || undefined,
-          orgName: org?.name || 'Salon',
-        }).catch(err => console.error('[Email to owner]', err))
-      }
-
-      // In-app notifikace
-      await supabaseAdmin.from('notifications').insert({
-        organization_id: auth.organizationId, type: 'new_booking', channel: 'system',
-        recipient: ownerEmail || 'system', subject: 'Nová rezervace', status: 'sent',
-        body: clientName + ' — ' + serviceName + ' (' + dateStr + ', ' + timeStr + ')',
-        booking_id: data.id,
-      })
-    } catch (e) { console.error('[email-notify]', e) }
-
-    return NextResponse.json(data, { status: 201 })
-  } catch (err) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({
+      success: true,
+      data: bookings || [],
+      count: bookings?.length || 0,
+    });
+  } catch (error) {
+    console.error('[Bookings API] Unexpected error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
